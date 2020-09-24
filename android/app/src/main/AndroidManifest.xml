@@ -7,8 +7,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="coda_wallet"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Coda Wallet"
+        android:icon="@mipmap/coda_logo">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
