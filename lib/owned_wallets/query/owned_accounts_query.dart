@@ -10,6 +10,10 @@ const OWNED_ACCOUNTS_QUERY = '''
       isTokenOwner
       isDisabled
       publicKey
+      token
+      balance {
+        total
+      }
     }
   }
 ''';

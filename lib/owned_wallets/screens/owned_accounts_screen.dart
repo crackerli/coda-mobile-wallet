@@ -7,6 +7,7 @@ import '../../account_txns/blocs/account_txns_bloc.dart';
 import '../../account_txns/blocs/account_txns_events.dart';
 import '../../account_txns/query/account_txns_query.dart';
 import '../../account_txns/blocs/account_txns_states.dart' as AccountStates;
+import '../../util/format_utils.dart';
 
 class OwnedAccountsScreen extends StatefulWidget {
   OwnedAccountsScreen({Key key}) : super(key: key);
@@ -63,6 +64,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
 
   Widget _buildAccountItem(BuildContext context, dynamic itemData) {
     String publicKey = itemData['publicKey'];
+    String formattedTokenNumber = formatTokenNumber(itemData['balance']['total']);
     return Container(
       padding: EdgeInsets.only(left: 14.0, right: 14.0, top: 6.0, bottom: 1.0),
       child: Column(
@@ -71,9 +73,9 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
           Container(height: 10),
           Row(
             children: [
-              Text("Token: 19856"),
+              Text("Token: $formattedTokenNumber"),
               Container(width: 10, height: 1),
-              Image.asset("images/coda_logo.png", width: 16, height: 16)
+              Image.asset(itemData['locked'] ? 'images/lock.png' : 'images/unlock.png', width: 16, height: 16)
             ]
           )
         ],
