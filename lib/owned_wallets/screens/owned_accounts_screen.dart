@@ -1,6 +1,9 @@
+import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
+import 'package:coda_wallet/owned_wallets/mutation/owned_accounts_mutation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/owned_accounts_bloc.dart';
+import '../blocs/owned_accounts_events.dart';
 import '../blocs/owned_accounts_states.dart';
 import '../../account_txns/screens/account_txns_screen.dart';
 import '../../account_txns/blocs/account_txns_bloc.dart';
@@ -8,18 +11,22 @@ import '../../account_txns/blocs/account_txns_events.dart';
 import '../../account_txns/query/account_txns_query.dart';
 import '../../account_txns/blocs/account_txns_states.dart' as AccountStates;
 import '../../util/format_utils.dart';
+import '../query/owned_accounts_query.dart';
 
 class OwnedAccountsScreen extends StatefulWidget {
   OwnedAccountsScreen({Key key}) : super(key: key);
 
   @override
-  _OwnedAccountsScreenState createState() => _OwnedAccountsScreenState();
+  _OwnedAccountsScreenState
+    createState() => _OwnedAccountsScreenState();
 }
 
 class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
 
   @override
   void initState() {
+    final _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
+    _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY));
     super.initState();
   }
 
@@ -36,15 +43,29 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     );
   }
 
-  Widget _buildAccountsWidget(BuildContext context, OwnedAccountsStates state) {
-    if(state is Loading) {
+  Widget _buildAccountsWidget(
+    BuildContext context, OwnedAccountsStates state) {
+
+    if(state is FetchOwnedAccountsLoading) {
       return Scaffold(appBar: _buildAppBar(), body: LinearProgressIndicator());
-    } else if(state is LoadDataFail) {
+    }
+
+    if(state is FetchOwnedAccountsFail) {
       return Scaffold(appBar: _buildAppBar(), body: Center(child: Text(state.error)));
-    } else {
-      dynamic data = (state as LoadDataSuccess).data['ownedWallets'];
+    }
+
+    if(state is FetchOwnedAccountsSuccess) {
+      List<Account> data = state.data as List;
       return Scaffold(appBar: _buildAppBar(), body: _buildAccountListWidget(data));
     }
+
+    if(state is LockAccountSuccess) {
+      print('CK: ${state.data}');
+      List<Account> data = state.data as List;
+      return Scaffold(appBar: _buildAppBar(), body: _buildAccountListWidget(data));
+    }
+
+    return Container();
   }
   
   _accountsTapCallback(String publicKey) {
@@ -62,9 +83,9 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
         }));
   }
 
-  Widget _buildAccountItem(BuildContext context, dynamic itemData) {
-    String publicKey = itemData['publicKey'];
-    String formattedTokenNumber = formatTokenNumber(itemData['balance']['total']);
+  Widget _buildAccountItem(BuildContext context, Account itemData) {
+    String publicKey = itemData.publicKey;
+    String formattedTokenNumber = formatTokenNumber(itemData.balance);
     return Container(
       padding: EdgeInsets.only(left: 14.0, right: 14.0, top: 6.0, bottom: 1.0),
       child: Column(
@@ -75,7 +96,18 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
             children: [
               Text("Token: $formattedTokenNumber"),
               Container(width: 10, height: 1),
-              Image.asset(itemData['locked'] ? 'images/lock.png' : 'images/unlock.png', width: 16, height: 16)
+              GestureDetector(
+                child: Image.asset(itemData.locked ? 'images/lock.png' : 'images/unlock.png', width: 16, height: 16),
+                onTap: () {
+                  final snackBar = new SnackBar(content: new Text('这是一个SnackBar!'));
+                  Scaffold.of(context).showSnackBar(snackBar);
+                  Map<String, String> variables = Map<String, String>();
+                  variables['publicKey'] = 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g';
+                  variables['password'] = '';
+                  final _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
+                  _ownedAccountsBloc.add(LockAccount(ACCOUNT_UNLOCK_MUTATION, variables: variables));
+                },
+              )
             ]
           )
         ],
@@ -86,27 +118,29 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     );
   }
 
-  Widget _buildAccountListWidget(dynamic data) {
-    List ownedAccounts = data as List;
+  Widget _buildAccountListWidget(List<Account> accountList) {
     return ListView.separated(
-      itemCount: ownedAccounts.length,
+      itemCount: accountList.length,
       itemBuilder: (context, index) {
-        String publicKey = ownedAccounts[index]['publicKey'];
-
-        // return ListTile(
-        //     title: Text(publicKey),
-        //     onTap: () { _accountsTapCallback(publicKey); }
-        // );
-        return _buildAccountItem(context, ownedAccounts[index]);
+        return _buildAccountItem(context, accountList[index]);
       },
-      separatorBuilder: (context, index) {
-        return Divider();
-      },
+      separatorBuilder: (context, index) { return Divider(); }
     );
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+}
+
+class OwnedAccountList extends StatelessWidget {
+  final OwnedAccountsBloc _ownedAccountsBloc;
+
+  const OwnedAccountList(Key key, this._ownedAccountsBloc) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
   }
 }

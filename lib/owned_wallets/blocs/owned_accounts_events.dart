@@ -7,11 +7,21 @@ abstract class OwnedAccountsEvents extends Equatable {
   List<Object> get props => null;
 }
 
-class FetchOwnedAccountsData extends OwnedAccountsEvents {
+class FetchOwnedAccounts extends OwnedAccountsEvents {
   final String query;
   final Map<String, dynamic> variables;
 
-  FetchOwnedAccountsData(this.query, {this.variables}) : super();
+  FetchOwnedAccounts(this.query, {this.variables}) : super();
+
+  @override
+  List<Object> get props => [query, variables];
+}
+
+class LockAccount extends OwnedAccountsEvents {
+  final String query;
+  final Map<String, dynamic> variables;
+
+  LockAccount(this.query, {this.variables}) : super();
 
   @override
   List<Object> get props => [query, variables];

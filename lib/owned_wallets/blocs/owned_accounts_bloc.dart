@@ -1,42 +1,105 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../service/coda_service.dart';
 import 'owned_accounts_events.dart';
 import 'owned_accounts_states.dart';
-import '../../service/coda_service.dart';
+import 'owned_accounts_models.dart';
 
-class OwnedAccountsBloc extends Bloc<OwnedAccountsEvents, OwnedAccountsStates> {
-  CodaService service;
+class OwnedAccountsBloc extends
+  Bloc<OwnedAccountsEvents, OwnedAccountsStates> {
+
+  CodaService _service;
+  List<Account> _ownedAccounts;
+  String _accountToLock;
 
   OwnedAccountsBloc(OwnedAccountsStates state) : super(state) {
-    service = CodaService();
+    _service = CodaService();
   }
 
-  @override
-  OwnedAccountsStates get initialState => Loading();
+  OwnedAccountsStates get
+    initState => FetchOwnedAccountsLoading();
 
   @override
-  Stream<OwnedAccountsStates> mapEventToState(OwnedAccountsEvents event) async* {
-    if (event is FetchOwnedAccountsData) {
-      yield* _mapFetchOwnedAccountsDataToStates(event);
+  Stream<OwnedAccountsStates>
+    mapEventToState(OwnedAccountsEvents event) async* {
+
+    if(event is FetchOwnedAccounts) {
+      yield* _mapFetchOwnedAccountsToStates(event);
+      return;
+    }
+
+    if(event is LockAccount) {
+      yield* _mapLockAccountToStates(event);
+      return;
     }
   }
 
-  Stream<OwnedAccountsStates> _mapFetchOwnedAccountsDataToStates(FetchOwnedAccountsData event) async* {
+  Stream<OwnedAccountsStates>
+    _mapLockAccountToStates(LockAccount event) async* {
+
+    final query = event.query;
+    final variables = event.variables ?? null;
+    _accountToLock = variables['publicKey'];
+
+    try {
+      final result = await _service.performMutation(query, variables: variables);
+
+      if (result.hasException) {
+        print('graphql errors: ${result.exception.graphqlErrors.toString()}');
+        print('client errors: ${result.exception.clientException.toString()}');
+        yield LockAccountFail(result.exception.graphqlErrors[0]);
+        return;
+      }
+
+      Account changed = _ownedAccounts.singleWhere((element) => element.publicKey == _accountToLock);
+      final changedAccount = Account(
+        publicKey: changed.publicKey,
+        balance: changed.balance,
+        locked: false
+      );
+
+      _ownedAccounts = _ownedAccounts
+        .map((e) => e.publicKey == _accountToLock ? changedAccount : e)
+        .toList();
+      yield LockAccountSuccess(_ownedAccounts);
+    } catch (e) {
+      print(e);
+      yield LockAccountFail(e.toString());
+    } finally {
+      _accountToLock = null;
+    }
+  }
+
+  Stream<OwnedAccountsStates>
+    _mapFetchOwnedAccountsToStates(FetchOwnedAccounts event) async* {
+
     final query = event.query;
     final variables = event.variables ?? null;
 
     try {
-      final result = await service.performQuery(query, variables: variables);
+      yield FetchOwnedAccountsLoading();
+      final result = await
+        _service.performQuery(query, variables: variables);
 
-      if (result.hasException) {
-        print('graphQLErrors: ${result.exception.graphqlErrors.toString()}');
-        print('clientErrors: ${result.exception.clientException.toString()}');
-        yield LoadDataFail(result.exception.graphqlErrors[0]);
-      } else {
-        yield LoadDataSuccess(result.data);
+      if(result.hasException) {
+        print('graphql errors: ${result.exception.graphqlErrors.toString()}');
+        print('client errors: ${result.exception.clientException.toString()}');
+        yield FetchOwnedAccountsFail(result.exception.graphqlErrors[0]);
+        return;
       }
+
+      final List<dynamic> accounts = result.data['ownedWallets'];
+
+      _ownedAccounts = accounts
+          .map((e) => Account(
+            publicKey: e['publicKey'] as String,
+            balance: e['balance']['total'] as String,
+            locked: e['locked'] as bool
+          ))
+          .toList();
+      yield FetchOwnedAccountsSuccess(_ownedAccounts);
     } catch (e) {
-      print(e);
-      yield LoadDataFail(e.toString());
+      print('Fetch owned accounts: $e');
+      yield FetchOwnedAccountsFail(e.toString());
     }
   }
 }

@@ -7,23 +7,45 @@ abstract class OwnedAccountsStates extends Equatable {
   List<Object> get props => null;
 }
 
-class Loading extends OwnedAccountsStates {
-  Loading() : super();
+class FetchOwnedAccountsLoading extends OwnedAccountsStates {
+  FetchOwnedAccountsLoading() : super();
 }
 
-class LoadDataSuccess extends OwnedAccountsStates {
+class FetchOwnedAccountsSuccess extends OwnedAccountsStates {
   final dynamic data;
 
-  LoadDataSuccess(this.data) : super();
+  FetchOwnedAccountsSuccess(this.data) : super();
 
   @override
   List<Object> get props => data;
 }
 
-class LoadDataFail extends OwnedAccountsStates {
+class FetchOwnedAccountsFail extends OwnedAccountsStates {
   final dynamic error;
 
-  LoadDataFail(this.error) : super();
+  FetchOwnedAccountsFail(this.error) : super();
+
+  @override
+  List<Object> get props => error;
+}
+
+class LockAccountLoading extends OwnedAccountsStates {
+  LockAccountLoading() : super();
+}
+
+class LockAccountSuccess extends OwnedAccountsStates {
+  final dynamic data;
+
+  LockAccountSuccess(this.data) : super();
+
+  @override
+  List<Object> get props => data;
+}
+
+class LockAccountFail extends OwnedAccountsStates {
+  final dynamic error;
+
+  LockAccountFail(this.error) : super();
 
   @override
   List<Object> get props => error;
