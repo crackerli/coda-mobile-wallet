@@ -17,6 +17,10 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
 
   @override
   void initState() {
+    Map<String, dynamic> variables = Map<String, dynamic>();
+    variables['publicKey'] = widget.publicKey;
+    final _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
+    _ownedAccountsBloc.add(FetchAccountTxnsData(ACCOUNT_TXNS_QUERY, variables: variables));
     super.initState();
   }
 
