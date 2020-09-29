@@ -29,23 +29,23 @@ class FetchOwnedAccountsFail extends OwnedAccountsStates {
   List<Object> get props => error;
 }
 
-class LockAccountLoading extends OwnedAccountsStates {
-  LockAccountLoading() : super();
+class ToggleLockStatusLoading extends OwnedAccountsStates {
+  ToggleLockStatusLoading() : super();
 }
 
-class LockAccountSuccess extends OwnedAccountsStates {
+class ToggleLockStatusSuccess extends OwnedAccountsStates {
   final dynamic data;
 
-  LockAccountSuccess(this.data) : super();
+  ToggleLockStatusSuccess(this.data) : super();
 
   @override
   List<Object> get props => data;
 }
 
-class LockAccountFail extends OwnedAccountsStates {
+class ToggleLockStatusFail extends OwnedAccountsStates {
   final dynamic error;
 
-  LockAccountFail(this.error) : super();
+  ToggleLockStatusFail(this.error) : super();
 
   @override
   List<Object> get props => error;

@@ -5,7 +5,7 @@ import 'owned_accounts_states.dart';
 import 'owned_accounts_models.dart';
 
 class OwnedAccountsBloc extends
-  Bloc<OwnedAccountsEvents, OwnedAccountsStates> {
+    Bloc<OwnedAccountsEvents, OwnedAccountsStates> {
 
   CodaService _service;
   List<Account> _ownedAccounts;
@@ -16,25 +16,25 @@ class OwnedAccountsBloc extends
   }
 
   OwnedAccountsStates get
-    initState => FetchOwnedAccountsLoading();
+      initState => FetchOwnedAccountsLoading();
 
   @override
   Stream<OwnedAccountsStates>
-    mapEventToState(OwnedAccountsEvents event) async* {
+      mapEventToState(OwnedAccountsEvents event) async* {
 
     if(event is FetchOwnedAccounts) {
       yield* _mapFetchOwnedAccountsToStates(event);
       return;
     }
 
-    if(event is LockAccount) {
-      yield* _mapLockAccountToStates(event);
+    if(event is ToggleLockStatus) {
+      yield* _mapToggleLockStatusToStates(event);
       return;
     }
   }
 
   Stream<OwnedAccountsStates>
-    _mapLockAccountToStates(LockAccount event) async* {
+      _mapToggleLockStatusToStates(ToggleLockStatus event) async* {
 
     final query = event.query;
     final variables = event.variables ?? null;
@@ -46,7 +46,7 @@ class OwnedAccountsBloc extends
       if (result.hasException) {
         print('graphql errors: ${result.exception.graphqlErrors.toString()}');
         print('client errors: ${result.exception.clientException.toString()}');
-        yield LockAccountFail(result.exception.graphqlErrors[0]);
+        yield ToggleLockStatusFail(result.exception.graphqlErrors[0]);
         return;
       }
 
@@ -60,10 +60,10 @@ class OwnedAccountsBloc extends
       _ownedAccounts = _ownedAccounts
         .map((e) => e.publicKey == _accountToLock ? changedAccount : e)
         .toList();
-      yield LockAccountSuccess(_ownedAccounts);
+      yield ToggleLockStatusSuccess(_ownedAccounts);
     } catch (e) {
       print(e);
-      yield LockAccountFail(e.toString());
+      yield ToggleLockStatusFail(e.toString());
     } finally {
       _accountToLock = null;
     }

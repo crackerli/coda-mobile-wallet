@@ -1,5 +1,5 @@
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
-import 'package:coda_wallet/owned_wallets/mutation/owned_accounts_mutation.dart';
+import 'package:coda_wallet/owned_wallets/screens/owned_accounts_dialog.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +14,7 @@ class OwnedAccountsScreen extends StatefulWidget {
 
   @override
   _OwnedAccountsScreenState
-    createState() => _OwnedAccountsScreenState();
+      createState() => _OwnedAccountsScreenState();
 }
 
 class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
@@ -26,16 +26,15 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     super.initState();
   }
 
-  Widget _buildAppBar() {
-    return AppBar(title: Text('My Accounts'));
-  }
-
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OwnedAccountsBloc, OwnedAccountsStates>(
+    return Scaffold(
+      appBar: AppBar(title: Text('My Accounts')),
+      body: BlocBuilder<OwnedAccountsBloc, OwnedAccountsStates>(
         builder: (BuildContext context, OwnedAccountsStates state) {
           return _buildAccountsWidget(context, state);
         }
+      )
     );
   }
 
@@ -43,22 +42,27 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     BuildContext context, OwnedAccountsStates state) {
 
     if(state is FetchOwnedAccountsLoading) {
-      return Scaffold(appBar: _buildAppBar(), body: LinearProgressIndicator());
+      return LinearProgressIndicator();
     }
 
     if(state is FetchOwnedAccountsFail) {
-      return Scaffold(appBar: _buildAppBar(), body: Center(child: Text(state.error)));
+      return Center(child: Text(state.error));
     }
 
     if(state is FetchOwnedAccountsSuccess) {
       List<Account> data = state.data as List;
-      return Scaffold(appBar: _buildAppBar(), body: _buildAccountListWidget(data));
+      return _buildAccountListWidget(data);
     }
 
-    if(state is LockAccountSuccess) {
-      print('CK: ${state.data}');
+    if(state is ToggleLockStatusFail) {
+      final snackBar = SnackBar(content: Text('Lock Account Failed'));
+      Scaffold.of(context).showSnackBar(snackBar);
+      return Container();
+    }
+
+    if(state is ToggleLockStatusSuccess) {
       List<Account> data = state.data as List;
-      return Scaffold(appBar: _buildAppBar(), body: _buildAccountListWidget(data));
+      return _buildAccountListWidget(data);
     }
 
     return Container();
@@ -68,34 +72,41 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     toAccountTxnsScreen(context, publicKey);
   }
 
-  Widget _buildAccountItem(BuildContext context, Account itemData) {
+  _buildAccountContent(BuildContext context, Account content) {
+    String publicKey = content.publicKey;
+    String formattedTokenNumber = formatTokenNumber(content.balance);
+
+    return Column(
+      children: [
+        _publicKeyText(publicKey),
+        Container(height: 10),
+        Row(
+          children: [
+            Text("Token: $formattedTokenNumber"),
+            Container(width: 10, height: 1),
+            GestureDetector(
+              child: _lockStatusImage(content.locked),
+              onTap: () { _clickLock(context, content); }
+            )
+          ]
+        )
+      ],
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max
+    );
+  }
+
+  Widget _buildAccountItem(
+    BuildContext context, Account itemData) {
+
     String publicKey = itemData.publicKey;
-    String formattedTokenNumber = formatTokenNumber(itemData.balance);
+
     return GestureDetector(
-      onTap: () {
-        _accountsTapCallback(context, publicKey);
-      },
+      onTap: () { _accountsTapCallback(context, publicKey); },
       child: Container(
         padding: EdgeInsets.only(left: 14.0, right: 14.0, top: 6.0, bottom: 1.0),
-        child: Column(
-          children: [
-            _publicKeyText(publicKey),
-            Container(height: 10),
-            Row(
-              children: [
-                Text("Token: $formattedTokenNumber"),
-                Container(width: 10, height: 1),
-                GestureDetector(
-                  child: _lockStatusImage(itemData.locked),
-                  onTap: () { _clickLock(context); }
-                )
-              ]
-            )
-          ],
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-        )
+        child: _buildAccountContent(context, itemData)
       )
     );
   }
@@ -110,12 +121,8 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
         'images/lock.png' : 'images/unlock.png', width: 16, height: 16);
   }
 
-  _clickLock(BuildContext context) {
-    Map<String, String> variables = Map<String, String>();
-    variables['publicKey'] = 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g';
-    variables['password'] = '';
-    final _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
-    _ownedAccountsBloc.add(LockAccount(ACCOUNT_UNLOCK_MUTATION, variables: variables));
+  _clickLock(BuildContext context, Account content) {
+    showUnlockAccountDialog(context, content);
   }
 
   Widget _buildAccountListWidget(List<Account> accountList) {

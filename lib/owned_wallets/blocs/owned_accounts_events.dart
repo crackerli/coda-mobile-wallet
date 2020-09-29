@@ -17,11 +17,11 @@ class FetchOwnedAccounts extends OwnedAccountsEvents {
   List<Object> get props => [query, variables];
 }
 
-class LockAccount extends OwnedAccountsEvents {
+class ToggleLockStatus extends OwnedAccountsEvents {
   final String query;
   final Map<String, dynamic> variables;
 
-  LockAccount(this.query, {this.variables}) : super();
+  ToggleLockStatus(this.query, {this.variables}) : super();
 
   @override
   List<Object> get props => [query, variables];
