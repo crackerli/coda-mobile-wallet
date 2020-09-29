@@ -72,9 +72,9 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     toAccountTxnsScreen(context, publicKey);
   }
 
-  _buildAccountContent(BuildContext context, Account content) {
-    String publicKey = content.publicKey;
-    String formattedTokenNumber = formatTokenNumber(content.balance);
+  _buildAccountContent(BuildContext context, Account account) {
+    String publicKey = account.publicKey;
+    String formattedTokenNumber = formatTokenNumber(account.balance);
 
     return Column(
       children: [
@@ -85,8 +85,8 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
             Text("Token: $formattedTokenNumber"),
             Container(width: 10, height: 1),
             GestureDetector(
-              child: _lockStatusImage(content.locked),
-              onTap: () { _clickLock(context, content); }
+              child: _lockStatusImage(account.locked),
+              onTap: () { _clickLock(context, account); }
             )
           ]
         )
@@ -121,8 +121,19 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
         'images/lock.png' : 'images/unlock.png', width: 16, height: 16);
   }
 
-  _clickLock(BuildContext context, Account content) {
-    showUnlockAccountDialog(context, content);
+  _clickLock(BuildContext context, Account account) {
+    if(null == account) {
+      return;
+    }
+
+    if(account.locked) {
+      showUnlockAccountDialog(context, account);
+      return;
+    }
+
+    if(!account.locked) {
+      showLockAccountDialog(context, account);
+    }
   }
 
   Widget _buildAccountListWidget(List<Account> accountList) {

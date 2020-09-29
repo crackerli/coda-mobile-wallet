@@ -54,7 +54,7 @@ class OwnedAccountsBloc extends
       final changedAccount = Account(
         publicKey: changed.publicKey,
         balance: changed.balance,
-        locked: false
+        locked: !changed.locked
       );
 
       _ownedAccounts = _ownedAccounts

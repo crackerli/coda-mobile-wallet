@@ -5,15 +5,24 @@ import 'package:coda_wallet/owned_wallets/mutation/owned_accounts_mutation.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-_toggleLockStatus(BuildContext context, Account content, String password) {
+_toggleLockStatus(
+  BuildContext context, Account account,
+  bool toLock, { String password }) {
+
   Map<String, String> variables = Map<String, String>();
-  variables['publicKey'] = content.publicKey;
-  variables['password'] = password;
+  variables['publicKey'] = account.publicKey;
   final _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
-  _ownedAccountsBloc.add(ToggleLockStatus(ACCOUNT_UNLOCK_MUTATION, variables: variables));
+
+  if(toLock) {
+    _ownedAccountsBloc.add(ToggleLockStatus(ACCOUNT_LOCK_MUTATION, variables: variables));
+  } else {
+    variables['password'] = password;
+    _ownedAccountsBloc.add(
+        ToggleLockStatus(ACCOUNT_UNLOCK_MUTATION, variables: variables));
+  }
 }
 
-void showUnlockAccountDialog(BuildContext context, Account content) {
+void showUnlockAccountDialog(BuildContext context, Account account) {
   String password = '';
   final textField = TextField(
     onChanged: (val) {
@@ -24,21 +33,45 @@ void showUnlockAccountDialog(BuildContext context, Account content) {
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: Text("Unlock Account"),
+        title: Text('Unlock Account'),
         content: textField,
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              _toggleLockStatus(context, content, password);
+              _toggleLockStatus(context, account, false, password: password);
               Navigator.of(context).pop();
             },
-            child: Text("OK")
+            child: Text('OK')
           ),
           FlatButton(
             onPressed: () { Navigator.of(context).pop(); },
-            child: Text("Cancel")
+            child: Text('Cancel')
           )
         ]
       );
     });
+}
+
+void showLockAccountDialog(BuildContext context, Account account) {
+  showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+            title: Text('Lock Account'),
+            content: Text('Confirm to lock account?'),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    _toggleLockStatus(context, account, true);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK')
+              ),
+              FlatButton(
+                  onPressed: () { Navigator.of(context).pop(); },
+                  child: Text('Cancel')
+              )
+            ]
+        );
+      });
 }
