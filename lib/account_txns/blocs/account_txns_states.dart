@@ -7,23 +7,23 @@ abstract class AccountTxnsStates extends Equatable {
   List<Object> get props => null;
 }
 
-class Loading extends AccountTxnsStates {
-  Loading() : super();
+class FetchAccountTxnsLoading extends AccountTxnsStates {
+  FetchAccountTxnsLoading() : super();
 }
 
-class LoadDataSuccess extends AccountTxnsStates {
+class FetchAccountTxnsSuccess extends AccountTxnsStates {
   final dynamic data;
 
-  LoadDataSuccess(this.data) : super();
+  FetchAccountTxnsSuccess(this.data) : super();
 
   @override
   List<Object> get props => data;
 }
 
-class LoadDataFail extends AccountTxnsStates {
+class FetchAccountTxnsFail extends AccountTxnsStates {
   final dynamic error;
 
-  LoadDataFail(this.error) : super();
+  FetchAccountTxnsFail(this.error) : super();
 
   @override
   List<Object> get props => error;

@@ -1,9 +1,10 @@
+import 'package:coda_wallet/account_txns/blocs/account_txns_models.dart';
+import 'package:coda_wallet/account_txns/query/account_txns_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/account_txns_bloc.dart';
 import '../blocs/account_txns_states.dart';
 import '../blocs/account_txns_events.dart';
-import '../query/account_txns_query.dart';
 
 class AccountTxnsScreen extends StatefulWidget {
   String publicKey;
@@ -20,7 +21,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = widget.publicKey;
     final _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
-    _ownedAccountsBloc.add(FetchAccountTxnsData(ACCOUNT_TXNS_QUERY, variables: variables));
+    _ownedAccountsBloc.add(FetchAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
     super.initState();
   }
 
@@ -43,47 +44,45 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   }
 
   Widget _getStateWidget(BuildContext context, AccountTxnsStates state) {
-    if(state is Loading) {
+    if(state is FetchAccountTxnsLoading) {
       return Scaffold(appBar: _buildAppBar(), body: LinearProgressIndicator());
-    } else if(state is LoadDataFail) {
+    } else if(state is FetchAccountTxnsFail) {
       return Scaffold(appBar: _buildAppBar(), body: Center(child: Text(state.error)));
     } else {
-      dynamic data = (state as LoadDataSuccess).data['blocks'];
+      List<AccountTxn> data = (state as FetchAccountTxnsSuccess).data;
       return Scaffold(appBar: _buildAppBar(), body: _buildTxListWidget(data));
     }
   }
 
-  String getUserCommandsIdFromTX(List userCommands) {
-    if(null == userCommands) {
-      return '';
-    }
+  // String getUserCommandsIdFromTX(List userCommands) {
+  //   if(null == userCommands) {
+  //     return '';
+  //   }
+  //
+  //   if(userCommands.length == 0) {
+  //     return '';
+  //   }
+  //
+  //   return userCommands[0]['id'];
+  // }
 
-    if(userCommands.length == 0) {
-      return '';
-    }
+  // removeNullBlocks(List txns) {
+  //   txns.removeWhere((element) {
+  //     List userCmds = element['transactions']['userCommands'] as List;
+  //     if(userCmds.length == 0) {
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  // }
 
-    return userCommands[0]['id'];
-  }
-
-  removeNullBlocks(List txns) {
-    txns.removeWhere((element) {
-      List userCmds = element['transactions']['userCommands'] as List;
-      if(userCmds.length == 0) {
-        return true;
-      }
-      return false;
-    });
-  }
-
-  Widget _buildTxListWidget(dynamic data) {
-    List txns = data['nodes'] as List;
-
-    removeNullBlocks(txns);
+  Widget _buildTxListWidget(List<AccountTxn> accountTxns) {
+//    removeNullBlocks(txns);
     return ListView.separated(
-      itemCount: txns.length,
+      itemCount: accountTxns.length,
       itemBuilder: (context, index) {
         return ListTile(
-          title: Text(getUserCommandsIdFromTX(txns[index]['transactions']['userCommands'] as List)),
+          title: Text(accountTxns[index].userCommandHash),
           onTap: null
         );
       },

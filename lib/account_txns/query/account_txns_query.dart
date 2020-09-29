@@ -1,19 +1,26 @@
-const String ACCOUNT_TXNS_QUERY = r'''
+const ACCOUNT_TXNS_QUERY = r'''
   query TxQuery($publicKey: PublicKey!) {
     blocks(filter: {relatedTo: $publicKey}) {
-      pageInfo
       nodes {
         transactions {
           userCommands {
-            id
-            to
-            from
-            amount
+            hash
+            memo
             fee
-            isDelegation
+            to
+            amount
+            from
+            fromAccount {
+              nonce
+            }
+          }
+          coinbase
+          coinbaseReceiverAccount {
+            publicKey
           }
         }
       }
+      totalCount
     }
   }
 ''';
