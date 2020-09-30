@@ -169,7 +169,13 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
               ),
             ]
           ),
-          _getFormattedTxnAmount(accountTxn)
+          Row(
+            children: [
+              Text('fee: ${formatTokenNumber(accountTxn.fee)}', style: TextStyle(color: Colors.indigoAccent)),
+              Container(width: 40),
+              _getFormattedTxnAmount(accountTxn)
+            ],
+          )
         ],
       ),
     );
