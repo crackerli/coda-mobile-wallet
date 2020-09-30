@@ -44,7 +44,9 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          Container(height: 8, color: Colors.black12),
           _buildAccountBody(widget.account),
+          Container(height: 8, color: Colors.black12),
           Expanded(
             child:
               BlocBuilder<AccountTxnsBloc, AccountTxnsStates>(
@@ -81,7 +83,8 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("${formatAddress(account.publicKey)}"),
-                Image.asset('images/lock.png')
+                Container(width: 10),
+                Image.asset('images/lock.png', width: 20, height: 20)
               ],
             ),
             Text('${formatTokenNumber(account.balance)}')
