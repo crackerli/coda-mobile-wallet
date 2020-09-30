@@ -10,7 +10,7 @@ String formatTokenNumber(String src) {
   return formattedNumber.toString();
 }
 
-String formatAddress(String src) {
+String formatHashEllipsis(String src) {
   if(null == src) {
     return '';
   }

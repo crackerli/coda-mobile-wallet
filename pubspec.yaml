@@ -49,6 +49,8 @@ flutter:
     - images/lock.png
     - images/unlock.png
     - appbar_back.png
+    - txsend.png
+    - txreceive.png
 
   fonts:
    - family: Entypo

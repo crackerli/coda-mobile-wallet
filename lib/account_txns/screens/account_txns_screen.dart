@@ -1,6 +1,7 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_models.dart';
 import 'package:coda_wallet/account_txns/query/account_txns_query.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
+import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import '../blocs/account_txns_bloc.dart';
 import '../blocs/account_txns_states.dart';
 import '../blocs/account_txns_events.dart';
 
+// ignore: must_be_immutable
 class AccountTxnsScreen extends StatefulWidget {
   Account account;
   AccountTxnsScreen(this.account, {Key key}) : super(key: key);
@@ -82,7 +84,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("${formatAddress(account.publicKey)}"),
+                Text("${formatHashEllipsis(account.publicKey)}"),
                 Container(width: 10),
                 Image.asset('images/lock.png', width: 20, height: 20)
               ],
@@ -98,14 +100,78 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     return ListView.separated(
       itemCount: accountTxns.length,
       itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(accountTxns[index].userCommandHash),
-          onTap: null
-        );
+        return _buildTxnItem(accountTxns[index]);
       },
       separatorBuilder: (context, index) {
         return Divider();
       },
+    );
+  }
+
+  Widget _getTxnTypeIcon(AccountTxn accountTxn) {
+    if(_getTxnType(accountTxn) == TxnType.send) {
+      return Image.asset('images/txsend.png', width: 24, height: 24);
+    }
+
+    if(_getTxnType(accountTxn) == TxnType.receive) {
+      return Image.asset('images/txreceive.png', width: 24, height: 24);
+    }
+
+    return Container();
+  }
+
+  TxnType _getTxnType(AccountTxn accountTxn) {
+    if(accountTxn.fromAccount == widget.account.publicKey) {
+      return TxnType.send;
+    }
+
+    if(accountTxn.toAccount == widget.account.publicKey) {
+      return TxnType.receive;
+    }
+
+    return TxnType.none;
+  }
+
+  Widget _getFormattedTxnAmount(AccountTxn accountTxn) {
+    if(_getTxnType(accountTxn) == TxnType.receive) {
+      return Text('+${formatTokenNumber(accountTxn.amount)}', style: TextStyle(color: Colors.lightGreen));
+    }
+
+    if(_getTxnType(accountTxn) == TxnType.send) {
+      return Text('-${formatTokenNumber(accountTxn.amount)}', style: TextStyle(color: Colors.lightBlue));
+    }
+
+    return Text('${formatTokenNumber(accountTxn.amount)}', style: TextStyle(color: Colors.black54));
+  }
+
+  Widget _buildTxnItem(AccountTxn accountTxn) {
+    return Container(
+      padding: EdgeInsets.only(top: 10, bottom: 6, left: 10, right: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _getTxnTypeIcon(accountTxn),
+              Container(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${formatHashEllipsis(accountTxn.userCommandHash)}', style: TextStyle(color: Colors.black87)),
+                  Container(height: 8),
+                  Text('02/13/2020 16:21:46', style: TextStyle(color: Color(0xffdddddd))),
+                ],
+              ),
+            ]
+          ),
+          _getFormattedTxnAmount(accountTxn)
+        ],
+      ),
     );
   }
 }
