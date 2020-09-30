@@ -53,6 +53,7 @@ flutter:
     - images/coda_logo.png
     - images/lock.png
     - images/unlock.png
+    - appbar_back.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

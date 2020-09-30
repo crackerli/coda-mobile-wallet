@@ -29,7 +29,11 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('My Accounts')),
+      appBar: AppBar(
+        title: Text('My Accounts'),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: BlocBuilder<OwnedAccountsBloc, OwnedAccountsStates>(
         builder: (BuildContext context, OwnedAccountsStates state) {
           return _buildAccountsWidget(context, state);
@@ -68,8 +72,8 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     return Container();
   }
   
-  _accountsTapCallback(BuildContext context, String publicKey) {
-    toAccountTxnsScreen(context, publicKey);
+  _accountsTapCallback(BuildContext context, Account account) {
+    toAccountTxnsScreen(context, account);
   }
 
   _buildAccountContent(BuildContext context, Account account) {
@@ -100,10 +104,8 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
   Widget _buildAccountItem(
     BuildContext context, Account itemData) {
 
-    String publicKey = itemData.publicKey;
-
     return GestureDetector(
-      onTap: () { _accountsTapCallback(context, publicKey); },
+      onTap: () { _accountsTapCallback(context, itemData); },
       child: Container(
         padding: EdgeInsets.only(left: 14.0, right: 14.0, top: 6.0, bottom: 1.0),
         child: _buildAccountContent(context, itemData)
