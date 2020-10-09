@@ -45,7 +45,7 @@ class OwnedAccountsBloc extends
 
       if (result.hasException) {
         print('graphql errors: ${result.exception.graphqlErrors.toString()}');
-        print('client errors: ${result.exception.clientException.toString()}');
+ //       print('client errors: ${result.exception.clientException.toString()}');
         yield ToggleLockStatusFail(result.exception.graphqlErrors[0]);
         return;
       }
@@ -82,7 +82,7 @@ class OwnedAccountsBloc extends
 
       if(result.hasException) {
         print('graphql errors: ${result.exception.graphqlErrors.toString()}');
-        print('client errors: ${result.exception.clientException.toString()}');
+//        print('client errors: ${result.exception.clientException.toString()}');
         yield FetchOwnedAccountsFail(result.exception.graphqlErrors[0]);
         return;
       }

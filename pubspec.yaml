@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  graphql: ^3.0.0
+  graphql: ^4.0.0-beta.1
   bloc: ^6.0.0
   flutter_bloc: ^6.0.5
   equatable: ^1.1.1

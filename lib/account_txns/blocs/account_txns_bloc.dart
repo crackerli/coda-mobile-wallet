@@ -34,7 +34,7 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
 
       if (result.hasException) {
         print('account txns graphql errors: ${result.exception.graphqlErrors.toString()}');
-        print('account txns client errors: ${result.exception.clientException.toString()}');
+//        print('account txns client errors: ${result.exception.clientException.toString()}');
         yield FetchAccountTxnsFail(result.exception.graphqlErrors[0]);
         return;
       }

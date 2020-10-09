@@ -14,14 +14,14 @@ class CodaService {
 
     ioClient = IOClient(httpClient);
     final HttpLink httpLink = HttpLink(
-        uri: 'http://45.77.177.210:3085/graphql',
-        headers: <String, String> {
+        'http://161.97.83.110:3085/graphql',
+        defaultHeaders: <String, String> {
           'content-type': 'application/json',
         },
         httpClient: ioClient
     );
 
-    _client = GraphQLClient(link: httpLink, cache: InMemoryCache());
+    _client = GraphQLClient(link: httpLink, cache: GraphQLCache());
   }
 
   Future<QueryResult> performQuery(String query,
