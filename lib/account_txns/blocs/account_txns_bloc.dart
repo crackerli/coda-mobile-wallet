@@ -34,7 +34,6 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
 
       if (result.hasException) {
         print('account txns graphql errors: ${result.exception.graphqlErrors.toString()}');
-//        print('account txns client errors: ${result.exception.clientException.toString()}');
         yield FetchAccountTxnsFail(result.exception.graphqlErrors[0]);
         return;
       }
@@ -55,18 +54,35 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
 
   AccountTxn _createAccountTxn(dynamic element) {
     Map<String, dynamic> transaction = element['transactions'] as Map<String, dynamic>;
-    Map<String, dynamic> userCommand = transaction['userCommands'][0] as Map<String, dynamic>;
+    List<dynamic> userCommandList = transaction['userCommands'] as List<dynamic>;
 
-    return AccountTxn(
-      userCommandHash: userCommand['hash'] as String,
-      userCommandMemo: userCommand['memo'] as String,
-      fee: userCommand['fee'] as String,
-      toAccount: userCommand['to'] as String,
-      amount: userCommand['amount'] as String,
-      fromAccount: userCommand['from'] as String,
-      nonce: userCommand['fromAccount']['nonce'] as String,
-      coinbaseAccount: transaction['coinbaseReceiverAccount']['publicKey'] as String,
-      coinbase: transaction['coinbase'] as String
-    );
+    if(userCommandList.length == 0) {
+      return AccountTxn(
+        userCommands: [],
+        coinbaseAccount: transaction['coinbaseReceiverAccount']['publicKey'] as String,
+        coinbase: transaction['coinbase'] as String
+      );
+    } else {
+      List<UserCommand> userCommands = List<UserCommand>();
+      userCommands = userCommandList
+        .map((dynamic element)  {
+          return UserCommand(
+            userCommandHash: element['hash'] as String,
+            userCommandMemo: element['memo'] as String,
+            fee: element['fee'] as String,
+            toAccount: element['to'] as String,
+            amount: element['amount'] as String,
+            fromAccount: element['from'] as String,
+            nonce: element['fromAccount']['nonce'] as String
+          );
+        })
+        .toList();
+
+      return AccountTxn(
+        userCommands: userCommands,
+        coinbaseAccount: transaction['coinbaseReceiverAccount']['publicKey'] as String,
+        coinbase: transaction['coinbase'] as String
+      );
+    }
   }
 }

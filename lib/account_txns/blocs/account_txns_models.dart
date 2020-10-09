@@ -15,7 +15,7 @@
 // "coinbase": "200000000000",
 // "coinbaseReceiverAccount": {
 
-class AccountTxn {
+class UserCommand {
   final String userCommandHash;
   final String userCommandMemo;
   final String fee;
@@ -23,18 +23,26 @@ class AccountTxn {
   final String amount;
   final String fromAccount;
   final String nonce;
+
+  const UserCommand({
+    this.fee,
+    this.amount,
+    this.userCommandHash,
+    this.toAccount,
+    this.fromAccount,
+    this.userCommandMemo,
+    this.nonce
+  });
+}
+
+class AccountTxn {
+  final List<UserCommand> userCommands;
   final String coinbaseAccount;
   final String coinbase;
 
   const AccountTxn({
-    this.amount,
+    this.userCommands,
     this.coinbaseAccount,
-    this.fee,
-    this.fromAccount,
-    this.nonce,
-    this.toAccount,
-    this.userCommandHash,
-    this.userCommandMemo,
     this.coinbase,
   });
 }

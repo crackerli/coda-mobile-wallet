@@ -113,7 +113,8 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
       return Image.asset('images/txsend.png', width: 24, height: 24);
     }
 
-    if(_getTxnType(accountTxn) == TxnType.receive) {
+    if(_getTxnType(accountTxn) == TxnType.receive ||
+        _getTxnType(accountTxn) == TxnType.minted) {
       return Image.asset('images/txreceive.png', width: 24, height: 24);
     }
 
@@ -121,11 +122,15 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   }
 
   TxnType _getTxnType(AccountTxn accountTxn) {
-    if(accountTxn.fromAccount == widget.account.publicKey) {
+    if(accountTxn.userCommands.length == 0) {
+      return TxnType.minted;
+    }
+
+    if(accountTxn.userCommands[0].fromAccount == widget.account.publicKey) {
       return TxnType.send;
     }
 
-    if(accountTxn.toAccount == widget.account.publicKey) {
+    if(accountTxn.userCommands[0].toAccount == widget.account.publicKey) {
       return TxnType.receive;
     }
 
@@ -133,15 +138,39 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   }
 
   Widget _getFormattedTxnAmount(AccountTxn accountTxn) {
+    if(_getTxnType(accountTxn) == TxnType.minted) {
+      return Text('+${formatTokenNumber(accountTxn.coinbase)}',
+        style: TextStyle(color: Colors.lightGreen));
+    }
+
     if(_getTxnType(accountTxn) == TxnType.receive) {
-      return Text('+${formatTokenNumber(accountTxn.amount)}', style: TextStyle(color: Colors.lightGreen));
+      return Text('+${formatTokenNumber(accountTxn.userCommands[0].amount)}',
+        style: TextStyle(color: Colors.lightGreen));
     }
 
     if(_getTxnType(accountTxn) == TxnType.send) {
-      return Text('-${formatTokenNumber(accountTxn.amount)}', style: TextStyle(color: Colors.lightBlue));
+      return Text('-${formatTokenNumber(accountTxn.userCommands[0].amount)}',
+        style: TextStyle(color: Colors.lightBlue));
     }
 
-    return Text('${formatTokenNumber(accountTxn.amount)}', style: TextStyle(color: Colors.black54));
+    return Text('${formatTokenNumber(accountTxn.userCommands[0].amount)}',
+      style: TextStyle(color: Colors.black54));
+  }
+  
+  Widget _getCommandHashText(AccountTxn accountTxn) {
+    if(_getTxnType(accountTxn) == TxnType.minted) {
+      return Text('Minted', style: TextStyle(color: Colors.black87));
+    }
+    return Text('${formatHashEllipsis(accountTxn.userCommands[0].userCommandHash)}',
+      style: TextStyle(color: Colors.black87));
+  }
+  
+  Widget _getTxnFeeText(AccountTxn accountTxn) {
+    if(_getTxnType(accountTxn) == TxnType.minted) {
+      return Container();
+    }
+    return Text('fee: ${formatTokenNumber(accountTxn.userCommands[0].fee)}',
+      style: TextStyle(color: Colors.indigoAccent));
   }
 
   Widget _buildTxnItem(AccountTxn accountTxn) {
@@ -162,7 +191,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${formatHashEllipsis(accountTxn.userCommandHash)}', style: TextStyle(color: Colors.black87)),
+                  _getCommandHashText(accountTxn),
                   Container(height: 8),
                   Text('02/13/2020 16:21:46', style: TextStyle(color: Color(0xffdddddd))),
                 ],
@@ -171,7 +200,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
           ),
           Row(
             children: [
-              Text('fee: ${formatTokenNumber(accountTxn.fee)}', style: TextStyle(color: Colors.indigoAccent)),
+              _getTxnFeeText(accountTxn),
               Container(width: 40),
               _getFormattedTxnAmount(accountTxn)
             ],
