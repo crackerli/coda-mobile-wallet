@@ -7,13 +7,22 @@ import '../../service/coda_service.dart';
 class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
   CodaService _service;
   List<AccountTxn> _accountTxns;
+  String _lastCursor;
+  bool _hasNextPage;
+  bool _isTxnsLoading = false;
 
   AccountTxnsBloc(AccountTxnsStates state) : super(state) {
     _service = CodaService();
     _accountTxns = List<AccountTxn>();
+    _lastCursor = null;
+    _hasNextPage = false;
+    _isTxnsLoading = false;
   }
 
   AccountTxnsStates get initState => FetchAccountTxnsLoading();
+  String get lastCursor => _lastCursor;
+  bool get hasNextPage => _hasNextPage;
+  bool get isTxnsLoading => _isTxnsLoading;
 
   @override
   Stream<AccountTxnsStates> mapEventToState(AccountTxnsEvents event) async* {
@@ -29,6 +38,7 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
     final variables = event.variables ?? null;
 
     try {
+      _isTxnsLoading = true;
       yield FetchAccountTxnsLoading();
       final result = await _service.performQuery(query, variables: variables);
 
@@ -40,12 +50,17 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
 
       final List<dynamic> transactions =
         result.data['blocks']['nodes'] as List<dynamic>;
-
-      _accountTxns = transactions
+      List<AccountTxn> tmpTxns = List<AccountTxn>();
+      tmpTxns = transactions
         .map((dynamic element) => _createAccountTxn(element))
         .toList();
 
+      _accountTxns.addAll(tmpTxns);
+      _hasNextPage = result.data['blocks']['pageInfo']['hasNextPage'];
+      _lastCursor = result.data['blocks']['pageInfo']['lastCursor'];
+
       yield FetchAccountTxnsSuccess(_accountTxns);
+      _isTxnsLoading = false;
     } catch (e) {
       print(e);
       yield FetchAccountTxnsFail(e.toString());

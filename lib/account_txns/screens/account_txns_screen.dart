@@ -19,18 +19,35 @@ class AccountTxnsScreen extends StatefulWidget {
 }
 
 class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
+  ScrollController _scrollController = ScrollController();
+  AccountTxnsBloc _ownedAccountsBloc;
 
-  @override
-  void initState() {
-    super.initState();
+  _requestTxns(String before) {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = widget.account.publicKey;
-    final _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
+    variables['before'] = before;
+    _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
     _ownedAccountsBloc.add(FetchAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
   }
 
   @override
+  void initState() {
+    super.initState();
+    _requestTxns(null);
+    _scrollController.addListener(() {
+      if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+        if(_ownedAccountsBloc.hasNextPage && !_ownedAccountsBloc.isTxnsLoading) {
+          _requestTxns(_ownedAccountsBloc.lastCursor);
+        }
+      } else {
+
+      }
+    });
+  }
+
+  @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -105,6 +122,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
       separatorBuilder: (context, index) {
         return Divider();
       },
+      controller: _scrollController
     );
   }
 

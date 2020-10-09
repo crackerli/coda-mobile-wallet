@@ -24,5 +24,4 @@ String formatDateTime(String dateTime) {
   int timeInMillis = int.parse(dateTime);
   var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
   return date.toLocal().toString();
-//  var formattedDate = DateFormat.yMMMd().format(date);
 }

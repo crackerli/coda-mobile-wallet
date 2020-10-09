@@ -1,7 +1,12 @@
 const ACCOUNT_TXNS_QUERY = r'''
-  query TxQuery($publicKey: PublicKey!) {
-    blocks(filter: {relatedTo: $publicKey}) {
+  query TxQuery($before: String, $publicKey: PublicKey!) {
+    blocks(last: 10, before: $before, filter: {relatedTo: $publicKey}) {
       nodes {
+        protocolState {
+          blockchainState {
+            date
+          }
+        }
         transactions {
           userCommands {
             hash
@@ -13,19 +18,32 @@ const ACCOUNT_TXNS_QUERY = r'''
             fromAccount {
               nonce
             }
+            isDelegation
           }
           coinbase
           coinbaseReceiverAccount {
             publicKey
           }
-        }
-        protocolState {
-          blockchainState {
-            date
+          feeTransfer {
+            recipient
+            fee
           }
         }
       }
+      pageInfo {
+        hasNextPage
+        lastCursor
+      }
       totalCount
+    }
+
+    pooledUserCommands(publicKey: $publicKey) {
+      to
+      from
+      amount
+      fee
+      memo
+      isDelegation
     }
   }
 ''';
