@@ -55,17 +55,15 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
   AccountTxn _createAccountTxn(dynamic element) {
     Map<String, dynamic> transaction = element['transactions'] as Map<String, dynamic>;
     List<dynamic> userCommandList = transaction['userCommands'] as List<dynamic>;
+    String dateTime = element['protocolState']['blockchainState']['date'] as String;
+
+    List<UserCommand> userCommands = List<UserCommand>();
 
     if(userCommandList.length == 0) {
-      return AccountTxn(
-        userCommands: [],
-        coinbaseAccount: transaction['coinbaseReceiverAccount']['publicKey'] as String,
-        coinbase: transaction['coinbase'] as String
-      );
+      userCommands = [];
     } else {
-      List<UserCommand> userCommands = List<UserCommand>();
       userCommands = userCommandList
-        .map((dynamic element)  {
+        .map((dynamic element) {
           return UserCommand(
             userCommandHash: element['hash'] as String,
             userCommandMemo: element['memo'] as String,
@@ -75,14 +73,15 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
             fromAccount: element['from'] as String,
             nonce: element['fromAccount']['nonce'] as String
           );
-        })
-        .toList();
+      })
+      .toList();
+    }
 
-      return AccountTxn(
+    return AccountTxn(
         userCommands: userCommands,
         coinbaseAccount: transaction['coinbaseReceiverAccount']['publicKey'] as String,
-        coinbase: transaction['coinbase'] as String
-      );
-    }
+        coinbase: transaction['coinbase'] as String,
+        dateTime: dateTime
+    );
   }
 }

@@ -19,6 +19,11 @@ const ACCOUNT_TXNS_QUERY = r'''
             publicKey
           }
         }
+        protocolState {
+          blockchainState {
+            date
+          }
+        }
       }
       totalCount
     }

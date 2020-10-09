@@ -1,4 +1,4 @@
-
+//import 'package:intl/intl.dart';
 //
 String formatTokenNumber(String src) {
   if(null == src) {
@@ -18,4 +18,11 @@ String formatHashEllipsis(String src) {
   String prefix = src.substring(0, 5);
   String postfix = src.substring(src.length - 5, src.length);
   return '$prefix...$postfix';
+}
+
+String formatDateTime(String dateTime) {
+  int timeInMillis = int.parse(dateTime);
+  var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+  return date.toLocal().toString();
+//  var formattedDate = DateFormat.yMMMd().format(date);
 }

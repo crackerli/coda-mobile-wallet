@@ -193,7 +193,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
                 children: [
                   _getCommandHashText(accountTxn),
                   Container(height: 8),
-                  Text('02/13/2020 16:21:46', style: TextStyle(color: Color(0xffdddddd))),
+                  Text('${formatDateTime(accountTxn.dateTime)}', style: TextStyle(color: Color(0xffdddddd))),
                 ],
               ),
             ]

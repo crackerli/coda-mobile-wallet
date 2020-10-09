@@ -39,10 +39,12 @@ class AccountTxn {
   final List<UserCommand> userCommands;
   final String coinbaseAccount;
   final String coinbase;
+  final String dateTime;
 
   const AccountTxn({
     this.userCommands,
     this.coinbaseAccount,
     this.coinbase,
+    this.dateTime
   });
 }
