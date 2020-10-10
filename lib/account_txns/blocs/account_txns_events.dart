@@ -7,11 +7,21 @@ abstract class AccountTxnsEvents extends Equatable {
   List<Object> get props => null;
 }
 
-class FetchAccountTxns extends AccountTxnsEvents {
+class RefreshAccountTxns extends AccountTxnsEvents {
   final String query;
   final Map<String, dynamic> variables;
 
-  FetchAccountTxns(this.query, {this.variables}) : super();
+  RefreshAccountTxns(this.query, {this.variables}) : super();
+
+  @override
+  List<Object> get props => [query, variables];
+}
+
+class MoreAccountTxns extends AccountTxnsEvents {
+  final String query;
+  final Map<String, dynamic> variables;
+
+  MoreAccountTxns(this.query, {this.variables}) : super();
 
   @override
   List<Object> get props => [query, variables];

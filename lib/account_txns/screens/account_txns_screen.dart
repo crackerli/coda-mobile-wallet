@@ -1,6 +1,7 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_models.dart';
 import 'package:coda_wallet/account_txns/query/account_txns_query.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
+import 'package:coda_wallet/types/list_operation_type.dart';
 import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter/material.dart';
@@ -22,22 +23,41 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   ScrollController _scrollController = ScrollController();
   AccountTxnsBloc _ownedAccountsBloc;
 
-  _requestTxns(String before) {
+  _refreshTxns() {
+    Map<String, dynamic> variables = Map<String, dynamic>();
+    variables['publicKey'] = widget.account.publicKey;
+    variables['before'] = null;
+    _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
+    _ownedAccountsBloc.add(RefreshAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
+  }
+
+  _loadMoreTxns(String before) {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = widget.account.publicKey;
     variables['before'] = before;
     _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
-    _ownedAccountsBloc.add(FetchAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
+    _ownedAccountsBloc.add(MoreAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
+  }
+
+  Future<Null> _onRefresh() async {
+    if(!_ownedAccountsBloc.isTxnsLoading) {
+      _refreshTxns();
+      _ownedAccountsBloc.listOperation = ListOperationType.PULL_DOWN;
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    _requestTxns(null);
+    _refreshTxns();
+
     _scrollController.addListener(() {
-      if(_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      if(_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
         if(_ownedAccountsBloc.hasNextPage && !_ownedAccountsBloc.isTxnsLoading) {
-          _requestTxns(_ownedAccountsBloc.lastCursor);
+          _loadMoreTxns(_ownedAccountsBloc.lastCursor);
+          _ownedAccountsBloc.listOperation = ListOperationType.PULL_UP;
+//          _ownedAccountsBloc.appendLoadMore();
         }
       } else {
 
@@ -59,37 +79,71 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(height: 8, color: Colors.black12),
-          _buildAccountBody(widget.account),
-          Container(height: 8, color: Colors.black12),
-          Expanded(
-            child:
-              BlocBuilder<AccountTxnsBloc, AccountTxnsStates>(
-                builder: (BuildContext context, AccountTxnsStates state) {
-                  return _buildTxnsWidget(context, state);
-                }
-              )
-          )
-        ]
+      floatingActionButton: Container(
+        width: 48,
+        height: 48,
+        child: FloatingActionButton(
+          child: Icon(Icons.send),
+          onPressed: () {
+            print('FloatingActionButton');
+          },
+        )
+      ),
+      body: RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(height: 8, color: Colors.black12),
+            Expanded(
+              flex: 1,
+              child: _buildAccountBody(widget.account),
+            ),
+            Container(height: 8, color: Colors.black12),
+            Expanded(
+              flex: 5,
+              child:
+                BlocBuilder<AccountTxnsBloc, AccountTxnsStates>(
+                  builder: (BuildContext context, AccountTxnsStates state) {
+                    return _buildTxnsWidget(context, state);
+                  }
+                )
+            )
+          ]
+        )
       )
     );
   }
 
   Widget _buildTxnsWidget(BuildContext context, AccountTxnsStates state) {
-    if(state is FetchAccountTxnsLoading) {
-      return LinearProgressIndicator();
+    if(state is RefreshAccountTxnsLoading) {
+      return Container(
+        child: Center(
+          child: CircularProgressIndicator()
+        )
+      );
     }
-    
-    if(state is FetchAccountTxnsFail) {
+
+    if(state is RefreshAccountTxnsFail) {
       return Center(child: Text(state.error));
     }
 
-    List<AccountTxn> data = (state as FetchAccountTxnsSuccess).data;
-    return _buildTxnsListWidget(data);
+    if(state is MoreAccountTxnsLoading) {
+      List<AccountTxn> data = state.data;
+      return _buildTxnsListWidget(data);
+    }
+
+    if(state is RefreshAccountTxnsSuccess) {
+      List<AccountTxn> data = state.data;
+      return _buildTxnsListWidget(data);
+    }
+
+    if(state is MoreAccountTxnsSuccess) {
+      List<AccountTxn> data = state.data;
+      return _buildTxnsListWidget(data);
+    }
   }
 
   Widget _buildAccountBody(Account account) {
@@ -115,6 +169,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
 
   Widget _buildTxnsListWidget(List<AccountTxn> accountTxns) {
     return ListView.separated(
+      shrinkWrap: true,
       itemCount: accountTxns.length,
       itemBuilder: (context, index) {
         return _buildTxnItem(accountTxns[index]);
@@ -127,12 +182,12 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   }
 
   Widget _getTxnTypeIcon(AccountTxn accountTxn) {
-    if(_getTxnType(accountTxn) == TxnType.send) {
+    if(_getTxnType(accountTxn) == TxnType.SEND) {
       return Image.asset('images/txsend.png', width: 24, height: 24);
     }
 
-    if(_getTxnType(accountTxn) == TxnType.receive ||
-        _getTxnType(accountTxn) == TxnType.minted) {
+    if(_getTxnType(accountTxn) == TxnType.RECEIVE ||
+        _getTxnType(accountTxn) == TxnType.MINTED) {
       return Image.asset('images/txreceive.png', width: 24, height: 24);
     }
 
@@ -141,32 +196,32 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
 
   TxnType _getTxnType(AccountTxn accountTxn) {
     if(accountTxn.userCommands.length == 0) {
-      return TxnType.minted;
+      return TxnType.MINTED;
     }
 
     if(accountTxn.userCommands[0].fromAccount == widget.account.publicKey) {
-      return TxnType.send;
+      return TxnType.SEND;
     }
 
     if(accountTxn.userCommands[0].toAccount == widget.account.publicKey) {
-      return TxnType.receive;
+      return TxnType.RECEIVE;
     }
 
-    return TxnType.none;
+    return TxnType.NONE;
   }
 
   Widget _getFormattedTxnAmount(AccountTxn accountTxn) {
-    if(_getTxnType(accountTxn) == TxnType.minted) {
+    if(_getTxnType(accountTxn) == TxnType.MINTED) {
       return Text('+${formatTokenNumber(accountTxn.coinbase)}',
         style: TextStyle(color: Colors.lightGreen));
     }
 
-    if(_getTxnType(accountTxn) == TxnType.receive) {
+    if(_getTxnType(accountTxn) == TxnType.RECEIVE) {
       return Text('+${formatTokenNumber(accountTxn.userCommands[0].amount)}',
         style: TextStyle(color: Colors.lightGreen));
     }
 
-    if(_getTxnType(accountTxn) == TxnType.send) {
+    if(_getTxnType(accountTxn) == TxnType.SEND) {
       return Text('-${formatTokenNumber(accountTxn.userCommands[0].amount)}',
         style: TextStyle(color: Colors.lightBlue));
     }
@@ -176,7 +231,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   }
   
   Widget _getCommandHashText(AccountTxn accountTxn) {
-    if(_getTxnType(accountTxn) == TxnType.minted) {
+    if(_getTxnType(accountTxn) == TxnType.MINTED) {
       return Text('Minted', style: TextStyle(color: Colors.black87));
     }
     return Text('${formatHashEllipsis(accountTxn.userCommands[0].userCommandHash)}',
@@ -184,7 +239,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   }
   
   Widget _getTxnFeeText(AccountTxn accountTxn) {
-    if(_getTxnType(accountTxn) == TxnType.minted) {
+    if(_getTxnType(accountTxn) == TxnType.MINTED) {
       return Container();
     }
     return Text('fee: ${formatTokenNumber(accountTxn.userCommands[0].fee)}',
@@ -192,6 +247,21 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   }
 
   Widget _buildTxnItem(AccountTxn accountTxn) {
+    if(accountTxn.coinbase == 'load_more') {
+      return Container(
+        child: Center(
+          child: SizedBox(
+            height: 30,
+            width: 30,
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.grey[200],
+              valueColor: AlwaysStoppedAnimation(Colors.blue),
+              value: .7,
+            )
+          )
+        )
+      );
+    }
     return Container(
       padding: EdgeInsets.only(top: 10, bottom: 6, left: 10, right: 10),
       child: Row(

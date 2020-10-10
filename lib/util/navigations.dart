@@ -11,7 +11,7 @@ toAccountTxnsScreen(BuildContext context, Account account) {
       MaterialPageRoute(builder: (context) {
         return BlocProvider<AccountTxnsBloc>(
             create: (BuildContext context) {
-              return AccountTxnsBloc(FetchAccountTxnsLoading());
+              return AccountTxnsBloc(RefreshAccountTxnsLoading());
             },
             child: AccountTxnsScreen(account)
         );

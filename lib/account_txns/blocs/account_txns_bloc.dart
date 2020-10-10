@@ -1,4 +1,5 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_models.dart';
+import 'package:coda_wallet/types/list_operation_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'account_txns_events.dart';
 import 'account_txns_states.dart';
@@ -10,6 +11,7 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
   String _lastCursor;
   bool _hasNextPage;
   bool _isTxnsLoading = false;
+  ListOperationType _listOperation;
 
   AccountTxnsBloc(AccountTxnsStates state) : super(state) {
     _service = CodaService();
@@ -17,53 +19,128 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
     _lastCursor = null;
     _hasNextPage = false;
     _isTxnsLoading = false;
+    _listOperation = ListOperationType.NONE;
   }
 
-  AccountTxnsStates get initState => FetchAccountTxnsLoading();
-  String get lastCursor => _lastCursor;
-  bool get hasNextPage => _hasNextPage;
-  bool get isTxnsLoading => _isTxnsLoading;
+  AccountTxnsStates get initState => RefreshAccountTxnsLoading();
+
+  get lastCursor => _lastCursor;
+  get hasNextPage => _hasNextPage;
+  get isTxnsLoading => _isTxnsLoading;
+  get listOperation => _listOperation;
+
+  set isTxnsLoading(bool txnsLoading) {
+    _isTxnsLoading = txnsLoading;
+  }
+
+  set listOperation(ListOperationType type) {
+    _listOperation = type;
+  }
+
+  appendLoadMore() {
+    // Construct a fake item to delegate load more item
+    AccountTxn loadMore = AccountTxn(coinbase: 'load_more');
+    _accountTxns.add(loadMore);
+  }
+
+  removeLoadMore() {
+    if(null == _accountTxns || _accountTxns.length == 0) {
+      return;
+    }
+
+    AccountTxn accountTxn = _accountTxns.elementAt(_accountTxns.length - 1);
+    if(accountTxn.coinbase == 'load_more') {
+      _accountTxns.removeLast();
+    }
+  }
 
   @override
   Stream<AccountTxnsStates> mapEventToState(AccountTxnsEvents event) async* {
-    if (event is FetchAccountTxns) {
-      yield* _mapFetchAccountTxnsToStates(event);
+    if(event is RefreshAccountTxns) {
+      yield* _mapRefreshAccountTxnsToStates(event);
+    }
+
+    if(event is MoreAccountTxns) {
+      yield* _mapMoreAccountTxnsToStates(event);
     }
   }
 
   Stream<AccountTxnsStates>
-    _mapFetchAccountTxnsToStates(FetchAccountTxns event) async* {
+    _mapMoreAccountTxnsToStates(MoreAccountTxns event) async* {
 
     final query = event.query;
     final variables = event.variables ?? null;
 
     try {
       _isTxnsLoading = true;
-      yield FetchAccountTxnsLoading();
+      appendLoadMore();
+      yield MoreAccountTxnsLoading(_accountTxns);
       final result = await _service.performQuery(query, variables: variables);
 
       if (result.hasException) {
         print('account txns graphql errors: ${result.exception.graphqlErrors.toString()}');
-        yield FetchAccountTxnsFail(result.exception.graphqlErrors[0]);
+        yield MoreAccountTxnsFail(result.exception.graphqlErrors[0]);
+        return;
+      }
+
+      final List<dynamic> transactions =
+      result.data['blocks']['nodes'] as List<dynamic>;
+      List<AccountTxn> tmpTxns = List<AccountTxn>();
+      tmpTxns = transactions
+          .map((dynamic element) => _createAccountTxn(element))
+          .toList();
+
+      removeLoadMore();
+      _accountTxns.addAll(tmpTxns);
+      _hasNextPage = result.data['blocks']['pageInfo']['hasNextPage'];
+      _lastCursor = result.data['blocks']['pageInfo']['lastCursor'];
+
+      yield MoreAccountTxnsSuccess(_accountTxns);
+      _isTxnsLoading = false;
+      _listOperation = ListOperationType.NONE;
+    } catch (e) {
+      print(e);
+      yield MoreAccountTxnsFail(e.toString());
+      _isTxnsLoading = false;
+      _listOperation = ListOperationType.NONE;
+    }
+  }
+
+  Stream<AccountTxnsStates>
+    _mapRefreshAccountTxnsToStates(RefreshAccountTxns event) async* {
+
+    final query = event.query;
+    final variables = event.variables ?? null;
+
+    try {
+      _isTxnsLoading = true;
+      yield RefreshAccountTxnsLoading();
+      final result = await _service.performQuery(query, variables: variables);
+
+      if (result.hasException) {
+        print('account txns graphql errors: ${result.exception.graphqlErrors.toString()}');
+        yield RefreshAccountTxnsFail(result.exception.graphqlErrors[0]);
         return;
       }
 
       final List<dynamic> transactions =
         result.data['blocks']['nodes'] as List<dynamic>;
-      List<AccountTxn> tmpTxns = List<AccountTxn>();
-      tmpTxns = transactions
+      _accountTxns.clear();
+      _accountTxns = transactions
         .map((dynamic element) => _createAccountTxn(element))
         .toList();
 
-      _accountTxns.addAll(tmpTxns);
       _hasNextPage = result.data['blocks']['pageInfo']['hasNextPage'];
       _lastCursor = result.data['blocks']['pageInfo']['lastCursor'];
 
-      yield FetchAccountTxnsSuccess(_accountTxns);
+      yield RefreshAccountTxnsSuccess(_accountTxns);
       _isTxnsLoading = false;
+      _listOperation = ListOperationType.NONE;
     } catch (e) {
       print(e);
-      yield FetchAccountTxnsFail(e.toString());
+      yield RefreshAccountTxnsFail(e.toString());
+      _isTxnsLoading = false;
+      _listOperation = ListOperationType.NONE;
     }
   }
 
