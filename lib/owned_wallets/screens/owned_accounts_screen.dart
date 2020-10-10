@@ -85,8 +85,10 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
         _publicKeyText(publicKey),
         Container(height: 10),
         Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Token: $formattedTokenNumber"),
+            Text("Amount: $formattedTokenNumber"),
             Container(width: 10, height: 1),
             GestureDetector(
               child: _lockStatusImage(account.locked),
@@ -106,9 +108,13 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
 
     return GestureDetector(
       onTap: () { _accountsTapCallback(context, itemData); },
-      child: Container(
-        padding: EdgeInsets.only(left: 14.0, right: 14.0, top: 6.0, bottom: 1.0),
-        child: _buildAccountContent(context, itemData)
+      child: Card(
+        elevation: 2.0,
+        color: Colors.lightBlue,
+        child: Container(
+          padding: EdgeInsets.only(left: 14.0, right: 14.0, top: 12, bottom: 8),
+          child: _buildAccountContent(context, itemData)
+        )
       )
     );
   }
@@ -144,7 +150,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
       itemBuilder: (context, index) {
         return _buildAccountItem(context, accountList[index]);
       },
-      separatorBuilder: (context, index) { return Divider(); }
+      separatorBuilder: (context, index) { return Container(); }
     );
   }
 
