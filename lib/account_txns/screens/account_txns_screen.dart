@@ -4,11 +4,13 @@ import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
 import 'package:coda_wallet/types/list_operation_type.dart';
 import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
+import 'package:coda_wallet/util/navigations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/account_txns_bloc.dart';
 import '../blocs/account_txns_states.dart';
 import '../blocs/account_txns_events.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 // ignore: must_be_immutable
 class AccountTxnsScreen extends StatefulWidget {
@@ -57,10 +59,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
         if(_ownedAccountsBloc.hasNextPage && !_ownedAccountsBloc.isTxnsLoading) {
           _loadMoreTxns(_ownedAccountsBloc.lastCursor);
           _ownedAccountsBloc.listOperation = ListOperationType.PULL_UP;
-//          _ownedAccountsBloc.appendLoadMore();
         }
-      } else {
-
       }
     });
   }
@@ -79,16 +78,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
         centerTitle: true,
         elevation: 0,
       ),
-      floatingActionButton: Container(
-        width: 48,
-        height: 48,
-        child: FloatingActionButton(
-          child: Icon(Icons.send),
-          onPressed: () {
-            print('FloatingActionButton');
-          },
-        )
-      ),
+      floatingActionButton: _buildActionButton(),
       body: RefreshIndicator(
         onRefresh: _onRefresh,
         child: Column(
@@ -114,6 +104,26 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
           ]
         )
       )
+    );
+  }
+
+  Widget _buildActionButton() {
+    return SpeedDial(
+      child: Icon(Icons.add),
+      children:[
+        SpeedDialChild(
+          child: Icon(Icons.send),
+          backgroundColor: Colors.red,
+          labelStyle: TextStyle(fontSize: 18.0),
+          onTap: () => print('FIRST CHILD')
+        ),
+        SpeedDialChild(
+          child: Icon(Icons.receipt),
+          backgroundColor: Colors.orange,
+          labelStyle: TextStyle(fontSize: 18.0),
+          onTap: () => toQrAddressScreen(context, widget.account.publicKey),
+        ),
+      ]
     );
   }
 
@@ -287,9 +297,10 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
             ]
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               _getTxnFeeText(accountTxn),
-              Container(width: 40),
+              Container(width: 20),
               _getFormattedTxnAmount(accountTxn)
             ],
           )
