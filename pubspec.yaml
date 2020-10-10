@@ -50,11 +50,13 @@ flutter:
 
   assets:
     - images/coda_logo.png
-    - images/lock.png
-    - images/unlock.png
+    - images/lock-normal.png
+    - images/unlock-normal.png
     - appbar_back.png
     - txsend.png
     - txreceive.png
+    - locked.png
+    - unlocked.png
 
   fonts:
    - family: Entypo
