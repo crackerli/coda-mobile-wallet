@@ -1,6 +1,6 @@
 enum TxnType {
-  none,
-  minted,
-  send,
-  receive
+  NONE,
+  MINTED,
+  SEND,
+  RECEIVE
 }
