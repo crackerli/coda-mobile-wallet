@@ -15,9 +15,7 @@ const ACCOUNT_TXNS_QUERY = r'''
             to
             amount
             from
-            fromAccount {
-              nonce
-            }
+            nonce
             isDelegation
           }
           coinbase
@@ -44,6 +42,8 @@ const ACCOUNT_TXNS_QUERY = r'''
       fee
       memo
       isDelegation
+      hash
+      nonce
     }
   }
 ''';

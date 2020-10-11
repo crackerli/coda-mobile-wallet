@@ -1,4 +1,4 @@
-import 'package:coda_wallet/account_txns/blocs/account_txns_models.dart';
+import 'package:coda_wallet/account_txns/blocs/account_txns_entity.dart';
 import 'package:coda_wallet/account_txns/query/account_txns_query.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
 import 'package:coda_wallet/types/list_operation_type.dart';
@@ -29,7 +29,6 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = widget.account.publicKey;
     variables['before'] = null;
-    _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
     _ownedAccountsBloc.add(RefreshAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
   }
 
@@ -37,7 +36,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = widget.account.publicKey;
     variables['before'] = before;
-    _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
+//    _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
     _ownedAccountsBloc.add(MoreAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
   }
 
@@ -51,6 +50,8 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   @override
   void initState() {
     super.initState();
+
+    _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
     _refreshTxns();
 
     _scrollController.addListener(() {
@@ -141,17 +142,17 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     }
 
     if(state is MoreAccountTxnsLoading) {
-      List<AccountTxn> data = state.data;
+      List<MergedUserCommand> data = state.data;
       return _buildTxnsListWidget(data);
     }
 
     if(state is RefreshAccountTxnsSuccess) {
-      List<AccountTxn> data = state.data;
+      List<MergedUserCommand> data = state.data;
       return _buildTxnsListWidget(data);
     }
 
     if(state is MoreAccountTxnsSuccess) {
-      List<AccountTxn> data = state.data;
+      List<MergedUserCommand> data = state.data;
       return _buildTxnsListWidget(data);
     }
   }
@@ -167,7 +168,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
               children: [
                 Text("${formatHashEllipsis(account.publicKey)}"),
                 Container(width: 10),
-                Image.asset('images/lock.png', width: 20, height: 20)
+                Image.asset('images/locked.png', width: 20, height: 20)
               ],
             ),
             Text('${formatTokenNumber(account.balance)}')
@@ -177,7 +178,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     );
   }
 
-  Widget _buildTxnsListWidget(List<AccountTxn> accountTxns) {
+  Widget _buildTxnsListWidget(List<MergedUserCommand> accountTxns) {
     return ListView.separated(
       shrinkWrap: true,
       itemCount: accountTxns.length,
@@ -191,73 +192,84 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     );
   }
 
-  Widget _getTxnTypeIcon(AccountTxn accountTxn) {
-    if(_getTxnType(accountTxn) == TxnType.SEND) {
+  Widget _getTxnTypeIcon(MergedUserCommand userCommand) {
+    if(_getTxnType(userCommand) == TxnType.SEND) {
       return Image.asset('images/txsend.png', width: 24, height: 24);
     }
 
-    if(_getTxnType(accountTxn) == TxnType.RECEIVE ||
-        _getTxnType(accountTxn) == TxnType.MINTED) {
+    if(_getTxnType(userCommand) == TxnType.RECEIVE ||
+        _getTxnType(userCommand) == TxnType.MINTED) {
       return Image.asset('images/txreceive.png', width: 24, height: 24);
     }
 
     return Container();
   }
 
-  TxnType _getTxnType(AccountTxn accountTxn) {
-    if(accountTxn.userCommands.length == 0) {
+  TxnType _getTxnType(MergedUserCommand userCommand) {
+    if(userCommand.isMinted) {
       return TxnType.MINTED;
     }
 
-    if(accountTxn.userCommands[0].fromAccount == widget.account.publicKey) {
+    if(userCommand.from == widget.account.publicKey) {
       return TxnType.SEND;
     }
 
-    if(accountTxn.userCommands[0].toAccount == widget.account.publicKey) {
+    if(userCommand.to == widget.account.publicKey) {
       return TxnType.RECEIVE;
     }
 
     return TxnType.NONE;
   }
 
-  Widget _getFormattedTxnAmount(AccountTxn accountTxn) {
-    if(_getTxnType(accountTxn) == TxnType.MINTED) {
-      return Text('+${formatTokenNumber(accountTxn.coinbase)}',
+  Widget _getDateTimeText(MergedUserCommand userCommand) {
+    if(null == userCommand) {
+      return Container();
+    }
+
+    if(userCommand.isPooled) {
+      return Text('Pending', style: TextStyle(color: Color(0xffdddddd)));
+    }
+    return Text('${formatDateTime(userCommand.dateTime)}', style: TextStyle(color: Color(0xffeeeeee)));
+  }
+
+  Widget _getFormattedTxnAmount(MergedUserCommand userCommand) {
+    if(_getTxnType(userCommand) == TxnType.MINTED) {
+      return Text('+${formatTokenNumber(userCommand.coinbase)}',
         style: TextStyle(color: Colors.lightGreen));
     }
 
-    if(_getTxnType(accountTxn) == TxnType.RECEIVE) {
-      return Text('+${formatTokenNumber(accountTxn.userCommands[0].amount)}',
+    if(_getTxnType(userCommand) == TxnType.RECEIVE) {
+      return Text('+${formatTokenNumber(userCommand.amount)}',
         style: TextStyle(color: Colors.lightGreen));
     }
 
-    if(_getTxnType(accountTxn) == TxnType.SEND) {
-      return Text('-${formatTokenNumber(accountTxn.userCommands[0].amount)}',
+    if(_getTxnType(userCommand) == TxnType.SEND) {
+      return Text('-${formatTokenNumber(userCommand.amount)}',
         style: TextStyle(color: Colors.lightBlue));
     }
 
-    return Text('${formatTokenNumber(accountTxn.userCommands[0].amount)}',
+    return Text('${formatTokenNumber(userCommand.amount)}',
       style: TextStyle(color: Colors.black54));
   }
   
-  Widget _getCommandHashText(AccountTxn accountTxn) {
-    if(_getTxnType(accountTxn) == TxnType.MINTED) {
+  Widget _getCommandHashText(MergedUserCommand userCommand) {
+    if(_getTxnType(userCommand) == TxnType.MINTED) {
       return Text('Minted', style: TextStyle(color: Colors.black87));
     }
-    return Text('${formatHashEllipsis(accountTxn.userCommands[0].userCommandHash)}',
+    return Text('${formatHashEllipsis(userCommand.hash)}',
       style: TextStyle(color: Colors.black87));
   }
   
-  Widget _getTxnFeeText(AccountTxn accountTxn) {
-    if(_getTxnType(accountTxn) == TxnType.MINTED) {
+  Widget _getTxnFeeText(MergedUserCommand userCommand) {
+    if(_getTxnType(userCommand) == TxnType.MINTED) {
       return Container();
     }
-    return Text('fee: ${formatTokenNumber(accountTxn.userCommands[0].fee)}',
+    return Text('fee: ${formatTokenNumber(userCommand.fee)}',
       style: TextStyle(color: Colors.indigoAccent));
   }
 
-  Widget _buildTxnItem(AccountTxn accountTxn) {
-    if(accountTxn.coinbase == 'load_more') {
+  Widget _buildTxnItem(MergedUserCommand userCommand) {
+    if(userCommand.coinbase == 'load_more') {
       return Container(
         child: Center(
           child: SizedBox(
@@ -284,14 +296,14 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              _getTxnTypeIcon(accountTxn),
+              _getTxnTypeIcon(userCommand),
               Container(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _getCommandHashText(accountTxn),
+                  _getCommandHashText(userCommand),
                   Container(height: 8),
-                  Text('${formatDateTime(accountTxn.dateTime)}', style: TextStyle(color: Color(0xffdddddd))),
+                  _getDateTimeText(userCommand)
                 ],
               ),
             ]
@@ -299,9 +311,9 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              _getTxnFeeText(accountTxn),
+              _getTxnFeeText(userCommand),
               Container(width: 20),
-              _getFormattedTxnAmount(accountTxn)
+              _getFormattedTxnAmount(userCommand)
             ],
           )
         ],

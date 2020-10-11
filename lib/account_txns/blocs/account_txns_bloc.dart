@@ -1,4 +1,4 @@
-import 'package:coda_wallet/account_txns/blocs/account_txns_models.dart';
+import 'package:coda_wallet/account_txns/blocs/account_txns_entity.dart';
 import 'package:coda_wallet/types/list_operation_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'account_txns_events.dart';
@@ -7,19 +7,22 @@ import '../../service/coda_service.dart';
 
 class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
   CodaService _service;
-  List<AccountTxn> _accountTxns;
   String _lastCursor;
   bool _hasNextPage;
   bool _isTxnsLoading = false;
   ListOperationType _listOperation;
+  // User commands merged from both pool and blocks
+  List<MergedUserCommand> _mergedUserCommands;
+  String _publicKey;
 
-  AccountTxnsBloc(AccountTxnsStates state) : super(state) {
+  AccountTxnsBloc(AccountTxnsStates state, String publicKey) : super(state) {
     _service = CodaService();
-    _accountTxns = List<AccountTxn>();
     _lastCursor = null;
     _hasNextPage = false;
     _isTxnsLoading = false;
     _listOperation = ListOperationType.NONE;
+    _publicKey = publicKey;
+    _mergedUserCommands = List<MergedUserCommand>();
   }
 
   AccountTxnsStates get initState => RefreshAccountTxnsLoading();
@@ -39,18 +42,19 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
 
   appendLoadMore() {
     // Construct a fake item to delegate load more item
-    AccountTxn loadMore = AccountTxn(coinbase: 'load_more');
-    _accountTxns.add(loadMore);
+    MergedUserCommand loadMore = MergedUserCommand();
+    loadMore.coinbase = 'load_more';
+    _mergedUserCommands.add(loadMore);
   }
 
   removeLoadMore() {
-    if(null == _accountTxns || _accountTxns.length == 0) {
+    if(null == _mergedUserCommands || _mergedUserCommands.length == 0) {
       return;
     }
 
-    AccountTxn accountTxn = _accountTxns.elementAt(_accountTxns.length - 1);
-    if(accountTxn.coinbase == 'load_more') {
-      _accountTxns.removeLast();
+    MergedUserCommand last = _mergedUserCommands.elementAt(_mergedUserCommands.length - 1);
+    if(last.coinbase == 'load_more') {
+      _mergedUserCommands.removeLast();
     }
   }
 
@@ -74,7 +78,7 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
     try {
       _isTxnsLoading = true;
       appendLoadMore();
-      yield MoreAccountTxnsLoading(_accountTxns);
+      yield MoreAccountTxnsLoading(_mergedUserCommands);
       final result = await _service.performQuery(query, variables: variables);
 
       if (result.hasException) {
@@ -83,19 +87,18 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
         return;
       }
 
-      final List<dynamic> transactions =
-      result.data['blocks']['nodes'] as List<dynamic>;
-      List<AccountTxn> tmpTxns = List<AccountTxn>();
-      tmpTxns = transactions
-          .map((dynamic element) => _createAccountTxn(element))
-          .toList();
+      List<dynamic> nodes;
+      if(null != result.data['blocks']) {
+        nodes = result.data['blocks']['nodes'] as List<dynamic>;
+      }
 
       removeLoadMore();
-      _accountTxns.addAll(tmpTxns);
+      _mergeUserCommandsFromNodes(nodes);
+
       _hasNextPage = result.data['blocks']['pageInfo']['hasNextPage'];
       _lastCursor = result.data['blocks']['pageInfo']['lastCursor'];
 
-      yield MoreAccountTxnsSuccess(_accountTxns);
+      yield MoreAccountTxnsSuccess(_mergedUserCommands);
       _isTxnsLoading = false;
       _listOperation = ListOperationType.NONE;
     } catch (e) {
@@ -117,23 +120,34 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
       yield RefreshAccountTxnsLoading();
       final result = await _service.performQuery(query, variables: variables);
 
-      if (result.hasException) {
+      if(result.hasException) {
         print('account txns graphql errors: ${result.exception.graphqlErrors.toString()}');
         yield RefreshAccountTxnsFail(result.exception.graphqlErrors[0]);
         return;
       }
 
-      final List<dynamic> transactions =
-        result.data['blocks']['nodes'] as List<dynamic>;
-      _accountTxns.clear();
-      _accountTxns = transactions
-        .map((dynamic element) => _createAccountTxn(element))
-        .toList();
+      if(null == result.data) {
+        yield RefreshAccountTxnsFail('No data found!');
+        return;
+      }
+
+      _mergedUserCommands.clear();
+
+      List<dynamic> pooledUserCommands = result.data['pooledUserCommands'] as List<dynamic>;
+      List<dynamic> nodes;
+      if(null != result.data['blocks']) {
+        nodes =
+          result.data['blocks']['nodes'] as List<dynamic>;
+      }
+
+      //_mergeUserCommands(pooledUserCommands, nodes);
+      _mergeUserCommandsFromPool(pooledUserCommands);
+      _mergeUserCommandsFromNodes(nodes);
 
       _hasNextPage = result.data['blocks']['pageInfo']['hasNextPage'];
       _lastCursor = result.data['blocks']['pageInfo']['lastCursor'];
 
-      yield RefreshAccountTxnsSuccess(_accountTxns);
+      yield RefreshAccountTxnsSuccess(_mergedUserCommands);
       _isTxnsLoading = false;
       _listOperation = ListOperationType.NONE;
     } catch (e) {
@@ -144,36 +158,80 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
     }
   }
 
-  AccountTxn _createAccountTxn(dynamic element) {
-    Map<String, dynamic> transaction = element['transactions'] as Map<String, dynamic>;
-    List<dynamic> userCommandList = transaction['userCommands'] as List<dynamic>;
-    String dateTime = element['protocolState']['blockchainState']['date'] as String;
-
-    List<UserCommand> userCommands = List<UserCommand>();
-
-    if(userCommandList.length == 0) {
-      userCommands = [];
-    } else {
-      userCommands = userCommandList
-        .map((dynamic element) {
-          return UserCommand(
-            userCommandHash: element['hash'] as String,
-            userCommandMemo: element['memo'] as String,
-            fee: element['fee'] as String,
-            toAccount: element['to'] as String,
-            amount: element['amount'] as String,
-            fromAccount: element['from'] as String,
-            nonce: element['fromAccount']['nonce'] as String
-          );
-      })
-      .toList();
+  _mergeUserCommandsFromPool(List<dynamic> pooledUserCommands) {
+    if(null == pooledUserCommands || 0 == pooledUserCommands.length) {
+      return;
     }
 
-    return AccountTxn(
-        userCommands: userCommands,
-        coinbaseAccount: transaction['coinbaseReceiverAccount']['publicKey'] as String,
-        coinbase: transaction['coinbase'] as String,
-        dateTime: dateTime
-    );
+    for(int i = 0; i < pooledUserCommands.length; i++) {
+      if(null == pooledUserCommands[i]) {
+        continue;
+      }
+      MergedUserCommand mergedUserCommand = MergedUserCommand();
+      mergedUserCommand.to = pooledUserCommands[i]['to'];
+      mergedUserCommand.isDelegation = pooledUserCommands[i]['isDelegation'];
+      mergedUserCommand.nonce = pooledUserCommands[i]['nonce'];
+      mergedUserCommand.amount = pooledUserCommands[i]['amount'];
+      mergedUserCommand.fee = pooledUserCommands[i]['fee'];
+      mergedUserCommand.from = pooledUserCommands[i]['from'];
+      mergedUserCommand.hash = pooledUserCommands[i]['hash'];
+      mergedUserCommand.memo = pooledUserCommands[i]['memo'];
+      mergedUserCommand.isPooled = true;
+      mergedUserCommand.dateTime = '';
+      mergedUserCommand.coinbase = '';
+      mergedUserCommand.isMinted = false;
+      _mergedUserCommands.add(mergedUserCommand);
+    }
+  }
+
+  _mergeUserCommandsFromNodes(List<dynamic> nodes) {
+    if(null == nodes || 0 == nodes.length) {
+      return;
+    }
+
+    for(int i = 0; i < nodes.length; i++) {
+      if(null == nodes[i] || null == nodes[i]['transactions']) {
+        continue;
+      }
+      if(null != nodes[i]['transactions']['userCommands']) {
+        List<dynamic> userCommands = nodes[i]['transactions']['userCommands'];
+        for(int j = 0; j < userCommands.length; j++) {
+          if(null == userCommands[j]) {
+            continue;
+          }
+          MergedUserCommand mergedUserCommand = MergedUserCommand();
+          mergedUserCommand.to = userCommands[j]['to'];
+          mergedUserCommand.isDelegation = userCommands[j]['isDelegation'];
+          mergedUserCommand.nonce = userCommands[j]['nonce'];
+          mergedUserCommand.amount = userCommands[j]['amount'];
+          mergedUserCommand.fee = userCommands[j]['fee'];
+          mergedUserCommand.from = userCommands[j]['from'];
+          mergedUserCommand.hash = userCommands[j]['hash'];
+          mergedUserCommand.memo = userCommands[j]['memo'];
+          mergedUserCommand.isPooled = false;
+          mergedUserCommand.dateTime = nodes[i]['protocolState']['blockchainState']['date'];
+          mergedUserCommand.coinbase = '';
+          mergedUserCommand.isMinted = false;
+          _mergedUserCommands.add(mergedUserCommand);
+        }
+      }
+      // Process coinbase
+      if(_publicKey == nodes[i]['transactions']['coinbaseReceiverAccount']['publicKey']) {
+        MergedUserCommand mergedUserCommand = MergedUserCommand();
+        mergedUserCommand.to = '';
+        mergedUserCommand.isDelegation = false;
+        mergedUserCommand.nonce = 0;
+        mergedUserCommand.amount = '';
+        mergedUserCommand.fee = '';
+        mergedUserCommand.from = '';
+        mergedUserCommand.hash = '';
+        mergedUserCommand.memo = '';
+        mergedUserCommand.isPooled = false;
+        mergedUserCommand.dateTime = nodes[i]['protocolState']['blockchainState']['date'];
+        mergedUserCommand.coinbase = nodes[i]['transactions']['coinbase'];
+        mergedUserCommand.isMinted = true;
+        _mergedUserCommands.add(mergedUserCommand);
+      }
+    }
   }
 }
