@@ -9,7 +9,7 @@ class CodaService {
     HttpClient httpClient = HttpClient();
     IOClient ioClient;
     httpClient.findProxy = (url) {
-      return HttpClient.findProxyFromEnvironment(url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
+      return HttpClient.findProxyFromEnvironment(url, environment: {'http_proxy': 'http://192.168.1.3:9999'});
     };
 
     ioClient = IOClient(httpClient);
@@ -26,7 +26,7 @@ class CodaService {
 
   Future<QueryResult> performQuery(String query,
       {Map<String, dynamic> variables}) async {
-    QueryOptions options = QueryOptions(documentNode: gql(query), variables: variables);
+    QueryOptions options = QueryOptions(documentNode: gql(query), variables: variables, fetchPolicy: FetchPolicy.cacheAndNetwork);
 
     final result = await _client.query(options);
 

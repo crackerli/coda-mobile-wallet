@@ -36,7 +36,6 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = widget.account.publicKey;
     variables['before'] = before;
-//    _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
     _ownedAccountsBloc.add(MoreAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
   }
 

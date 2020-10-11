@@ -140,7 +140,6 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
           result.data['blocks']['nodes'] as List<dynamic>;
       }
 
-      //_mergeUserCommands(pooledUserCommands, nodes);
       _mergeUserCommandsFromPool(pooledUserCommands);
       _mergeUserCommandsFromNodes(nodes);
 
