@@ -1,3 +1,4 @@
+import 'package:coda_wallet/util/navigations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,14 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           title: Text('Send Mina'),
           centerTitle: true,
           elevation: 0,
+          actions: [
+            IconButton(
+              icon: Image.asset('images/qr_scan2.png', width: 24, height: 24),
+              tooltip: 'Scan',
+              iconSize: 24,
+              onPressed: () => toQrScanScreen(context),
+            ),
+          ],
         ),
         body: Container()
     );
