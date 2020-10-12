@@ -66,26 +66,40 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           ),
           Container(height: 10),
           _buildReceiverTextField(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text('Balance'),
-              Text('12 Mina'),
-            ]
+          Padding(
+            padding: EdgeInsets.only(left: 6, right: 6),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text('Balance'),
+                Text('12 Mina'),
+              ]
+            ),
           ),
           Container(height: 10,),
-          // _buildSendActionTextField(),
+          _buildSendActionTextField(),
           _buildFeeCostTextField(),
+          Container(height: 160),
           Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
             child: Center(
-              child: RaisedButton(
-                onPressed: () {},
-                color: Colors.red[300],
-                child: Text("RaisedButton", style: TextStyle(color: Colors.white))
-              )
-            )
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                      onPressed: () {},
+                      color: Colors.blueAccent,
+                      child: Text("Send", style: TextStyle(color: Colors.white))
+                    )
+                  )
+                ],
+            ))
           )
         ]
       )
@@ -94,6 +108,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
 
   Widget _buildReceiverTextField() {
     return Card(
+      color: Colors.white,
       child: Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),
         child: Row(
@@ -109,19 +124,16 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
                   minHeight: 24.0,
                 ),
                 child: TextField(
-    //              controller: _remarkTextController,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                   autofocus: true,
-                  decoration: InputDecoration.collapsed(
-                    hintText: 'Mina address',
-                  ),
+                  decoration: InputDecoration.collapsed(hintText: 'Mina address')
                 ),
               )
             ),
             Expanded(
               flex: 1,
-              child: Image.asset('images/locked.png', width: 24, height: 24)
+              child: Image.asset('images/contact_address.png', width: 24, height: 24)
             )
           ]
         )
@@ -130,7 +142,26 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   }
 
   Widget _buildSendActionTextField() {
-    return Container();
+    return Card(
+      child: Container(
+        padding: EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),
+        child: Column(
+          children: [
+            TextField(
+              style: TextStyle(fontSize: 48),
+              decoration: InputDecoration.collapsed(hintText: '0')
+            ),
+            Container(height: 1.5, color: Color(0xffeeeeee)),
+            TextField(
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              autofocus: false,
+              decoration: InputDecoration.collapsed(hintText: 'Memo'),
+            )
+          ]
+        )
+      )
+    );
   }
 
   Widget _buildFeeCostTextField() {
@@ -145,9 +176,9 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
             Text('Fee'),
             Expanded(
               flex: 10,
-              child: Text('0.11111111111111111111111', textAlign: TextAlign.right)
+              child: Text('0.1', textAlign: TextAlign.right)
             ),
-            Container(width: 10,),
+            Container(width: 10),
             Text('Edit')
           ]
         )
