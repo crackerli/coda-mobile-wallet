@@ -88,7 +88,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Amount: $formattedTokenNumber"),
+            Text("Balance: $formattedTokenNumber"),
             Container(width: 10, height: 1),
             GestureDetector(
               child: _lockStatusImage(account.locked),

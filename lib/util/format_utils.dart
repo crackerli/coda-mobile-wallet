@@ -20,8 +20,18 @@ String formatHashEllipsis(String src) {
   return '$prefix...$postfix';
 }
 
-String formatDateTime(String dateTime) {
-  int timeInMillis = int.parse(dateTime);
-  var date = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
-  return date.toLocal().toString();
+String formatDateTime(String millisSeconds) {
+  if(null == millisSeconds) {
+    return '';
+  }
+
+  int timeInMillis = int.parse(millisSeconds);
+  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+  int year = dateTime.year;
+  int month = dateTime.month;
+  int day = dateTime.day;
+  int hour = dateTime.hour;
+  int minute = dateTime.minute;
+  int second = dateTime.second;
+  return '$year-$month-$day $hour:$minute:$second';
 }

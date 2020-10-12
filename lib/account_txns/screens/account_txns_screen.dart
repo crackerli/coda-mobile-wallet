@@ -185,7 +185,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
         return _buildTxnItem(accountTxns[index]);
       },
       separatorBuilder: (context, index) {
-        return Divider();
+        return Divider(thickness: 4,);
       },
       controller: _scrollController
     );
@@ -226,9 +226,9 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     }
 
     if(userCommand.isPooled) {
-      return Text('Pending', style: TextStyle(color: Color(0xffdddddd)));
+      return Text('Pending', style: TextStyle(color: Color(0xffbbbbbb)));
     }
-    return Text('${formatDateTime(userCommand.dateTime)}', style: TextStyle(color: Color(0xffeeeeee)));
+    return Text('${formatDateTime(userCommand.dateTime)}', style: TextStyle(color: Color(0xffbbbbbb)));
   }
 
   Widget _getFormattedTxnAmount(MergedUserCommand userCommand) {
