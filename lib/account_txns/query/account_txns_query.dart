@@ -45,5 +45,12 @@ const ACCOUNT_TXNS_QUERY = r'''
       hash
       nonce
     }
+
+    wallet(publicKey: $publicKey) {
+      balance {
+        total
+      }
+      locked
+    }
   }
 ''';

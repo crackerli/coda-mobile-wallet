@@ -81,28 +81,26 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
       floatingActionButton: _buildActionButton(),
       body: RefreshIndicator(
         onRefresh: _onRefresh,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(height: 8, color: Colors.black12),
-            Expanded(
-              flex: 1,
-              child: _buildAccountBody(widget.account),
-            ),
-            Container(height: 8, color: Colors.black12),
-            Expanded(
-              flex: 5,
-              child:
-                BlocBuilder<AccountTxnsBloc, AccountTxnsStates>(
-                  builder: (BuildContext context, AccountTxnsStates state) {
-                    return _buildTxnsWidget(context, state);
-                  }
-                )
-            )
-          ]
-        )
+        child: BlocBuilder<AccountTxnsBloc, AccountTxnsStates>(
+          builder: (BuildContext context, AccountTxnsStates state) {
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(height: 8, color: Colors.black12),
+              Expanded(
+                flex: 1,
+                child: _buildAccountBody(context, state),
+              ),
+              Container(height: 8, color: Colors.black12),
+              Expanded(
+                flex: 5,
+                child: _buildTxnsWidget(context, state)
+              )
+            ]
+          );
+        })
       )
     );
   }
@@ -129,11 +127,18 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
 
   Widget _buildTxnsWidget(BuildContext context, AccountTxnsStates state) {
     if(state is RefreshAccountTxnsLoading) {
-      return Container(
-        child: Center(
-          child: CircularProgressIndicator()
-        )
-      );
+      AccountDetail accountDetail = state.data;
+      if(null == accountDetail ||
+         null == accountDetail.mergedUserCommands ||
+         0 == accountDetail.mergedUserCommands.length) {
+        return Container(
+            child: Center(
+                child: CircularProgressIndicator()
+            )
+        );
+      } else {
+        return _buildTxnsListWidget(accountDetail.mergedUserCommands);
+      }
     }
 
     if(state is RefreshAccountTxnsFail) {
@@ -141,22 +146,55 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     }
 
     if(state is MoreAccountTxnsLoading) {
-      List<MergedUserCommand> data = state.data;
-      return _buildTxnsListWidget(data);
+      AccountDetail accountDetail = state.data;
+      return _buildTxnsListWidget(accountDetail.mergedUserCommands);
     }
 
     if(state is RefreshAccountTxnsSuccess) {
-      List<MergedUserCommand> data = state.data;
-      return _buildTxnsListWidget(data);
+      AccountDetail accountDetail = state.data;
+      return _buildTxnsListWidget(accountDetail.mergedUserCommands);
     }
 
     if(state is MoreAccountTxnsSuccess) {
-      List<MergedUserCommand> data = state.data;
-      return _buildTxnsListWidget(data);
+      AccountDetail accountDetail = state.data;
+      return _buildTxnsListWidget(accountDetail.mergedUserCommands);
     }
+
+    return Container();
   }
 
-  Widget _buildAccountBody(Account account) {
+  Widget _buildAccountBody(BuildContext context, AccountTxnsStates state) {
+    AccountDetail accountDetail;
+    String publicKey;
+    String balance;
+    bool locked;
+
+    if(state is RefreshAccountTxnsLoading) {
+      accountDetail = state.data;
+    }
+
+    if(state is MoreAccountTxnsLoading) {
+      accountDetail = state.data;
+    }
+
+    if(state is RefreshAccountTxnsSuccess) {
+      accountDetail = state.data;
+    }
+
+    if(state is MoreAccountTxnsSuccess) {
+      accountDetail = state.data;
+    }
+
+    if(null != accountDetail) {
+      publicKey = null == accountDetail.accountStatus.publicKey ? widget.account.publicKey : accountDetail.accountStatus.publicKey;
+      balance = null == accountDetail.accountStatus.balance ? widget.account.balance : accountDetail.accountStatus.balance;
+      locked = null == accountDetail.accountStatus.locked ? widget.account.locked : accountDetail.accountStatus.locked;
+    } else {
+      publicKey = widget.account.publicKey;
+      balance = widget.account.balance;
+      locked = widget.account.locked;
+    }
+
     return Container(
       padding: EdgeInsets.only(top: 20, bottom: 20),
       child: Center(
@@ -165,12 +203,12 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("${formatHashEllipsis(account.publicKey)}"),
+                Text("${formatHashEllipsis(publicKey)}"),
                 Container(width: 10),
-                Image.asset('images/locked.png', width: 20, height: 20)
+                Image.asset(locked ? 'images/locked.png' : 'images/unlocked.png', width: 20, height: 20)
               ],
             ),
-            Text('${formatTokenNumber(account.balance)}')
+            Text('${formatTokenNumber(balance)}')
           ],
         ),
       ),

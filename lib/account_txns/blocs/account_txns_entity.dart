@@ -83,3 +83,14 @@ class MergedUserCommand {
   String coinbase;
   bool isMinted;
 }
+
+class AccountStatus {
+  String publicKey;
+  bool locked;
+  String balance;
+}
+
+class AccountDetail {
+  List<MergedUserCommand> mergedUserCommands;
+  AccountStatus accountStatus;
+}

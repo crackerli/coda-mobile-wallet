@@ -13,6 +13,8 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
   ListOperationType _listOperation;
   // User commands merged from both pool and blocks
   List<MergedUserCommand> _mergedUserCommands;
+  AccountStatus _accountStatus;
+  AccountDetail _accountDetail;
   String _publicKey;
 
   AccountTxnsBloc(AccountTxnsStates state, String publicKey) : super(state) {
@@ -23,9 +25,13 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
     _listOperation = ListOperationType.NONE;
     _publicKey = publicKey;
     _mergedUserCommands = List<MergedUserCommand>();
+    _accountStatus = AccountStatus();
+    _accountDetail = AccountDetail();
+    _accountDetail.accountStatus = _accountStatus;
+    _accountDetail.mergedUserCommands = _mergedUserCommands;
   }
 
-  AccountTxnsStates get initState => RefreshAccountTxnsLoading();
+  AccountTxnsStates get initState => RefreshAccountTxnsLoading(_accountDetail);
 
   get lastCursor => _lastCursor;
   get hasNextPage => _hasNextPage;
@@ -78,7 +84,7 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
     try {
       _isTxnsLoading = true;
       appendLoadMore();
-      yield MoreAccountTxnsLoading(_mergedUserCommands);
+      yield MoreAccountTxnsLoading(_accountDetail);
       final result = await _service.performQuery(query, variables: variables);
 
       if (result.hasException) {
@@ -98,7 +104,7 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
       _hasNextPage = result.data['blocks']['pageInfo']['hasNextPage'];
       _lastCursor = result.data['blocks']['pageInfo']['lastCursor'];
 
-      yield MoreAccountTxnsSuccess(_mergedUserCommands);
+      yield MoreAccountTxnsSuccess(_accountDetail);
       _isTxnsLoading = false;
       _listOperation = ListOperationType.NONE;
     } catch (e) {
@@ -117,7 +123,7 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
 
     try {
       _isTxnsLoading = true;
-      yield RefreshAccountTxnsLoading();
+      yield RefreshAccountTxnsLoading(_accountDetail);
       final result = await _service.performQuery(query, variables: variables);
 
       if(result.hasException) {
@@ -145,8 +151,11 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
 
       _hasNextPage = result.data['blocks']['pageInfo']['hasNextPage'];
       _lastCursor = result.data['blocks']['pageInfo']['lastCursor'];
+      _accountDetail.accountStatus.publicKey = _publicKey;
+      _accountDetail.accountStatus.balance = result.data['wallet']['balance']['total'];
+      _accountDetail.accountStatus.locked = result.data['wallet']['locked'];
 
-      yield RefreshAccountTxnsSuccess(_mergedUserCommands);
+      yield RefreshAccountTxnsSuccess(_accountDetail);
       _isTxnsLoading = false;
       _listOperation = ListOperationType.NONE;
     } catch (e) {

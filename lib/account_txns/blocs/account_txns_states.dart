@@ -8,7 +8,12 @@ abstract class AccountTxnsStates extends Equatable {
 }
 
 class RefreshAccountTxnsLoading extends AccountTxnsStates {
-  RefreshAccountTxnsLoading() : super();
+  final dynamic data;
+
+  RefreshAccountTxnsLoading(this.data) : super();
+
+  @override
+  List<Object> get props => data;
 }
 
 class RefreshAccountTxnsSuccess extends AccountTxnsStates {
