@@ -31,7 +31,7 @@ class QrAddress extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              QrImage(data: _publicKey, size: 200.0),
+              QrImage(data: _publicKey, size: 200.0, version: QrVersions.auto),
               Container(height: 10),
               Text('$_publicKey', maxLines: 2, textAlign: TextAlign.center, style: TextStyle(color: Colors.black54, fontSize: 16.0))
           ]
