@@ -37,6 +37,7 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
   get hasNextPage => _hasNextPage;
   get isTxnsLoading => _isTxnsLoading;
   get listOperation => _listOperation;
+  AccountStatus get accountStatus => _accountStatus;
 
   set isTxnsLoading(bool txnsLoading) {
     _isTxnsLoading = txnsLoading;

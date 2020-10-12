@@ -23,6 +23,7 @@ class QrAddress extends StatelessWidget {
 
   Widget _buildQrBody() {
     return Container(
+      padding: EdgeInsets.only(left: 16, right: 16),
       child:
         Center(
           child: Column(
@@ -31,7 +32,8 @@ class QrAddress extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               QrImage(data: _publicKey, size: 200.0),
-              Text('${formatHashEllipsis(_publicKey)}', style: TextStyle(color: Colors.black54, fontSize: 24.0))
+              Container(height: 10),
+              Text('$_publicKey', maxLines: 2, textAlign: TextAlign.center, style: TextStyle(color: Colors.black54, fontSize: 16.0))
           ]
         )
       )

@@ -113,7 +113,10 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
           child: Icon(Icons.send),
           backgroundColor: Colors.red,
           labelStyle: TextStyle(fontSize: 18.0),
-          onTap: () => print('FIRST CHILD')
+          onTap: () => toSendTokenScreen(context,
+            _ownedAccountsBloc.accountStatus.publicKey,
+            _ownedAccountsBloc.accountStatus.balance,
+            _ownedAccountsBloc.accountStatus.locked)
         ),
         SpeedDialChild(
           child: Icon(Icons.receipt),
