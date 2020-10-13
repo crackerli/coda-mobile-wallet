@@ -36,6 +36,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   TextEditingController _memoController = TextEditingController();
   TextEditingController _feeController = TextEditingController();
   SendTokenBloc _sendTokenBloc;
+  dynamic _qrResult;
 
   @override
   void initState() {
@@ -53,6 +54,11 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     _memoController.dispose();
     _feeController.dispose();
     super.dispose();
+  }
+
+  _fillQrAddress() async {
+    _qrResult =  await toQrScanScreen(context);
+    _addressController.text = '$_qrResult';
   }
 
   _sendPayment() {
@@ -79,7 +85,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
             icon: Image.asset('images/qr_scan2.png', width: 24, height: 24),
             tooltip: 'Scan',
             iconSize: 24,
-            onPressed: () => toQrScanScreen(context),
+            onPressed: _fillQrAddress,
           )
         ]
       ),
@@ -169,7 +175,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
                   minHeight: 24.0,
                 ),
                 child: TextField(
- //                 controller: _paymentController,
+                  controller: _addressController,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                   autofocus: false,
@@ -227,7 +233,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
               child: Text('0.1', textAlign: TextAlign.right)
             ),
             Container(width: 10),
-            Text('Edit')
+            Text('Edit', style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold))
           ]
         )
       )
