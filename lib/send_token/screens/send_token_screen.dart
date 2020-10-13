@@ -1,8 +1,14 @@
+import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';
+import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
+import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
+import 'package:coda_wallet/send_token/mutation/send_token_mutation.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+// ignore: must_be_immutable
 class SendTokenScreen extends StatefulWidget {
   String publicKey;
   String balance;
@@ -25,14 +31,40 @@ class SendTokenScreen extends StatefulWidget {
 
 class _SendTokenScreenState extends State<SendTokenScreen> {
 
+  TextEditingController _addressController = TextEditingController();
+  TextEditingController _paymentController = TextEditingController();
+  TextEditingController _memoController = TextEditingController();
+  TextEditingController _feeController = TextEditingController();
+  SendTokenBloc _sendTokenBloc;
+
   @override
   void initState() {
     super.initState();
+    _sendTokenBloc = BlocProvider.of<SendTokenBloc>(context);
+    // _paymentController.addListener(() {
+    //   _sendTokenBloc.payment = _paymentController.text;
+    // });
   }
 
   @override
   void dispose() {
+    _addressController.dispose();
+    _paymentController.dispose();
+    _memoController.dispose();
+    _feeController.dispose();
     super.dispose();
+  }
+
+  _sendPayment() {
+    _sendTokenBloc.payment = _paymentController.text;
+    Map<String, dynamic> variables = Map<String, dynamic>();
+    variables['from'] = widget.publicKey;//_sendTokenBloc.sender;
+    variables['to'] = _sendTokenBloc.receiver;
+    variables['amount'] = getNanoMina(_sendTokenBloc.payment);
+    variables['memo'] = _sendTokenBloc.memo;
+    variables['fee'] = getNanoMina(_sendTokenBloc.fee);
+
+    _sendTokenBloc.add(SendPayment(SEND_PAYMENT_MUTATION, variables: variables));
   }
 
   @override
@@ -51,7 +83,12 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           )
         ]
       ),
-      body: _buildSendTokenBody()
+      body: BlocBuilder<SendTokenBloc, SendTokenStates>(
+          builder: (BuildContext context, SendTokenStates state) {
+            return _buildSendTokenBody();
+          }
+      )
+     // _buildSendTokenBody()
     );
   }
 
@@ -101,7 +138,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(4.0))),
-                      onPressed: () {},
+                      onPressed: _sendPayment,
                       color: Colors.blueAccent,
                       child: Text("Send", style: TextStyle(color: Colors.white))
                     )
@@ -132,6 +169,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
                   minHeight: 24.0,
                 ),
                 child: TextField(
+ //                 controller: _paymentController,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                   autofocus: false,
@@ -156,6 +194,8 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
         child: Column(
           children: [
             TextField(
+              controller: _paymentController,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
               style: TextStyle(fontSize: 48),
               decoration: InputDecoration.collapsed(hintText: '0')
             ),

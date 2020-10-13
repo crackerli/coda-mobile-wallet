@@ -35,3 +35,12 @@ String formatDateTime(String millisSeconds) {
   int second = dateTime.second;
   return '$year-$month-$day $hour:$minute:$second';
 }
+
+int getNanoMina(String src) {
+  if(null == src) {
+    return 0;
+  }
+
+  double tmp = double.parse(src);
+  return (tmp * 1000000000).toInt();
+}

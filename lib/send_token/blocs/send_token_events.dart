@@ -7,11 +7,21 @@ abstract class SendTokenEvents extends Equatable {
   List<Object> get props => null;
 }
 
-class SendToken extends SendTokenEvents {
+class SendPayment extends SendTokenEvents {
   final String mutation;
   final Map<String, dynamic> variables;
 
-  SendToken(this.mutation, {this.variables}) : super();
+  SendPayment(this.mutation, {this.variables}) : super();
+
+  @override
+  List<Object> get props => [mutation, variables];
+}
+
+class UnlockAccount extends SendTokenEvents {
+  final String mutation;
+  final Map<String, dynamic> variables;
+
+  UnlockAccount(this.mutation, {this.variables}) : super();
 
   @override
   List<Object> get props => [mutation, variables];
