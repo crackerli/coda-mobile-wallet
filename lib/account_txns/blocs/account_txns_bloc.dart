@@ -224,8 +224,10 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
           _mergedUserCommands.add(mergedUserCommand);
         }
       }
+
+      Map<String, dynamic> coinbaseReceiverAccount = nodes[i]['transactions']['coinbaseReceiverAccount'];
       // Process coinbase
-      if(_publicKey == nodes[i]['transactions']['coinbaseReceiverAccount']['publicKey']) {
+      if(null != coinbaseReceiverAccount && _publicKey == coinbaseReceiverAccount['publicKey']) {
         MergedUserCommand mergedUserCommand = MergedUserCommand();
         mergedUserCommand.to = '';
         mergedUserCommand.isDelegation = false;

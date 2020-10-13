@@ -18,11 +18,11 @@ class FetchOwnedAccounts extends OwnedAccountsEvents {
 }
 
 class ToggleLockStatus extends OwnedAccountsEvents {
-  final String query;
+  final String mutation;
   final Map<String, dynamic> variables;
 
-  ToggleLockStatus(this.query, {this.variables}) : super();
+  ToggleLockStatus(this.mutation, {this.variables}) : super();
 
   @override
-  List<Object> get props => [query, variables];
+  List<Object> get props => [mutation, variables];
 }

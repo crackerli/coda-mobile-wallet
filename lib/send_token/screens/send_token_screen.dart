@@ -1,3 +1,4 @@
+import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,11 @@ class SendTokenScreen extends StatefulWidget {
     String publicKey,
     String balance,
     bool locked,
-    {Key key}) : super(key: key);
+    {Key key}) : super(key: key) {
+    this.publicKey = publicKey;
+    this.balance = balance;
+    this.locked = locked;
+  }
 
   @override
   _SendTokenScreenState
@@ -74,7 +79,10 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Text('Balance'),
-                Text('12 Mina'),
+                Expanded(
+                  flex: 1,
+                  child: Text('${formatTokenNumber(widget.balance)} Mina', textAlign: TextAlign.right),
+                )
               ]
             ),
           ),
@@ -126,7 +134,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
                 child: TextField(
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
-                  autofocus: true,
+                  autofocus: false,
                   decoration: InputDecoration.collapsed(hintText: 'Mina address')
                 ),
               )

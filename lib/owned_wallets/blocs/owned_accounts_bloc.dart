@@ -36,7 +36,7 @@ class OwnedAccountsBloc extends
   Stream<OwnedAccountsStates>
       _mapToggleLockStatusToStates(ToggleLockStatus event) async* {
 
-    final query = event.query;
+    final query = event.mutation;
     final variables = event.variables ?? null;
     _accountToLock = variables['publicKey'];
 

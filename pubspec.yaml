@@ -57,6 +57,10 @@ flutter:
     - txreceive.png
     - locked.png
     - unlocked.png
+    - qr_scan.png
+    - qr_scan1.png
+    - qr_scan2.png
+    - contact_address.png
 
   fonts:
    - family: Entypo
