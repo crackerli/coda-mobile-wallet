@@ -1,5 +1,7 @@
+import 'package:coda_wallet/send_token/blocs/send_token_entity.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
+import 'package:coda_wallet/types/send_token_action_status.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 
@@ -7,30 +9,21 @@ class SendTokenBloc extends
   Bloc<SendTokenEvents, SendTokenStates> {
 
   CodaService _service;
-  String _receiver = 'B62qp6h8ZCYn3eP1RnZf8zA3WWktNWjGK1uBy4ZLd1rGBz6qvRFfYEh';
-  String _sender = '';
-  String _payment;
-  String _memo;
-  String _fee = "0.1";
+  SendTokenEntity _sendTokenEntity;
 
   SendTokenBloc(SendTokenStates state) : super(state) {
     _service = CodaService();
+    _sendTokenEntity = SendTokenEntity();
+    _sendTokenEntity.fee = '0.1';
   }
 
-  String get payment => _payment;
-  set payment(value) => _payment = value;
+  SendTokenEntity get sendTokenEntity => _sendTokenEntity;
 
-  String get receiver => _receiver;
-  set receiver(value) => _receiver = value;
-
-  String get memo => _memo;
-  set memo(value) => _memo = value;
-
-  String get fee => _fee;
-  set fee(value) => _fee = value;
-
-  String get sender => _sender;
-  set sender(value) => _sender = value;
+  set amount(value) => _sendTokenEntity.amount = value;
+  set fee(value) => _sendTokenEntity.fee = value;
+  set receiver(value) => _sendTokenEntity.receiver = value;
+  set sender(value) => _sendTokenEntity.sender = value;
+  set memo(value) => _sendTokenEntity.memo = value;
 
   @override
   Stream<SendTokenStates>
@@ -48,7 +41,8 @@ class SendTokenBloc extends
     final variables = event.variables ?? null;
 
     try {
-      yield SendPaymentLoading();
+      _sendTokenEntity.sendTokenActionStatus = SendTokenActionStatus.tokenSending;
+      yield SendPaymentLoading(_sendTokenEntity);
       final result = await _service.performMutation(mutation, variables: variables);
 
       if (result.hasException) {
@@ -57,7 +51,7 @@ class SendTokenBloc extends
         return;
       }
 
-      yield SendPaymentSuccess(result.data);
+      yield SendPaymentSuccess(_sendTokenEntity);
     } catch (e) {
       print(e);
       yield SendPaymentFail(e.toString());

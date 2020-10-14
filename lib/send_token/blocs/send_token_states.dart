@@ -8,7 +8,12 @@ abstract class SendTokenStates extends Equatable {
 }
 
 class SendPaymentLoading extends SendTokenStates {
-  SendPaymentLoading() : super();
+  final dynamic data;
+
+  SendPaymentLoading(this.data) : super();
+
+  @override
+  List<Object> get props => data;
 }
 
 class SendPaymentSuccess extends SendTokenStates {

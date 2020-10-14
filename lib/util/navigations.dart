@@ -31,14 +31,11 @@ toQrAddressScreen(BuildContext context, String publicKey) {
 }
 
 toSendTokenScreen(BuildContext context, String publicKey, String balance, bool locked) {
-  // Navigator.push(context,
-  //     MaterialPageRoute(builder: (context) => SendTokenScreen(publicKey, balance, locked))
-  // );
   Navigator.push(context,
     MaterialPageRoute(builder: (context) {
       return BlocProvider<SendTokenBloc>(
         create: (BuildContext context) {
-          return SendTokenBloc(SendPaymentSuccess(null));
+          return SendTokenBloc(SendPaymentFail(null));
         },
         child: SendTokenScreen(publicKey, balance, locked)
       );
