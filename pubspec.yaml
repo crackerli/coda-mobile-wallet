@@ -52,15 +52,17 @@ flutter:
     - images/coda_logo.png
     - images/lock-normal.png
     - images/unlock-normal.png
-    - appbar_back.png
-    - txsend.png
-    - txreceive.png
-    - locked.png
-    - unlocked.png
-    - qr_scan.png
-    - qr_scan1.png
-    - qr_scan2.png
-    - contact_address.png
+    - images/appbar_back.png
+    - images/txsend.png
+    - images/txreceive.png
+    - images/locked.png
+    - images/unlocked.png
+    - images/qr_scan.png
+    - images/qr_scan1.png
+    - images/qr_scan2.png
+    - images/contact_address.png
+    - images/locked_black.png
+    - images/unlocked_green.png
 
   fonts:
    - family: Entypo

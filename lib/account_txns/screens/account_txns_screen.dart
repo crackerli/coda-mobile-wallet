@@ -67,6 +67,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _ownedAccountsBloc = null;
     super.dispose();
   }
 
@@ -112,6 +113,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
         SpeedDialChild(
           child: Icon(Icons.send),
           backgroundColor: Colors.red,
+          label: 'Send',
           labelStyle: TextStyle(fontSize: 18.0),
           onTap: () => toSendTokenScreen(context,
             _ownedAccountsBloc.accountStatus.publicKey,
@@ -119,6 +121,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
             _ownedAccountsBloc.accountStatus.locked)
         ),
         SpeedDialChild(
+          label: 'Receive',
           child: Icon(Icons.receipt),
           backgroundColor: Colors.orange,
           labelStyle: TextStyle(fontSize: 18.0),
@@ -208,10 +211,10 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
               children: [
                 Text("${formatHashEllipsis(publicKey)}"),
                 Container(width: 10),
-                Image.asset(locked ? 'images/locked.png' : 'images/unlocked.png', width: 20, height: 20)
+                Image.asset(locked ? 'images/locked_black.png' : 'images/unlocked_green.png', width: 20, height: 20)
               ],
             ),
-            Text('${formatTokenNumber(balance)}')
+            Text('Balance: ${formatTokenNumber(balance)}')
           ],
         ),
       ),

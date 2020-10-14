@@ -2,6 +2,7 @@ import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
 import 'package:coda_wallet/send_token/mutation/send_token_mutation.dart';
+import 'package:coda_wallet/types/send_token_action_status.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:flutter/cupertino.dart';
@@ -42,9 +43,6 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   void initState() {
     super.initState();
     _sendTokenBloc = BlocProvider.of<SendTokenBloc>(context);
-    // _paymentController.addListener(() {
-    //   _sendTokenBloc.payment = _paymentController.text;
-    // });
   }
 
   @override
@@ -53,12 +51,14 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     _paymentController.dispose();
     _memoController.dispose();
     _feeController.dispose();
+    _sendTokenBloc = null;
     super.dispose();
   }
 
   _fillQrAddress() async {
     _qrResult =  await toQrScanScreen(context);
     _addressController.text = '$_qrResult';
+    _sendTokenBloc.receiver = '$_qrResult';
   }
 
   _sendPayment() {
@@ -82,7 +82,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Image.asset('images/qr_scan2.png', width: 24, height: 24),
+            icon: Image.asset('images/qr_scan.png', width: 24, height: 24),
             tooltip: 'Scan',
             iconSize: 24,
             onPressed: _fillQrAddress,
@@ -130,28 +130,11 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
             ),
           ),
           Container(height: 10,),
-          _buildSendActionTextField(),
+          _buildSendContentTextField(),
           _buildFeeCostTextField(),
-          Container(height: 160),
-          Container(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0))),
-                      onPressed: _sendPayment,
-                      color: Colors.blueAccent,
-                      child: Text("Send", style: TextStyle(color: Colors.white))
-                    )
-                  )
-                ],
-            ))
-          )
+          _buildLockStatus(),
+          Container(height: 80),
+          _buildSendAction(SendTokenActionStatus.contentValid)
         ]
       )
     );
@@ -193,7 +176,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     );
   }
 
-  Widget _buildSendActionTextField() {
+  Widget _buildSendContentTextField() {
     return Card(
       child: Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),
@@ -235,6 +218,58 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
             Container(width: 10),
             Text('Edit', style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold))
           ]
+        )
+      )
+    );
+  }
+
+  Widget _buildLockStatus() {
+    return Card(
+      child: Container(
+        padding: EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+            children: [
+              Text('LockStatus'),
+              Image.asset('images/unlocked_green.png', width: 24, height: 24,)
+            ]
+          )
+        )
+    );
+  }
+  
+  Widget _buildSendAction(SendTokenActionStatus status) {
+    Color sendTextColor;
+    Color sendButtonColor;
+    Widget sendAction;
+
+    if(status == SendTokenActionStatus.contentInvalid) {
+      sendTextColor = Colors.black54;
+      sendButtonColor = Colors.grey;
+      sendAction = Text("Send", style: TextStyle(color: sendTextColor));
+    } else if(status == SendTokenActionStatus.tokenSending) {
+      sendTextColor = Colors.black54;
+      sendButtonColor = Colors.blueAccent;
+      sendAction = SizedBox(child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      ), height: 26.0, width: 26.0);
+    } else {
+      sendTextColor = Colors.white;
+      sendButtonColor = Colors.blueAccent;
+      sendAction = Text("Send", style: TextStyle(color: sendTextColor));
+    }
+
+    return Container(
+      height: 50,
+      child: SizedBox.expand(
+        child: RaisedButton(
+          padding: EdgeInsets.only(top: 12, bottom: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
+          onPressed: _sendPayment,
+          color: sendButtonColor,
+          child: sendAction
         )
       )
     );
