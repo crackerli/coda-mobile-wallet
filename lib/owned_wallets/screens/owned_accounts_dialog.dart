@@ -29,6 +29,7 @@ void showUnlockAccountDialog(BuildContext context, Account account) {
       password = val;
     }
   );
+
   showDialog(
     context: context,
     builder: (context) {
@@ -54,24 +55,72 @@ void showUnlockAccountDialog(BuildContext context, Account account) {
 
 void showLockAccountDialog(BuildContext context, Account account) {
   showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-            title: Text('Lock Account'),
-            content: Text('Confirm to lock account?'),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    _toggleLockStatus(context, account, true);
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK')
-              ),
-              FlatButton(
-                  onPressed: () { Navigator.of(context).pop(); },
-                  child: Text('Cancel')
-              )
-            ]
-        );
-      });
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Lock Account'),
+        content: Text('Confirm to lock account?'),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              _toggleLockStatus(context, account, true);
+              Navigator.of(context).pop();
+            },
+            child: Text('OK')
+          ),
+          FlatButton(
+            onPressed: () { Navigator.of(context).pop(); },
+            child: Text('Cancel')
+          )
+        ]
+      );
+    }
+  );
+}
+
+_createNewAccount(BuildContext context, String password) {
+  Map<String, String> variables = Map<String, String>();
+  variables['password'] = password;
+  final _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
+
+  _ownedAccountsBloc.add(
+    CreateAccount(CREATE_ACCOUNT_MUTATION, variables: variables));
+}
+
+void showCreateAccountDialog(BuildContext context) {
+  String password = '';
+  final textField = TextField(
+      onChanged: (val) {
+        password = val;
+      }
+  );
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Create new account'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Please input the account password'),
+            textField
+          ]
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _createNewAccount(context, password);
+            },
+            child: Text('OK')
+          ),
+          FlatButton(
+            onPressed: () { Navigator.of(context).pop(); },
+            child: Text('Cancel')
+          )
+        ]
+      );
+    }
+  );
 }

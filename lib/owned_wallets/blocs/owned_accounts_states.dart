@@ -55,3 +55,25 @@ class ToggleLockStatusFail extends OwnedAccountsStates {
   @override
   List<Object> get props => error;
 }
+
+class CreateAccountLoading extends OwnedAccountsStates {
+  CreateAccountLoading() : super();
+}
+
+class CreateAccountSuccess extends OwnedAccountsStates {
+  final dynamic data;
+
+  CreateAccountSuccess(this.data) : super();
+
+  @override
+  List<Object> get props => data;
+}
+
+class CreateAccountFail extends OwnedAccountsStates {
+  final dynamic error;
+
+  CreateAccountFail(this.error) : super();
+
+  @override
+  List<Object> get props => error;
+}

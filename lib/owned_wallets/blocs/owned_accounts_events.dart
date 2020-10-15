@@ -26,3 +26,13 @@ class ToggleLockStatus extends OwnedAccountsEvents {
   @override
   List<Object> get props => [mutation, variables];
 }
+
+class CreateAccount extends OwnedAccountsEvents {
+  final String mutation;
+  final Map<String, dynamic> variables;
+
+  CreateAccount(this.mutation, {this.variables}) : super();
+
+  @override
+  List<Object> get props => [mutation, variables];
+}

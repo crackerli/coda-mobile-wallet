@@ -94,7 +94,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
               backgroundColor: Colors.red,
               label: 'Create',
               labelStyle: TextStyle(fontSize: 18.0),
-              onTap: null
+              onTap: () => showCreateAccountDialog(context)
           ),
           SpeedDialChild(
             label: 'Delete',
@@ -135,7 +135,6 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
         );
       }
       return _buildAccountListWidget(data);
-
     }
 
     if(state is FetchOwnedAccountsFail) {
@@ -148,12 +147,19 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     }
 
     if(state is ToggleLockStatusFail) {
-      final snackBar = SnackBar(content: Text('Lock Account Failed'));
-      Scaffold.of(context).showSnackBar(snackBar);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final snackBar = SnackBar(content: Text('Lock Account Failed: ${state.error}'));
+        Scaffold.of(context).showSnackBar(snackBar);
+      });
       return Container();
     }
 
     if(state is ToggleLockStatusSuccess) {
+      List<Account> data = state.data as List;
+      return _buildAccountListWidget(data);
+    }
+
+    if(state is CreateAccountSuccess) {
       List<Account> data = state.data as List;
       return _buildAccountListWidget(data);
     }
@@ -242,6 +248,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
 
   Widget _buildAccountListWidget(List<Account> accountList) {
     return ListView.separated(
+      physics: const ClampingScrollPhysics(),
       itemCount: accountList.length,
       itemBuilder: (context, index) {
         return _buildAccountItem(context, accountList[index]);

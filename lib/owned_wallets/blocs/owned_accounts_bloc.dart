@@ -17,6 +17,7 @@ class OwnedAccountsBloc extends
   OwnedAccountsBloc(OwnedAccountsStates state) : super(state) {
     _service = CodaService();
     _isAccountLoading = false;
+    _ownedAccounts = List<Account>();
   }
 
   OwnedAccountsStates get
@@ -35,10 +36,46 @@ class OwnedAccountsBloc extends
       yield* _mapToggleLockStatusToStates(event);
       return;
     }
+
+    if(event is CreateAccount) {
+      yield* _mapCreateAccountToStates(event);
+      return;
+    }
   }
 
   Stream<OwnedAccountsStates>
-      _mapToggleLockStatusToStates(ToggleLockStatus event) async* {
+    _mapCreateAccountToStates(CreateAccount event) async* {
+
+    final query = event.mutation;
+    final variables = event.variables ?? null;
+
+    try {
+      final result = await _service.performMutation(query, variables: variables);
+
+      if (result.hasException) {
+        print('graphql errors: ${result.exception.graphqlErrors.toString()}');
+        yield CreateAccountFail(result.exception.graphqlErrors[0]);
+        return;
+      }
+
+      final newAccount = Account(
+          publicKey: result.data['createAccount']['account']['publicKey'],
+          balance: result.data['createAccount']['account']['balance']['total'],
+          locked: result.data['createAccount']['account']['locked']
+      );
+
+      _ownedAccounts.add(newAccount);
+      yield CreateAccountSuccess(_ownedAccounts);
+    } catch (e) {
+      print(e);
+      yield CreateAccountFail(e.toString());
+    } finally {
+
+    }
+  }
+
+  Stream<OwnedAccountsStates>
+    _mapToggleLockStatusToStates(ToggleLockStatus event) async* {
 
     final query = event.mutation;
     final variables = event.variables ?? null;
@@ -91,6 +128,7 @@ class OwnedAccountsBloc extends
         return;
       }
 
+      _ownedAccounts.clear();
       final List<dynamic> accounts = result.data['ownedWallets'];
 
       _ownedAccounts = accounts
