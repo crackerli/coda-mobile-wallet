@@ -19,10 +19,10 @@ class CodaWallet extends StatelessWidget {
         title: 'Coda Wallet',
         theme: ThemeData(
           brightness: Brightness.light,
-          primaryColor: Color(0xfff4f4f4),
+          primaryColor: Color(0xfff7f8fa),
           accentColor: Colors.cyan[600],
           fontFamily: 'NotoSans-Regular'
-        ),//ThemeData(fontFamily: 'NotoSans-Regular'),
+        ),
         home: OwnedAccountsScreen()
       )
     );

@@ -7,6 +7,10 @@ abstract class SendTokenEvents extends Equatable {
   List<Object> get props => null;
 }
 
+class ValidateInput extends SendTokenEvents {
+  ValidateInput() : super();
+}
+
 class SendPayment extends SendTokenEvents {
   final String mutation;
   final Map<String, dynamic> variables;

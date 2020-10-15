@@ -44,3 +44,10 @@ int getNanoMina(String src) {
   double tmp = double.parse(src);
   return (tmp * 1000000000).toInt();
 }
+
+bool checkNumeric(String str) {
+  if(str == null) {
+    return false;
+  }
+  return double.tryParse(str) != null;
+}

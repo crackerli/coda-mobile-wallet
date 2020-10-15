@@ -35,7 +35,7 @@ toSendTokenScreen(BuildContext context, String publicKey, String balance, bool l
     MaterialPageRoute(builder: (context) {
       return BlocProvider<SendTokenBloc>(
         create: (BuildContext context) {
-          return SendTokenBloc(SendPaymentFail(null));
+          return SendTokenBloc(InputInvalidated());
         },
         child: SendTokenScreen(publicKey, balance, locked)
       );

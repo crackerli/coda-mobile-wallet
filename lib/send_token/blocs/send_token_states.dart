@@ -7,6 +7,14 @@ abstract class SendTokenStates extends Equatable {
   List<Object> get props => null;
 }
 
+class InputValidated extends SendTokenStates {
+  InputValidated() : super();
+}
+
+class InputInvalidated extends SendTokenStates {
+  InputInvalidated() : super();
+}
+
 class SendPaymentLoading extends SendTokenStates {
   final dynamic data;
 

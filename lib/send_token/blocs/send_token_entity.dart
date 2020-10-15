@@ -6,5 +6,6 @@ class SendTokenEntity {
   String memo;
   String amount;
   String fee;
+  bool isLocked;
   SendTokenActionStatus sendTokenActionStatus;
 }

@@ -2,6 +2,7 @@ import 'package:coda_wallet/send_token/blocs/send_token_entity.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
 import 'package:coda_wallet/types/send_token_action_status.dart';
+import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 
@@ -25,6 +26,30 @@ class SendTokenBloc extends
   set sender(value) => _sendTokenEntity.sender = value;
   set memo(value) => _sendTokenEntity.memo = value;
 
+  String get amount => _sendTokenEntity.amount;
+  String get fee => _sendTokenEntity.fee;
+  String get receiver => _sendTokenEntity.receiver;
+  String get sender => _sendTokenEntity.sender;
+  String get memo => _sendTokenEntity.memo;
+
+  bool checkSendContentValid() {
+    if(null == _sendTokenEntity.receiver ||
+       0 == _sendTokenEntity.receiver.length ||
+       null == _sendTokenEntity.amount ||
+       0 == _sendTokenEntity.amount.length ||
+       null == _sendTokenEntity.fee ||
+       0 == _sendTokenEntity.fee.length) {
+      return false;
+    }
+
+    if(!checkNumeric(_sendTokenEntity.amount) ||
+       !checkNumeric(_sendTokenEntity.fee)) {
+      return false;
+    }
+
+    return true;
+  }
+
   @override
   Stream<SendTokenStates>
     mapEventToState(SendTokenEvents event) async* {
@@ -32,6 +57,21 @@ class SendTokenBloc extends
       yield* _mapSendPaymentToStates(event);
       return;
     }
+
+    if(event is ValidateInput) {
+      yield* _mapValidateInputToStates(event);
+      return;
+    }
+  }
+
+  Stream<SendTokenStates>
+    _mapValidateInputToStates(ValidateInput event) async* {
+    if(checkSendContentValid()) {
+      yield InputValidated();
+      return;
+    }
+
+    yield InputInvalidated();
   }
 
   Stream<SendTokenStates>
@@ -41,7 +81,6 @@ class SendTokenBloc extends
     final variables = event.variables ?? null;
 
     try {
-      _sendTokenEntity.sendTokenActionStatus = SendTokenActionStatus.tokenSending;
       yield SendPaymentLoading(_sendTokenEntity);
       final result = await _service.performMutation(mutation, variables: variables);
 
