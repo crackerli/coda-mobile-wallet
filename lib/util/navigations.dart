@@ -1,7 +1,7 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_bloc.dart';
 import 'package:coda_wallet/account_txns/blocs/account_txns_states.dart';
 import 'package:coda_wallet/account_txns/screens/account_txns_screen.dart';
-import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
+import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
 import 'package:coda_wallet/qr_address/qr_address_screen.dart';
 import 'package:coda_wallet/qr_scan/qr_scanner.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';

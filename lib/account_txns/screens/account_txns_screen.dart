@@ -1,7 +1,7 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_entity.dart';
 import 'package:coda_wallet/account_txns/query/account_txns_query.dart';
 import 'package:coda_wallet/constant/constants.dart';
-import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
+import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
 import 'package:coda_wallet/types/list_operation_type.dart';
 import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';

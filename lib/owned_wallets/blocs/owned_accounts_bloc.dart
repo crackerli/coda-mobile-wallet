@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 import 'owned_accounts_events.dart';
 import 'owned_accounts_states.dart';
-import 'owned_accounts_models.dart';
+import 'owned_accounts_entity.dart';
 
 class OwnedAccountsBloc extends
     Bloc<OwnedAccountsEvents, OwnedAccountsStates> {

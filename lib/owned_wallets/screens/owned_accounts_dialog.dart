@@ -1,6 +1,6 @@
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_bloc.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_events.dart';
-import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
+import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
 import 'package:coda_wallet/owned_wallets/mutation/owned_accounts_mutation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,5 +1,5 @@
 import 'package:coda_wallet/constant/constants.dart';
-import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
+import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
 import 'package:coda_wallet/owned_wallets/screens/owned_accounts_dialog.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +21,30 @@ class OwnedAccountsScreen extends StatefulWidget {
 }
 
 class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
+  OwnedAccountsBloc _ownedAccountsBloc;
 
   @override
   void initState() {
-    final _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
+    _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
     _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _ownedAccountsBloc = null;
+    super.dispose();
+  }
+
+  _loadMoreTxns(String before) {
+    // Map<String, dynamic> variables = Map<String, dynamic>();
+    // variables['publicKey'] = widget.account.publicKey;
+    // variables['before'] = before;
+    // _ownedAccountsBloc.add(MoreAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
+  }
+
+  Future<Null> _onRefresh() {
+//    return Future<Null>();
   }
 
   @override
@@ -34,10 +52,14 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
     return Scaffold(
       appBar: _buildAccountsAppBar(),
-      body: BlocBuilder<OwnedAccountsBloc, OwnedAccountsStates>(
-        builder: (BuildContext context, OwnedAccountsStates state) {
-          return _buildAccountsBody(context, state);
-        }
+      body:
+      RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: BlocBuilder<OwnedAccountsBloc, OwnedAccountsStates>(
+          builder: (BuildContext context, OwnedAccountsStates state) {
+            return _buildAccountsBody(context, state);
+          }
+        )
       ),
       floatingActionButton: _buildActionButton(),
     );
@@ -150,15 +172,22 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
       children: [
         _publicKeyText(publicKey),
         Container(height: 10),
+        Container(height: 1, color: Colors.grey),
+        Container(height: 10),
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Balance: $formattedTokenNumber"),
-            Container(width: 10, height: 1),
+            Expanded(flex: 1,child: Text("Balance: $formattedTokenNumber")),
+            Container(width: 10),
             GestureDetector(
               child: _lockStatusImage(account.locked),
               onTap: () { _clickLock(context, account); }
+            ),
+            Container(width: 10),
+            GestureDetector(
+                child: Image.asset('images/delete.png', width: 16, height: 16),
+                onTap: () { _clickLock(context, account); }
             )
           ]
         )
@@ -186,16 +215,8 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
   }
 
   _publicKeyText(String publicKey) {
-    return Container(
-      margin: EdgeInsets.only(left: 0, top: 0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-        border: Border.all(width: 1, color: Colors.grey),
-      ),
-      child: Text(publicKey, softWrap: true,
-          textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 3)
-    );
+    return Text(publicKey, softWrap: true,
+      textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 3);
   }
 
   _lockStatusImage(bool locked) {
@@ -226,11 +247,6 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
       },
       separatorBuilder: (context, index) { return Container(); }
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 

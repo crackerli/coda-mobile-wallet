@@ -64,6 +64,7 @@ flutter:
     - images/locked_black.png
     - images/unlocked_green.png
     - images/setting.png
+    - images/delete.png
 
   fonts:
    - family: Entypo
