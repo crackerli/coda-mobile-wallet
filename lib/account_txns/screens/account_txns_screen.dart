@@ -1,5 +1,6 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_entity.dart';
 import 'package:coda_wallet/account_txns/query/account_txns_query.dart';
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_models.dart';
 import 'package:coda_wallet/types/list_operation_type.dart';
 import 'package:coda_wallet/types/transaction_type.dart';
@@ -11,6 +12,7 @@ import '../blocs/account_txns_bloc.dart';
 import '../blocs/account_txns_states.dart';
 import '../blocs/account_txns_events.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ignore: must_be_immutable
 class AccountTxnsScreen extends StatefulWidget {
@@ -73,12 +75,9 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Account Detail'),
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: _buildAccountTxnsAppBar(),
       floatingActionButton: _buildActionButton(),
       body: RefreshIndicator(
         onRefresh: _onRefresh,
@@ -103,6 +102,18 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
           );
         })
       )
+    );
+  }
+
+  Widget _buildAccountTxnsAppBar() {
+    return PreferredSize(
+        child: AppBar(
+          title: Text('Accounts',
+              style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
+          centerTitle: true,
+          elevation: 0,
+        ),
+        preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
     );
   }
 

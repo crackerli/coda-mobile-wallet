@@ -63,6 +63,7 @@ flutter:
     - images/contact_address.png
     - images/locked_black.png
     - images/unlocked_green.png
+    - images/setting.png
 
   fonts:
    - family: Entypo
