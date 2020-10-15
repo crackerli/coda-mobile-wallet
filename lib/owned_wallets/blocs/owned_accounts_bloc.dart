@@ -10,13 +10,17 @@ class OwnedAccountsBloc extends
   CodaService _service;
   List<Account> _ownedAccounts;
   String _accountToLock;
+  bool _isAccountLoading;
+
+  bool get isAccountLoading => _isAccountLoading;
 
   OwnedAccountsBloc(OwnedAccountsStates state) : super(state) {
     _service = CodaService();
+    _isAccountLoading = false;
   }
 
   OwnedAccountsStates get
-      initState => FetchOwnedAccountsLoading();
+      initState => FetchOwnedAccountsLoading(_ownedAccounts);
 
   @override
   Stream<OwnedAccountsStates>
@@ -45,7 +49,6 @@ class OwnedAccountsBloc extends
 
       if (result.hasException) {
         print('graphql errors: ${result.exception.graphqlErrors.toString()}');
- //       print('client errors: ${result.exception.clientException.toString()}');
         yield ToggleLockStatusFail(result.exception.graphqlErrors[0]);
         return;
       }
@@ -76,13 +79,14 @@ class OwnedAccountsBloc extends
     final variables = event.variables ?? null;
 
     try {
-      yield FetchOwnedAccountsLoading();
+      yield FetchOwnedAccountsLoading(_ownedAccounts);
+      _isAccountLoading = true;
       final result = await
         _service.performQuery(query, variables: variables);
 
+      _isAccountLoading = false;
       if(result.hasException) {
         print('graphql errors: ${result.exception.graphqlErrors.toString()}');
-//        print('client errors: ${result.exception.clientException.toString()}');
         yield FetchOwnedAccountsFail(result.exception.graphqlErrors[0]);
         return;
       }

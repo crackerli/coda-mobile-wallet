@@ -36,15 +36,11 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     super.dispose();
   }
 
-  _loadMoreTxns(String before) {
-    // Map<String, dynamic> variables = Map<String, dynamic>();
-    // variables['publicKey'] = widget.account.publicKey;
-    // variables['before'] = before;
-    // _ownedAccountsBloc.add(MoreAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
-  }
 
-  Future<Null> _onRefresh() {
-//    return Future<Null>();
+  Future<Null> _onRefresh() async {
+    if(!_ownedAccountsBloc.isAccountLoading) {
+      _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY));
+    }
   }
 
   @override
@@ -132,9 +128,14 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     BuildContext context, OwnedAccountsStates state) {
 
     if(state is FetchOwnedAccountsLoading) {
-      return Center(
-        child: CircularProgressIndicator()
-      );
+      List<Account> data = state.data as List;
+      if(null == data || 0 == data.length) {
+        return Center(
+            child: CircularProgressIndicator()
+        );
+      }
+      return _buildAccountListWidget(data);
+
     }
 
     if(state is FetchOwnedAccountsFail) {

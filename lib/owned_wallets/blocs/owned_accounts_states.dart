@@ -8,7 +8,12 @@ abstract class OwnedAccountsStates extends Equatable {
 }
 
 class FetchOwnedAccountsLoading extends OwnedAccountsStates {
-  FetchOwnedAccountsLoading() : super();
+  final dynamic data;
+
+  FetchOwnedAccountsLoading(this.data) : super();
+
+  @override
+  List<Object> get props => data;
 }
 
 class FetchOwnedAccountsSuccess extends OwnedAccountsStates {

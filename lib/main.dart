@@ -13,7 +13,7 @@ class CodaWallet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<OwnedAccountsBloc>(
-      create: (context) => OwnedAccountsBloc(FetchOwnedAccountsLoading()),
+      create: (context) => OwnedAccountsBloc(FetchOwnedAccountsLoading(null)),
       child: MaterialApp(
         showPerformanceOverlay: false,
         title: 'Coda Wallet',
