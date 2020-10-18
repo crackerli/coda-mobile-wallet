@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coda_wallet/owned_wallets/screens/owned_accounts_screen.dart';
 import 'owned_wallets/blocs/owned_accounts_bloc.dart';
 import 'owned_wallets/blocs/owned_accounts_states.dart';
 
 void main() {
-  runApp(CodaWallet());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(CodaWallet());
+  });
+//  runApp(CodaWallet());
 }
 
 class CodaWallet extends StatelessWidget {
