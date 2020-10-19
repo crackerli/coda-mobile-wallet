@@ -1,9 +1,12 @@
+import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:graphql/client.dart';
 import 'dart:io';
 import 'package:http/io_client.dart';
 
 class CodaService {
   GraphQLClient _client;
+  String rpcServer;
 
   CodaService() {
     HttpClient httpClient = HttpClient();
@@ -13,8 +16,9 @@ class CodaService {
     };
 
     ioClient = IOClient(httpClient);
+    rpcServer = globalPreferences.getString(RPC_SERVER_KEY);
     final HttpLink httpLink = HttpLink(
-        'http://161.97.83.110:3085/graphql',
+        rpcServer,
         defaultHeaders: <String, String> {
           'content-type': 'application/json',
         },

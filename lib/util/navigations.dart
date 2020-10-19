@@ -7,6 +7,7 @@ import 'package:coda_wallet/qr_scan/qr_scanner.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
 import 'package:coda_wallet/send_token/screens/send_token_screen.dart';
+import 'package:coda_wallet/setting/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -46,6 +47,13 @@ toSendTokenScreen(BuildContext context, String publicKey, String balance, bool l
 dynamic toQrScanScreen(BuildContext context) async {
   final result = Navigator.push(context,
       MaterialPageRoute(builder: (context) => QrScanScreen())
+  );
+  return result;
+}
+
+toSettingScreen(BuildContext context) {
+  final result = Navigator.push(context,
+      MaterialPageRoute(builder: (context) => SettingScreen())
   );
   return result;
 }

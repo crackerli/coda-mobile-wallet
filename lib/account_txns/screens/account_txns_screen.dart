@@ -112,6 +112,11 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
               style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
           centerTitle: true,
           elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_rounded),
+            tooltip: 'Navigation',
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
         preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
     );

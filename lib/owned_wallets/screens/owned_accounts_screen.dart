@@ -48,8 +48,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
     return Scaffold(
       appBar: _buildAccountsAppBar(),
-      body:
-      RefreshIndicator(
+      body: RefreshIndicator(
         onRefresh: _onRefresh,
         child: BlocBuilder<OwnedAccountsBloc, OwnedAccountsStates>(
           builder: (BuildContext context, OwnedAccountsStates state) {
@@ -59,10 +58,6 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
       ),
       floatingActionButton: _buildActionButton(),
     );
-  }
-
-  _gotoSetting() {
-
   }
 
   Widget _buildAccountsAppBar() {
@@ -75,9 +70,9 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
         actions: [
           IconButton(
             icon: Image.asset('images/setting.png', width: 100.w, height: 100.w),
-            tooltip: 'QrCode',
+            tooltip: 'Setting',
             iconSize: 24,
-            onPressed: _gotoSetting,
+            onPressed: () => toSettingScreen(context),
           )
         ]
       ),
@@ -115,8 +110,9 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
       children: [
         Container(height: 8, color: Color(0xffeeeeee)),
         Container(height: 6,),
-        Expanded(flex: 1,
-        child: Padding(
+        Expanded(
+          flex: 1,
+          child: Padding(
           padding: EdgeInsets.only(left: 10, right: 10),
           child: _buildAccountsWidget(context, state))
         )
@@ -138,7 +134,21 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     }
 
     if(state is FetchOwnedAccountsFail) {
-      return Center(child: Text(state.error));
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(state.error),
+            RaisedButton(
+              padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
+              onPressed: () => _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY)),
+              color: Colors.blueAccent,
+              child: Text('Refresh', style: TextStyle(color: Colors.white),)
+            )
+          ]
+        )
+      );
     }
 
     if(state is FetchOwnedAccountsSuccess) {
@@ -248,7 +258,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
 
   Widget _buildAccountListWidget(List<Account> accountList) {
     return ListView.separated(
-      physics: const ClampingScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(),
       itemCount: accountList.length,
       itemBuilder: (context, index) {
         return _buildAccountItem(context, accountList[index]);
