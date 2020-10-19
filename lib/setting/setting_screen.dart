@@ -14,6 +14,8 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   TextEditingController _rpcEditingController = TextEditingController();
+  FocusNode _rpcServerFocus = FocusNode();
+  bool _isSaveDiabled;
 
   _readRPCServer() async {
     String rpcServer = globalPreferences.getString(RPC_SERVER_KEY);
@@ -23,11 +25,21 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   void initState() {
     super.initState();
+    _isSaveDiabled = false;
+    _rpcServerFocus.addListener(() {
+      if(_rpcServerFocus.hasFocus) {
+        _isSaveDiabled = true;
+      } else {
+        _isSaveDiabled = false;
+      }
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     _rpcEditingController.dispose();
+    _rpcServerFocus.dispose();
     super.dispose();
   }
 
@@ -64,9 +76,9 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   Expanded(flex: 10, child: Container()),
                   RaisedButton(
-                    padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
+                    padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 100, right: 100),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                    onPressed: () => globalPreferences.setString(RPC_SERVER_KEY, _rpcEditingController.text),
+                    onPressed: _isSaveDiabled ? _saveRpcServer : null,
                     color: Colors.blueAccent,
                     child: Text('Save', style: TextStyle(color: Colors.white),)
                   ),
@@ -79,15 +91,21 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
+  _saveRpcServer() {
+    globalPreferences.setString(RPC_SERVER_KEY, _rpcEditingController.text);
+    _rpcServerFocus.unfocus();
+  }
+
   Widget _buildRpcServerBody() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("RPC Server", textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold),),
+        Text("RPC Server Address", textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold),),
         Container(height: 6),
         TextField(
           controller: _rpcEditingController,
+          focusNode: _rpcServerFocus,
           maxLines: 1,
           autofocus: false,
           textAlign: TextAlign.left,
@@ -103,7 +121,7 @@ class _SettingScreenState extends State<SettingScreen> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(6)),
               borderSide: BorderSide(
-                color: Colors.blue,
+                color: Colors.redAccent,
                 width: 1.0,
               ),
             ),
