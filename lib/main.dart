@@ -33,18 +33,18 @@ class CodaWallet extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
         if(snapshot.connectionState == ConnectionState.done) {
           return BlocProvider<OwnedAccountsBloc>(
-              create: (context) => OwnedAccountsBloc(FetchOwnedAccountsLoading(null)),
-              child: MaterialApp(
-                  showPerformanceOverlay: false,
-                  title: 'Coda Wallet',
-                  theme: ThemeData(
-                      brightness: Brightness.light,
-                      primaryColor: Color(0xfff7f8fa),
-                      accentColor: Colors.cyan[600],
-                      fontFamily: 'NotoSans-Regular'
-                  ),
-                  home: OwnedAccountsScreen()
-              )
+            create: (context) => OwnedAccountsBloc(FetchOwnedAccountsLoading(null)),
+            child: MaterialApp(
+              showPerformanceOverlay: false,
+              title: 'Coda Wallet',
+              theme: ThemeData(
+                brightness: Brightness.light,
+                primaryColor: Color(0xfff7f8fa),
+                accentColor: Colors.cyan[600],
+                fontFamily: 'Roboto-Regular'
+              ),
+              home: OwnedAccountsScreen()
+            )
           );
         } else {
           return Container(

@@ -91,8 +91,12 @@ flutter:
    - family: Roboto-Regular
      fonts:
        - asset: fonts/Roboto-Regular.ttf
-         weight: 700
+         weight: 400
    - family: NotoSans-Regular
      fonts:
        - asset: fonts/NotoSans-Regular.ttf
          weight: 700
+   - family: Lato-Light
+     fonts:
+       - asset: fonts/Lato-Light.ttf
+         weight: 300

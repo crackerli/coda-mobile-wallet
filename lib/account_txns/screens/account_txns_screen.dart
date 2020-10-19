@@ -174,6 +174,11 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
 
     if(state is RefreshAccountTxnsSuccess) {
       AccountDetail accountDetail = state.data;
+      if(null == accountDetail ||
+         null == accountDetail.mergedUserCommands ||
+         0 == accountDetail.mergedUserCommands.length) {
+        return Center(child: Text('No Transactions', style: TextStyle(color: Color(0xffbbbbbb)),));
+      }
       return _buildTxnsListWidget(accountDetail.mergedUserCommands);
     }
 

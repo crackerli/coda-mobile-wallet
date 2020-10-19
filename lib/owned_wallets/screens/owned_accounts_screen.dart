@@ -196,13 +196,13 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
       children: [
         _publicKeyText(publicKey),
         Container(height: 10),
-        Container(height: 1, color: Colors.grey),
+        Container(height: 0.5, color: Color(0xffdddddd)),
         Container(height: 10),
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(flex: 1,child: Text("Balance: $formattedTokenNumber")),
+            Expanded(flex: 1, child: Text("Balance: $formattedTokenNumber")),
             Container(width: 10),
             GestureDetector(
               child: _lockStatusImage(account.locked),
