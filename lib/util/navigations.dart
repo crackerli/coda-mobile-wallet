@@ -51,7 +51,7 @@ dynamic toQrScanScreen(BuildContext context) async {
   return result;
 }
 
-toSettingScreen(BuildContext context) {
+dynamic toSettingScreen(BuildContext context) async {
   final result = Navigator.push(context,
       MaterialPageRoute(builder: (context) => SettingScreen())
   );

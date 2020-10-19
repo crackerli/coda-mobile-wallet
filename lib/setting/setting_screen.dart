@@ -16,10 +16,22 @@ class _SettingScreenState extends State<SettingScreen> {
   TextEditingController _rpcEditingController = TextEditingController();
   FocusNode _rpcServerFocus = FocusNode();
   bool _isSaveDiabled;
+  String _newRpcServer = globalRpcServer;
 
-  _readRPCServer() async {
+  _readRPCServer() {
     String rpcServer = globalPreferences.getString(RPC_SERVER_KEY);
     _rpcEditingController.text = rpcServer;
+  }
+
+  _backToWalletScreen() {
+    bool needRefreshAccounts;
+    if(_newRpcServer != globalRpcServer) {
+      globalRpcServer = _newRpcServer;
+      needRefreshAccounts = true;
+    } else {
+      needRefreshAccounts = false;
+    }
+    Navigator.pop(context, needRefreshAccounts);
   }
 
   @override
@@ -93,6 +105,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   _saveRpcServer() {
     globalPreferences.setString(RPC_SERVER_KEY, _rpcEditingController.text);
+    _newRpcServer = _rpcEditingController.text;
     _rpcServerFocus.unfocus();
   }
 
@@ -142,7 +155,7 @@ class _SettingScreenState extends State<SettingScreen> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_rounded),
             tooltip: 'Back',
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: _backToWalletScreen,
           ),
         ),
         preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)

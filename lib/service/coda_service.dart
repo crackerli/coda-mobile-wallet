@@ -6,7 +6,6 @@ import 'package:http/io_client.dart';
 
 class CodaService {
   GraphQLClient _client;
-  String rpcServer;
 
   CodaService() {
     HttpClient httpClient = HttpClient();
@@ -16,9 +15,9 @@ class CodaService {
     };
 
     ioClient = IOClient(httpClient);
-    rpcServer = globalPreferences.getString(RPC_SERVER_KEY);
+    globalRpcServer = globalPreferences.getString(RPC_SERVER_KEY);
     final HttpLink httpLink = HttpLink(
-        rpcServer,
+        globalRpcServer,
         defaultHeaders: <String, String> {
           'content-type': 'application/json',
         },

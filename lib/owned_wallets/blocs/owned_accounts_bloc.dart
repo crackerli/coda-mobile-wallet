@@ -20,6 +20,8 @@ class OwnedAccountsBloc extends
     _ownedAccounts = List<Account>();
   }
 
+  newCodaService() => _service = CodaService();
+
   OwnedAccountsStates get
       initState => FetchOwnedAccountsLoading(_ownedAccounts);
 

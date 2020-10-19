@@ -36,6 +36,13 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     super.dispose();
   }
 
+  _changeRpcServerAddress() async {
+    bool needRefresh = await toSettingScreen(context);
+    if(needRefresh) {
+      _ownedAccountsBloc.newCodaService();
+      _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY));
+    }
+  }
 
   Future<Null> _onRefresh() async {
     if(!_ownedAccountsBloc.isAccountLoading) {
@@ -72,7 +79,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
             icon: Image.asset('images/setting.png', width: 100.w, height: 100.w),
             tooltip: 'Setting',
             iconSize: 24,
-            onPressed: () => toSettingScreen(context),
+            onPressed: _changeRpcServerAddress,
           )
         ]
       ),
