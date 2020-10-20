@@ -40,7 +40,10 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   TextEditingController _memoController    = TextEditingController();
   dynamic _qrResult;
   SendTokenBloc _sendTokenBloc;
-  final _focusNodeAmount = FocusNode();
+  final _focusNodeAmount   = FocusNode();
+  final _focusNodeReceiver = FocusNode();
+  final _focusNodeMeme     = FocusNode();
+  final _focusNodeFee      = FocusNode();
 
   @override
   void initState() {
@@ -58,6 +61,10 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     _feeController?.dispose();
     _addressController?.dispose();
     _amountController?.dispose();
+    _focusNodeAmount?.dispose();
+    _focusNodeFee?.dispose();
+    _focusNodeMeme?.dispose();
+    _focusNodeReceiver?.dispose();
 
     super.dispose();
   }
@@ -87,7 +94,29 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
     return Scaffold(
       appBar: _buildSendTokenAppBar(),
-      body: _buildSendTokenBody()
+      body: KeyboardActions(
+        tapOutsideToDismiss: true,
+        autoScroll: true,
+        config: KeyboardActionsConfig(
+          keyboardSeparatorColor: Colors.grey,
+          nextFocus: false,
+          actions: [
+            KeyboardActionsItem(
+              focusNode: _focusNodeReceiver,
+            ),
+            KeyboardActionsItem(
+              focusNode: _focusNodeAmount,
+            ),
+            KeyboardActionsItem(
+              focusNode: _focusNodeMeme,
+            ),
+            KeyboardActionsItem(
+              focusNode: _focusNodeFee,
+            ),
+          ],
+        ),
+        child: SingleChildScrollView( child: _buildSendTokenBody())
+      )
     );
   }
 
@@ -136,10 +165,11 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           _buildFeeCostTextField(),
           Container(height: 10.h),
           _buildLockStatus(),
-          Expanded(flex: 1,
+          //Expanded(flex: 1,
+        Container(height: 480.h,
             child: BlocBuilder<SendTokenBloc, SendTokenStates>(
               builder:(BuildContext context, SendTokenStates state) {
-                return  _buildSendAction(context, state);
+                return _buildSendAction(context, state);
               }
             )
           )
@@ -175,6 +205,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
                   minHeight: 37.h,
                 ),
                 child: TextField(
+                  focusNode: _focusNodeReceiver,
                   controller: _addressController,
                   onChanged: (text) {
                     _sendTokenBloc.receiver = text;
@@ -240,6 +271,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
             Container(height: 6.h, color: Color(0xffeeeeee)),
             Container(height: 24.h,),
             TextField(
+              focusNode: _focusNodeMeme,
               controller: _memoController,
               onChanged: (text) {
                 _sendTokenBloc.memo = text;
@@ -269,6 +301,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
             Expanded(
               flex: 10,
               child: TextField(
+                focusNode: _focusNodeFee,
                 controller: _feeController,
                 onChanged: (text) {
                   _sendTokenBloc.fee = text;
@@ -343,7 +376,8 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
         children: [
           Expanded(
             flex: 1,
-            child: Container(),
+            child:
+            Container(),
           ),
           Container(
             height: 160.h,
