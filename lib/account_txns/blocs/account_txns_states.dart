@@ -12,8 +12,8 @@ class RefreshAccountTxnsLoading extends AccountTxnsStates {
 
   RefreshAccountTxnsLoading(this.data) : super();
 
-  @override
-  List<Object> get props => data;
+  // @override
+  // List<Object> get props => data.data;
 }
 
 class RefreshAccountTxnsSuccess extends AccountTxnsStates {
@@ -21,8 +21,8 @@ class RefreshAccountTxnsSuccess extends AccountTxnsStates {
 
   RefreshAccountTxnsSuccess(this.data) : super();
 
-  @override
-  List<Object> get props => data;
+  // @override
+  // List<Object> get props => data;
 }
 
 class RefreshAccountTxnsFail extends AccountTxnsStates {
@@ -30,8 +30,8 @@ class RefreshAccountTxnsFail extends AccountTxnsStates {
 
   RefreshAccountTxnsFail(this.error) : super();
 
-  @override
-  List<Object> get props => error;
+  // @override
+  // List<Object> get props => error;
 }
 
 class MoreAccountTxnsLoading extends AccountTxnsStates {
@@ -39,8 +39,8 @@ class MoreAccountTxnsLoading extends AccountTxnsStates {
 
   MoreAccountTxnsLoading(this.data) : super();
 
-  @override
-  List<Object> get props => data;
+  // @override
+  // List<Object> get props => data;
 }
 
 class MoreAccountTxnsSuccess extends AccountTxnsStates {
@@ -48,8 +48,8 @@ class MoreAccountTxnsSuccess extends AccountTxnsStates {
 
   MoreAccountTxnsSuccess(this.data) : super();
 
-  @override
-  List<Object> get props => data;
+  // @override
+  // List<Object> get props => data;
 }
 
 class MoreAccountTxnsFail extends AccountTxnsStates {

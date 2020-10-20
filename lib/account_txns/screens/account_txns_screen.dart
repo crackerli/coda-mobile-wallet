@@ -107,18 +107,18 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
 
   Widget _buildAccountTxnsAppBar() {
     return PreferredSize(
-        child: AppBar(
-          title: Text('Accounts',
-              style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
-          centerTitle: true,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_rounded),
-            tooltip: 'Navigation',
-            onPressed: () => Navigator.of(context).pop(),
-          ),
+      child: AppBar(
+        title: Text('Accounts',
+          style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
+        centerTitle: true,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_rounded),
+          tooltip: 'Navigation',
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
+      ),
+      preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
     );
   }
 
@@ -154,9 +154,9 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
          null == accountDetail.mergedUserCommands ||
          0 == accountDetail.mergedUserCommands.length) {
         return Container(
-            child: Center(
-                child: CircularProgressIndicator()
-            )
+          child: Center(
+            child: CircularProgressIndicator()
+          )
         );
       } else {
         return _buildTxnsListWidget(accountDetail.mergedUserCommands);
@@ -222,19 +222,28 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
       locked = widget.account.locked;
     }
 
-    return Container(
-      padding: EdgeInsets.only(top: 20, bottom: 20),
+    return Padding(
+      padding: EdgeInsets.only(top: 8, left: 12, right: 12, bottom: 8),
       child: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("${formatHashEllipsis(publicKey)}"),
+                Expanded(flex: 1,
+                  child:
+                Text(publicKey, softWrap: true, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 3,),
+                ),
                 Container(width: 10),
                 Image.asset(locked ? 'images/locked_black.png' : 'images/unlocked_green.png', width: 20, height: 20)
               ],
             ),
+            Container(height: 12,),
             Text('Balance: ${formatTokenNumber(balance)}')
           ],
         ),
@@ -258,12 +267,12 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
 
   Widget _getTxnTypeIcon(MergedUserCommand userCommand) {
     if(_getTxnType(userCommand) == TxnType.SEND) {
-      return Image.asset('images/txsend.png', width: 24, height: 24);
+      return Image.asset('images/txsend.png', width: 65.w, height: 65.w);
     }
 
     if(_getTxnType(userCommand) == TxnType.RECEIVE ||
         _getTxnType(userCommand) == TxnType.MINTED) {
-      return Image.asset('images/txreceive.png', width: 24, height: 24);
+      return Image.asset('images/txreceive.png', width: 65.w, height: 65.w);
     }
 
     return Container();
@@ -291,37 +300,38 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     }
 
     if(userCommand.isPooled) {
-      return Text('Pending', style: TextStyle(color: Color(0xffbbbbbb)));
+      return Text('Pending', style: TextStyle(color: Color.fromARGB(0xff, 199, 199, 199), fontSize: 40.sp));
     }
-    return Text('${formatDateTime(userCommand.dateTime)}', style: TextStyle(color: Color(0xffbbbbbb)));
+    return Text('${formatDateTime(userCommand.dateTime)}',
+      style: TextStyle(color: Color.fromARGB(0xff, 199, 199, 199), fontSize: 40.sp));
   }
 
   Widget _getFormattedTxnAmount(MergedUserCommand userCommand) {
     if(_getTxnType(userCommand) == TxnType.MINTED) {
-      return Text('+${formatTokenNumber(userCommand.coinbase)}',
-        style: TextStyle(color: Colors.lightGreen));
+      return Text('+${formatTokenNumber(userCommand.coinbase)}', textAlign: TextAlign.right,
+        style: TextStyle(color: Color.fromARGB(0xff, 34, 180, 161), fontSize: 40.sp));
     }
 
     if(_getTxnType(userCommand) == TxnType.RECEIVE) {
-      return Text('+${formatTokenNumber(userCommand.amount)}',
-        style: TextStyle(color: Colors.lightGreen));
+      return Text('+${formatTokenNumber(userCommand.amount)}',textAlign: TextAlign.right,
+        style: TextStyle(color: Color.fromARGB(0xff, 34, 180, 161), fontSize: 40.sp));
     }
 
     if(_getTxnType(userCommand) == TxnType.SEND) {
-      return Text('-${formatTokenNumber(userCommand.amount)}',
-        style: TextStyle(color: Colors.lightBlue));
+      return Text('-${formatTokenNumber(userCommand.amount)}',textAlign: TextAlign.right,
+        style: TextStyle(color: Color.fromARGB(0xff, 39, 139, 191), fontSize: 40.sp));
     }
 
-    return Text('${formatTokenNumber(userCommand.amount)}',
-      style: TextStyle(color: Colors.black54));
+    return Text('${formatTokenNumber(userCommand.amount)}',textAlign: TextAlign.right,
+      style: TextStyle(color: Colors.black54, fontSize: 40.sp));
   }
   
   Widget _getCommandHashText(MergedUserCommand userCommand) {
     if(_getTxnType(userCommand) == TxnType.MINTED) {
-      return Text('Minted', style: TextStyle(color: Colors.black87));
+      return Text('Minted', style: TextStyle(color: Colors.green, fontSize: 40.sp));
     }
     return Text('${formatHashEllipsis(userCommand.hash)}',
-      style: TextStyle(color: Colors.black87));
+      style: TextStyle(color: Color.fromARGB(0xff, 129, 134, 137), fontSize: 40.sp));
   }
   
   Widget _getTxnFeeText(MergedUserCommand userCommand) {
@@ -329,7 +339,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
       return Container();
     }
     return Text('fee: ${formatTokenNumber(userCommand.fee)}',
-      style: TextStyle(color: Colors.indigoAccent));
+      style: TextStyle(color: Colors.grey, fontSize: 36.sp), textAlign: TextAlign.right,);
   }
 
   Widget _buildTxnItem(MergedUserCommand userCommand) {
@@ -348,7 +358,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
         )
       );
     }
-    return Container(
+    return Padding(
       padding: EdgeInsets.only(top: 10, bottom: 6, left: 10, right: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,12 +382,14 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
               ),
             ]
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              _getTxnFeeText(userCommand),
-              Container(width: 20),
-              _getFormattedTxnAmount(userCommand)
+              _getFormattedTxnAmount(userCommand),
+              Container(height: 2),
+              _getTxnFeeText(userCommand)
             ],
           )
         ],
