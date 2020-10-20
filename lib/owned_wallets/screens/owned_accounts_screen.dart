@@ -245,7 +245,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
 
   _lockStatusImage(bool locked) {
     return Image.asset(locked ?
-        'images/locked_black.png' : 'images/unlocked_green.png', width: 16, height: 16);
+      'images/locked_black.png' : 'images/unlocked_green.png', width: 16, height: 16);
   }
 
   _clickLock(BuildContext context, Account account) {

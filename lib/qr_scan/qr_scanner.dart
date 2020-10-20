@@ -1,6 +1,8 @@
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QrScanScreen extends StatefulWidget {
   const QrScanScreen({
@@ -12,25 +14,66 @@ class QrScanScreen extends StatefulWidget {
 }
 
 class _QrScanScreenState extends State<QrScanScreen> {
-  var _scannedText = '';
   QRViewController _qrViewController;
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
   bool _hasPopped = false;
+  bool _isFlashOn = false;
+
+  Widget _buildAccountTxnsAppBar() {
+    return PreferredSize(
+      child: AppBar(
+        title: Text('Qr Scan',
+            style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
+        centerTitle: true,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_rounded),
+          tooltip: 'Navigation',
+          onPressed: () => Navigator.pop(context, ''),
+        ),
+        actions: [
+          IconButton(
+            icon: _isFlashOn ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
+            tooltip: 'Flash',
+            iconSize: 24,
+            onPressed: _toggleFlash,
+          )
+        ]
+      ),
+      preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
+    );
+  }
+
+  _toggleFlash() {
+    _qrViewController.toggleFlash();
+    setState(() {
+      _isFlashOn = !_isFlashOn;
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: QRView(
-        key: _qrKey,
-        onQRViewCreated: _onQRViewCreated,
-        overlay: QrScannerOverlayShape(
-          borderColor: Colors.blueAccent,
-          borderRadius: 4,
-          borderLength: 30,
-          borderWidth: 6,
-          cutOutSize: 200,
+    ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
+    return WillPopScope(
+      child: Scaffold(
+        appBar: _buildAccountTxnsAppBar(),
+        body: QRView(
+          key: _qrKey,
+          onQRViewCreated: _onQRViewCreated,
+          overlay: QrScannerOverlayShape(
+            borderColor: Colors.blueAccent,
+            borderRadius: 4,
+            borderLength: 30,
+            borderWidth: 6,
+            cutOutSize: 200,
+          ),
         ),
       ),
+      onWillPop: () async {
+        Navigator.pop(context, '');
+        return true;
+      }
     );
   }
 
@@ -46,7 +89,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
 
   @override
   void dispose() {
-    _qrViewController.dispose();
+    _qrViewController?.dispose();
     super.dispose();
   }
 }
