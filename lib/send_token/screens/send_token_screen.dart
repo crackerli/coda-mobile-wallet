@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 // ignore: must_be_immutable
 class SendTokenScreen extends StatefulWidget {
@@ -39,6 +40,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   TextEditingController _memoController    = TextEditingController();
   dynamic _qrResult;
   SendTokenBloc _sendTokenBloc;
+  final _focusNodeAmount = FocusNode();
 
   @override
   void initState() {
@@ -52,16 +54,16 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   void dispose() {
     _sendTokenBloc = null;
 
-    _memoController.dispose();
-    _feeController.dispose();
-    _addressController.dispose();
-    _amountController.dispose();
+    _memoController?.dispose();
+    _feeController?.dispose();
+    _addressController?.dispose();
+    _amountController?.dispose();
 
     super.dispose();
   }
 
   _fillQrAddress() async {
-    _qrResult =  await toQrScanScreen(context);
+    _qrResult = await toQrScanScreen(context);
     _addressController.text = '$_qrResult';
     _sendTokenBloc.receiver = '$_qrResult';
   }
@@ -96,6 +98,11 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
         centerTitle: true,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_rounded),
+          tooltip: 'Navigation',
+          onPressed: () => Navigator.pop(context),
+        ),
         actions: [
           IconButton(
             icon: Image.asset('images/qr_scan.png', width: 100.w, height: 100.w),
@@ -145,7 +152,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     return Padding(
       padding: EdgeInsets.only(left: 13.w),
       child: Text('Receiver Address',
-        style: TextStyle(fontSize: 33.sp, color: Color.fromARGB(0xff, 65, 69, 72)))
+        style: TextStyle(fontSize: 44.sp, color: Color.fromARGB(0xff, 65, 69, 72)))
     );
   }
 
@@ -198,14 +205,14 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Text('Balance', style: TextStyle(fontSize: 34.sp, color: Color.fromARGB(0xff, 90, 94, 97)),),
+          Text('Balance', style: TextStyle(fontSize: 44.sp, color: Color.fromARGB(0xff, 90, 94, 97)),),
           Expanded(
             flex: 1,
             child: Text(
               '${formatTokenNumber(widget.balance)} Mina',
               textAlign: TextAlign.right,
               style: TextStyle(color: Color.fromARGB(0xff, 151, 154, 159),
-              fontSize: 34.sp))
+              fontSize: 44.sp))
           )
         ]
       )
@@ -219,6 +226,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
         child: Column(
           children: [
             TextField(
+              focusNode: _focusNodeAmount,
               maxLines: 1,
               controller: _amountController,
               onChanged: (text) {
@@ -291,7 +299,9 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Text('LockStatus', style: TextStyle(fontSize: 41.sp, color: Color.fromARGB(0xff, 70, 70, 70))),
-            Image.asset('images/unlocked_green.png', width: 60.w, height: 60.w)
+            widget.locked ?
+              Image.asset('images/locked_black.png', width: 60.w, height: 60.w) :
+              Image.asset('images/unlocked_green.png', width: 60.w, height: 60.w)
           ]
         )
       )
