@@ -16,18 +16,20 @@ class SendTokenBloc extends
     _sendTokenEntity = SendTokenEntity();
     _sendTokenEntity.fee = '0.1';
     _sendTokenEntity.sendEnabled = false;
+    _sendTokenEntity.isSending = false;
   }
 
   SendTokenEntity get sendTokenEntity => _sendTokenEntity;
 
-  set sendAmount(value)  => _sendTokenEntity.sendAmount = value;
-  set fee(value)         => _sendTokenEntity.fee = value;
-  set receiver(value)    => _sendTokenEntity.receiver = value;
-  set sender(value)      => _sendTokenEntity.sender = value;
-  set memo(value)        => _sendTokenEntity.memo = value;
-  set isLocked(value)    => _sendTokenEntity.isLocked = value;
-  set balance(value)     => _sendTokenEntity.balance = value;
+  set sendAmount(value)  => _sendTokenEntity.sendAmount  = value;
+  set fee(value)         => _sendTokenEntity.fee         = value;
+  set receiver(value)    => _sendTokenEntity.receiver    = value;
+  set sender(value)      => _sendTokenEntity.sender      = value;
+  set memo(value)        => _sendTokenEntity.memo        = value;
+  set isLocked(value)    => _sendTokenEntity.isLocked    = value;
+  set balance(value)     => _sendTokenEntity.balance     = value;
   set sendEnabled(value) => _sendTokenEntity.sendEnabled = value;
+  set isSending(value)   => _sendTokenEntity.isSending   = value;
 
   String get sendAmount  => _sendTokenEntity.sendAmount;
   String get fee         => _sendTokenEntity.fee;
@@ -37,6 +39,7 @@ class SendTokenBloc extends
   String get balance     => _sendTokenEntity.balance;
   bool   get isLocked    => _sendTokenEntity.isLocked;
   bool   get sendEnabled => _sendTokenEntity.sendEnabled;
+  bool   get isSending   => _sendTokenEntity.isSending;
 
   bool checkSendContentValid() {
     if(null == _sendTokenEntity.receiver ||
@@ -96,9 +99,10 @@ class SendTokenBloc extends
     final variables = event.variables ?? null;
 
     try {
+      isSending = true;
       yield SendPaymentLoading(_sendTokenEntity);
       final result = await _service.performMutation(mutation, variables: variables);
-
+      isSending = false;
       if (result.hasException) {
         print('graphql errors: ${result.exception.graphqlErrors.toString()}');
         yield SendPaymentFail(result.exception.graphqlErrors[0]);
@@ -121,6 +125,7 @@ class SendTokenBloc extends
     final variables = event.variables ?? null;
 
     try {
+      yield ToggleLockStatusLoading();
       final result = await _service.performMutation(query, variables: variables);
 
       if (result.hasException) {

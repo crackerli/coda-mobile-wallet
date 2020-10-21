@@ -120,7 +120,11 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           ],
         ),
         child: SingleChildScrollView(
-          child: _buildSendTokenBody()
+          child: BlocBuilder<SendTokenBloc, SendTokenStates>(
+              builder:(BuildContext context, SendTokenStates state) {
+                return _buildSendTokenBody(context, state);//_buildSendAction(context, state);
+              }
+          )
         )
       )
     );
@@ -150,7 +154,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       preferredSize: Size.fromHeight(APPBAR_HEIGHT.h));
   }
 
-  Widget _buildSendTokenBody() {
+  Widget _buildSendTokenBody(BuildContext context, SendTokenStates state) {
     return Container(
       color: Color(0xfff7fbfe),
       padding: EdgeInsets.only(left: 32.w, right: 32.w, top: 60.h),
@@ -170,15 +174,11 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           Container(height: 10.h),
           _buildFeeCostTextField(),
           Container(height: 10.h),
-          _buildLockStatus(),
+          _buildLockStatus(context, state),
           //Expanded(flex: 1,
           Container(
             height: 360.h,
-            child: BlocBuilder<SendTokenBloc, SendTokenStates>(
-              builder:(BuildContext context, SendTokenStates state) {
-                return _buildSendAction(context, state);
-              }
-            )
+            child: _buildSendAction(context, state)
           )
         ]
       )
@@ -329,7 +329,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     );
   }
 
-  Widget _buildLockStatus() {
+  Widget _buildLockStatus(BuildContext context, SendTokenStates state) {
     return Card(
       child: Padding(
         padding: EdgeInsets.only(left: 44.w, right: 44.w, top: 44.h, bottom: 44.h),
@@ -339,11 +339,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Text('LockStatus', style: TextStyle(fontSize: 41.sp, color: Color.fromARGB(0xff, 70, 70, 70))),
-            BlocBuilder<SendTokenBloc, SendTokenStates>(
-              builder:(BuildContext context, SendTokenStates state) {
-                return _buildLockActionStatus(context, state);
-              }
-            )
+            _buildLockActionStatus(context, state)
           ]
         )
       )
@@ -400,12 +396,14 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       _addressController.clear();
       _memoController.clear();
       _amountController.clear();
+      _sendTokenBloc.isSending = false;
+      _sendTokenBloc.receiver = '';
+      _sendTokenBloc.memo = '';
+      _sendTokenBloc.sendAmount = '';
+      _sendTokenBloc.fee = '0.1';
       sendAction = Text("Send", style: TextStyle(color: Colors.white, fontSize: 44.sp));
       _sendTokenBloc.sendEnabled = false;
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {});
-      });
+      _sendTokenBloc.add(ValidateInput());
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final snackBar = SnackBar(content: Text('Mina sent'));

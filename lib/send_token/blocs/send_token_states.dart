@@ -47,7 +47,6 @@ class ToggleLockStatusLoading extends SendTokenStates {
 }
 
 class ToggleLockStatusSuccess extends SendTokenStates {
-
   ToggleLockStatusSuccess() : super();
 }
 

@@ -9,5 +9,5 @@ class SendTokenEntity {
   String balance;
   bool isLocked;
   bool sendEnabled;
-  SendTokenActionStatus sendTokenActionStatus;
+  bool isSending;
 }
