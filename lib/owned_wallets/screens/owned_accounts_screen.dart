@@ -1,4 +1,5 @@
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
 import 'package:coda_wallet/owned_wallets/screens/owned_accounts_dialog.dart';
 import 'package:coda_wallet/util/navigations.dart';
@@ -89,23 +90,23 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
 
   Widget _buildActionButton() {
     return SpeedDial(
-        child: Icon(Icons.add),
-        children:[
-          SpeedDialChild(
-              child: Icon(Icons.create),
-              backgroundColor: Colors.red,
-              label: 'Create',
-              labelStyle: TextStyle(fontSize: 18.0),
-              onTap: () => showCreateAccountDialog(context)
-          ),
-          SpeedDialChild(
-            label: 'Delete',
-            child: Icon(Icons.delete),
-            backgroundColor: Colors.orange,
-            labelStyle: TextStyle(fontSize: 18.0),
-            onTap: null,
-          ),
-        ]
+      child: Icon(Icons.add),
+      children:[
+        SpeedDialChild(
+          child: Icon(Icons.create),
+          backgroundColor: Colors.red,
+          label: 'Create',
+          labelStyle: TextStyle(fontSize: 18.0),
+          onTap: () => showCreateAccountDialog(context)
+        ),
+        SpeedDialChild(
+          label: 'Delete',
+          child: Icon(Icons.delete),
+          backgroundColor: Colors.orange,
+          labelStyle: TextStyle(fontSize: 18.0),
+          onTap: null,
+        ),
+      ]
     );
   }
 
@@ -188,12 +189,22 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
     toAccountTxnsScreen(context, account);
   }
 
+  Widget _buildAccountName(Account account) {
+    String name = globalPreferences.getString(account.publicKey);
+    if(null == name || name.isEmpty) {
+      name = 'Default Name';
+    }
+    return Text(name, style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.left,);
+  }
+
   _buildAccountContent(BuildContext context, Account account) {
     String publicKey = account.publicKey;
     String formattedTokenNumber = formatTokenNumber(account.balance);
 
     return Column(
       children: [
+        _buildAccountName(account),
+        Container(height: 6),
         _publicKeyText(publicKey),
         Container(height: 10),
         Container(height: 0.5, color: Color(0xffdddddd)),
@@ -217,7 +228,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
         )
       ],
       mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max
     );
   }
@@ -240,7 +251,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
 
   _publicKeyText(String publicKey) {
     return Text(publicKey, softWrap: true,
-      textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 3);
+      textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 1);
   }
 
   _lockStatusImage(bool locked) {
