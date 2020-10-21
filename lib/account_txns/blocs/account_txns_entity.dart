@@ -88,6 +88,7 @@ class AccountStatus {
   String publicKey;
   bool locked;
   String balance;
+  String accountName;
 }
 
 class AccountDetail {

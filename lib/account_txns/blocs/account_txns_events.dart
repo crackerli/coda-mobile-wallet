@@ -26,3 +26,7 @@ class MoreAccountTxns extends AccountTxnsEvents {
   @override
   List<Object> get props => [query, variables];
 }
+
+class EditAccountName extends AccountTxnsEvents {
+  EditAccountName() : super();
+}

@@ -69,10 +69,17 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
   Stream<AccountTxnsStates> mapEventToState(AccountTxnsEvents event) async* {
     if(event is RefreshAccountTxns) {
       yield* _mapRefreshAccountTxnsToStates(event);
+      return;
     }
 
     if(event is MoreAccountTxns) {
       yield* _mapMoreAccountTxnsToStates(event);
+      return;
+    }
+
+    if(event is EditAccountName) {
+      yield* _mapEditAccountNameToStates(event);
+      return;
     }
   }
 
@@ -114,6 +121,11 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
       _isTxnsLoading = false;
       _listOperation = ListOperationType.NONE;
     }
+  }
+
+  Stream<AccountTxnsStates>
+    _mapEditAccountNameToStates(EditAccountName event) async* {
+    yield AccountNameChanged(_accountDetail);
   }
 
   Stream<AccountTxnsStates>

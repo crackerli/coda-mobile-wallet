@@ -1,6 +1,7 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_entity.dart';
 import 'package:coda_wallet/account_txns/query/account_txns_query.dart';
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
 import 'package:coda_wallet/types/list_operation_type.dart';
 import 'package:coda_wallet/types/transaction_type.dart';
@@ -14,6 +15,8 @@ import '../blocs/account_txns_events.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'accounts_txns_screen_dialog.dart';
+
 // ignore: must_be_immutable
 class AccountTxnsScreen extends StatefulWidget {
   Account account;
@@ -25,26 +28,26 @@ class AccountTxnsScreen extends StatefulWidget {
 
 class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   ScrollController _scrollController = ScrollController();
-  AccountTxnsBloc _ownedAccountsBloc;
+  AccountTxnsBloc _accountTxnsBloc;
 
   _refreshTxns() {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = widget.account.publicKey;
     variables['before'] = null;
-    _ownedAccountsBloc.add(RefreshAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
+    _accountTxnsBloc.add(RefreshAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
   }
 
   _loadMoreTxns(String before) {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = widget.account.publicKey;
     variables['before'] = before;
-    _ownedAccountsBloc.add(MoreAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
+    _accountTxnsBloc.add(MoreAccountTxns(ACCOUNT_TXNS_QUERY, variables: variables));
   }
 
   Future<Null> _onRefresh() async {
-    if(!_ownedAccountsBloc.isTxnsLoading) {
+    if(!_accountTxnsBloc.isTxnsLoading) {
       _refreshTxns();
-      _ownedAccountsBloc.listOperation = ListOperationType.PULL_DOWN;
+      _accountTxnsBloc.listOperation = ListOperationType.PULL_DOWN;
     }
   }
 
@@ -52,15 +55,15 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   void initState() {
     super.initState();
 
-    _ownedAccountsBloc = BlocProvider.of<AccountTxnsBloc>(context);
+    _accountTxnsBloc = BlocProvider.of<AccountTxnsBloc>(context);
     _refreshTxns();
 
     _scrollController.addListener(() {
       if(_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-        if(_ownedAccountsBloc.hasNextPage && !_ownedAccountsBloc.isTxnsLoading) {
-          _loadMoreTxns(_ownedAccountsBloc.lastCursor);
-          _ownedAccountsBloc.listOperation = ListOperationType.PULL_UP;
+        if(_accountTxnsBloc.hasNextPage && !_accountTxnsBloc.isTxnsLoading) {
+          _loadMoreTxns(_accountTxnsBloc.lastCursor);
+          _accountTxnsBloc.listOperation = ListOperationType.PULL_UP;
         }
       }
     });
@@ -69,7 +72,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   @override
   void dispose() {
     _scrollController.dispose();
-    _ownedAccountsBloc = null;
+    _accountTxnsBloc = null;
     super.dispose();
   }
 
@@ -95,7 +98,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
               ),
               Container(height: 8, color: Colors.black12),
               Expanded(
-                flex: 5,
+                flex: 4,
                 child: _buildTxnsWidget(context, state)
               )
             ]
@@ -108,7 +111,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   Widget _buildAccountTxnsAppBar() {
     return PreferredSize(
       child: AppBar(
-        title: Text('Accounts',
+        title: Text('Account Detail',
           style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
         centerTitle: true,
         elevation: 0,
@@ -132,9 +135,9 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
           label: 'Send',
           labelStyle: TextStyle(fontSize: 18.0),
           onTap: () => toSendTokenScreen(context,
-            _ownedAccountsBloc.accountStatus.publicKey,
-            _ownedAccountsBloc.accountStatus.balance,
-            _ownedAccountsBloc.accountStatus.locked)
+            _accountTxnsBloc.accountStatus.publicKey,
+            _accountTxnsBloc.accountStatus.balance,
+            _accountTxnsBloc.accountStatus.locked)
         ),
         SpeedDialChild(
           label: 'Receive',
@@ -187,7 +190,23 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
       return _buildTxnsListWidget(accountDetail.mergedUserCommands);
     }
 
+    if(state is AccountNameChanged) {
+      AccountDetail accountDetail = state.data;
+      return _buildTxnsListWidget(accountDetail.mergedUserCommands);
+    }
+
     return Container();
+  }
+
+  _editAccountName(BuildContext context) async {
+    String name = await showEditAccountNameDialog(context);
+    if(null == name || name.isEmpty) {
+      return;
+    }
+
+    globalPreferences.setString(_accountTxnsBloc.accountStatus.publicKey, name);
+    _accountTxnsBloc.accountStatus.accountName = name;
+    _accountTxnsBloc.add(EditAccountName());
   }
 
   Widget _buildAccountBody(BuildContext context, AccountTxnsStates state) {
@@ -223,32 +242,50 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: 8, left: 12, right: 12, bottom: 8),
+      padding: EdgeInsets.only(top: 0, left: 12, right: 12, bottom: 0),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(flex: 1,
-                  child:
-                Text(publicKey, softWrap: true, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 3,),
+                _buildAccountName(),
+                Container(width: 6),
+                GestureDetector(
+                  child: Image.asset('images/edit_name.png', width: 20, height: 20,),
+                  onTap: () => _editAccountName(context)
                 ),
-                Container(width: 10),
+              ]
+            ),
+            Container(height: 6),
+            Text(publicKey, softWrap: true, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 3,),
+            Container(height: 6),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Balance: ${formatTokenNumber(balance)}'),
                 Image.asset(locked ? 'images/locked_black.png' : 'images/unlocked_green.png', width: 20, height: 20)
               ],
             ),
-            Container(height: 12,),
-            Text('Balance: ${formatTokenNumber(balance)}')
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildAccountName() {
+    String name = globalPreferences.getString(widget.account.publicKey);
+    if(null == name || name.isEmpty) {
+      name = 'Default Name';
+    }
+    return Text(name, style: TextStyle(fontWeight: FontWeight.bold));
   }
 
   Widget _buildTxnsListWidget(List<MergedUserCommand> accountTxns) {

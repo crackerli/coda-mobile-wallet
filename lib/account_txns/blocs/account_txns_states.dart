@@ -60,3 +60,8 @@ class MoreAccountTxnsFail extends AccountTxnsStates {
   @override
   List<Object> get props => error;
 }
+
+class AccountNameChanged extends AccountTxnsStates {
+  final dynamic data;
+  AccountNameChanged(this.data) : super();
+}
