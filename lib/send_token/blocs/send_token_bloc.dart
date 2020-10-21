@@ -20,29 +20,33 @@ class SendTokenBloc extends
 
   SendTokenEntity get sendTokenEntity => _sendTokenEntity;
 
-  set amount(value) => _sendTokenEntity.amount = value;
-  set fee(value) => _sendTokenEntity.fee = value;
-  set receiver(value) => _sendTokenEntity.receiver = value;
-  set sender(value) => _sendTokenEntity.sender = value;
-  set memo(value) => _sendTokenEntity.memo = value;
+  set sendAmount(value) => _sendTokenEntity.sendAmount = value;
+  set fee(value)        => _sendTokenEntity.fee = value;
+  set receiver(value)   => _sendTokenEntity.receiver = value;
+  set sender(value)     => _sendTokenEntity.sender = value;
+  set memo(value)       => _sendTokenEntity.memo = value;
+  set isLocked(value)   => _sendTokenEntity.isLocked = value;
+  set balance(value)    => _sendTokenEntity.balance = value;
 
-  String get amount => _sendTokenEntity.amount;
-  String get fee => _sendTokenEntity.fee;
-  String get receiver => _sendTokenEntity.receiver;
-  String get sender => _sendTokenEntity.sender;
-  String get memo => _sendTokenEntity.memo;
+  String get sendAmount => _sendTokenEntity.sendAmount;
+  String get fee        => _sendTokenEntity.fee;
+  String get receiver   => _sendTokenEntity.receiver;
+  String get sender     => _sendTokenEntity.sender;
+  String get memo       => _sendTokenEntity.memo;
+  String get balance    => _sendTokenEntity.balance;
+  bool   get isLocked   => _sendTokenEntity.isLocked;
 
   bool checkSendContentValid() {
     if(null == _sendTokenEntity.receiver ||
        0 == _sendTokenEntity.receiver.length ||
-       null == _sendTokenEntity.amount ||
-       0 == _sendTokenEntity.amount.length ||
+       null == _sendTokenEntity.sendAmount ||
+       0 == _sendTokenEntity.sendAmount.length ||
        null == _sendTokenEntity.fee ||
        0 == _sendTokenEntity.fee.length) {
       return false;
     }
 
-    if(!checkNumeric(_sendTokenEntity.amount) ||
+    if(!checkNumeric(_sendTokenEntity.sendAmount) ||
        !checkNumeric(_sendTokenEntity.fee)) {
       return false;
     }
@@ -60,6 +64,11 @@ class SendTokenBloc extends
 
     if(event is ValidateInput) {
       yield* _mapValidateInputToStates(event);
+      return;
+    }
+
+    if(event is ToggleLockStatus) {
+      yield* _mapToggleLockStatusToStates(event);
       return;
     }
   }
@@ -98,4 +107,30 @@ class SendTokenBloc extends
 
     }
   }
+
+  Stream<SendTokenStates>
+    _mapToggleLockStatusToStates(ToggleLockStatus event) async* {
+
+    final query = event.mutation;
+    final variables = event.variables ?? null;
+
+    try {
+      final result = await _service.performMutation(query, variables: variables);
+
+      if (result.hasException) {
+        print('graphql errors: ${result.exception.graphqlErrors.toString()}');
+        yield ToggleLockStatusFail(result.exception?.graphqlErrors[0]);
+        return;
+      }
+
+      _sendTokenEntity.isLocked = !_sendTokenEntity.isLocked;
+      yield ToggleLockStatusSuccess();
+    } catch (e) {
+      print(e);
+      yield ToggleLockStatusFail(e.toString());
+    } finally {
+
+    }
+  }
+
 }

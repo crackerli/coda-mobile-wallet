@@ -21,11 +21,11 @@ class SendPayment extends SendTokenEvents {
   List<Object> get props => [mutation, variables];
 }
 
-class UnlockAccount extends SendTokenEvents {
+class ToggleLockStatus extends SendTokenEvents {
   final String mutation;
   final Map<String, dynamic> variables;
 
-  UnlockAccount(this.mutation, {this.variables}) : super();
+  ToggleLockStatus(this.mutation, {this.variables}) : super();
 
   @override
   List<Object> get props => [mutation, variables];

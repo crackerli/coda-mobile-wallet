@@ -4,8 +4,9 @@ class SendTokenEntity {
   String receiver;
   String sender;
   String memo;
-  String amount;
+  String sendAmount;
   String fee;
+  String balance;
   bool isLocked;
   SendTokenActionStatus sendTokenActionStatus;
 }

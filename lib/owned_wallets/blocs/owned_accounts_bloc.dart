@@ -5,7 +5,7 @@ import 'owned_accounts_states.dart';
 import 'owned_accounts_entity.dart';
 
 class OwnedAccountsBloc extends
-    Bloc<OwnedAccountsEvents, OwnedAccountsStates> {
+  Bloc<OwnedAccountsEvents, OwnedAccountsStates> {
 
   CodaService _service;
   List<Account> _ownedAccounts;

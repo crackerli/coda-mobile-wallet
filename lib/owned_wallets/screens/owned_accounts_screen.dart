@@ -210,8 +210,8 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
             ),
             Container(width: 10),
             GestureDetector(
-                child: Image.asset('images/delete.png', width: 16, height: 16),
-                onTap: () { _clickLock(context, account); }
+              child: Image.asset('images/delete.png', width: 16, height: 16),
+              onTap: () { _clickLock(context, account); }
             )
           ]
         )

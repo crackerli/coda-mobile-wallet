@@ -3,6 +3,7 @@ import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
 import 'package:coda_wallet/send_token/mutation/send_token_mutation.dart';
+import 'package:coda_wallet/send_token/screens/send_token_dialog.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,6 +51,8 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     super.initState();
     _sendTokenBloc = BlocProvider.of<SendTokenBloc>(context);
     _sendTokenBloc.sender = widget.publicKey;
+    _sendTokenBloc.isLocked = widget.locked;
+    _sendTokenBloc.balance = widget.balance;
     _feeController.text = _sendTokenBloc.fee;
   }
 
@@ -73,16 +76,17 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     _qrResult = await toQrScanScreen(context);
     _addressController.text = '$_qrResult';
     _sendTokenBloc.receiver = '$_qrResult';
+    _sendTokenBloc.add(ValidateInput());
   }
 
   _sendPayment() {
-    _sendTokenBloc.amount = _amountController.text;
+    _sendTokenBloc.sendAmount = _amountController.text;
     _sendTokenBloc.memo = _memoController.text;
     _sendTokenBloc.fee = _feeController.text;
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['from'] = _sendTokenBloc.sender;
     variables['to'] = _sendTokenBloc.receiver;
-    variables['amount'] = getNanoMina(_sendTokenBloc.amount);
+    variables['amount'] = getNanoMina(_sendTokenBloc.sendAmount);
     variables['memo'] = _sendTokenBloc.memo;
     variables['fee'] = getNanoMina(_sendTokenBloc.fee);
 
@@ -115,7 +119,9 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
             ),
           ],
         ),
-        child: SingleChildScrollView( child: _buildSendTokenBody())
+        child: SingleChildScrollView(
+          child: _buildSendTokenBody()
+        )
       )
     );
   }
@@ -166,7 +172,8 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           Container(height: 10.h),
           _buildLockStatus(),
           //Expanded(flex: 1,
-        Container(height: 480.h,
+          Container(
+            height: 360.h,
             child: BlocBuilder<SendTokenBloc, SendTokenStates>(
               builder:(BuildContext context, SendTokenStates state) {
                 return _buildSendAction(context, state);
@@ -240,7 +247,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           Expanded(
             flex: 1,
             child: Text(
-              '${formatTokenNumber(widget.balance)} Mina',
+              '${formatTokenNumber(_sendTokenBloc.balance)} Mina',
               textAlign: TextAlign.right,
               style: TextStyle(color: Color.fromARGB(0xff, 151, 154, 159),
               fontSize: 44.sp))
@@ -261,7 +268,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
               maxLines: 1,
               controller: _amountController,
               onChanged: (text) {
-                _sendTokenBloc.amount = text;
+                _sendTokenBloc.sendAmount = text;
                 _sendTokenBloc.add(ValidateInput());
               },
               keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -332,13 +339,52 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Text('LockStatus', style: TextStyle(fontSize: 41.sp, color: Color.fromARGB(0xff, 70, 70, 70))),
-            widget.locked ?
-              Image.asset('images/locked_black.png', width: 60.w, height: 60.w) :
-              Image.asset('images/unlocked_green.png', width: 60.w, height: 60.w)
+            BlocBuilder<SendTokenBloc, SendTokenStates>(
+              builder:(BuildContext context, SendTokenStates state) {
+                return _buildLockActionStatus(context, state);
+              }
+            )
           ]
         )
       )
     );
+  }
+
+  Widget _buildLockActionStatus(BuildContext context, SendTokenStates state) {
+    if(state is ToggleLockStatusFail) {
+      String toggleLockFail;
+      if(_sendTokenBloc.isLocked) {
+        toggleLockFail = 'Unlock failed';
+      } else {
+        toggleLockFail = 'Lock failed';
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final snackBar = SnackBar(content: Text(toggleLockFail));
+        Scaffold.of(context).showSnackBar(snackBar);
+      });
+    }
+
+    return GestureDetector(
+      child: _sendTokenBloc.isLocked ?
+        Image.asset('images/locked_black.png', width: 60.w, height: 60.w) :
+        Image.asset('images/unlocked_green.png', width: 60.w, height: 60.w),
+      onTap: () { _clickLock(context, _sendTokenBloc.sender); }
+    );
+  }
+
+  _clickLock(BuildContext context, String publicKey) {
+    if(null == publicKey) {
+      return;
+    }
+
+    if(_sendTokenBloc.isLocked) {
+      showUnlockAccountDialog(context, _sendTokenBloc.sender);
+      return;
+    }
+
+    if(!_sendTokenBloc.isLocked) {
+      showLockAccountDialog(context, _sendTokenBloc.sender);
+    }
   }
   
   Widget _buildSendAction(BuildContext context, SendTokenStates state) {
@@ -357,8 +403,12 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
         final snackBar = SnackBar(content: Text('Mina sent'));
         Scaffold.of(context).showSnackBar(snackBar);
       });
+      _feeController.text = '0.1';
+      _addressController.clear();
+      _memoController.text = '';
+      _amountController.text = '';
       sendTextColor = Colors.white;
-      sendButtonColor = Colors.blueAccent;
+      sendButtonColor = Colors.grey;
       sendAction = Text("Send", style: TextStyle(color: sendTextColor, fontSize: 44.sp));
     } else if(state is InputInvalidated) {
       sendTextColor = Colors.white;

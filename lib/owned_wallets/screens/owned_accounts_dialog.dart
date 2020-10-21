@@ -1,3 +1,4 @@
+import 'package:coda_wallet/global/mutation/toggle_lock_status.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_bloc.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_events.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';

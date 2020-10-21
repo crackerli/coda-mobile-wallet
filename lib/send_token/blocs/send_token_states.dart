@@ -41,3 +41,21 @@ class SendPaymentFail extends SendTokenStates {
   @override
   List<Object> get props => error;
 }
+
+class ToggleLockStatusLoading extends SendTokenStates {
+  ToggleLockStatusLoading() : super();
+}
+
+class ToggleLockStatusSuccess extends SendTokenStates {
+
+  ToggleLockStatusSuccess() : super();
+}
+
+class ToggleLockStatusFail extends SendTokenStates {
+  final dynamic error;
+
+  ToggleLockStatusFail(this.error) : super();
+
+  @override
+  List<Object> get props => error;
+}

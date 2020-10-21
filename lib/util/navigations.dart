@@ -46,14 +46,14 @@ toSendTokenScreen(BuildContext context, String publicKey, String balance, bool l
 
 dynamic toQrScanScreen(BuildContext context) async {
   final result = Navigator.push(context,
-      MaterialPageRoute(builder: (context) => QrScanScreen())
+    MaterialPageRoute(builder: (context) => QrScanScreen())
   );
   return result;
 }
 
 dynamic toSettingScreen(BuildContext context) async {
   final result = Navigator.push(context,
-      MaterialPageRoute(builder: (context) => SettingScreen())
+    MaterialPageRoute(builder: (context) => SettingScreen())
   );
   return result;
 }
