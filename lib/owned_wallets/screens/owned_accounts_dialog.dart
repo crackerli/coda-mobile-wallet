@@ -1,4 +1,4 @@
-import 'package:coda_wallet/global/mutation/toggle_lock_status.dart';
+import 'package:coda_wallet/global/mutation/toggle_lock_status_mutation.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_bloc.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_events.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
@@ -12,14 +12,14 @@ _toggleLockStatus(
 
   Map<String, String> variables = Map<String, String>();
   variables['publicKey'] = account.publicKey;
-  final _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
+  final ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
 
   if(toLock) {
-    _ownedAccountsBloc.add(ToggleLockStatus(ACCOUNT_LOCK_MUTATION, variables: variables));
+    ownedAccountsBloc.add(ToggleLockStatus(ACCOUNT_LOCK_MUTATION, variables: variables));
   } else {
     variables['password'] = password;
-    _ownedAccountsBloc.add(
-        ToggleLockStatus(ACCOUNT_UNLOCK_MUTATION, variables: variables));
+    ownedAccountsBloc.add(
+      ToggleLockStatus(ACCOUNT_UNLOCK_MUTATION, variables: variables));
   }
 }
 
