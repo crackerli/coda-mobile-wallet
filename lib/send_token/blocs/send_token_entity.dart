@@ -8,5 +8,6 @@ class SendTokenEntity {
   String fee;
   String balance;
   bool isLocked;
+  bool sendEnabled;
   SendTokenActionStatus sendTokenActionStatus;
 }

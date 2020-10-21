@@ -388,36 +388,31 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   }
   
   Widget _buildSendAction(BuildContext context, SendTokenStates state) {
-    Color sendTextColor;
-    Color sendButtonColor;
     Widget sendAction;
 
     if(state is SendPaymentLoading) {
-      sendTextColor = Colors.black54;
-      sendButtonColor = Colors.blueAccent;
       sendAction = SizedBox(child: CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
       ), height: 68.h, width: 68.w);
+      _sendTokenBloc.sendEnabled = false;
     } else if(state is SendPaymentSuccess) {
+      _feeController.text = '0.1';
+      _addressController.clear();
+      _memoController.clear();
+      _amountController.clear();
+      sendAction = Text("Send", style: TextStyle(color: Colors.white, fontSize: 44.sp));
+      _sendTokenBloc.sendEnabled = false;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {});
+      });
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final snackBar = SnackBar(content: Text('Mina sent'));
         Scaffold.of(context).showSnackBar(snackBar);
       });
-      _feeController.text = '0.1';
-      _addressController.clear();
-      _memoController.text = '';
-      _amountController.text = '';
-      sendTextColor = Colors.white;
-      sendButtonColor = Colors.grey;
-      sendAction = Text("Send", style: TextStyle(color: sendTextColor, fontSize: 44.sp));
-    } else if(state is InputInvalidated) {
-      sendTextColor = Colors.white;
-      sendButtonColor = Colors.grey;
-      sendAction = Text("Send", style: TextStyle(color: sendTextColor, fontSize: 44.sp));
     } else {
-      sendTextColor = Colors.white;
-      sendButtonColor = Colors.blueAccent;
-      sendAction = Text("Send", style: TextStyle(color: sendTextColor, fontSize: 44.sp));
+      sendAction = Text("Send", style: TextStyle(color: Colors.white, fontSize: 44.sp));
     }
 
     return Container(
@@ -435,8 +430,8 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
               child: RaisedButton(
                 padding: EdgeInsets.only(top: 2.h, bottom: 2.h),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                onPressed: _sendPayment,
-                color: sendButtonColor,
+                onPressed: _sendTokenBloc.sendEnabled ? _sendPayment : null,
+                color: Colors.blueAccent,
                 child: sendAction
               )
             )

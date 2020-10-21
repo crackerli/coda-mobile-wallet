@@ -1,7 +1,6 @@
 import 'package:coda_wallet/send_token/blocs/send_token_entity.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
-import 'package:coda_wallet/types/send_token_action_status.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
@@ -16,25 +15,28 @@ class SendTokenBloc extends
     _service = CodaService();
     _sendTokenEntity = SendTokenEntity();
     _sendTokenEntity.fee = '0.1';
+    _sendTokenEntity.sendEnabled = false;
   }
 
   SendTokenEntity get sendTokenEntity => _sendTokenEntity;
 
-  set sendAmount(value) => _sendTokenEntity.sendAmount = value;
-  set fee(value)        => _sendTokenEntity.fee = value;
-  set receiver(value)   => _sendTokenEntity.receiver = value;
-  set sender(value)     => _sendTokenEntity.sender = value;
-  set memo(value)       => _sendTokenEntity.memo = value;
-  set isLocked(value)   => _sendTokenEntity.isLocked = value;
-  set balance(value)    => _sendTokenEntity.balance = value;
+  set sendAmount(value)  => _sendTokenEntity.sendAmount = value;
+  set fee(value)         => _sendTokenEntity.fee = value;
+  set receiver(value)    => _sendTokenEntity.receiver = value;
+  set sender(value)      => _sendTokenEntity.sender = value;
+  set memo(value)        => _sendTokenEntity.memo = value;
+  set isLocked(value)    => _sendTokenEntity.isLocked = value;
+  set balance(value)     => _sendTokenEntity.balance = value;
+  set sendEnabled(value) => _sendTokenEntity.sendEnabled = value;
 
-  String get sendAmount => _sendTokenEntity.sendAmount;
-  String get fee        => _sendTokenEntity.fee;
-  String get receiver   => _sendTokenEntity.receiver;
-  String get sender     => _sendTokenEntity.sender;
-  String get memo       => _sendTokenEntity.memo;
-  String get balance    => _sendTokenEntity.balance;
-  bool   get isLocked   => _sendTokenEntity.isLocked;
+  String get sendAmount  => _sendTokenEntity.sendAmount;
+  String get fee         => _sendTokenEntity.fee;
+  String get receiver    => _sendTokenEntity.receiver;
+  String get sender      => _sendTokenEntity.sender;
+  String get memo        => _sendTokenEntity.memo;
+  String get balance     => _sendTokenEntity.balance;
+  bool   get isLocked    => _sendTokenEntity.isLocked;
+  bool   get sendEnabled => _sendTokenEntity.sendEnabled;
 
   bool checkSendContentValid() {
     if(null == _sendTokenEntity.receiver ||
@@ -42,15 +44,19 @@ class SendTokenBloc extends
        null == _sendTokenEntity.sendAmount ||
        0 == _sendTokenEntity.sendAmount.length ||
        null == _sendTokenEntity.fee ||
-       0 == _sendTokenEntity.fee.length) {
+       0 == _sendTokenEntity.fee.length ||
+       isLocked) {
+      sendEnabled = false;
       return false;
     }
 
     if(!checkNumeric(_sendTokenEntity.sendAmount) ||
        !checkNumeric(_sendTokenEntity.fee)) {
+      sendEnabled = false;
       return false;
     }
 
+    sendEnabled = true;
     return true;
   }
 
@@ -124,6 +130,7 @@ class SendTokenBloc extends
       }
 
       _sendTokenEntity.isLocked = !_sendTokenEntity.isLocked;
+      checkSendContentValid();
       yield ToggleLockStatusSuccess();
     } catch (e) {
       print(e);
