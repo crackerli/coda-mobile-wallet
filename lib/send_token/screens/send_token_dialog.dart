@@ -92,31 +92,34 @@ void showSendSuccessDialog(
   showDialog(
     context: buildContext,
     builder: (BuildContext context) =>
-      AlertDialog(
-        title: Text('Mina sent'),
-        content: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text("Receiver: $receiver", textAlign: TextAlign.center,),
-            Container(height: 4),
-            Text("Amount: $amount", textAlign: TextAlign.center),
-            Container(height: 4),
-            Text("Fee: $fee", textAlign: TextAlign.center),
-            Container(height: 4),
-            Text("memo: $memo", textAlign: TextAlign.center)
+      ButtonBarTheme(
+        data: ButtonBarThemeData(alignment: MainAxisAlignment.center),
+        child: AlertDialog(
+          title: Text('Mina sent', style: TextStyle(fontWeight: FontWeight.bold),),
+          content: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Receiver: $receiver", textAlign: TextAlign.left, style: TextStyle(decoration: TextDecoration.underline),),
+              Container(height: 4),
+              Text("Amount: $amount", textAlign: TextAlign.left, style: TextStyle(decoration: TextDecoration.underline)),
+              Container(height: 4),
+              Text("Fee: $fee", textAlign: TextAlign.left, style: TextStyle(decoration: TextDecoration.underline)),
+              Container(height: 4),
+              Text("memo: $memo", textAlign: TextAlign.left, style: TextStyle(decoration: TextDecoration.underline))
+            ]
+          ),
+          actions: <Widget>[
+            RaisedButton(
+              padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 60, right: 60),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
+              onPressed: () => Navigator.of(buildContext).pop(),
+              color: Colors.blueAccent,
+              child: Text('OK', style: TextStyle(color: Colors.white),)
+            )
           ]
-        ),
-        actions: <Widget>[
-          RaisedButton(
-            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 60, right: 60),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-            onPressed: () => Navigator.of(buildContext).pop(),
-            color: Colors.blueAccent,
-            child: Text('OK', style: TextStyle(color: Colors.white),)
-          )
-        ]
-    )
+        )
+      )
   );
 }
