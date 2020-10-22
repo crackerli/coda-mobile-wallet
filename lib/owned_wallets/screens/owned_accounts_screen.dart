@@ -99,13 +99,13 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
           labelStyle: TextStyle(fontSize: 18.0),
           onTap: () => showCreateAccountDialog(context)
         ),
-        SpeedDialChild(
-          label: 'Delete',
-          child: Icon(Icons.delete),
-          backgroundColor: Colors.orange,
-          labelStyle: TextStyle(fontSize: 18.0),
-          onTap: null,
-        ),
+        // SpeedDialChild(
+        //   label: 'Delete',
+        //   child: Icon(Icons.delete),
+        //   backgroundColor: Colors.orange,
+        //   labelStyle: TextStyle(fontSize: 18.0),
+        //   onTap: null,
+        // ),
       ]
     );
   }
@@ -217,13 +217,13 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
             Container(width: 10),
             GestureDetector(
               child: _lockStatusImage(account.locked),
-              onTap: () { _clickLock(context, account); }
+              onTap: null,//() { _clickLock(context, account); }
             ),
             Container(width: 10),
-            GestureDetector(
-              child: Image.asset('images/delete.png', width: 16, height: 16),
-              onTap: () { _clickLock(context, account); }
-            )
+            // GestureDetector(
+            //   child: Image.asset('images/delete.png', width: 16, height: 16),
+            //   onTap: () { _clickLock(context, account); }
+            // )
           ]
         )
       ],

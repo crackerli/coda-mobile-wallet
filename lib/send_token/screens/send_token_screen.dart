@@ -5,7 +5,9 @@ import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
 import 'package:coda_wallet/send_token/mutation/send_token_mutation.dart';
 import 'package:coda_wallet/send_token/screens/send_token_dialog.dart';
 import 'package:coda_wallet/util/format_utils.dart';
+import 'package:coda_wallet/util/input_formatters.dart';
 import 'package:coda_wallet/util/navigations.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +56,29 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     _sendTokenBloc.isLocked = widget.locked;
     _sendTokenBloc.balance = widget.balance;
     _feeController.text = _sendTokenBloc.fee;
+    _focusNodeAmount.addListener(() {
+      if(_focusNodeAmount.hasFocus) {
+
+      } else {
+        if(!checkSendAmountValidation(_amountController.text)) {
+          if(_focusNodeAmount.canRequestFocus) {
+            _focusNodeAmount.requestFocus();
+          }
+        }
+      }
+    });
+
+    _focusNodeFee.addListener(() {
+      if(_focusNodeFee.hasFocus) {
+
+      } else {
+        if(!checkFeeValidation(_feeController.text)) {
+          if(_focusNodeFee.canRequestFocus) {
+            _focusNodeFee.requestFocus();
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -264,6 +289,9 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
         child: Column(
           children: [
             TextField(
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp('[0-9.]')),
+              ],
               focusNode: _focusNodeAmount,
               maxLines: 1,
               controller: _amountController,
@@ -301,13 +329,18 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
         padding: EdgeInsets.only(left: 44.w, right: 44.w, top: 44.h, bottom: 44.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.max,
           children: [
             Text('Fee', style: TextStyle(fontSize: 41.sp, color: Color.fromARGB(0xff, 70, 70, 70))),
+            Container(width: 4),
+            Text('Min allowed: 0.001', style: TextStyle(fontSize: 34.sp, color: Colors.red)),
             Expanded(
               flex: 10,
               child: TextField(
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp('[0-9.]')),
+                ],
                 focusNode: _focusNodeFee,
                 controller: _feeController,
                 onChanged: (text) {
