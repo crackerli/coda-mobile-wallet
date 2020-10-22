@@ -290,6 +290,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
 
   Widget _buildTxnsListWidget(List<MergedUserCommand> accountTxns) {
     return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: accountTxns.length,
       itemBuilder: (context, index) {

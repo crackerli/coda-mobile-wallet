@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 _toggleLockStatus(
     BuildContext context, String publicKey,
@@ -77,6 +78,45 @@ void showLockAccountDialog(BuildContext buildContext, String publicKey) {
           )
         ]
       )
+    )
+  );
+}
+
+void showSendSuccessDialog(
+  BuildContext buildContext,
+  String receiver,
+  String amount,
+  String memo,
+  String fee) {
+
+  showDialog(
+    context: buildContext,
+    builder: (BuildContext context) =>
+      AlertDialog(
+        title: Text('Mina sent'),
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("Receiver: $receiver", textAlign: TextAlign.center,),
+            Container(height: 4),
+            Text("Amount: $amount", textAlign: TextAlign.center),
+            Container(height: 4),
+            Text("Fee: $fee", textAlign: TextAlign.center),
+            Container(height: 4),
+            Text("memo: $memo", textAlign: TextAlign.center)
+          ]
+        ),
+        actions: <Widget>[
+          RaisedButton(
+            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 60, right: 60),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
+            onPressed: () => Navigator.of(buildContext).pop(),
+            color: Colors.blueAccent,
+            child: Text('OK', style: TextStyle(color: Colors.white),)
+          )
+        ]
     )
   );
 }

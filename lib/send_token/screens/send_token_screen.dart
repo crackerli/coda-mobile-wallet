@@ -425,6 +425,10 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       ), height: 68.h, width: 68.w);
       _sendTokenBloc.sendEnabled = false;
     } else if(state is SendPaymentSuccess) {
+      final fee = _sendTokenBloc.fee;
+      final amount = _sendTokenBloc.sendAmount;
+      final receiver = _sendTokenBloc.receiver;
+      final memo = _sendTokenBloc.memo;
       _feeController.text = '0.1';
       _addressController.clear();
       _memoController.clear();
@@ -439,8 +443,9 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       _sendTokenBloc.add(ValidateInput());
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final snackBar = SnackBar(content: Text('Mina sent'));
-        Scaffold.of(context).showSnackBar(snackBar);
+        // final snackBar = SnackBar(content: Text('Mina sent'));
+        // Scaffold.of(context).showSnackBar(snackBar);
+        showSendSuccessDialog(context, receiver, amount, memo, fee);
       });
     } else {
       sendAction = Text("Send", style: TextStyle(color: Colors.white, fontSize: 44.sp));
