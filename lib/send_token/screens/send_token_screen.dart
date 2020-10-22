@@ -147,7 +147,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
         child: SingleChildScrollView(
           child: BlocBuilder<SendTokenBloc, SendTokenStates>(
               builder:(BuildContext context, SendTokenStates state) {
-                return _buildSendTokenBody(context, state);//_buildSendAction(context, state);
+                return _buildSendTokenBody(context, state);
               }
           )
         )
@@ -420,9 +420,13 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     Widget sendAction;
 
     if(state is SendPaymentLoading) {
-      sendAction = SizedBox(child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-      ), height: 68.h, width: 68.w);
+      sendAction = SizedBox(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+        height: 68.h,
+        width: 68.h
+      );
       _sendTokenBloc.sendEnabled = false;
     } else if(state is SendPaymentSuccess) {
       final fee = _sendTokenBloc.fee;
@@ -443,10 +447,15 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       _sendTokenBloc.add(ValidateInput());
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // final snackBar = SnackBar(content: Text('Mina sent'));
-        // Scaffold.of(context).showSnackBar(snackBar);
         showSendSuccessDialog(context, receiver, amount, memo, fee);
       });
+    } else if(state is SendPaymentFail) {
+      dynamic error = state.error;
+      _sendTokenBloc.add(ValidateInput());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSendFailDialog(context, error.toString());
+      });
+      sendAction = Text("Send", style: TextStyle(color: Colors.white, fontSize: 44.sp));
     } else {
       sendAction = Text("Send", style: TextStyle(color: Colors.white, fontSize: 44.sp));
     }

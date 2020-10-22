@@ -126,7 +126,11 @@ class OwnedAccountsBloc extends
       _isAccountLoading = false;
       if(result.hasException) {
         print('graphql errors: ${result.exception.graphqlErrors.toString()}');
-        yield FetchOwnedAccountsFail(result.exception.graphqlErrors[0]);
+        if(null == result.exception.graphqlErrors || result.exception.graphqlErrors.length == 0) {
+          yield FetchOwnedAccountsFail('Network error');
+        } else {
+          yield FetchOwnedAccountsFail(result.exception.graphqlErrors[0]);
+        }
         return;
       }
 
