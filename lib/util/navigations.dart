@@ -1,4 +1,5 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_bloc.dart';
+import 'package:coda_wallet/account_txns/blocs/account_txns_entity.dart';
 import 'package:coda_wallet/account_txns/blocs/account_txns_states.dart';
 import 'package:coda_wallet/account_txns/screens/account_txns_screen.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
@@ -8,6 +9,7 @@ import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
 import 'package:coda_wallet/send_token/screens/send_token_screen.dart';
 import 'package:coda_wallet/setting/setting_screen.dart';
+import 'package:coda_wallet/txn_detail/screens/txn_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -56,4 +58,10 @@ dynamic toSettingScreen(BuildContext context) async {
     MaterialPageRoute(builder: (context) => SettingScreen())
   );
   return result;
+}
+
+toTxnDetailScreen(BuildContext context, MergedUserCommand mergedUserCommand, String publicKey) {
+  Navigator.push(context,
+    MaterialPageRoute(builder: (context) => TxnDetailScreen(publicKey: publicKey, mergedUserCommand: mergedUserCommand))
+  );
 }

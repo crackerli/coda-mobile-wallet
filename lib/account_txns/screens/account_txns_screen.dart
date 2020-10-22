@@ -294,7 +294,11 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
       shrinkWrap: true,
       itemCount: accountTxns.length,
       itemBuilder: (context, index) {
-        return _buildTxnItem(accountTxns[index]);
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          child: _buildTxnItem(accountTxns[index]),
+          onTap: () => toTxnDetailScreen(context, accountTxns[index], widget.account.publicKey),
+        );
       },
       separatorBuilder: (context, index) {
         return Divider(thickness: 4,);

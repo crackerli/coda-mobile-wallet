@@ -68,6 +68,11 @@ flutter:
     - images/setting.png
     - images/delete.png
     - images/edit_name.png
+    - images/tx_failed.png
+    - images/tx_pending.png
+    - images/tx_success.png
+    - images/tx_timeout.png
+    - images/tx_unsubmit.png
 
   fonts:
    - family: Entypo
