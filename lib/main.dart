@@ -43,7 +43,8 @@ class CodaWallet extends StatelessWidget {
                 accentColor: Colors.cyan[600],
                 fontFamily: 'Roboto-Regular'
               ),
-              home: OwnedAccountsScreen()
+              home: OwnedAccountsScreen(),
+              navigatorObservers: [routeObserver]
             )
           );
         } else {

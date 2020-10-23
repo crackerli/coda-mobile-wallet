@@ -97,6 +97,12 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
 
       if (result.hasException) {
         print('account txns graphql errors: ${result.exception.graphqlErrors.toString()}');
+        if(result.exception == null ||
+           result.exception.graphqlErrors == null ||
+           result.exception.graphqlErrors.length == 0) {
+          yield MoreAccountTxnsFail('Network Error');
+          return;
+        }
         yield MoreAccountTxnsFail(result.exception.graphqlErrors[0]);
         return;
       }

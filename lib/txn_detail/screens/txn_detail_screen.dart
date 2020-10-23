@@ -56,6 +56,10 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
     );
   }
 
+  _buildTxnAccountBody() {
+
+  }
+
   @override
   void dispose() {
     super.dispose();

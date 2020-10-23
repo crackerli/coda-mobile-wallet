@@ -26,7 +26,7 @@ class AccountTxnsScreen extends StatefulWidget {
   _AccountTxnsScreenState createState() => _AccountTxnsScreenState();
 }
 
-class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
+class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindingObserver, RouteAware {
   ScrollController _scrollController = ScrollController();
   AccountTxnsBloc _accountTxnsBloc;
 
@@ -54,9 +54,8 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addObserver(this);
     _accountTxnsBloc = BlocProvider.of<AccountTxnsBloc>(context);
-    _refreshTxns();
 
     _scrollController.addListener(() {
       if(_scrollController.position.pixels ==
@@ -73,7 +72,50 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> {
   void dispose() {
     _scrollController.dispose();
     _accountTxnsBloc = null;
+    routeObserver.unsubscribe(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeDependencies();
+    print('AccountTxnsScreen didChangeAppLifecycleState()');
+    if (state == AppLifecycleState.resumed) {
+      _refreshTxns();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    print('AccountTxnsScreen: didPopNext()');
+    _refreshTxns();
+  }
+
+  @override
+  void didPush() {
+    super.didPush();
+    print('AccountTxnsScreen: didPush()');
+    _refreshTxns();
+  }
+
+  @override
+  void didPushNext() {
+    final route = ModalRoute.of(context).settings.name;
+    print('AccountTxnsScreen didPushNext() route: $route');
+  }
+
+  @override
+  void didPop() {
+    final route = ModalRoute.of(context).settings.name;
+    print('AccountTxnsScreen didPop() route: $route');
   }
 
   @override
