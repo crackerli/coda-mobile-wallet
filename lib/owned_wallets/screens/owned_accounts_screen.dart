@@ -21,20 +21,69 @@ class OwnedAccountsScreen extends StatefulWidget {
     createState() => _OwnedAccountsScreenState();
 }
 
-class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
+class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsBindingObserver, RouteAware {
   OwnedAccountsBloc _ownedAccountsBloc;
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
-    _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY));
     super.initState();
   }
 
   @override
   void dispose() {
+    routeObserver.unsubscribe(this);
+    WidgetsBinding.instance.removeObserver(this);
     _ownedAccountsBloc = null;
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeDependencies();
+    print('OwnedAccountsScreen didChangeAppLifecycleState()');
+    if (state == AppLifecycleState.resumed) {
+      if(!_ownedAccountsBloc.isAccountLoading) {
+        _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY));
+      }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    print('OwnedAccountsScreen: didPopNext()');
+    if(!_ownedAccountsBloc.isAccountLoading) {
+      _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY));
+    }
+  }
+
+  @override
+  void didPush() {
+    super.didPush();
+    print('OwnedAccountsScreen: didPush(), isLoading=${_ownedAccountsBloc.isAccountLoading}');
+    if(!_ownedAccountsBloc.isAccountLoading) {
+      _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY));
+    }
+  }
+
+  @override
+  void didPushNext() {
+    final route = ModalRoute.of(context).settings.name;
+    print('OwnedAccountsScreen didPushNext() route: $route');
+  }
+
+  @override
+  void didPop() {
+    final route = ModalRoute.of(context).settings.name;
+    print('OwnedAccountsScreen didPop() route: $route');
   }
 
   _changeRpcServerAddress() async {
@@ -217,7 +266,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> {
             Container(width: 10),
             GestureDetector(
               child: _lockStatusImage(account.locked),
-              onTap: null,//() { _clickLock(context, account); }
+              onTap: () { _clickLock(context, account); }
             ),
             Container(width: 10),
             // GestureDetector(
