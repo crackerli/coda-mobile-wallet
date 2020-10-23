@@ -1,7 +1,7 @@
 //import 'package:intl/intl.dart';
 //
 String formatTokenNumber(String src) {
-  if(null == src) {
+  if(null == src || src.isEmpty) {
     return '';
   }
 
@@ -11,7 +11,7 @@ String formatTokenNumber(String src) {
 }
 
 String formatHashEllipsis(String src) {
-  if(null == src) {
+  if(null == src || src.isEmpty) {
     return '';
   }
 
@@ -21,7 +21,7 @@ String formatHashEllipsis(String src) {
 }
 
 String formatDateTime(String millisSeconds) {
-  if(null == millisSeconds) {
+  if(null == millisSeconds || millisSeconds.isEmpty) {
     return '';
   }
 
@@ -37,7 +37,7 @@ String formatDateTime(String millisSeconds) {
 }
 
 int getNanoMina(String src) {
-  if(null == src) {
+  if(null == src || src.isEmpty) {
     return 0;
   }
 
@@ -46,7 +46,7 @@ int getNanoMina(String src) {
 }
 
 bool checkNumeric(String str) {
-  if(str == null) {
+  if(str == null || str.isEmpty) {
     return false;
   }
   return double.tryParse(str) != null;

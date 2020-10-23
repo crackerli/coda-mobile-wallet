@@ -247,12 +247,12 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
       // Process coinbase
       if(null != coinbaseReceiverAccount && _publicKey == coinbaseReceiverAccount['publicKey']) {
         MergedUserCommand mergedUserCommand = MergedUserCommand();
-        mergedUserCommand.to = '';
+        mergedUserCommand.to = _publicKey;
         mergedUserCommand.isDelegation = false;
         mergedUserCommand.nonce = 0;
-        mergedUserCommand.amount = '';
+        mergedUserCommand.amount = nodes[i]['transactions']['coinbase'];
         mergedUserCommand.fee = '';
-        mergedUserCommand.from = '';
+        mergedUserCommand.from = 'coinbase';
         mergedUserCommand.hash = '';
         mergedUserCommand.memo = '';
         mergedUserCommand.isPooled = false;
