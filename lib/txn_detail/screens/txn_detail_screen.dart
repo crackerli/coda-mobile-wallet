@@ -1,6 +1,7 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_entity.dart';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,11 +84,17 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset('images/tx_success.png', width: 60, height: 60,),
+          widget.mergedUserCommand.isPooled ?
+            Image.asset('images/tx_pending.png', width: 60, height: 60,) :
+            Image.asset('images/tx_success.png', width: 60, height: 60,),
           Container(height: 12),
-          Text('Success', style: TextStyle(color: Color(0xff7dc2ad))),
+          widget.mergedUserCommand.isPooled ?
+            Container() :
+            Text('Success', style: TextStyle(color: Color(0xff7dc2ad))),
           Container(height: 6,),
-          Text('2020-10-23 16:21', style: TextStyle(color: Color(0xff9d9d9d)),),
+          widget.mergedUserCommand.isPooled ?
+            Text('Pending', style: TextStyle(color: Color(0xff9d9d9d)),) :
+            Text(formatDateTime(widget.mergedUserCommand.dateTime), style: TextStyle(color: Color(0xff9d9d9d)),),
         ],
       )
     );
@@ -103,7 +110,11 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Amount', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d))),
-            Text('10.2344556 Mina', textAlign: TextAlign.right, style: TextStyle(color: Color(0xff0a0a0a), fontWeight: FontWeight.bold)),
+            Text(
+              '${formatTokenNumber(widget.mergedUserCommand.amount)} Mina',
+              textAlign: TextAlign.right,
+              style: TextStyle(color: Color(0xff0a0a0a), fontWeight: FontWeight.bold)
+            ),
           ],
         )
       )
@@ -125,7 +136,11 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text('Fee', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
-                Text('0.000378 Mina', textAlign: TextAlign.right, style: TextStyle(color: Color(0xff0f0f0f)),),
+                Text(
+                  '${formatTokenNumber(widget.mergedUserCommand.fee)} Mina',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(color: Color(0xff0f0f0f))
+                ),
               ]
             ),
             Container(height: 8),
@@ -144,8 +159,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                   flex: 7,
                   child: Container(
                     padding: EdgeInsets.only(left: 12),
-                    child: Text('B62qmJFzhkdVcx75hLVAt3RNAs3wQV76unWtj9YhQ91w18acBVJTo6Q',
-                    textAlign: TextAlign.right, style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11), maxLines: 3, overflow: TextOverflow.ellipsis),
+                    child: Text(
+                      widget.mergedUserCommand.to,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis
+                    ),
                   )
                 )
               ],
@@ -164,8 +184,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                     flex: 7,
                     child: Container(
                       padding: EdgeInsets.only(left: 12),
-                      child: Text('B62qmJFzhkdVcx75hLVAt3RNAs3wQV76unWtj9YhQ91w18acBVJTo6Q',
-                          textAlign: TextAlign.right, style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11), maxLines: 3, overflow: TextOverflow.ellipsis),
+                      child: Text(
+                        widget.mergedUserCommand.from,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis
+                      ),
                     )
                 )
               ],
@@ -178,8 +203,23 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Memo', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
-                  Text('Test1', textAlign: TextAlign.right, style: TextStyle(color: Color(0xff0f0f0f)),),
+                  Expanded(
+                    flex: 2,
+                    child: Text('Memo', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
+                  ),
+                  Expanded(
+                    flex: 7,
+                    child: Container(
+                      padding: EdgeInsets.only(left: 12),
+                      child: Text(
+                        widget.mergedUserCommand.memo,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis
+                      ),
+                    )
+                  )
                 ]
             ),
           ],
@@ -200,16 +240,20 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             children: [
               Expanded(
                 flex: 2,
-                child: Text('Sender', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
+                child: Text('Hash ID', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
               ),
               Expanded(
                   flex: 7,
-                  child: Container(
+                  child: Padding(
                     padding: EdgeInsets.only(left: 12),
                     child:
-                      Text('B62qmJFzhkdVcx75hLVAt3RNAs3wQV76unWtj9YhQ91w18acBVJTo6Q',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11), maxLines: 3, overflow: TextOverflow.ellipsis),
+                      Text(
+                        widget.mergedUserCommand.hash,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis
+                      ),
                   )
               )
             ],
