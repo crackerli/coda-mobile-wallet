@@ -1,4 +1,5 @@
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
@@ -122,6 +123,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
     return Scaffold(
+      backgroundColor: primaryBackgroundColor,
       appBar: _buildSendTokenAppBar(),
       body: KeyboardActions(
         tapOutsideToDismiss: true,
@@ -182,7 +184,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   Widget _buildSendTokenBody(BuildContext context, SendTokenStates state) {
     return Container(
       color: Color(0xfff7fbfe),
-      padding: EdgeInsets.only(left: 32.w, right: 32.w, top: 60.h),
+      padding: EdgeInsets.only(left: globalHPadding.w, right: globalHPadding.w, top: 60.h),
       child:
       Column(
         mainAxisSize: MainAxisSize.max,

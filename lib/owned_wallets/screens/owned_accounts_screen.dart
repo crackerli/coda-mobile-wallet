@@ -104,6 +104,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsB
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
     return Scaffold(
+      backgroundColor: primaryBackgroundColor,
       appBar: _buildAccountsAppBar(),
       body: RefreshIndicator(
         onRefresh: _onRefresh,
@@ -170,7 +171,7 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsB
         Expanded(
           flex: 1,
           child: Padding(
-          padding: EdgeInsets.only(left: 10, right: 10),
+          padding: EdgeInsets.only(left: globalHPadding.w, right: globalHPadding.w),
           child: _buildAccountsWidget(context, state))
         )
       ],

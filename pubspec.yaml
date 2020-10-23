@@ -73,6 +73,7 @@ flutter:
     - images/tx_success.png
     - images/tx_timeout.png
     - images/tx_unsubmit.png
+    - images/navigate_next.png
 
   fonts:
    - family: Entypo

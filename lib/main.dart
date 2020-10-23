@@ -39,7 +39,7 @@ class CodaWallet extends StatelessWidget {
               title: 'Coda Wallet',
               theme: ThemeData(
                 brightness: Brightness.light,
-                primaryColor: Color(0xfff7f8fa),
+                primaryColor: Color(0xfff5f8fd),
                 accentColor: Colors.cyan[600],
                 fontFamily: 'Roboto-Regular'
               ),

@@ -122,6 +122,7 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
     return Scaffold(
+      backgroundColor: primaryBackgroundColor,
       appBar: _buildAccountTxnsAppBar(),
       floatingActionButton: _buildActionButton(),
       body: RefreshIndicator(
