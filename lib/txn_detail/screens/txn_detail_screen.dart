@@ -109,12 +109,16 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Amount', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d))),
-            Text(
-              '${formatTokenNumber(widget.mergedUserCommand.amount)} Mina',
-              textAlign: TextAlign.right,
-              style: TextStyle(color: Color(0xff0a0a0a), fontWeight: FontWeight.bold)
-            ),
+            widget.mergedUserCommand.isDelegation ?
+              Text('Delegation', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff0a0a0a))) :
+              Text('Amount', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d))),
+            widget.mergedUserCommand.isDelegation ?
+              Container() :
+              Text(
+                '${formatTokenNumber(widget.mergedUserCommand.amount)} Mina',
+                textAlign: TextAlign.right,
+                style: TextStyle(color: Color(0xff0a0a0a), fontWeight: FontWeight.bold)
+              ),
           ],
         )
       )

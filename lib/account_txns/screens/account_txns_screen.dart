@@ -392,6 +392,10 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
   }
 
   Widget _getFormattedTxnAmount(MergedUserCommand userCommand) {
+    if(userCommand.isDelegation) {
+      return Text('delegation',textAlign: TextAlign.right,
+        style: TextStyle(color: Color.fromARGB(0xff, 39, 139, 191), fontSize: 40.sp));
+    }
     if(_getTxnType(userCommand) == TxnType.MINTED) {
       return Text('+${formatTokenNumber(userCommand.coinbase)}', textAlign: TextAlign.right,
         style: TextStyle(color: Color.fromARGB(0xff, 34, 180, 161), fontSize: 40.sp));
