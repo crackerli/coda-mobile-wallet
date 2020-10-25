@@ -464,7 +464,15 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _getCommandHashText(userCommand),
+                  Row(
+                    children: [
+                      _getCommandHashText(userCommand),
+                      userCommand.isPooled ? Container(width: 4) : Container(width: 0),
+                      userCommand.isPooled ?
+                        Text('(Cancel)', style: TextStyle(color: Colors.red, fontSize: 40.sp)) :
+                        Container()
+                    ]
+                  ),
                   Container(height: 8),
                   _getDateTimeText(userCommand)
                 ],
