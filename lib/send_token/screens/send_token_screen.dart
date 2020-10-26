@@ -3,6 +3,7 @@ import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
+import 'package:coda_wallet/send_token/mutation/delegate_token_mutation.dart';
 import 'package:coda_wallet/send_token/mutation/send_token_mutation.dart';
 import 'package:coda_wallet/send_token/screens/send_token_dialog.dart';
 import 'package:coda_wallet/util/format_utils.dart';
@@ -20,15 +21,18 @@ class SendTokenScreen extends StatefulWidget {
   String publicKey;
   String balance;
   bool locked;
+  bool isDelegation;
 
   SendTokenScreen(
     String publicKey,
     String balance,
     bool locked,
+    bool isDelegation,
     {Key key}) : super(key: key) {
     this.publicKey = publicKey;
     this.balance = balance;
     this.locked = locked;
+    this.isDelegation = isDelegation;
   }
 
   @override
@@ -57,6 +61,10 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
     _sendTokenBloc.isLocked = widget.locked;
     _sendTokenBloc.balance = widget.balance;
     _feeController.text = _sendTokenBloc.fee;
+    if(widget.isDelegation) {
+      _amountController.text = formatTokenNumber(widget.balance);
+      _sendTokenBloc.sendAmount = widget.balance;
+    }
     _focusNodeAmount.addListener(() {
       if(_focusNodeAmount.hasFocus) {
 
@@ -106,17 +114,31 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   }
 
   _sendPayment() {
-    _sendTokenBloc.sendAmount = _amountController.text;
-    _sendTokenBloc.memo = _memoController.text;
-    _sendTokenBloc.fee = _feeController.text;
-    Map<String, dynamic> variables = Map<String, dynamic>();
-    variables['from'] = _sendTokenBloc.sender;
-    variables['to'] = _sendTokenBloc.receiver;
-    variables['amount'] = getNanoMina(_sendTokenBloc.sendAmount);
-    variables['memo'] = _sendTokenBloc.memo;
-    variables['fee'] = getNanoMina(_sendTokenBloc.fee);
+    if(widget.isDelegation) {
+      _sendTokenBloc.memo = _memoController.text;
+      _sendTokenBloc.fee = _feeController.text;
+      Map<String, dynamic> variables = Map<String, dynamic>();
+      variables['from'] = _sendTokenBloc.sender;
+      variables['to'] = _sendTokenBloc.receiver;
+      variables['memo'] = _sendTokenBloc.memo;
+      variables['fee'] = getNanoMina(_sendTokenBloc.fee);
 
-    _sendTokenBloc.add(SendPayment(SEND_PAYMENT_MUTATION, variables: variables));
+      _sendTokenBloc.add(
+        SendPayment(SEND_DELEGATION_MUTATION, variables: variables));
+    } else {
+      _sendTokenBloc.sendAmount = _amountController.text;
+      _sendTokenBloc.memo = _memoController.text;
+      _sendTokenBloc.fee = _feeController.text;
+      Map<String, dynamic> variables = Map<String, dynamic>();
+      variables['from'] = _sendTokenBloc.sender;
+      variables['to'] = _sendTokenBloc.receiver;
+      variables['amount'] = getNanoMina(_sendTokenBloc.sendAmount);
+      variables['memo'] = _sendTokenBloc.memo;
+      variables['fee'] = getNanoMina(_sendTokenBloc.fee);
+
+      _sendTokenBloc.add(
+        SendPayment(SEND_PAYMENT_MUTATION, variables: variables));
+    }
   }
 
   @override
@@ -158,9 +180,10 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   }
 
   Widget _buildSendTokenAppBar() {
+    String title = widget.isDelegation ? 'Delegate' : 'Send Mina';
     return PreferredSize(
       child: AppBar(
-        title: Text('Send Mina',
+        title: Text(title,
           style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
         centerTitle: true,
         elevation: 0,
@@ -295,6 +318,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
                 FilteringTextInputFormatter.allow(RegExp('[0-9.]')),
               ],
               focusNode: _focusNodeAmount,
+              enabled: widget.isDelegation ? false : true,
               maxLines: 1,
               controller: _amountController,
               onChanged: (text) {
@@ -420,6 +444,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
   
   Widget _buildSendAction(BuildContext context, SendTokenStates state) {
     Widget sendAction;
+    String actionText = widget.isDelegation ? 'Delegate' : 'Send';
 
     if(state is SendPaymentLoading) {
       sendAction = SizedBox(
@@ -444,7 +469,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       _sendTokenBloc.memo = '';
       _sendTokenBloc.sendAmount = '';
       _sendTokenBloc.fee = '0.1';
-      sendAction = Text("Send", style: TextStyle(color: Colors.white, fontSize: 44.sp));
+      sendAction = Text(actionText, style: TextStyle(color: Colors.white, fontSize: 44.sp));
       _sendTokenBloc.sendEnabled = false;
       _sendTokenBloc.add(ValidateInput());
 
@@ -457,9 +482,9 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showSendFailDialog(context, error.toString());
       });
-      sendAction = Text("Send", style: TextStyle(color: Colors.white, fontSize: 44.sp));
+      sendAction = Text(actionText, style: TextStyle(color: Colors.white, fontSize: 44.sp));
     } else {
-      sendAction = Text("Send", style: TextStyle(color: Colors.white, fontSize: 44.sp));
+      sendAction = Text(actionText, style: TextStyle(color: Colors.white, fontSize: 44.sp));
     }
 
     return Container(

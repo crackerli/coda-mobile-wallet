@@ -2,5 +2,6 @@ enum TxnType {
   NONE,
   MINTED,
   SEND,
-  RECEIVE
+  RECEIVE,
+  DELEGATION,
 }

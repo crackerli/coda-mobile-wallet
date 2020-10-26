@@ -74,6 +74,7 @@ flutter:
     - images/tx_timeout.png
     - images/tx_unsubmit.png
     - images/navigate_next.png
+    - images/staking.png
 
   fonts:
    - family: Entypo

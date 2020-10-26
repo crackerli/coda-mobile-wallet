@@ -33,14 +33,14 @@ toQrAddressScreen(BuildContext context, String publicKey) {
   );
 }
 
-toSendTokenScreen(BuildContext context, String publicKey, String balance, bool locked) {
+toSendTokenScreen(BuildContext context, String publicKey, String balance, bool locked, bool isDelegation) {
   Navigator.push(context,
     MaterialPageRoute(builder: (context) {
       return BlocProvider<SendTokenBloc>(
         create: (BuildContext context) {
           return SendTokenBloc(InputInvalidated());
         },
-        child: SendTokenScreen(publicKey, balance, locked)
+        child: SendTokenScreen(publicKey, balance, locked, isDelegation)
       );
     }
   ));

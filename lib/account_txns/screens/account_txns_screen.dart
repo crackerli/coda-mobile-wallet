@@ -181,7 +181,8 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
           onTap: () => toSendTokenScreen(context,
             _accountTxnsBloc.accountStatus.publicKey,
             _accountTxnsBloc.accountStatus.balance,
-            _accountTxnsBloc.accountStatus.locked)
+            _accountTxnsBloc.accountStatus.locked,
+            false)
         ),
         SpeedDialChild(
           label: 'Receive',
@@ -189,6 +190,17 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
           backgroundColor: Colors.orange,
           labelStyle: TextStyle(fontSize: 18.0),
           onTap: () => toQrAddressScreen(context, widget.account.publicKey),
+        ),
+        SpeedDialChild(
+          label: 'Delegate',
+          child: Icon(Icons.send),
+          backgroundColor: Colors.blueAccent,
+          labelStyle: TextStyle(fontSize: 18.0),
+          onTap: () => toSendTokenScreen(context,
+            _accountTxnsBloc.accountStatus.publicKey,
+            _accountTxnsBloc.accountStatus.balance,
+            _accountTxnsBloc.accountStatus.locked,
+            true),
         ),
       ]
     );
@@ -236,6 +248,11 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
 
     if(state is AccountNameChanged) {
       AccountDetail accountDetail = state.data;
+      if(null == accountDetail ||
+          null == accountDetail.mergedUserCommands ||
+          0 == accountDetail.mergedUserCommands.length) {
+        return Center(child: Text('No Transactions', style: TextStyle(color: Color(0xffbbbbbb)),));
+      }
       return _buildTxnsListWidget(accountDetail.mergedUserCommands);
     }
 
@@ -361,10 +378,18 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
       return Image.asset('images/txreceive.png', width: 65.w, height: 65.w);
     }
 
+    if(_getTxnType(userCommand) == TxnType.DELEGATION) {
+      return Image.asset('images/staking.png', width: 65.w, height: 65.w);
+    }
+
     return Container();
   }
 
   TxnType _getTxnType(MergedUserCommand userCommand) {
+    if(userCommand.isDelegation) {
+      return TxnType.DELEGATION;
+    }
+
     if(userCommand.isMinted) {
       return TxnType.MINTED;
     }
@@ -393,10 +418,11 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
   }
 
   Widget _getFormattedTxnAmount(MergedUserCommand userCommand) {
-    if(userCommand.isDelegation) {
+    if(_getTxnType(userCommand) == TxnType.DELEGATION) {
       return Text('delegation',textAlign: TextAlign.right,
         style: TextStyle(color: Color.fromARGB(0xff, 39, 139, 191), fontSize: 40.sp));
     }
+
     if(_getTxnType(userCommand) == TxnType.MINTED) {
       return Text('+${formatTokenNumber(userCommand.coinbase)}', textAlign: TextAlign.right,
         style: TextStyle(color: Color.fromARGB(0xff, 34, 180, 161), fontSize: 40.sp));
