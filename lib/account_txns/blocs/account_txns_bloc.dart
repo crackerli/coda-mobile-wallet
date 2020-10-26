@@ -194,6 +194,11 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
       if(null == pooledUserCommands[i]) {
         continue;
       }
+
+      // TODO: Here maybe a bug in graphql server, the filter will return some item not related to the publicKey, need to confirm with Mina Team
+      if(pooledUserCommands[i]['to'] != _publicKey && pooledUserCommands[i]['from'] != _publicKey) {
+        continue;
+      }
       MergedUserCommand mergedUserCommand = MergedUserCommand();
       mergedUserCommand.to = pooledUserCommands[i]['to'];
       mergedUserCommand.isDelegation = pooledUserCommands[i]['isDelegation'];
@@ -224,6 +229,10 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
         List<dynamic> userCommands = nodes[i]['transactions']['userCommands'];
         for(int j = 0; j < userCommands.length; j++) {
           if(null == userCommands[j]) {
+            continue;
+          }
+          // TODO: Here maybe a bug in graphql server, the filter will return some item not related to the publicKey, need to confirm with Mina Team
+          if(userCommands[j]['from'] != _publicKey && userCommands[j]['to'] != _publicKey) {
             continue;
           }
           MergedUserCommand mergedUserCommand = MergedUserCommand();
