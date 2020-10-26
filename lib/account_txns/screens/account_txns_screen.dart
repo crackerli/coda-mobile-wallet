@@ -7,6 +7,7 @@ import 'package:coda_wallet/types/list_operation_type.dart';
 import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/util/navigations.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/account_txns_bloc.dart';
@@ -465,12 +466,29 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       _getCommandHashText(userCommand),
-                      userCommand.isPooled ? Container(width: 4) : Container(width: 0),
+                      userCommand.isPooled ? Container(width: 8) : Container(width: 0),
                       userCommand.isPooled ?
-                        Text('(Cancel)', style: TextStyle(color: Colors.red, fontSize: 40.sp)) :
-                        Container()
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            padding: EdgeInsets.only(left: 10.sp, right: 10.sp, top: 0.sp, bottom: 0.sp),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              shape: BoxShape.rectangle,
+                              border: Border.all(
+                                width: 1.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            child: Text("Cancel",
+                              style: TextStyle(color: Colors.red, fontSize: 36.sp))
+                          )
+                        ) : Container()
                     ]
                   ),
                   Container(height: 8),
