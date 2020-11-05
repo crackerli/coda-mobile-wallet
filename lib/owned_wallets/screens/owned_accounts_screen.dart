@@ -3,6 +3,7 @@ import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
 import 'package:coda_wallet/owned_wallets/screens/owned_accounts_dialog.dart';
 import 'package:coda_wallet/util/navigations.dart';
+import 'package:f_logs/f_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -12,6 +13,7 @@ import '../blocs/owned_accounts_states.dart';
 import '../../util/format_utils.dart';
 import '../query/owned_accounts_query.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class OwnedAccountsScreen extends StatefulWidget {
   OwnedAccountsScreen({Key key}) : super(key: key);
@@ -24,15 +26,38 @@ class OwnedAccountsScreen extends StatefulWidget {
 class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsBindingObserver, RouteAware {
   OwnedAccountsBloc _ownedAccountsBloc;
 
+  Future requestPermission() async {
+    Map<PermissionGroup, PermissionStatus> permissions =
+      await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+
+    PermissionStatus permission =
+      await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+
+    if (permission == PermissionStatus.granted) {
+      print('storage permission granted');
+    } else {
+      print('storage permission denied');
+    }
+  }
+
   @override
   void initState() {
+    super.initState();
+    FLog.info(
+        className: 'OwnedAccountsScreen',
+        methodName: 'initState',
+        text: '');
     WidgetsBinding.instance.addObserver(this);
     _ownedAccountsBloc = BlocProvider.of<OwnedAccountsBloc>(context);
-    super.initState();
+    requestPermission();
   }
 
   @override
   void dispose() {
+    FLog.info(
+        className: 'OwnedAccountsScreen',
+        methodName: 'dispose',
+        text: '');
     routeObserver.unsubscribe(this);
     WidgetsBinding.instance.removeObserver(this);
     _ownedAccountsBloc = null;
@@ -42,7 +67,11 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsB
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeDependencies();
-    print('OwnedAccountsScreen didChangeAppLifecycleState()');
+    //print('OwnedAccountsScreen didChangeAppLifecycleState()');
+    FLog.info(
+      className: "OwnedAccountsScreen",
+      methodName: "didChangeAppLifecycleState",
+      text: "${state.index}");
     if (state == AppLifecycleState.resumed) {
       if(!_ownedAccountsBloc.isAccountLoading) {
         _ownedAccountsBloc.add(FetchOwnedAccounts(OWNED_ACCOUNTS_QUERY));
@@ -149,15 +178,31 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsB
           labelStyle: TextStyle(fontSize: 18.0),
           onTap: () => showCreateAccountDialog(context)
         ),
-        // SpeedDialChild(
-        //   label: 'Delete',
-        //   child: Icon(Icons.delete),
-        //   backgroundColor: Colors.orange,
-        //   labelStyle: TextStyle(fontSize: 18.0),
-        //   onTap: null,
-        // ),
+        SpeedDialChild(
+          label: 'Get Log',
+          child: Icon(Icons.delete),
+          backgroundColor: Colors.orange,
+          labelStyle: TextStyle(fontSize: 18.0),
+          onTap: _storeLogs,
+        ),
       ]
     );
+  }
+
+  _storeLogs() {
+    //local storage
+    final LogsStorage _storage = LogsStorage.instance;
+    StringBuffer buffer = StringBuffer();
+    // get all logs and write to file
+    FLog.getAllLogs().then((logs) {
+      logs.forEach((log) {
+        buffer.write(Formatter.format(log, flogConfig));
+      });
+
+      _storage.writeLogsToFile(buffer.toString());
+//      print(buffer.toString());
+      buffer.clear();
+    });
   }
 
   Widget _buildAccountsBody(BuildContext context, OwnedAccountsStates state) {

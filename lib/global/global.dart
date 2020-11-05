@@ -1,3 +1,4 @@
+import 'package:f_logs/model/flog/flog_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +9,7 @@ String globalRpcServer;
 RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 const primaryBackgroundColor = Color(0xfff5f8fd);
 const globalHPadding = 20;
+LogsConfig flogConfig;
 
 // Global functions
 String exceptionHandle<T>(QueryResult result) {
