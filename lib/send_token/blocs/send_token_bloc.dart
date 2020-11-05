@@ -1,3 +1,4 @@
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_entity.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
 import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
@@ -103,9 +104,10 @@ class SendTokenBloc extends
       yield SendPaymentLoading(_sendTokenEntity);
       final result = await _service.performMutation(mutation, variables: variables);
       isSending = false;
-      if (result.hasException) {
-        print('graphql errors: ${result.exception.graphqlErrors.toString()}');
-        yield SendPaymentFail(result.exception.graphqlErrors[0]);
+
+      if(null == result || result.hasException) {
+        String error = exceptionHandle(result);
+        yield SendPaymentFail(error);
         return;
       }
 
@@ -128,9 +130,9 @@ class SendTokenBloc extends
       yield ToggleLockStatusLoading();
       final result = await _service.performMutation(query, variables: variables);
 
-      if (result.hasException) {
-        print('graphql errors: ${result.exception.graphqlErrors.toString()}');
-        yield ToggleLockStatusFail(result.exception?.graphqlErrors[0]);
+      if(null == result || result.hasException) {
+        String error = exceptionHandle(result);
+        yield ToggleLockStatusFail(error);
         return;
       }
 

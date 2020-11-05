@@ -7,8 +7,8 @@ import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 _toggleLockStatus(
-    BuildContext context, String publicKey,
-    bool toLock, { String password }) {
+  BuildContext context, String publicKey,
+  bool toLock, { String password }) {
 
   Map<String, String> variables = Map<String, String>();
   variables['publicKey'] = publicKey;
@@ -19,7 +19,7 @@ _toggleLockStatus(
   } else {
     variables['password'] = password;
     sendTokenBloc.add(
-        ToggleLockStatus(ACCOUNT_UNLOCK_MUTATION, variables: variables));
+      ToggleLockStatus(ACCOUNT_UNLOCK_MUTATION, variables: variables));
   }
 }
 
@@ -124,31 +124,4 @@ void showSendSuccessDialog(
   );
 }
 
-void showSendFailDialog(
-  BuildContext buildContext,
-  String error
-  ) {
-
-  showDialog(
-    context: buildContext,
-    builder: (BuildContext context) =>
-      ButtonBarTheme(
-        data: ButtonBarThemeData(alignment: MainAxisAlignment.center),
-        child: AlertDialog(
-          title: Text('Mina sent', style: TextStyle(fontWeight: FontWeight.bold),),
-          content:
-            Text("Error: $error", textAlign: TextAlign.left, style: TextStyle(decoration: TextDecoration.underline),),
-            actions: <Widget>[
-              RaisedButton(
-                padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 60, right: 60),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                onPressed: () => Navigator.of(buildContext).pop(),
-                color: Colors.blueAccent,
-                child: Text('OK', style: TextStyle(color: Colors.white),)
-              )
-            ]
-        )
-      )
-  );
-}
 

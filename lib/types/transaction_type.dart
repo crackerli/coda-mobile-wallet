@@ -4,4 +4,5 @@ enum TxnType {
   SEND,
   RECEIVE,
   DELEGATION,
+  UNDELEGATION
 }

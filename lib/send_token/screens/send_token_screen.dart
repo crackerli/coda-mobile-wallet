@@ -9,11 +9,13 @@ import 'package:coda_wallet/send_token/screens/send_token_dialog.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/util/input_formatters.dart';
 import 'package:coda_wallet/util/navigations.dart';
+import 'package:coda_wallet/widget/dialog/common_dialogs.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graphql/client.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 // ignore: must_be_immutable
@@ -413,9 +415,9 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       } else {
         toggleLockFail = 'Lock failed';
       }
+      _sendTokenBloc.add(ValidateInput());
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final snackBar = SnackBar(content: Text(toggleLockFail));
-        Scaffold.of(context).showSnackBar(snackBar);
+        showInfoDialog(context, toggleLockFail, state.error);
       });
     }
 
@@ -480,7 +482,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       dynamic error = state.error;
       _sendTokenBloc.add(ValidateInput());
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showSendFailDialog(context, error.toString());
+        showInfoDialog(context, 'Sending Error', error.toString());
       });
       sendAction = Text(actionText, style: TextStyle(color: Colors.white, fontSize: 44.sp));
     } else {
