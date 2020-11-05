@@ -468,7 +468,6 @@ class _AccountTxnsScreenState extends State<AccountTxnsScreen> with WidgetsBindi
             child: CircularProgressIndicator(
               backgroundColor: Colors.grey[200],
               valueColor: AlwaysStoppedAnimation(Colors.blue),
-              value: .7,
             )
           )
         )
