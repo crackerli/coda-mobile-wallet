@@ -1,3 +1,4 @@
+import 'package:coda_wallet/global/global.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 import 'owned_accounts_events.dart';
@@ -54,16 +55,16 @@ class OwnedAccountsBloc extends
     try {
       final result = await _service.performMutation(query, variables: variables);
 
-      if (result.hasException) {
-        print('graphql errors: ${result.exception.graphqlErrors.toString()}');
-        yield CreateAccountFail(result.exception.graphqlErrors[0]);
+      if(null == result || result.hasException) {
+        String error = exceptionHandle(result);
+        yield CreateAccountFail(error);
         return;
       }
 
       final newAccount = Account(
-          publicKey: result.data['createAccount']['account']['publicKey'],
-          balance: result.data['createAccount']['account']['balance']['total'],
-          locked: result.data['createAccount']['account']['locked']
+        publicKey: result.data['createAccount']['account']['publicKey'],
+        balance: result.data['createAccount']['account']['balance']['total'],
+        locked: result.data['createAccount']['account']['locked']
       );
 
       _ownedAccounts.add(newAccount);
@@ -86,9 +87,9 @@ class OwnedAccountsBloc extends
     try {
       final result = await _service.performMutation(query, variables: variables);
 
-      if (result.hasException) {
-        print('graphql errors: ${result.exception.graphqlErrors.toString()}');
-        yield ToggleLockStatusFail(result.exception.graphqlErrors[0]);
+      if(null == result || result.hasException) {
+        String error = exceptionHandle(result);
+        yield ToggleLockStatusFail(error);
         return;
       }
 
@@ -124,13 +125,9 @@ class OwnedAccountsBloc extends
         _service.performQuery(query, variables: variables);
 
       _isAccountLoading = false;
-      if(result.hasException) {
-        print('graphql errors: ${result.exception.graphqlErrors.toString()}');
-        if(null == result.exception.graphqlErrors || result.exception.graphqlErrors.length == 0) {
-          yield FetchOwnedAccountsFail('Network error');
-        } else {
-          yield FetchOwnedAccountsFail(result.exception.graphqlErrors[0]);
-        }
+      if(null == result || result.hasException) {
+        String error = exceptionHandle(result);
+        yield FetchOwnedAccountsFail(error);
         return;
       }
 

@@ -1,4 +1,5 @@
 import 'package:coda_wallet/account_txns/blocs/account_txns_entity.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/types/list_operation_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'account_txns_events.dart';
@@ -95,15 +96,9 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
       yield MoreAccountTxnsLoading(_accountDetail);
       final result = await _service.performQuery(query, variables: variables);
 
-      if (result.hasException) {
-        print('account txns graphql errors: ${result.exception.graphqlErrors.toString()}');
-        if(result.exception == null ||
-           result.exception.graphqlErrors == null ||
-           result.exception.graphqlErrors.length == 0) {
-          yield MoreAccountTxnsFail('Network Error');
-          return;
-        }
-        yield MoreAccountTxnsFail(result.exception.graphqlErrors[0]);
+      if(null == result || result.hasException) {
+        String error = exceptionHandle(result);
+        yield MoreAccountTxnsFail(error);
         return;
       }
 
@@ -145,9 +140,9 @@ class AccountTxnsBloc extends Bloc<AccountTxnsEvents, AccountTxnsStates> {
       yield RefreshAccountTxnsLoading(_accountDetail);
       final result = await _service.performQuery(query, variables: variables);
 
-      if(result.hasException) {
-        print('account txns graphql errors: ${result.exception.graphqlErrors.toString()}');
-        yield RefreshAccountTxnsFail(result.exception.graphqlErrors[0]);
+      if(null == result || result.hasException) {
+        String error = exceptionHandle(result);
+        yield RefreshAccountTxnsFail(error);
         return;
       }
 
