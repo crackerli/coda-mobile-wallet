@@ -200,7 +200,6 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsB
       });
 
       _storage.writeLogsToFile(buffer.toString());
-//      print(buffer.toString());
       buffer.clear();
     });
   }
