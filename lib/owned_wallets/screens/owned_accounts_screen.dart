@@ -12,6 +12,7 @@ import '../blocs/owned_accounts_states.dart';
 import '../../util/format_utils.dart';
 import '../query/owned_accounts_query.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/services.dart';
 
 class OwnedAccountsScreen extends StatefulWidget {
   OwnedAccountsScreen({Key key}) : super(key: key);
@@ -270,10 +271,10 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsB
               onTap: () { _clickLock(context, account); }
             ),
             Container(width: 10),
-            // GestureDetector(
-            //   child: Image.asset('images/delete.png', width: 16, height: 16),
-            //   onTap: () { _clickLock(context, account); }
-            // )
+            GestureDetector(
+              child: Image.asset('images/copy_gray.png', width: 16, height: 16),
+              onTap: () { _clickCopyPublicKey(context, account); }
+            )
           ]
         )
       ],
@@ -281,6 +282,15 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsB
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max
     );
+  }
+
+  _clickCopyPublicKey(BuildContext context, Account account) {
+    if(null == account) {
+      return;
+    }
+
+    Clipboard.setData(ClipboardData(text: account.publicKey));
+    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Public key copied into clipboard!!')));
   }
 
   Widget _buildAccountItem(

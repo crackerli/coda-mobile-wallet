@@ -264,6 +264,7 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
                   minHeight: 37.h,
                 ),
                 child: TextField(
+                  enableInteractiveSelection: true,
                   focusNode: _focusNodeReceiver,
                   controller: _addressController,
                   onChanged: (text) {
