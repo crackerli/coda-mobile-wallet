@@ -132,11 +132,21 @@ class _SendTokenScreenState extends State<SendTokenScreen> {
       _sendTokenBloc.memo = _memoController.text;
       _sendTokenBloc.fee = _feeController.text;
       Map<String, dynamic> variables = Map<String, dynamic>();
-      variables['from'] = _sendTokenBloc.sender;
-      variables['to'] = _sendTokenBloc.receiver;
-      variables['amount'] = getNanoMina(_sendTokenBloc.sendAmount);
-      variables['memo'] = _sendTokenBloc.memo;
-      variables['fee'] = getNanoMina(_sendTokenBloc.fee);
+      // variables['from'] = _sendTokenBloc.sender;
+      // variables['to'] = _sendTokenBloc.receiver;
+      // variables['amount'] = getNanoMina(_sendTokenBloc.sendAmount);
+      // variables['memo'] = _sendTokenBloc.memo;
+      // variables['fee'] = getNanoMina(_sendTokenBloc.fee);
+      variables['from'] = 'B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg';
+      variables['to'] = 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g';
+      variables['amount'] = 420000000;
+      variables['memo'] = 'this is a memo';
+      variables['fee'] = 300000000;
+      variables['nonce'] = 200;
+      variables['token'] = 1;
+      variables['validUntil'] = 10000;
+      variables['field'] = '6294031020844169724778227166138415676049686510656401727312236286674679501948';
+      variables['scalar'] = '4626454670027815473460098193984318559610067435921261084455739892582590642453';
 
       _sendTokenBloc.add(
         SendPayment(SEND_PAYMENT_MUTATION, variables: variables));

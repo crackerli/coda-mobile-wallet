@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+const _inputRecoveryPhrasesTip = 'Please input the recovery phrases here';
+
 class MnemonicBody {
   String word;
   bool hasFilled;
@@ -28,6 +30,9 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   
   _createRandomMnemonics() {
     List<String> words = globalMnemonic.split(' ');
+    print('---------------- $words -------------------');
+    words.shuffle();
+    print('================ $words ===================');
     for(int i = 0; i < words.length; i++) {
       MnemonicBody body = MnemonicBody();
       body.hasFilled = false;
@@ -40,6 +45,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   void initState() {
     super.initState();
     _createRandomMnemonics();
+    _mnemonicsFilled.add(_inputRecoveryPhrasesTip);
   }
 
   @override
@@ -85,20 +91,19 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
 
   Widget _buildRecoveryPhraseFilledTable() {
     return Container(
-        margin: EdgeInsets.only(left: 48.w, right: 48.w),
-        padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 10.h, bottom: 10.h),
-        color: Colors.white,
-        child: Wrap(
-            spacing: 10.w,
-            runSpacing: 15.h,
-            children: List.generate(_mnemonicsFilled.length, (index) {
-              return Text(
-                '${_mnemonicsFilled[index]}',
-                style: TextStyle(color: Colors.blue, fontSize: 18.sp, fontWeight: FontWeight.w400),
-              );
-            }
-            )
+      margin: EdgeInsets.only(left: 48.w, right: 48.w),
+      padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 10.h, bottom: 10.h),
+      color: Colors.white,
+      child: Wrap(
+        spacing: 10.w,
+        runSpacing: 15.h,
+        children: List.generate(_mnemonicsFilled.length, (index) {
+          return Text(
+            '${_mnemonicsFilled[index]}',
+            style: TextStyle(color: Colors.blue, fontSize: 18.sp, fontWeight: FontWeight.w400),
+          );}
         )
+      )
     );
   }
 
@@ -121,11 +126,16 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4.w),
                 color: _mnemonicTips[index].hasFilled ? Colors.transparent : Colors.blue,
+                border: Border.all(color: Colors.blue, width: 0.5)
               ),
             ),
             onTap: _mnemonicTips[index].hasFilled ? null: () {
               _mnemonicTips[index].hasFilled = true;
-              _mnemonicsFilled.add(_mnemonicTips[index].word);
+              if(_mnemonicsFilled.length == 1 && _mnemonicsFilled[0] == _inputRecoveryPhrasesTip) {
+                _mnemonicsFilled[0] = _mnemonicTips[index].word;
+              } else {
+                _mnemonicsFilled.add(_mnemonicTips[index].word);
+              }
               setState(() {
               });
             },

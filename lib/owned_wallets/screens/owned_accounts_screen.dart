@@ -2,6 +2,7 @@ import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/owned_wallets/blocs/owned_accounts_entity.dart';
 import 'package:coda_wallet/owned_wallets/screens/owned_accounts_dialog.dart';
+import 'package:coda_wallet/owned_wallets/screens/recovery_phrase_screen.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -148,7 +149,9 @@ class _OwnedAccountsScreenState extends State<OwnedAccountsScreen> with WidgetsB
           backgroundColor: Colors.red,
           label: 'Create',
           labelStyle: TextStyle(fontSize: 18.0),
-          onTap: () => showCreateAccountDialog(context)
+          onTap: () =>   Navigator.push(context,
+    MaterialPageRoute(builder: (context) => RecoveryPhraseScreen())
+    )//showCreateAccountDialog(context)
         ),
         // SpeedDialChild(
         //   label: 'Delete',
