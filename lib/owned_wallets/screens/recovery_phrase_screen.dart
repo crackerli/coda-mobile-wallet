@@ -59,17 +59,17 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
             ),
         ]),
         Positioned(
-            bottom: 84.h,
-            child: RaisedButton(
-              padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-              onPressed: () =>
-                Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => VerifyRecoveryPhraseScreen())
-                ),
-              color: Colors.blueAccent,
-              child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-            ),
+          bottom: 84.h,
+          child: RaisedButton(
+            padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
+            onPressed: () =>
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context) => VerifyRecoveryPhraseScreen())
+              ),
+            color: Colors.blueAccent,
+            child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
+          ),
         )
       ],
     );

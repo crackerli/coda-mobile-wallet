@@ -63,7 +63,7 @@ class _SingleDigitFlipCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder(
-      tween: Tween(begin: value, end: value),
+      tween: Tween(begin: 0.0, end: value),
       duration: duration,
       builder: (context, value, child) {
         final whole = value ~/ 1;
