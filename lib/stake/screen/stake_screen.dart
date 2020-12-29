@@ -46,7 +46,10 @@ class _StakeScreenState extends State<StakeScreen> {
             size: 50,
           ),
           Container(height: 35.h),
-          _buildStakedItem()
+          Container(
+            height: 240.h,
+            child: _buildStakedList()
+          )
         ]),
         Positioned(
           bottom: 35.h,
@@ -74,27 +77,45 @@ class _StakeScreenState extends State<StakeScreen> {
     );
   }
 
+  Widget _buildStakedList() {
+    return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return _buildStakedItem();
+      },
+      separatorBuilder: (context, index) { return Container(height: 4.h); }
+    );
+  }
+
   _buildStakedItem() {
-    return Card(
-      elevation: 0,
+    return Container(
+     decoration: BoxDecoration(
+       borderRadius: BorderRadius.circular(10.w),
+       color: Colors.white,
+       border: Border.all(color: Colors.white, width: 0.5)
+      ),
+      margin: EdgeInsets.only(left: 18.w, right: 18.w),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('My Staking Address', textAlign: TextAlign.left),
+              Text('My Staking Address', textAlign: TextAlign.left, style: TextStyle(fontSize: 17.sp, color: Colors.black)),
               Container(width: 20.w,),
-              Text('10,000.00 MINA', textAlign: TextAlign.right)
+              Text('10,000.00 MINA', textAlign: TextAlign.right, style: TextStyle(fontSize: 17.sp, color: Colors.black))
             ],
           ),
+          Container(height: 4.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('0xa23...efea', textAlign: TextAlign.left,),
+              Text('0xa23...efea', textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xffb1b1b1))),
               Container(width: 20.w,),
-              Text('Staking with Sparkpool', textAlign: TextAlign.right,)
+              Text('Staking with Sparkpool', textAlign: TextAlign.right, style: TextStyle(fontSize: 13.sp, color: Color(0xff929292)))
             ],
           )
         ]
