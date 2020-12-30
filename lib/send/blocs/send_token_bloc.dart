@@ -1,7 +1,7 @@
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/send_token/blocs/send_token_entity.dart';
-import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
-import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
+import 'package:coda_wallet/send/blocs/send_token_entity.dart';
+import 'package:coda_wallet/send/blocs/send_token_events.dart';
+import 'package:coda_wallet/send/blocs/send_token_states.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';

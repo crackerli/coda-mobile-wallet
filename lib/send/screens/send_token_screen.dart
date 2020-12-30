@@ -1,11 +1,11 @@
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';
-import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
-import 'package:coda_wallet/send_token/blocs/send_token_states.dart';
-import 'package:coda_wallet/send_token/mutation/delegate_token_mutation.dart';
-import 'package:coda_wallet/send_token/mutation/send_token_mutation.dart';
-import 'package:coda_wallet/send_token/screens/send_token_dialog.dart';
+import 'package:coda_wallet/send/blocs/send_token_bloc.dart';
+import 'package:coda_wallet/send/blocs/send_token_events.dart';
+import 'package:coda_wallet/send/blocs/send_token_states.dart';
+import 'package:coda_wallet/send/mutation/delegate_token_mutation.dart';
+import 'package:coda_wallet/send/mutation/send_token_mutation.dart';
+import 'package:coda_wallet/send/screens/send_token_dialog.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/util/input_formatters.dart';
 import 'package:coda_wallet/util/navigations.dart';

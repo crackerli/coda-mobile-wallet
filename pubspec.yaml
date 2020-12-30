@@ -39,6 +39,7 @@ dependencies:
   image_gallery_saver: '^1.6.5'
   permission_handler: ^5.0.1+1
   percent_indicator: '^2.1.9'
+#  flip_panel: '^1.0.1'
   ffi_mina_signer:
     path: ../ffi_mina_signer/
 

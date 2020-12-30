@@ -1,9 +1,9 @@
 import 'package:coda_wallet/global/mutation/toggle_lock_status_mutation.dart';
-import 'package:coda_wallet/send_token/blocs/send_token_bloc.dart';
+import 'package:coda_wallet/send/blocs/send_token_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:coda_wallet/send_token/blocs/send_token_events.dart';
+import 'package:coda_wallet/send/blocs/send_token_events.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 _toggleLockStatus(
