@@ -48,7 +48,7 @@ class _StakeScreenState extends State<StakeScreen> {
           Container(height: 35.h),
           Container(
             height: 240.h,
-            child: buildAccountList()
+            child: buildAccountList(null)
           )
         ]),
         Positioned(

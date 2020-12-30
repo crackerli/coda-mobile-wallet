@@ -1,5 +1,6 @@
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/receive/screen/receive_account_screen.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,7 +40,10 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
           Container(height: 37.h),
           Expanded(
             flex: 1,
-            child: buildAccountList()
+              child: buildAccountList(
+                () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ReceiveAccountScreen()))
+            )
           )
         ],
       )
