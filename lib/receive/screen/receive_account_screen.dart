@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/qr_address/qr_image_helper.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 const _testAddress = 'B62qiXEBsYJtFDxyjPU5kEqKpbFibxrkj5CGERR8NN4uhqNjwoN3Q3S';
@@ -32,11 +37,17 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
       appBar: buildAccountsAppBar(),
-      body: _buildReceiveAccountBody(),
+      body: RepaintBoundary(
+        key: _qrImageKey,
+        child: Container(child:
+          _buildReceiveAccountBody(context),
+          color: Colors.white,
+        )
+      ),
     );
   }
 
-  _buildReceiveAccountBody() {
+  _buildReceiveAccountBody(BuildContext context) {
     return Column(
       children: [
         Container(height: 24.h),
@@ -59,25 +70,55 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Image.asset('images/copy_gray.png', width: 18.w, height: 18.w,),
+              Builder(builder: (context) =>
+                InkWell(
+                  child: Image.asset('images/copy_gray.png', width: 18.w, height: 18.w),
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: _testAddress));
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
+                  },
+                )
+              ),
               Container(width: 20.w),
-            Flexible(child:
-              Text(_testAddress, textAlign: TextAlign.left, softWrap: true,
-                style: TextStyle(fontSize: 12.sp, color: Color(0xff786666)), maxLines: 2, overflow: TextOverflow.visible,)),
+              Flexible(child:
+                Text(_testAddress, textAlign: TextAlign.left, softWrap: true,
+                  style: TextStyle(fontSize: 12.sp, color: Color(0xff786666)), maxLines: 2)),
             ],
           )
         ),
         Container(height: 16.h),
+        Builder(builder: (context) =>
         RaisedButton(
           padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-          onPressed: null,
+          onPressed: () async { await _checkStoragePermission(context); },
           color: Colors.blueAccent,
           child: Text('Save Image', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-        )
+        ))
       ],
     );
   }
 
+  Future _checkStoragePermission(BuildContext context) async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.storage,
+    ].request();
+    var status = await Permission.storage.status;
+    print(status);
+    if (status.isUndetermined) {
+      openAppSettings();
+    } else {
+      saveImageAsFile(_qrImageKey).then((value) {
+        _saveQRImage(context, value);
+      });
+    }
+  }
+
+  _saveQRImage(BuildContext context, String path) {
+    String text = Platform.isAndroid ?
+    'Image saved: $path' :
+    'Image saved to gallery';
+    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
 }
 
