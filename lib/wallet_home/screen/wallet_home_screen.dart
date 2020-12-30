@@ -1,3 +1,4 @@
+import 'package:coda_wallet/receive/screen/receive_account_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -137,7 +138,13 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
           Container(height: 32.67.h, width: 1.w, color: Color(0xffd3d3d3)),
           Expanded(
             flex: 1,
-            child: Text('Receive', textAlign: TextAlign.center,)),
+            child: GestureDetector(
+              child: Text('Receive', textAlign: TextAlign.center),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ReceiveAccountsScreen())
+              ),
+            )
+          ),
         ],
       ),
       width: 263.w,
