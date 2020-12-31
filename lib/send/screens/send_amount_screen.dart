@@ -3,10 +3,6 @@ import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class KeyEvent {
-
-}
-
 class SendAmountScreen extends StatefulWidget {
   SendAmountScreen({Key key}) : super(key: key);
 
@@ -19,6 +15,11 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   List<Widget> _keys;
   List<String> _inputAmount;
   StringBuffer _amountBuffer;
+  String _fiatPrice = '\$0.00';
+
+  String _formatFiatPrice() {
+    return '\$$_amountBuffer';
+  }
 
   @override
   void initState() {
@@ -60,11 +61,32 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text('BALANCE', textAlign: TextAlign.center, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-                  Container(height: 48.h),
-                  Text(_amountBuffer.toString(), textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.w500, color: Colors.black)),
-                  Text('\$0.00', textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w500, color: Color(0xff979797))),
+                  RichText(
+                    textAlign: TextAlign.right,
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: '10,000.0045678912 ',
+                        style: TextStyle(fontSize: 17.sp, color: Colors.black)),
+                      TextSpan(
+                        text: 'MINA',
+                        style: TextStyle(
+                          color: Color(0xff979797),
+                          fontWeight: FontWeight.normal,
+                          fontSize: 13.sp
+                        )
+                      ),
+                    ]),
+                  ),
+                  Container(height: 24.h),
+                  Container(
+                    height: 54.h,
+                    child: Center(
+                      child: Text(_amountBuffer.toString(), textAlign: TextAlign.left, maxLines: 2, overflow: TextOverflow.visible,
+                      style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w500, color: Colors.black)))
+                  ),
+                  Container(height: 15.h,),
+                  Text(_fiatPrice, textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500, color: Color(0xff979797))),
                   Container(height: 8.h),
                   _buildDecimalKeyboard(),
                 ],
@@ -89,7 +111,11 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 onTap: () => Navigator.of(context).pop(),
               )
             ],
-          ))
+          )),
+          Positioned(
+            top: 0,
+            right: 47.w,
+            child: Text('SEND ALL', textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.sp)))
         ]
     );
   }
@@ -97,6 +123,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   _fillInput() {
     _amountBuffer.clear();
     _amountBuffer.writeAll(_inputAmount);
+    _fiatPrice = _formatFiatPrice();
     setState(() {
 
     });

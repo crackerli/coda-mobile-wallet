@@ -9,6 +9,7 @@ RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 const primaryBackgroundColor = Color(0xfff5f8fd);
 const globalHPadding = 20;
 String globalMnemonic;
+String gUnitFiatPrice = '2.00';
 
 // Global functions
 String exceptionHandle<T>(QueryResult result) {
