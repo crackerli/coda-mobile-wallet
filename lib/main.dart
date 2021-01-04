@@ -1,5 +1,6 @@
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/entry_sheet.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,7 +38,8 @@ class CodaWallet extends StatelessWidget {
                 create: (context) => OwnedAccountsBloc(FetchOwnedAccountsLoading(null)),
                 child: MaterialApp(
                     showPerformanceOverlay: false,
-                    title: 'Coda Wallet',
+                    title: 'Mina Wallet',
+                    routes: globalRoutes,
                     theme: ThemeData(
                         brightness: Brightness.light,
                         primaryColor: Color(0xfff5f8fd),

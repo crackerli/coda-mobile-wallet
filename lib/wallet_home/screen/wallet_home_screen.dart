@@ -1,9 +1,16 @@
 import 'package:coda_wallet/receive/screen/receive_account_list.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/send/screens/send_from_screen.dart';
+import 'package:coda_wallet/types/send_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+
+_gotoSendFromScreen(BuildContext context) {
+  SendData sendData = SendData();
+  Navigator.of(context).pushNamed(SendFromRoute, arguments: sendData);
+}
 
 class WalletHomeScreen extends StatefulWidget {
   WalletHomeScreen({Key key}) : super(key: key);
@@ -18,18 +25,18 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    return _buildWalletHomeBody();
+    return _buildWalletHomeBody(context);
   }
 
-  Widget _buildWalletHomeBody() {
+  Widget _buildWalletHomeBody(BuildContext context) {
     if(_stakeEnabled) {
-      return _buildStakedHome();
+      return _buildStakedHome(context);
     }
 
     return _buildNoStakeHome();
   }
 
-  _buildStakedHome() {
+  _buildStakedHome(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -44,7 +51,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
         Container(height: 21.h),
         _buildStakedPercent(),
         Container(height: 32.h),
-        _buildActionButton()
+        _buildActionButton(context)
       ]
     );
   }
@@ -61,7 +68,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
           _buildTotalBalance(),
           _buildFiatBalance(),
           Container(height: 12.h),
-          _buildActionButton()
+          _buildActionButton(context)
         ]),
         flex: 5
       ),
@@ -128,7 +135,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
     );
   }
 
-  _buildActionButton() {
+  _buildActionButton(BuildContext context) {
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -137,9 +144,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
             flex: 1,
             child: InkWell(
               child: Text('Send', textAlign: TextAlign.center),
-              onTap: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SendFromScreen())
-              ),
+              onTap: () => _gotoSendFromScreen(context),
             )
           ),
           Container(height: 32.67.h, width: 1.w, color: Color(0xffd3d3d3)),

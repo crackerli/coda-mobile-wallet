@@ -1,5 +1,6 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/send/screens/send_amount_screen.dart';
+import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +13,7 @@ class SendToScreen extends StatefulWidget {
 }
 
 class _SendToScreenState extends State<SendToScreen> {
+  SendData _sendData;
 
   @override
   void initState() {
@@ -27,6 +29,7 @@ class _SendToScreenState extends State<SendToScreen> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: primaryBackgroundColor,
       appBar: buildAccountsAppBar(),
       body: _buildSendToBody(context)

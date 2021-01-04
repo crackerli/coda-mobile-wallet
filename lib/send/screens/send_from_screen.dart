@@ -1,7 +1,6 @@
-import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/receive/screen/receive_account_screen.dart';
 import 'package:coda_wallet/send/screens/send_to_screen.dart';
+import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,7 @@ class SendFromScreen extends StatefulWidget {
 }
 
 class _SendFromScreenState extends State<SendFromScreen> {
+  SendData _sendData;
 
   @override
   void initState() {
@@ -29,7 +29,9 @@ class _SendFromScreenState extends State<SendFromScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    SendData _sendData = ModalRoute.of(context).settings.arguments;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: primaryBackgroundColor,
       appBar: buildAccountsAppBar(),
       body: Column(
