@@ -1,4 +1,5 @@
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/send/screens/send_fee_screen.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -101,7 +102,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 RaisedButton(
                   padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-                  onPressed: null,
+                  onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SendFeeScreen())),
                   color: Colors.blueAccent,
                   child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
               ),
