@@ -32,7 +32,7 @@ class _SendFromScreenState extends State<SendFromScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: primaryBackgroundColor,
-      appBar: buildAccountsAppBar(),
+      appBar: buildNoTitleAppBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -36,7 +36,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
-      appBar: buildAccountsAppBar(),
+      appBar: buildNoTitleAppBar(),
       body: RepaintBoundary(
         key: _qrImageKey,
         child: Container(child:

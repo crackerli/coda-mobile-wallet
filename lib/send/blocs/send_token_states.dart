@@ -58,3 +58,20 @@ class ToggleLockStatusFail extends SendTokenStates {
   @override
   List<Object> get props => error;
 }
+
+class GetNonceLoading extends SendTokenStates {
+  GetNonceLoading() : super();
+}
+
+class GetNonceSuccess extends SendTokenStates {
+  GetNonceSuccess() : super();
+}
+
+class GetNonceFail extends SendTokenStates {
+  final dynamic error;
+
+  GetNonceFail(this.error) : super();
+
+  @override
+  List<Object> get props => error;
+}

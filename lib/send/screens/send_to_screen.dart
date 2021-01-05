@@ -1,6 +1,5 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/send/screens/send_amount_screen.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
@@ -47,6 +46,10 @@ class _SendToScreenState extends State<SendToScreen> {
 
   @override
   void dispose() {
+    _memoController?.dispose();
+    _toController?.dispose();
+    _focusNodeMemo?.dispose();
+    _focusNodeTo?.dispose();
     super.dispose();
   }
 
@@ -57,7 +60,7 @@ class _SendToScreenState extends State<SendToScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: primaryBackgroundColor,
-      appBar: buildAccountsAppBar(),
+      appBar: buildNoTitleAppBar(),
       body: KeyboardActions(
         tapOutsideToDismiss: true,
         autoScroll: true,
