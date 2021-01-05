@@ -41,7 +41,7 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
           Expanded(
             flex: 1,
               child: buildAccountList(
-                () => Navigator.push(context,
+                (index) => Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ReceiveAccountScreen()))
             )
           )

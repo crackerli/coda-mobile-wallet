@@ -1,5 +1,5 @@
 class SendData {
-  String from;
+  int from;
   String to;
   String memo;
   String amount;

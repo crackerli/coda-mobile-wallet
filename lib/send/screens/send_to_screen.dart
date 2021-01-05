@@ -4,6 +4,11 @@ import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
+
+_gotoSendAmount(BuildContext context) {
+  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SendAmountScreen()));
+}
 
 class SendToScreen extends StatefulWidget {
   SendToScreen({Key key}) : super(key: key);
@@ -13,6 +18,12 @@ class SendToScreen extends StatefulWidget {
 }
 
 class _SendToScreenState extends State<SendToScreen> {
+  TextEditingController _toController   = TextEditingController();
+  TextEditingController _memoController = TextEditingController();
+  dynamic _qrResult;
+  final _focusNodeTo       = FocusNode();
+  final _focusNodeMemo     = FocusNode();
+  bool _validInput = false;
   SendData _sendData;
 
   @override
@@ -28,59 +39,75 @@ class _SendToScreenState extends State<SendToScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    _sendData = ModalRoute.of(context).settings.arguments;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: primaryBackgroundColor,
       appBar: buildAccountsAppBar(),
-      body: _buildSendToBody(context)
+      body: KeyboardActions(
+        tapOutsideToDismiss: true,
+        autoScroll: true,
+        config: KeyboardActionsConfig(
+          keyboardSeparatorColor: Colors.grey,
+          nextFocus: false,
+          actions: [ KeyboardActionsItem(focusNode: _focusNodeTo), KeyboardActionsItem(focusNode: _focusNodeMemo)]
+        ),
+        child: SingleChildScrollView(
+          child: _buildSendToBody(context)
+        )
+      )
     );
   }
 
   _buildSendToBody(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 30.w, right: 30.w),
-          child:
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(height: 37.h),
-              Text('Where are you sending MINA to?', textAlign: TextAlign.left, style: TextStyle(fontSize: 30.sp, color: Colors.black)),
-              Container(height: 48.h),
-              Text('SEND TO', textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-              Container(height: 8.h),
-              _buildToAddressField(context),
-              Container(height: 31.h),
-              _buildMemoField(),
-            ],
-          )
+    return IntrinsicHeight(child:
+      Column(children: [
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(left: 30.w, right: 30.w),
+            child:
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(height: 37.h),
+                Text('Where are you sending MINA to?', textAlign: TextAlign.left, style: TextStyle(fontSize: 30.sp, color: Colors.black)),
+                Container(height: 48.h),
+                Text('SEND TO', textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
+                Container(height: 8.h),
+                _buildToAddressField(context),
+                Container(height: 31.h),
+                _buildMemoField(),
+              ],
+            )
+          ),
+          flex: 5,
         ),
-        Positioned(
-          bottom: 35.h,
+        Expanded(
+          flex: 1,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
             children: [
               RaisedButton(
                 padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-                onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SendAmountScreen())),
+                onPressed: _validInput ? () => _gotoSendAmount(context) : null,
                 color: Colors.blueAccent,
                 child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
               ),
-            Container(height: 30.h),
+            Container(height: 18.h),
             InkWell(
               child: Text('Cancel', textAlign: TextAlign.center, style: TextStyle(fontSize: 17.sp, color: Color(0xff212121))),
               onTap: () => Navigator.of(context).pop(),
-            )
+            ),
+            Container(height: 16.h),
           ],
         ))
       ]
-    );
+    ));
   }
 
   _buildToAddressField(BuildContext context) {
@@ -95,11 +122,18 @@ class _SendToScreenState extends State<SendToScreen> {
           flex: 1,
           child: TextField(
             enableInteractiveSelection: true,
-            // focusNode: _focusNodeReceiver,
-            // controller: _addressController,
+            focusNode: _focusNodeTo,
+            controller: _toController,
             onChanged: (text) {
-              // _sendTokenBloc.receiver = text;
-              // _sendTokenBloc.add(ValidateInput());
+              if(null != text && text.isNotEmpty) {
+                _validInput = true;
+              } else {
+                _validInput = false;
+              }
+              _sendData.to = text;
+              setState(() {
+
+              });
             },
             maxLines: null,
             keyboardType: TextInputType.multiline,
@@ -124,11 +158,10 @@ class _SendToScreenState extends State<SendToScreen> {
       ),
       child: TextField(
         enableInteractiveSelection: true,
-        // focusNode: _focusNodeReceiver,
-        // controller: _addressController,
+        focusNode: _focusNodeMemo,
+        controller: _memoController,
         onChanged: (text) {
-          // _sendTokenBloc.receiver = text;
-          // _sendTokenBloc.add(ValidateInput());
+          _sendData.memo = text;
         },
         maxLines: null,
         keyboardType: TextInputType.multiline,
