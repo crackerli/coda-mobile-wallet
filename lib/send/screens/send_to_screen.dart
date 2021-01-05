@@ -1,6 +1,7 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/send/screens/send_amount_screen.dart';
 import 'package:coda_wallet/types/send_data.dart';
+import 'package:coda_wallet/util/navigations.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +26,17 @@ class _SendToScreenState extends State<SendToScreen> {
   final _focusNodeMemo     = FocusNode();
   bool _validInput = false;
   SendData _sendData;
+
+  _fillQrAddress() async {
+    _qrResult = await toQrScanScreen(context);
+    _toController.text = '$_qrResult';
+    if(null != _toController.text && _toController.text.isNotEmpty) {
+      _validInput = true;
+    } else {
+      _validInput = false;
+    }
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -143,7 +155,10 @@ class _SendToScreenState extends State<SendToScreen> {
               hintStyle: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 0, 0, 0)))
           )),
           Container(width: 12.w),
-          Image.asset('images/qr_scan1.png', width: 22.w, height: 22.w,),
+          InkWell(
+            child: Image.asset('images/qr_scan1.png', width: 22.w, height: 22.w),
+            onTap: _fillQrAddress,
+          )
         ],
       ),
     );
