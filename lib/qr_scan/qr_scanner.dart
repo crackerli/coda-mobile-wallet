@@ -19,7 +19,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
   bool _hasPopped = false;
   bool _isFlashOn = false;
 
-  Widget _buildAccountTxnsAppBar() {
+  Widget _buildQrScannerAppBar() {
     return PreferredSize(
       child: AppBar(
         title: Text('Qr Scan',
@@ -57,7 +57,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return WillPopScope(
       child: Scaffold(
-        appBar: _buildAccountTxnsAppBar(),
+        appBar: _buildQrScannerAppBar(),
         body: QRView(
           key: _qrKey,
           onQRViewCreated: _onQRViewCreated,

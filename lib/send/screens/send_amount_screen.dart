@@ -1,8 +1,16 @@
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/send/screens/send_fee_screen.dart';
+import 'package:coda_wallet/test/test_data.dart';
+import 'package:coda_wallet/types/send_data.dart';
+import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+_gotoSendFee(BuildContext context, SendData sendData) {
+  Navigator.of(context).pushReplacementNamed(SendFeeRoute, arguments: sendData);
+}
 
 class SendAmountScreen extends StatefulWidget {
   SendAmountScreen({Key key}) : super(key: key);
@@ -17,6 +25,8 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   List<String> _inputAmount;
   StringBuffer _amountBuffer;
   String _fiatPrice = '\$0.00';
+  SendData _sendData;
+  bool _validInput = false;
 
   String _formatFiatPrice() {
     return '\$$_amountBuffer';
@@ -42,6 +52,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    _sendData = ModalRoute.of(context).settings.arguments;
     _keys = List.generate(_keyString.length, (index) => _buildKey(index));
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
@@ -61,12 +72,13 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('BALANCE', textAlign: TextAlign.center, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
+                  Text('BALANCE', textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
                   RichText(
                     textAlign: TextAlign.right,
                     text: TextSpan(children: <TextSpan>[
                       TextSpan(
-                        text: '10,000.0045678912 ',
+                        text: '${formatTokenNumber(testAccounts[0].balance)} ',
                         style: TextStyle(fontSize: 17.sp, color: Colors.black)),
                       TextSpan(
                         text: 'MINA',
@@ -102,7 +114,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 RaisedButton(
                   padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-                  onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SendFeeScreen())),
+                  onPressed: _validInput ? () => _gotoSendFee(context, _sendData) : null,
                   color: Colors.blueAccent,
                   child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
               ),
@@ -125,9 +137,23 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
     _amountBuffer.clear();
     _amountBuffer.writeAll(_inputAmount);
     _fiatPrice = _formatFiatPrice();
-    setState(() {
+    try {
+      double sendAmount = double.parse(_amountBuffer.toString());
+      _sendData.amount = _amountBuffer.toString();
+      if(sendAmount == 0.0) {
+        _validInput = false;
+      } else {
+        _validInput = true;
+      }
+      setState(() {
 
-    });
+      });
+    } catch(e) {
+      _validInput = false;
+      setState(() {
+
+      });
+    }
   }
 
   _tapOnKeyCallback(int index) {

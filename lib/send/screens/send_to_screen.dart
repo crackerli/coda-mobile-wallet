@@ -1,4 +1,5 @@
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/send/screens/send_amount_screen.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/navigations.dart';
@@ -7,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
-_gotoSendAmount(BuildContext context) {
-  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SendAmountScreen()));
+_gotoSendAmount(BuildContext context, SendData sendData) {
+  Navigator.of(context).pushReplacementNamed(SendAmountRoute, arguments: sendData);
 }
 
 class SendToScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _SendToScreenState extends State<SendToScreen> {
   _fillQrAddress() async {
     _qrResult = await toQrScanScreen(context);
     _toController.text = '$_qrResult';
+    _sendData.to = _toController.text;
     if(null != _toController.text && _toController.text.isNotEmpty) {
       _validInput = true;
     } else {
@@ -106,7 +108,7 @@ class _SendToScreenState extends State<SendToScreen> {
               RaisedButton(
                 padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-                onPressed: _validInput ? () => _gotoSendAmount(context) : null,
+                onPressed: _validInput ? () => _gotoSendAmount(context, _sendData) : null,
                 color: Colors.blueAccent,
                 child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
               ),

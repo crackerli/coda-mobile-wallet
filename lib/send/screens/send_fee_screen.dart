@@ -1,4 +1,6 @@
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/test/test_data.dart';
+import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ class SendFeeScreen extends StatefulWidget {
 }
 
 class _SendFeeScreenState extends State<SendFeeScreen> {
+  SendData _sendData;
 
   @override
   void initState() {
@@ -26,6 +29,9 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    _sendData = ModalRoute.of(context).settings.arguments;
+    // Default fee to be 0.1
+    _sendData.fee = '0.1';
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
       appBar: buildAccountsAppBar(),
@@ -73,8 +79,14 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
             color: Colors.grey,
           )),
           Container(height: 64.h),
-          Text('SEND TO', ),
-          Text('B62qjNAPa9eVXWxtKFmPYJuVw4JFcM7mEoV7FTSUumyM4ZMxyGUN1n1',
+          Text('SEND FROM', textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
+          Text(testAccounts[_sendData.from].address,
+              textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xffa0a0a0))),
+          Container(height: 27.h),
+          Text('SEND TO',  textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
+          Text(_sendData.to,
             textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xffa0a0a0))),
           Container(height: 27.h),
           Text('AMOUNT',
@@ -83,7 +95,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
             textAlign: TextAlign.left,
             text: TextSpan(children: <TextSpan>[
               TextSpan(
-                text: '10,000.00 ',
+                text: '${_sendData.amount} ',
                 style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w500, color: Colors.black)),
               TextSpan(
                 text: 'MINA (\$35,63)',
@@ -94,11 +106,11 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           Container(height: 25.h,),
           Text('MEMO',
             textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-          Text('Sent from Chris', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),),
+          Text('${_sendData.memo}', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),),
           Container(height: 36.h,),
           Text('NETWORK FEE',
             textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67)),),
-          Text('0.1 MINA', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),)
+          Text('${_sendData.fee}', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),)
         ]
       )
     );
