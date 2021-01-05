@@ -23,7 +23,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
     return PreferredSize(
       child: AppBar(
         title: Text('Qr Scan',
-            style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
+          style: TextStyle(fontSize: 17.sp, color: Color(0xff0b0f12))),
         centerTitle: true,
         elevation: 0,
         leading: IconButton(
@@ -35,7 +35,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
           IconButton(
             icon: _isFlashOn ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
             tooltip: 'Flash',
-            iconSize: 24,
+            iconSize: 24.w,
             onPressed: _toggleFlash,
           )
         ]
@@ -54,7 +54,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
+    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return WillPopScope(
       child: Scaffold(
         appBar: _buildAccountTxnsAppBar(),
@@ -66,7 +66,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
             borderRadius: 4,
             borderLength: 30,
             borderWidth: 6,
-            cutOutSize: 200,
+            cutOutSize: 200.w,
           ),
         ),
       ),
