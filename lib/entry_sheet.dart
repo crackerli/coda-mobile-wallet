@@ -1,4 +1,5 @@
 import 'package:coda_wallet/stake/screen/stake_screen.dart';
+import 'package:coda_wallet/txns/screen/txns_screen.dart';
 import 'package:coda_wallet/wallet_home/screen/wallet_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +17,12 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   var _currentPage;
   num _bottomBarItemSize;
   List<BottomNavigationBarItem> _bottomBarItems;
+  final List _tabs = [
+    WalletHomeScreen(),
+    StakeScreen(),
+    TxnsScreen(),
+    ChildItemView("Fourth"),
+  ];
 
   _initBottomBarItems() {
     _bottomBarItems = [
@@ -86,13 +93,6 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
     );
   }
 }
-
-final List _tabs = [
-  WalletHomeScreen(),
-  StakeScreen(),
-  ChildItemView("Third"),
-  ChildItemView("Fourth"),
-];
 
 //子页面
 class ChildItemView extends StatefulWidget {
