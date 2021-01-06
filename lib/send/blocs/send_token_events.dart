@@ -31,12 +31,12 @@ class ToggleLockStatus extends SendTokenEvents {
   List<Object> get props => [mutation, variables];
 }
 
-class GetNonce extends SendTokenEvents {
-  final String query;
-  final Map<String, dynamic> variables;
-
-  GetNonce(this.query, {this.variables}) : super();
-
-  @override
-  List<Object> get props => [query, variables];
-}
+// class GetNonce extends SendTokenEvents {
+//   final String query;
+//   final Map<String, dynamic> variables;
+//
+//   GetNonce(this.query, {this.variables}) : super();
+//
+//   @override
+//   List<Object> get props => [query, variables];
+// }

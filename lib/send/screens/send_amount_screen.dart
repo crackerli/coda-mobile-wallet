@@ -1,7 +1,5 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/send/blocs/send_token_bloc.dart';
-import 'package:coda_wallet/send/screens/send_fee_screen.dart';
 import 'package:coda_wallet/test/test_data.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/format_utils.dart';
@@ -11,31 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 _gotoSendFee(BuildContext context, SendData sendData) {
-//  Navigator.of(context).pushReplacementNamed(SendFeeRoute, arguments: sendData);
-  Navigator.push(context,
-      MaterialPageRoute(builder: (context) {
-        return BlocProvider<SendTokenBloc>(
-            create: (BuildContext context) {
-              return SendTokenBloc(null);
-            },
-            child: SendFeeScreen(sendData: sendData)
-        );
-      }
-      ));
+  Navigator.pushReplacementNamed(context, SendFeeRoute, arguments: sendData);
 }
-
-// toSendTokenScreen(BuildContext context, String publicKey, String balance, bool locked, bool isDelegation) {
-//   Navigator.push(context,
-//       MaterialPageRoute(builder: (context) {
-//         return BlocProvider<SendTokenBloc>(
-//             create: (BuildContext context) {
-//               return SendTokenBloc(InputInvalidated());
-//             },
-//             child: SendTokenScreen(publicKey, balance, locked, isDelegation)
-//         );
-//       }
-//       ));
-// }
 
 class SendAmountScreen extends StatefulWidget {
   SendAmountScreen({Key key}) : super(key: key);
