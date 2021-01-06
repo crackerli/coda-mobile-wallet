@@ -16,18 +16,32 @@ class _TxnsScreenState extends State<TxnsScreen> {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Column(
       children: [
+        _buildTxnHeader(),
+        Container(height: 2.h,),
+        Container(height: 0.5.h, color: Color.fromARGB(74, 60, 60, 67)),
         Expanded(
           flex: 1,
-          child: Container(height: 10,)
-        ),
-
-        Container(height: 2.h,),
-        Expanded(
-          flex: 10,
           child: _buildTxnList()
         )
-
       ],
+    );
+  }
+
+  _buildTxnHeader() {
+    return Padding(
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Center(
+            child: Text('Account#0', textAlign: TextAlign.center, style: TextStyle(fontSize: 20.sp, color: Color(0xff212121)))
+          ),
+          Positioned(
+            right: 20.w,
+            child: Text('All', textAlign: TextAlign.center, style: TextStyle(fontSize: 13.sp, color: Color(0xff212121)))
+          )
+        ],
+      ),
     );
   }
 
