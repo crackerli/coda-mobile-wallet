@@ -1,6 +1,5 @@
 import 'package:coda_wallet/receive/screen/receive_account_list.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/send/screens/send_from_screen.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

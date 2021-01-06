@@ -1,289 +1,131 @@
-import 'package:coda_wallet/account_txns/blocs/account_txns_entity.dart';
-import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TxnDetailScreen extends StatefulWidget {
-  final MergedUserCommand mergedUserCommand;
-  final String publicKey;
 
-  const TxnDetailScreen({
-    this.mergedUserCommand,
-    this.publicKey,
-    Key key,
-  }) : super(key: key);
+  TxnDetailScreen({Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _TxnDetailScreenState();
+  _TxnDetailScreenState createState() => _TxnDetailScreenState();
 }
 
 class _TxnDetailScreenState extends State<TxnDetailScreen> {
+
   @override
   void initState() {
     super.initState();
   }
 
-  Widget _buildAccountTxnsAppBar() {
-    return PreferredSize(
-      child: AppBar(
-        title: Text('Transaction Detail',
-          style: TextStyle(fontSize: APPBAR_TITLE_FONT_SIZE.sp, color: Color(0xff0b0f12))),
-        centerTitle: true,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_rounded),
-          tooltip: 'Navigation',
-          onPressed: () => Navigator.pop(context, ''),
-        ),
-      ),
-      preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
-    );
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(1080, 2316), allowFontScaling: false);
-    return WillPopScope(
-      child: Scaffold(
-        backgroundColor: Color(0xfff5f8fd),
-        appBar: _buildAccountTxnsAppBar(),
-        body: _buildTxnAccountBody(),
-      ),
-      onWillPop: () async {
-        Navigator.pop(context, '');
-        return true;
-      }
-    );
-  }
-
-  Widget _buildTxnAccountBody() {
-    return Padding(
-      padding: EdgeInsets.only(left: globalHPadding.w, right: globalHPadding.w),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildTxnStatus(),
-          _buildTxnAmount(),
-          _buildTxnContent(),
-          _buildTxnId()
-        ]
-      )
-    );
-  }
-
-  Widget _buildTxnStatus() {
-    return Padding(
-      padding: EdgeInsets.only(top: 12, bottom: 12),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          widget.mergedUserCommand.isPooled ?
-            Image.asset('images/tx_pending.png', width: 60, height: 60,) :
-            Image.asset('images/tx_success.png', width: 60, height: 60,),
-          Container(height: 12),
-          widget.mergedUserCommand.isPooled ?
-            Container() :
-            Text('Success', style: TextStyle(color: Color(0xff7dc2ad))),
-          Container(height: 6,),
-          widget.mergedUserCommand.isPooled ?
-            Text('Pending', style: TextStyle(color: Color(0xff9d9d9d)),) :
-            Text(formatDateTime(widget.mergedUserCommand.dateTime), style: TextStyle(color: Color(0xff9d9d9d)),),
-        ],
-      )
-    );
-  }
-
-  Widget _buildTxnAmount() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    return Scaffold(
+      backgroundColor: primaryBackgroundColor,
+      appBar: null,
+      body: SafeArea(
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            widget.mergedUserCommand.isDelegation ?
-              Text('Delegation', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff0a0a0a))) :
-              Text('Amount', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d))),
-            widget.mergedUserCommand.isDelegation ?
-              Container() :
-              Text(
-                '${formatTokenNumber(widget.mergedUserCommand.amount)} Mina',
-                textAlign: TextAlign.right,
-                style: TextStyle(color: Color(0xff0a0a0a), fontWeight: FontWeight.bold)
-              ),
-          ],
+            _buildSendFeeBody(),
+            _buildActionsButton(context),
+            _buildCloseButton()
+          ]
         )
       )
     );
   }
 
-  Widget _buildTxnContent() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('Fee', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
-                Text(
-                  '${formatTokenNumber(widget.mergedUserCommand.fee)} Mina',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(color: Color(0xff0f0f0f))
-                ),
-              ]
-            ),
-            Container(height: 8),
-            Container(height: 1, color: Color(0xff9d9d9d),),
-            Container(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text('Receiver', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
-                ),
-                Expanded(
-                  flex: 7,
-                  child: Container(
-                    padding: EdgeInsets.only(left: 12),
-                    child: Text(
-                      widget.mergedUserCommand.to,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis
-                    ),
-                  )
-                )
-              ],
-            ),
-            Container(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text('Sender', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
-                ),
-                Expanded(
-                    flex: 7,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 12),
-                      child: Text(
-                        widget.mergedUserCommand.from,
-                        textAlign: TextAlign.right,
-                        style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis
-                      ),
-                    )
-                )
-              ],
-            ),
-            Container(height: 8),
-            Container(height: 1, color: Color(0xff9d9d9d),),
-            Container(height: 8),
-            Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Text('Memo', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
-                  ),
-                  Expanded(
-                    flex: 7,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 12),
-                      child: Text(
-                        widget.mergedUserCommand.memo,
-                        textAlign: TextAlign.right,
-                        style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis
-                      ),
-                    )
-                  )
-                ]
-            ),
-          ],
+  _buildCloseButton() {
+    return Positioned(
+      right: 36.h,
+      top: 30.h,
+      child: InkWell(
+        onTap: () => Navigator.of(context).pop(),
+        child: Container(
+          width: 16.w,
+          height: 16.w,
+          color: Colors.grey,
         )
-      ),
+      )
     );
   }
 
-  Widget _buildTxnId() {
-    return Card(
-      child: Padding(padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
+  _buildActionsButton(BuildContext context) {
+    return Positioned(
+      bottom: 44.h,
+      child: RaisedButton(
+        padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 50.w, right: 50.w),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
+        onPressed: null,
+        color: Colors.blueAccent,
+        child: Text('View in Explorer', style: TextStyle(fontSize: 17.sp, color: Colors.white))
+      )
+    );
+  }
+
+  _buildSendFeeBody() {
+    return Container(
+      padding: EdgeInsets.only(left: 50.w, right: 50.w),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Text('Hash ID', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
-              ),
-              Expanded(
-                  flex: 7,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 12),
-                    child:
-                      Text(
-                        widget.mergedUserCommand.hash,
-                        textAlign: TextAlign.right,
-                        style: TextStyle(color: Color(0xff0f0f0f), fontSize: 11),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis
-                      ),
-                  )
-              )
-            ],
+          Container(height: 36.h),
+          Center(child:
+            Container(
+              width: 67.w,
+              height: 67.w,
+              color: Colors.grey,
+            )
           ),
-          Container(height: 8),
-          Container(height: 1, color: Color(0xff9d9d9d),),
-          Container(height: 8),
-          GestureDetector(
-            onTap: null,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Text('Transcation Detail', textAlign: TextAlign.left, style: TextStyle(color: Color(0xff9d9d9d)),),
-                Image.asset('images/navigate_next.png', height: 24, width: 24,),
-              ],
-            ),
-          )
-        ]
-      ),
-    ));
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
+          Container(height: 16.h),
+          Center(child:
+            Text('Transaction Sent', textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600))
+          ),
+          Container(height: 22.h,),
+          Text('SEND FROM', textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
+          Text('B62qksdP349sXvavFnQj7JYeKRfLbLaTsgjGecj8MBfzXcLkY18atHe',
+            textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black)),
+          Container(height: 17.h),
+          Text('SEND TO', textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
+          Text('B62qksdP349sXvavFnQj7JYeKRfLbLaTsgjGecj8MBfzXcLkY18atHe',
+            textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black)),
+          Container(height: 16.h),
+          Text('AMOUNT', textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
+          Text('12345.00 MINA',
+            textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black)),
+          Text('(\$46.62))',
+            textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Colors.black)),
+          Container(height: 8.h,),
+          Text('NETWORK FEE',
+            textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67)),),
+          Text('0.1 MINA (\$0.07)', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),),
+          Container(height: 20.h,),
+          Text('TOTAL',
+            textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67)),),
+          Text('0.1 MINA (\$0.07)', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),),
+          Container(height: 18.h,),
+          Text('TIMESTAMP',
+            textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67)),),
+          Text('31 Dec 2020 23:59:00', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),),
+          Container(height: 11.h,),
+          Text('MEMO', textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
+          Text('Sent from Chris', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),),
+        ]
+      )
+    );
   }
 }

@@ -10,7 +10,7 @@ import 'package:coda_wallet/send/blocs/send_token_bloc.dart';
 import 'package:coda_wallet/send/blocs/send_token_states.dart';
 import 'package:coda_wallet/send/screens/send_token_screen.dart';
 import 'package:coda_wallet/setting/setting_screen.dart';
-import 'package:coda_wallet/txn_detail/screens/txn_detail_screen.dart';
+import 'package:coda_wallet/txn_detail/screens/txn_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
