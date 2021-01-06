@@ -33,7 +33,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     variables['amount'] = getNanoMina(_sendBloc.amount);
     variables['memo'] = _sendBloc.memo;
     variables['fee'] = getNanoMina(_sendBloc.fee);
-    variables['nonce'] = 3;
+    variables['nonce'] = _sendBloc.nonce;
     variables['validUntil'] = 65535;
     // variables['from'] = 'B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg';
     // variables['to'] = 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g';
@@ -99,10 +99,22 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   }
   
   _buildActionsButton(BuildContext context, SendStates state) {
-    if(state is GetNonceLoading || state is SendLoading) {
+    if(state is GetNonceLoading) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ProgressDialog.showProgress(context);
       });
+    }
+
+    if(state is GetNonceFail || state is SendFail) {
+      ProgressDialog.dismiss(context);
+    }
+
+    if(state is GetNonceSuccess) {
+      _send();
+    }
+
+    if(state is SendSuccess) {
+      ProgressDialog.dismiss(context);
     }
 
     return Positioned(

@@ -4,7 +4,7 @@ import 'package:coda_wallet/types/mina_hd_account_type.dart';
 List<MinaHDAccount> testAccounts = [
   MinaHDAccount(
     account: 0,
-    address: 'B62qqxNAak1tPTsQaqhg7LNQGVNWRbLe8stZ4ejooDZfDZpx6m3KpPP',
+    address: 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g',
     accountName: 'Account#0',
     isDelegated: true,
     pool: 'Spark Pool',
@@ -12,7 +12,7 @@ List<MinaHDAccount> testAccounts = [
   ),
   MinaHDAccount(
     account: 1,
-    address: 'B62qqxNAak1tPTsQaqhg7LNQGVNWRbLe8stZ4ejooDZfDZpx6m3KpPP',
+    address: 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g',
     accountName: 'Account#1',
     isDelegated: true,
     pool: 'Staking Power',
@@ -20,7 +20,7 @@ List<MinaHDAccount> testAccounts = [
   ),
   MinaHDAccount(
     account: 2,
-    address: 'B62qqxNAak1tPTsQaqhg7LNQGVNWRbLe8stZ4ejooDZfDZpx6m3KpPP',
+    address: 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g',
     accountName: 'Account#2',
     isDelegated: false,
     pool: '',

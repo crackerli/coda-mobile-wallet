@@ -1,8 +1,6 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/send/blocs/send_events.dart';
 import 'package:coda_wallet/send/blocs/send_states.dart';
-import 'package:coda_wallet/send/blocs/send_token_events.dart';
-import 'package:coda_wallet/send/blocs/send_token_states.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
@@ -20,6 +18,7 @@ class SendBloc extends
   int account;
   bool sendEnabled;
   bool loading;
+  int nonce;
 
   SendBloc(SendStates state) : super(state) {
     _service = CodaService();
@@ -43,12 +42,12 @@ class SendBloc extends
   @override
   Stream<SendStates>
     mapEventToState(SendEvents event) async* {
-    if(event is SendPayment) {
+    if(event is Send) {
       yield* _mapSendToStates(event);
       return;
     }
 
-    if(event is ValidateInput) {
+    if(event is FeeValidate) {
       yield* _mapFeeValidateToStates(event);
       return;
     }
@@ -113,6 +112,7 @@ class SendBloc extends
         return;
       }
 
+      nonce = int.parse(result.data['account']['nonce']);
       yield GetNonceSuccess();
     } catch (e) {
       print(e);
