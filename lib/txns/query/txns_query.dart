@@ -1,6 +1,6 @@
 const TXNS_QUERY = r'''
   query TxQuery($before: String, $publicKey: PublicKey!) {
-    blocks(last: 10, before: $before, filter: {relatedTo: $publicKey}) {
+    blocks(last: 1000, before: $before, filter: {relatedTo: $publicKey}) {
       nodes {
         protocolState {
           blockchainState {

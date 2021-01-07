@@ -1,5 +1,5 @@
-//import 'package:intl/intl.dart';
-//
+List<String> months = ['DUMMY', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
 String formatTokenNumber(String src) {
   if(null == src || src.isEmpty) {
     return '';
@@ -18,6 +18,31 @@ String formatHashEllipsis(String src) {
   String prefix = src.substring(0, 5);
   String postfix = src.substring(src.length - 5, src.length);
   return '$prefix...$postfix';
+}
+
+class FormattedDate {
+  String month;
+  String day;
+  String year;
+  String hms;
+
+  FormattedDate(this.year, this.month, this.day, this.hms);
+}
+
+FormattedDate getFormattedDate(String millisSeconds) {
+  if(null == millisSeconds || millisSeconds.isEmpty) {
+    return null;
+  }
+
+  int timeInMillis = int.parse(millisSeconds);
+  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timeInMillis);
+  int year = dateTime.year;
+  int month = dateTime.month;
+  int day = dateTime.day;
+  int hour = dateTime.hour;
+  int minute = dateTime.minute;
+  int second = dateTime.second;
+  return FormattedDate('$year', months[month], '$day', '$hour:$minute:$second');
 }
 
 String formatDateTime(String millisSeconds) {
