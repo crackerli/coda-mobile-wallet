@@ -26,7 +26,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
     StakeScreen(),
     BlocProvider<TxnsBloc>(
       create: (BuildContext context) {
-        return TxnsBloc(RefreshTxnsLoading(null), 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g');
+        return TxnsBloc(RefreshTxnsLoading(null));
       },
       child: TxnsScreen()
     ),

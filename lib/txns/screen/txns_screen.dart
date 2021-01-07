@@ -1,3 +1,4 @@
+import 'package:coda_wallet/test/test_data.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_entity.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
@@ -20,10 +21,11 @@ class TxnsScreen extends StatefulWidget {
 
 class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMixin {
   TxnsBloc _txnsBloc;
+  int _currentAccount = 0;
 
   _refreshTxns() {
     Map<String, dynamic> variables = Map<String, dynamic>();
-    variables['publicKey'] = 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g';
+    variables['publicKey'] = _txnsBloc.publicKey;
     variables['before'] = null;
     _txnsBloc.add(RefreshTxns(TXNS_QUERY, variables: variables));
   }
@@ -33,10 +35,12 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     super.initState();
     print('TxnsScreen initState');
     _txnsBloc = BlocProvider.of<TxnsBloc>(context);
+    _txnsBloc.publicKey = testAccounts[_currentAccount].address;
     _refreshTxns();
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return BlocBuilder<TxnsBloc, TxnsStates>(
@@ -46,10 +50,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
             _buildTxnHeader(),
             Container(height: 2.h,),
             Container(height: 0.5.h, color: Color.fromARGB(74, 60, 60, 67)),
-            Expanded(
-              flex: 1,
-              child: _buildTxnList(context, state)
-            )
+            Expanded(flex: 1, child: _buildTxnBody(context, state))
           ]
         );
       }
@@ -74,8 +75,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     );
   }
 
-  _buildTxnList(BuildContext context, TxnsStates state) {
-    List<MergedUserCommand> commands;
+  _buildTxnBody(BuildContext context, TxnsStates state) {
     if(state is RefreshTxnsLoading) {
       if(state.data == null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -87,18 +87,27 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
     if(state is RefreshTxnsSuccess) {
       ProgressDialog.dismiss(context);
-      commands = state.data;
+      return _buildTxnList(context, state.data);
     }
 
+    if(state is RefreshTxnsFail) {
+      ProgressDialog.dismiss(context);
+      return _buildErrorScreen(context, state.error.toString());
+    }
+
+    return _buildErrorScreen(context, 'Unknown Error');
+  }
+  
+  _buildTxnList(BuildContext context, List<MergedUserCommand> commands) {
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: null == commands ? 0 : commands.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: _buildTxnItem(commands[index]),
-          onTap: null
+            behavior: HitTestBehavior.translucent,
+            child: _buildTxnItem(commands[index]),
+            onTap: null
         );
       },
       separatorBuilder: (context, index) {
@@ -106,14 +115,8 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
           height: 1.h,
           child: Row(
             children: [
-              Expanded(
-                flex: 1,
-                child: Container()
-              ),
-              Expanded(
-                flex: 6,
-                child: Container(color: Color(0xffc1c1c1))
-              )
+              Expanded(flex: 1, child: Container()),
+              Expanded(flex: 6, child: Container(color: Color(0xffc1c1c1)))
             ],
           ),
         );
@@ -137,11 +140,17 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   // bool isMinted;
   // }
 
-  // _getTxnType(MergedUserCommand command) {
-  //   if(command.from == ) {
-  //
-  //   }
-  // }
+  String _getTxnTypeString(MergedUserCommand command) {
+    if(command.from == _txnsBloc.publicKey) {
+      return 'Sent';
+    }
+
+    if(command.to == _txnsBloc.publicKey) {
+      return 'Received';
+    }
+
+    return 'Unknown';
+  }
 
   _buildTxnItem(MergedUserCommand command) {
     FormattedDate formattedDate = getFormattedDate(command.dateTime);
@@ -190,6 +199,33 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
           )
         ],
       ),
+    );
+  }
+
+  _buildErrorScreen(BuildContext context, String error) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(error),
+          Container(height: 8.h,),
+          RaisedButton(
+            padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 40.w, right: 40.w),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
+            onPressed: _refreshTxns,
+            color: Colors.blueAccent,
+            child: Text('Retry', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
+          )
+        ]
+      ),
+    );
+  }
+
+  _buildNoDataScreen(BuildContext context) {
+    return Center(
+      child: Text('No Transactions found'),
     );
   }
 

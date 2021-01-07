@@ -16,13 +16,13 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   List<MergedUserCommand> _mergedUserCommands;
   String _publicKey;
 
-  TxnsBloc(TxnsStates state, String publicKey) : super(state) {
+  TxnsBloc(TxnsStates state) : super(state) {
     _service = CodaService();
     _lastCursor = null;
     _hasNextPage = false;
     _isTxnsLoading = false;
     _listOperation = ListOperationType.NONE;
-    _publicKey = publicKey;
+//    _publicKey = publicKey;
     _mergedUserCommands = List<MergedUserCommand>();
   }
 
@@ -32,6 +32,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   get hasNextPage => _hasNextPage;
   get isTxnsLoading => _isTxnsLoading;
   get listOperation => _listOperation;
+  get publicKey => _publicKey;
 
   set isTxnsLoading(bool txnsLoading) {
     _isTxnsLoading = txnsLoading;
@@ -40,6 +41,8 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   set listOperation(ListOperationType type) {
     _listOperation = type;
   }
+
+  set publicKey(String publicKey) => _publicKey = publicKey;
 
   appendLoadMore() {
     // Construct a fake item to delegate load more item
