@@ -18,7 +18,7 @@ class WalletHomeScreen extends StatefulWidget {
   _WalletHomeScreenState createState() => _WalletHomeScreenState();
 }
 
-class _WalletHomeScreenState extends State<WalletHomeScreen> {
+class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepAliveClientMixin {
   bool _stakeEnabled = true;
 
   @override
@@ -177,4 +177,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> {
       progressColor: Colors.green,
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

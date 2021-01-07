@@ -1,4 +1,4 @@
-import 'package:coda_wallet/send/blocs/send_bloc.dart';
+import 'package:coda_wallet/setting/setting_screen.dart';
 import 'package:coda_wallet/stake/screen/stake_screen.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
@@ -30,7 +30,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
       },
       child: TxnsScreen()
     ),
-    ChildItemView("Fourth"),
+    SettingScreen(),
   ];
 
   final _pageController = PageController();
@@ -113,25 +113,6 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         onTap: onTap,
         fixedColor: Colors.green,
       )
-    );
-  }
-}
-
-//子页面
-class ChildItemView extends StatefulWidget {
-  String _title;
-
-  ChildItemView(this._title);
-
-  @override
-  _ChildItemViewState createState() => _ChildItemViewState();
-}
-
-class _ChildItemViewState extends State<ChildItemView> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Center(child: Text(widget._title)),
     );
   }
 }

@@ -11,7 +11,7 @@ class StakeScreen extends StatefulWidget {
   _StakeScreenState createState() => _StakeScreenState();
 }
 
-class _StakeScreenState extends State<StakeScreen> {
+class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClientMixin {
   bool _stakeEnabled = true;
 
   @override
@@ -80,4 +80,7 @@ class _StakeScreenState extends State<StakeScreen> {
   _buildNoStakeHome() {
     return Container();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
