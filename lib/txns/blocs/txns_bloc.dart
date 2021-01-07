@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 import 'txns_entity.dart';
 
-class AccountTxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
+class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   CodaService _service;
   String _lastCursor;
   bool _hasNextPage;
@@ -16,7 +16,7 @@ class AccountTxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   List<MergedUserCommand> _mergedUserCommands;
   String _publicKey;
 
-  AccountTxnsBloc(TxnsStates state, String publicKey) : super(state) {
+  TxnsBloc(TxnsStates state, String publicKey) : super(state) {
     _service = CodaService();
     _lastCursor = null;
     _hasNextPage = false;
@@ -26,7 +26,7 @@ class AccountTxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     _mergedUserCommands = List<MergedUserCommand>();
   }
 
-//  TxnsStates get initState => RefreshTxnsLoading(_accountDetail);
+  TxnsStates get initState => RefreshTxnsLoading(null);
 
   get lastCursor => _lastCursor;
   get hasNextPage => _hasNextPage;
@@ -62,18 +62,18 @@ class AccountTxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   @override
   Stream<TxnsStates> mapEventToState(TxnsEvents event) async* {
     if(event is RefreshTxns) {
-      yield* _mapRefreshAccountTxnsToStates(event);
+      yield* _mapRefreshTxnsToStates(event);
       return;
     }
 
     if(event is MoreTxns) {
-      yield* _mapMoreAccountTxnsToStates(event);
+      yield* _mapMoreTxnsToStates(event);
       return;
     }
   }
 
   Stream<TxnsStates>
-    _mapMoreAccountTxnsToStates(MoreTxns event) async* {
+    _mapMoreTxnsToStates(MoreTxns event) async* {
 
     final query = event.query;
     final variables = event.variables ?? null;
@@ -113,7 +113,7 @@ class AccountTxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   }
 
   Stream<TxnsStates>
-    _mapRefreshAccountTxnsToStates(RefreshTxns event) async* {
+    _mapRefreshTxnsToStates(RefreshTxns event) async* {
 
     final query = event.query;
     final variables = event.variables ?? null;

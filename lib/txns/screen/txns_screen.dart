@@ -1,5 +1,11 @@
+import 'package:coda_wallet/account_txns/blocs/account_txns_events.dart';
+import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
+import 'package:coda_wallet/txns/blocs/txns_events.dart';
+import 'package:coda_wallet/txns/blocs/txns_states.dart';
+import 'package:coda_wallet/txns/query/account_txns_query.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,19 +17,39 @@ class TxnsScreen extends StatefulWidget {
 }
 
 class _TxnsScreenState extends State<TxnsScreen> {
+  TxnsBloc _txnsBloc;
+
+  _refreshTxns() {
+    Map<String, dynamic> variables = Map<String, dynamic>();
+    variables['publicKey'] = 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g';
+    variables['before'] = null;
+    _txnsBloc.add(RefreshTxns(TXNS_QUERY, variables: variables));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _txnsBloc = BlocProvider.of<TxnsBloc>(context);
+    _refreshTxns();
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    return Column(
-      children: [
-        _buildTxnHeader(),
-        Container(height: 2.h,),
-        Container(height: 0.5.h, color: Color.fromARGB(74, 60, 60, 67)),
-        Expanded(
-          flex: 1,
-          child: _buildTxnList()
-        )
-      ],
+    return BlocBuilder<TxnsBloc, TxnsStates>(
+      builder: (BuildContext context, TxnsStates state) {
+        return Column(
+          children: [
+            _buildTxnHeader(),
+            Container(height: 2.h,),
+            Container(height: 0.5.h, color: Color.fromARGB(74, 60, 60, 67)),
+            Expanded(
+              flex: 1,
+              child: _buildTxnList(context, state)
+            )
+          ]
+        );
+      }
     );
   }
 
@@ -45,7 +71,7 @@ class _TxnsScreenState extends State<TxnsScreen> {
     );
   }
 
-  _buildTxnList() {
+  _buildTxnList(BuildContext context, TxnsStates state) {
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,

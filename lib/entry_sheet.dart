@@ -1,7 +1,11 @@
+import 'package:coda_wallet/send/blocs/send_bloc.dart';
 import 'package:coda_wallet/stake/screen/stake_screen.dart';
+import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
+import 'package:coda_wallet/txns/blocs/txns_states.dart';
 import 'package:coda_wallet/txns/screen/txns_screen.dart';
 import 'package:coda_wallet/wallet_home/screen/wallet_home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EntrySheet extends StatefulWidget {
@@ -20,7 +24,12 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   final List _tabs = [
     WalletHomeScreen(),
     StakeScreen(),
-    TxnsScreen(),
+    BlocProvider<TxnsBloc>(
+      create: (BuildContext context) {
+        return TxnsBloc(RefreshTxnsLoading(null), 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g');
+      },
+      child: TxnsScreen()
+    ),
     ChildItemView("Fourth"),
   ];
 
