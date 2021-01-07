@@ -18,7 +18,7 @@ class TxnsScreen extends StatefulWidget {
   _TxnsScreenState createState() => _TxnsScreenState();
 }
 
-class _TxnsScreenState extends State<TxnsScreen> {
+class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMixin {
   TxnsBloc _txnsBloc;
 
   _refreshTxns() {
@@ -31,6 +31,7 @@ class _TxnsScreenState extends State<TxnsScreen> {
   @override
   void initState() {
     super.initState();
+    print('TxnsScreen initState');
     _txnsBloc = BlocProvider.of<TxnsBloc>(context);
     _refreshTxns();
   }
@@ -136,6 +137,12 @@ class _TxnsScreenState extends State<TxnsScreen> {
   // bool isMinted;
   // }
 
+  // _getTxnType(MergedUserCommand command) {
+  //   if(command.from == ) {
+  //
+  //   }
+  // }
+
   _buildTxnItem(MergedUserCommand command) {
     FormattedDate formattedDate = getFormattedDate(command.dateTime);
     return Container(
@@ -185,4 +192,7 @@ class _TxnsScreenState extends State<TxnsScreen> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

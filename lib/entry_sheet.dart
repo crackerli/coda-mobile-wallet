@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'constant/constants.dart';
+
 class EntrySheet extends StatefulWidget {
   EntrySheet();
 
@@ -18,10 +20,8 @@ class EntrySheet extends StatefulWidget {
 class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateMixin {
 
   int _currentIndex = 0;
-  var _currentPage;
-  num _bottomBarItemSize;
   List<BottomNavigationBarItem> _bottomBarItems;
-  final List _tabs = [
+  final List<Widget> _entryTabs = [
     WalletHomeScreen(),
     StakeScreen(),
     BlocProvider<TxnsBloc>(
@@ -33,34 +33,46 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
     ChildItemView("Fourth"),
   ];
 
+  final _pageController = PageController();
+
+  void onTap(int index) {
+    _pageController.jumpToPage(index);
+  }
+
+  void onPageChanged(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   _initBottomBarItems() {
     _bottomBarItems = [
       BottomNavigationBarItem(
         icon: Image.asset("images/txsend.png",
-            fit: BoxFit.cover, width: _bottomBarItemSize, height: _bottomBarItemSize),
+            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         activeIcon: Image.asset("images/txreceive.png",
-            fit: BoxFit.cover, width: _bottomBarItemSize, height: _bottomBarItemSize),
+            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         label: 'Wallet',
       ),
       BottomNavigationBarItem(
         icon: Image.asset("images/txsend.png",
-            fit: BoxFit.cover, width: _bottomBarItemSize, height: _bottomBarItemSize),
+            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         activeIcon: Image.asset("images/txreceive.png",
-            fit: BoxFit.cover, width: _bottomBarItemSize, height: _bottomBarItemSize),
+            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         label:'Stake'
       ),
       BottomNavigationBarItem(
         icon: Image.asset("images/txsend.png",
-            fit: BoxFit.cover, width: _bottomBarItemSize, height: _bottomBarItemSize),
+            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         activeIcon: Image.asset("images/txreceive.png",
-            fit: BoxFit.cover, width: _bottomBarItemSize, height: _bottomBarItemSize),
+            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         label:'Transaction'
       ),
       BottomNavigationBarItem(
         icon: Image.asset("images/txsend.png",
-            fit: BoxFit.cover, width: _bottomBarItemSize, height: _bottomBarItemSize),
+            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         activeIcon: Image.asset("images/txreceive.png",
-            fit: BoxFit.cover, width: _bottomBarItemSize, height: _bottomBarItemSize),
+            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         label:'Setting'
       ),
     ];
@@ -69,36 +81,38 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _currentPage = _tabs[_currentIndex];
+    print('EntrySheet initState');
   }
 
   @override
   void dispose() {
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('EntrySheet build');
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    _bottomBarItemSize = 26.w;
     _initBottomBarItems();
     return Scaffold(
-      body: SafeArea(child: _currentPage),
+      body: SafeArea(
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: onPageChanged,
+          children: _entryTabs,
+          physics: NeverScrollableScrollPhysics()
+        )
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         items: _bottomBarItems,
         selectedFontSize: 15.sp,
         unselectedFontSize: 15.sp,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-              _currentPage = _tabs[_currentIndex];
-            }
-            );
-          },
-          fixedColor: Colors.green,
-        )
+        onTap: onTap,
+        fixedColor: Colors.green,
+      )
     );
   }
 }
