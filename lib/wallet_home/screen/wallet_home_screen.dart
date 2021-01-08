@@ -1,6 +1,7 @@
 import 'package:coda_wallet/receive/screen/receive_account_list.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/send_data.dart';
+import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,22 +37,31 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   }
 
   _buildStakedHome(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(height: 8.h),
-        _buildQRTipIcon(),
-        Container(height: 2.h),
-        _buildMinaLogo(),
-        Container(height: 10.h),
-        _buildTotalBalance(),
-        _buildFiatBalance(),
-        Container(height: 21.h),
-        _buildStakedPercent(),
-        Container(height: 32.h),
-        _buildActionButton(context)
-      ]
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          alignment: Alignment.bottomCenter,
+          image: AssetImage('images/wallet_staked_bg.png',),
+          fit: BoxFit.fitWidth
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(height: 8.h),
+          _buildQRTipIcon(),
+          Container(height: 2.h),
+          _buildMinaLogo(),
+          Container(height: 10.h),
+          _buildTotalBalance(),
+          _buildFiatBalance(),
+          Container(height: 21.h),
+          _buildStakedPercent(),
+          Container(height: 32.h),
+          _buildActionButton(context)
+        ]
+      ),
     );
   }
 
@@ -105,7 +115,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           padding: EdgeInsets.all(10.w),
           width: 44.w,
           height: 44.w,
-          child: Image.asset('images/qr_scan1.png')
+          child: Image.asset('images/qr_code_icon.png')
         ),
         Container(width: 28.w)
       ],
@@ -124,13 +134,25 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   _buildTotalBalance() {
     return Padding(
       padding: EdgeInsets.only(top: 9.h, bottom: 9.h),
-      child: Text('123.45 MINA', textAlign: TextAlign.center, style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.normal, color: Colors.black)));
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(children: <TextSpan>[
+          TextSpan(
+            text: '123.45 ',
+            style: TextStyle(fontSize: 30.sp, color: Colors.black, fontWeight: FontWeight.w500)),
+          TextSpan(
+            text: 'MINA',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 16.sp)),
+          ]
+        )
+      )
+    );
   }
 
   _buildFiatBalance() {
     return Padding(
       padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
-      child: Text('\$65.34', textAlign: TextAlign.center, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: Color(0xff979797)))
+      child: Text('(\$65.34)', textAlign: TextAlign.center, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: Color(0xff979797)))
     );
   }
 
@@ -161,8 +183,13 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       width: 263.w,
       height: 49.h,
       decoration: BoxDecoration(
-        color: Color(0xffe6e5eb),
-        borderRadius: BorderRadius.all(Radius.circular(9.0))
+        border: Border.all(color: Colors.black, width: 1),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(4.0.w), bottomRight: Radius.circular(4.0.w)),
+        boxShadow: [
+          CustomBoxShadow(color: Colors.black, offset: Offset(6.0, 6.0), blurStyle: BlurStyle.outer),
+          CustomBoxShadow(color: Colors.black, offset: Offset(5.4, 5.4), blurStyle: BlurStyle.outer),
+          CustomBoxShadow(color: Colors.white),
+        ]
       ),
       margin: EdgeInsets.all(10),
     );
@@ -170,11 +197,21 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
 
   _buildStakedPercent() {
     return CircularPercentIndicator(
-      radius: 93.w,
+      radius: 70.w,
       lineWidth: 5.0,
       percent: 0.7,
-      center: Text("100%\nSTAKED", textAlign: TextAlign.center,),
-      progressColor: Colors.green,
+      center: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(children: <TextSpan>[
+          TextSpan(
+            text: '100%\n',
+            style: TextStyle(fontSize: 20.sp, color: Colors.black, fontWeight: FontWeight.w500)),
+          TextSpan(
+            text: 'STAKED',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 11.sp)),
+        ]
+      )),
+      progressColor: Color(0xff2a63f7),
     );
   }
 

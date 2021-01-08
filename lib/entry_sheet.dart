@@ -96,6 +96,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     _initBottomBarItems();
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: PageView(
           controller: _pageController,

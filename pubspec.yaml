@@ -91,6 +91,8 @@ flutter:
     - images/settings_tab_selected.png
     - images/settings_tab_unselected.png
     - images/mina_logo_inner.png
+    - images/qr_code_icon.png
+    - images/wallet_staked_bg.png
 
   fonts:
    - family: Entypo
