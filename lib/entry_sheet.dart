@@ -48,31 +48,31 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   _initBottomBarItems() {
     _bottomBarItems = [
       BottomNavigationBarItem(
-        icon: Image.asset("images/txsend.png",
-            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        activeIcon: Image.asset("images/txreceive.png",
-            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        icon: Image.asset("images/wallet_tab_unselected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        activeIcon: Image.asset("images/wallet_tab_selected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         label: 'Wallet',
       ),
       BottomNavigationBarItem(
-        icon: Image.asset("images/txsend.png",
-            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        activeIcon: Image.asset("images/txreceive.png",
-            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        icon: Image.asset("images/stake_tab_unselected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        activeIcon: Image.asset("images/stake_tab_selected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         label:'Stake'
       ),
       BottomNavigationBarItem(
-        icon: Image.asset("images/txsend.png",
-            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        activeIcon: Image.asset("images/txreceive.png",
-            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        icon: Image.asset("images/txns_tab_unselected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        activeIcon: Image.asset("images/txns_tab_selected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         label:'Transaction'
       ),
       BottomNavigationBarItem(
-        icon: Image.asset("images/txsend.png",
-            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        activeIcon: Image.asset("images/txreceive.png",
-            fit: BoxFit.cover, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        icon: Image.asset("images/settings_tab_unselected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        activeIcon: Image.asset("images/settings_tab_selected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         label:'Setting'
       ),
     ];
@@ -108,10 +108,14 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         items: _bottomBarItems,
-        selectedFontSize: 15.sp,
-        unselectedFontSize: 15.sp,
+        selectedFontSize: 12.sp,
+        unselectedFontSize: 12.sp,
+        iconSize: 24.h,
         onTap: onTap,
-        fixedColor: Colors.green,
+        fixedColor: Color(0xff5a4fa4),
+        unselectedItemColor: Colors.black,
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
+        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
       )
     );
   }

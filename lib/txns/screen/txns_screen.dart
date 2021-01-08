@@ -125,33 +125,6 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     );
   }
 
-  // class MergedUserCommand {
-  // String to;
-  // String from;
-  // String amount;
-  // String fee;
-  // String memo;
-  // bool isDelegation;
-  // String hash;
-  // int nonce;
-  // bool isPooled;
-  // String dateTime;
-  // String coinbase;
-  // bool isMinted;
-  // }
-
-  String _getTxnTypeString(MergedUserCommand command) {
-    if(command.from == _txnsBloc.publicKey) {
-      return 'Sent';
-    }
-
-    if(command.to == _txnsBloc.publicKey) {
-      return 'Received';
-    }
-
-    return 'Unknown';
-  }
-
   _buildTxnItem(MergedUserCommand command) {
     FormattedDate formattedDate = getFormattedDate(command.dateTime);
     return Container(

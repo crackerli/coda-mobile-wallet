@@ -82,6 +82,15 @@ flutter:
     - images/navigate_next.png
     - images/staking.png
     - copy_gray.png
+    - images/wallet_tab_unselected.png
+    - images/wallet_tab_selected.png
+    - images/txns_tab_selected.png
+    - images/txns_tab_unselected.png
+    - images/stake_tab_unselected.png
+    - images/stake_tab_selected.png
+    - images/settings_tab_selected.png
+    - images/settings_tab_unselected.png
+    - images/mina_logo_inner.png
 
   fonts:
    - family: Entypo

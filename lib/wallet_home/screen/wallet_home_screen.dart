@@ -116,7 +116,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     return Container(
       width: double.infinity,
       child: Center(
-        child: Image.asset('images/tx_pending.png', width: 75.w, height: 75.w,),
+        child: Image.asset('images/mina_logo_inner.png', width: 75.w, height: 75.w,),
       )
     );
   }
