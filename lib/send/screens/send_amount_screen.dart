@@ -56,7 +56,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
     _keys = List.generate(_keyString.length, (index) => _buildKey(index));
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
-      appBar: buildNoTitleAppBar(),
+      appBar: buildNoTitleAppBar(context),
       body: _buildSendToBody(context)
     );
   }

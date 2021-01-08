@@ -89,7 +89,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     _sendBloc.to = _sendData.to;
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
-      appBar: buildNoTitleAppBar(),
+      appBar: buildNoTitleAppBar(context),
       body: BlocBuilder<SendBloc, SendStates>(
         builder: (BuildContext context, SendStates state) {
           return Stack(

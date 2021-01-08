@@ -95,6 +95,7 @@ flutter:
     - images/wallet_staked_bg.png
     - images/to_stake_flower.png
     - images/no_staking_bg.png
+    - images/back.png
 
   fonts:
    - family: Entypo

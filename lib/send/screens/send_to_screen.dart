@@ -60,7 +60,7 @@ class _SendToScreenState extends State<SendToScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: primaryBackgroundColor,
-      appBar: buildNoTitleAppBar(),
+      appBar: buildNoTitleAppBar(context),
       body: KeyboardActions(
         tapOutsideToDismiss: true,
         autoScroll: true,

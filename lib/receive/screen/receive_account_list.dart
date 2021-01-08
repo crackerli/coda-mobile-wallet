@@ -2,6 +2,7 @@ import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/receive/screen/receive_account_screen.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
+import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -29,7 +30,7 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
       backgroundColor: primaryBackgroundColor,
-      appBar: _buildAccountsAppBar(),
+      appBar: buildNoTitleAppBar(context),
       body: Column(
         children: [
           Container(height: 30.h),
@@ -40,24 +41,13 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
           Container(height: 37.h),
           Expanded(
             flex: 1,
-              child: buildAccountList(
-                (index) => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ReceiveAccountScreen()))
+            child: buildAccountList(
+              (index) => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ReceiveAccountScreen()))
             )
           )
         ],
       )
-    );
-  }
-
-  _buildAccountsAppBar() {
-    return PreferredSize(
-      child: AppBar(
-        title: null,
-        centerTitle: true,
-        elevation: 0,
-      ),
-      preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
     );
   }
 }
