@@ -99,18 +99,11 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
             InkWell(
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
-                decoration: minaButtonDecoration,
+                decoration: getMinaButtonDecoration(),
                 child: Text('START STAKING', style: TextStyle(color: Colors.black),),
               ),
               onTap: null,
             )
-            // RaisedButton(
-            //   padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 70.w, right: 70.w),
-            //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-            //   onPressed: null,
-            //   color: Colors.blueAccent,
-            //   child: Text('Start Staking', style: TextStyle(color: Colors.white),)
-            // ),
           ],
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -197,7 +190,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       ),
       width: 263.w,
       height: 49.h,
-      decoration: minaButtonDecoration,
+      decoration: getMinaButtonDecoration(),
       margin: EdgeInsets.all(10),
     );
   }

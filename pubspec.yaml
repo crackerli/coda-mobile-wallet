@@ -96,6 +96,8 @@ flutter:
     - images/to_stake_flower.png
     - images/no_staking_bg.png
     - images/back.png
+    - images/common_bg.png
+    - images/mina_logo_black_inner.png
 
   fonts:
    - family: Entypo

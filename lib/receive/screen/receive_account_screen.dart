@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/qr_address/qr_image_helper.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,13 +49,21 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
   }
 
   _buildReceiveAccountBody(BuildContext context) {
-    return Column(
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          alignment: Alignment.bottomCenter,
+          image: AssetImage('images/common_bg.png',),
+          fit: BoxFit.fitWidth
+        ),
+      ),
+      child: Column(
       children: [
         Container(height: 24.h),
-        Container(width: 58.w, height: 58.h, color: Colors.grey),
-        Container(height: 42.h),
+        Image.asset('images/mina_logo_black_inner.png', width: 66.w, height: 66.w),
+        Container(height: 14.h),
         QrImage(data: _testAddress, size: 200.w, version: QrVersions.auto),
-        Container(height: 54.h),
+        Container(height: 33.h),
         Text('Your Address', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Colors.black)),
         Container(height: 8),
         Container(
@@ -86,17 +95,19 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
             ],
           )
         ),
-        Container(height: 16.h),
+        Container(height: 20.h),
         Builder(builder: (context) =>
-        RaisedButton(
-          padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-          onPressed: () async { await _checkStoragePermission(context); },
-          color: Colors.blueAccent,
-          child: Text('Save Image', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-        ))
+          InkWell(
+            onTap: () async { await _checkStoragePermission(context); },
+            child: Container(
+              padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
+              decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
+              child: Text('SAVE IMAGE', style: TextStyle(color: Colors.black),),
+            ),
+          )
+        )
       ],
-    );
+    ));
   }
 
   Future _checkStoragePermission(BuildContext context) async {
