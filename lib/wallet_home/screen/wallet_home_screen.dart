@@ -20,7 +20,7 @@ class WalletHomeScreen extends StatefulWidget {
 }
 
 class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepAliveClientMixin {
-  bool _stakeEnabled = true;
+  bool _stakeEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,24 +82,39 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         flex: 5
       ),
       Expanded(child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              alignment: Alignment.bottomCenter,
+              image: AssetImage('images/no_staking_bg.png',),
+              fit: BoxFit.fitWidth
+          ),
+        ),
         child: Center(
           child: Column(children: [
-            Image.asset('images/tx_pending.png', width: 80.w, height: 80.w),
+            Image.asset('images/to_stake_flower.png', width: 80.w, height: 80.w),
             Container(height: 24.h),
-            Text('Earn returns on your hodlings'),
+            Text('Earn returns on your hodlings', textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500, color: Colors.white)),
             Container(height: 26.h),
-            RaisedButton(
-              padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 70.w, right: 70.w),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-              onPressed: null,
-              color: Colors.blueAccent,
-              child: Text('Start Staking', style: TextStyle(color: Colors.white),)
-            ),
+            InkWell(
+              child: Container(
+                padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
+                decoration: minaButtonDecoration,
+                child: Text('START STAKING', style: TextStyle(color: Colors.black),),
+              ),
+              onTap: null,
+            )
+            // RaisedButton(
+            //   padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 70.w, right: 70.w),
+            //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
+            //   onPressed: null,
+            //   color: Colors.blueAccent,
+            //   child: Text('Start Staking', style: TextStyle(color: Colors.white),)
+            // ),
           ],
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           )),
-          color: Colors.white,
         ),
         flex: 4
       )
@@ -142,7 +157,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
             style: TextStyle(fontSize: 30.sp, color: Colors.black, fontWeight: FontWeight.w500)),
           TextSpan(
             text: 'MINA',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 16.sp)),
+            style: TextStyle(color: Color(0xff979797), fontWeight: FontWeight.normal, fontSize: 14.sp)),
           ]
         )
       )
@@ -174,7 +189,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
             child: InkWell(
               child: Text('Receive', textAlign: TextAlign.center),
               onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ReceiveAccountsScreen())
+                MaterialPageRoute(builder: (context) => ReceiveAccountsScreen())
               ),
             )
           ),
@@ -182,15 +197,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       ),
       width: 263.w,
       height: 49.h,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black, width: 1),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(4.0.w), bottomRight: Radius.circular(4.0.w)),
-        boxShadow: [
-          CustomBoxShadow(color: Colors.black, offset: Offset(6.0, 6.0), blurStyle: BlurStyle.outer),
-          CustomBoxShadow(color: Colors.black, offset: Offset(5.4, 5.4), blurStyle: BlurStyle.outer),
-          CustomBoxShadow(color: Colors.white),
-        ]
-      ),
+      decoration: minaButtonDecoration,
       margin: EdgeInsets.all(10),
     );
   }

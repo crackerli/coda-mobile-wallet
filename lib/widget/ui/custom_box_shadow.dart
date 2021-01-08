@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomBoxShadow extends BoxShadow {
   final BlurStyle blurStyle;
@@ -23,3 +24,13 @@ class CustomBoxShadow extends BoxShadow {
     return result;
   }
 }
+
+final minaButtonDecoration = BoxDecoration(
+  border: Border.all(color: Colors.black, width: 1),
+  borderRadius: BorderRadius.only(topLeft: Radius.circular(4.0.w), bottomRight: Radius.circular(4.0.w)),
+  boxShadow: [
+    CustomBoxShadow(color: Colors.black, offset: Offset(5.0, 2.9), blurStyle: BlurStyle.outer),
+    CustomBoxShadow(color: Colors.white, offset: Offset(4.4, 2.4), blurStyle: BlurStyle.inner),
+    CustomBoxShadow(color: Colors.white),
+  ]
+);
