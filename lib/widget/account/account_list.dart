@@ -44,9 +44,9 @@ _buildAccountItem(Function accountClickCb, List<MinaHDAccount> accounts, int ind
                   children: [
                     WidgetSpan(
                       alignment: ui.PlaceholderAlignment.middle,
-                      child: Image.asset('images/account_header.png', width: 22.w, height: 22.w,),
+                      child: Image.asset('images/account_header.png', width: 8.w, height: 8.w,),
                     ),
-                    TextSpan(text: accounts[index].accountName, style: TextStyle(fontSize: 16.sp, color: Color(0xff2d2d2d))),
+                    TextSpan(text: '  ${accounts[index].accountName}', style: TextStyle(fontSize: 16.sp, color: Color(0xff2d2d2d))),
                   ],
                 ),
               ),
