@@ -192,11 +192,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                         text: '${_sendData.amount} ',
                         style: TextStyle(fontSize: 20.sp, color: Color(0xff2d2d2d))),
                       TextSpan(
-                        text: 'MINA (\$35,63)',
+                        text: 'MINA',
                         style: TextStyle(color: Color(0xff616161), fontSize: 12.sp)
                       )]
                     )
                   ),
+                  Text('(\$353.62)', textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp, color: Color(0xff616161)),),
                   Container(height: 10.h,),
                   Text('MEMO',
                     textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),

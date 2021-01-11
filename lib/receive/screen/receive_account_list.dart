@@ -28,7 +28,7 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: buildNoTitleAppBar(context),
+      appBar: buildNoTitleAppBar(context, leading: false),
       body: Container(
         child: _buildReceiveAccountBody(context),
         decoration: BoxDecoration(

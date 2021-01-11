@@ -101,6 +101,7 @@ flutter:
     - images/account_header.png
     - images/pool_header.png
     - images/qr_scanner.png
+    - images/close.png
 
   fonts:
    - family: Entypo
