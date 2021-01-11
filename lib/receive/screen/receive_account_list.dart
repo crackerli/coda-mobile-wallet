@@ -1,5 +1,3 @@
-import 'package:coda_wallet/constant/constants.dart';
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/receive/screen/receive_account_screen.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
@@ -31,23 +29,36 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
-      body: Column(
-        children: [
-          Container(height: 30.h),
-          Padding(
-            padding: EdgeInsets.only(left: 29.w, right: 29.w),
-            child: Text('Which address do you want to use?', textAlign: TextAlign.left, style: TextStyle(fontSize: 30.sp, color: Colors.black)),
+      body: Container(
+        child: _buildReceiveAccountBody(context),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            alignment: Alignment.bottomCenter,
+            image: AssetImage('images/common_bg.png',),
+            fit: BoxFit.fitWidth
           ),
-          Container(height: 37.h),
-          Expanded(
-            flex: 1,
-            child: buildAccountList(
-              (index) => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ReceiveAccountScreen()))
-            )
-          )
-        ],
+        ),
       )
+    );
+  }
+
+  _buildReceiveAccountBody(BuildContext context) {
+    return Column(
+      children: [
+        Container(height: 30.h),
+        Padding(
+          padding: EdgeInsets.only(left: 29.w, right: 29.w),
+          child: Text('Which address do you want to use?', textAlign: TextAlign.left, style: TextStyle(fontSize: 30.sp, color: Colors.black)),
+        ),
+        Container(height: 37.h),
+        Expanded(
+          flex: 1,
+          child: buildAccountList(
+            (index) => Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ReceiveAccountScreen()))
+          )
+        )
+      ],
     );
   }
 }

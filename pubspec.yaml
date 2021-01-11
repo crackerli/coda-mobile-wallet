@@ -98,6 +98,8 @@ flutter:
     - images/back.png
     - images/common_bg.png
     - images/mina_logo_black_inner.png
+    - images/account_header.png
+    - images/pool_header.png
 
   fonts:
    - family: Entypo
