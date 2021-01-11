@@ -4,8 +4,8 @@ import 'package:coda_wallet/test/test_data.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 _gotoSendFee(BuildContext context, SendData sendData) {
@@ -55,9 +55,18 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
     _sendData = ModalRoute.of(context).settings.arguments;
     _keys = List.generate(_keyString.length, (index) => _buildKey(index));
     return Scaffold(
-      backgroundColor: primaryBackgroundColor,
+      backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
-      body: _buildSendToBody(context)
+      body: Container(
+        child: _buildSendToBody(context),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            alignment: Alignment.bottomCenter,
+            image: AssetImage('images/common_bg.png',),
+            fit: BoxFit.fitWidth
+          ),
+        ),
+      )
     );
   }
 
@@ -67,68 +76,58 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
       children: [
         Padding(
           padding: EdgeInsets.only(left: 50.w, right: 50.w),
-          child:
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('BALANCE', textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-                  RichText(
-                    textAlign: TextAlign.right,
-                    text: TextSpan(children: <TextSpan>[
-                      TextSpan(
-                        text: '${formatTokenNumber(testAccounts[0].balance)} ',
-                        style: TextStyle(fontSize: 17.sp, color: Colors.black)),
-                      TextSpan(
-                        text: 'MINA',
-                        style: TextStyle(
-                          color: Color(0xff979797),
-                          fontWeight: FontWeight.normal,
-                          fontSize: 13.sp
-                        )
-                      ),
-                    ]),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(height: 29.h),
+              Text('BALANCE', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+              RichText(
+                textAlign: TextAlign.right,
+                text: TextSpan(children: <TextSpan>[
+                  TextSpan(
+                    text: '${formatTokenNumber(testAccounts[0].balance)} ',
+                      style: TextStyle(fontSize: 16.sp, color: Colors.black)
                   ),
-                  Container(height: 24.h),
-                  Container(
-                    height: 54.h,
-                    child: Center(
-                      child: Text(_amountBuffer.toString(), textAlign: TextAlign.left, maxLines: 2, overflow: TextOverflow.visible,
-                      style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w500, color: Colors.black)))
+                  TextSpan(
+                    text: 'MINA',
+                      style: TextStyle(color: Color(0xff616161), fontWeight: FontWeight.normal, fontSize: 12.sp)
                   ),
-                  Container(height: 15.h,),
-                  Text(_fiatPrice, textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500, color: Color(0xff979797))),
-                  Container(height: 8.h),
-                  _buildDecimalKeyboard(),
-                ],
-              )
+                ]),
+              ),
+              Container(height: 20.h),
+              Container(
+                height: 54.h,
+                child: Center(
+                  child: Text(_amountBuffer.toString(), textAlign: TextAlign.left, maxLines: 1, overflow: TextOverflow.visible,
+                    style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.normal, color: Colors.black))
+                )
+              ),
+              Container(height: 6.h,),
+              Text(_fiatPrice, textAlign: TextAlign.left, maxLines: 1,
+                style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.normal, color: Color(0xff979797))),
+              Container(height: 20.h),
+              _buildDecimalKeyboard(),
+            ],)
           ),
           Positioned(
-            bottom: 35.h,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                RaisedButton(
-                  padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-                  onPressed: _validInput ? () => _gotoSendFee(context, _sendData) : null,
-                  color: Colors.blueAccent,
-                  child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
+            bottom: 60.h,
+            child: InkWell(
+              onTap: _validInput ? () => _gotoSendFee(context, _sendData) : null,
+              child: Container(
+                padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
+                decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
+                child: Text('CONTINUE',
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
               ),
-              Container(height: 30.h),
-              InkWell(
-                child: Text('Cancel', textAlign: TextAlign.center, style: TextStyle(fontSize: 17.sp, color: Color(0xff212121))),
-                onTap: () => Navigator.of(context).pop(),
-              )
-            ],
-          )),
+            )
+          ),
           Positioned(
-            top: 0,
+            top: 29.h,
             right: 47.w,
-            child: Text('SEND ALL', textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.sp)))
+            child: Text('SEND ALL', textAlign: TextAlign.right,
+              style: TextStyle(color: Color(0xff2d2d2d), fontWeight: FontWeight.w600, fontSize: 13.sp)))
         ]
     );
   }
@@ -197,21 +196,21 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   _buildNumericKey(int index) {
     return
       Center(
-        child: Text(_keyString[index], textAlign: TextAlign.center, style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w600)),
+        child: Text(_keyString[index], textAlign: TextAlign.center, style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.normal)),
     );
   }
   
   _buildDeleteKey(int index) {
     return
       Center(
-        child: Text(_keyString[index], textAlign: TextAlign.center, style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.normal)),
+        child: Text(_keyString[index], textAlign: TextAlign.center, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.normal)),
     );
   }
 
   _buildDecimalKeyboard() {
     return Flexible(child: GridView.count(
       shrinkWrap: true,
-      childAspectRatio: 1.1,
+      childAspectRatio: 1.3,
       physics: NeverScrollableScrollPhysics(),
       crossAxisCount: 3,
       padding: EdgeInsets.symmetric(vertical: 0),

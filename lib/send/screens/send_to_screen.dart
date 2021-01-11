@@ -125,8 +125,7 @@ class _SendToScreenState extends State<SendToScreen> {
         ),
         Expanded(
           flex: 1,
-          child:
-          InkWell(
+          child: InkWell(
             onTap: _checkInputValidation,
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
