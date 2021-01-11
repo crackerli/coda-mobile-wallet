@@ -3,6 +3,7 @@ import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
@@ -24,7 +25,7 @@ class _SendToScreenState extends State<SendToScreen> {
   dynamic _qrResult;
   final _focusNodeTo       = FocusNode();
   final _focusNodeMemo     = FocusNode();
-  bool _validInput = false;
+  bool _validInput = true;
   SendData _sendData;
 
   _fillQrAddress() async {
@@ -37,6 +38,16 @@ class _SendToScreenState extends State<SendToScreen> {
       _validInput = false;
     }
     setState(() {});
+  }
+
+  bool _checkInputValidation() {
+    if(_sendData.to == null || _sendData.to.isEmpty) {
+      setState(() {
+        _validInput = false;
+      });
+    } else {
+      _gotoSendAmount(context, _sendData);
+    }
   }
 
   @override
@@ -102,7 +113,7 @@ class _SendToScreenState extends State<SendToScreen> {
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                 Container(height: 4.h),
                 _buildToAddressField(context),
-                Container(height: 35.h),
+                _buildInvalidateTip(),
                 Text('MEMO', textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                 Container(height: 4.h),
@@ -110,32 +121,39 @@ class _SendToScreenState extends State<SendToScreen> {
               ],
             )
           ),
-          flex: 5,
+          flex: 12,
         ),
         Expanded(
           flex: 1,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              RaisedButton(
-                padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-                onPressed: _validInput ? () => _gotoSendAmount(context, _sendData) : null,
-                color: Colors.blueAccent,
-                child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-              ),
-            Container(height: 18.h),
-            InkWell(
-              child: Text('Cancel', textAlign: TextAlign.center, style: TextStyle(fontSize: 17.sp, color: Color(0xff212121))),
-              onTap: () => Navigator.of(context).pop(),
+          child:
+          InkWell(
+            onTap: _checkInputValidation,
+            child: Container(
+              padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
+              decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
+              child: Text('CONTINUE',
+                textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
             ),
-            Container(height: 16.h),
-          ],
-        ))
+          )
+        )
       ]
-    ));
+    )
+    );
+  }
+
+  _buildInvalidateTip() {
+    return Container(
+      margin: EdgeInsets.only(top: 6.h, bottom: 6.h, right: 16.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Text('You must enter an address',
+            textAlign: TextAlign.right, style: TextStyle(fontSize: 16.sp, color: _validInput ? Colors.transparent : Colors.red)),
+        ],
+      )
+    );
   }
 
   _buildToAddressField(BuildContext context) {
