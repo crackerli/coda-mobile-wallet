@@ -10,6 +10,7 @@ import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,18 +89,27 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     _sendBloc.fee = _sendData.fee;
     _sendBloc.to = _sendData.to;
     return Scaffold(
-      backgroundColor: primaryBackgroundColor,
+      backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
-      body: BlocBuilder<SendBloc, SendStates>(
-        builder: (BuildContext context, SendStates state) {
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              _buildSendFeeBody(),
-              _buildActionsButton(context, state)
-            ]
-          );
-        }
+      body: Container(
+        child: BlocBuilder<SendBloc, SendStates>(
+          builder: (BuildContext context, SendStates state) {
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                _buildSendFeeBody(context),
+                _buildActionsButton(context, state)
+              ]
+            );
+          }
+        ),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            alignment: Alignment.bottomCenter,
+            image: AssetImage('images/common_bg.png',),
+            fit: BoxFit.fitWidth
+          ),
+        ),
       )
     );
   }
@@ -125,76 +135,86 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     }
 
     return Positioned(
-        bottom: 35.h,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            RaisedButton(
-                padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-                onPressed: _getNonce,
-                color: Colors.blueAccent,
-                child: Text('Send', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-            ),
-            Container(height: 30.h),
-            InkWell(
-              child: Text('Cancel', textAlign: TextAlign.center, style: TextStyle(fontSize: 17.sp, color: Color(0xff212121))),
-              onTap: () => Navigator.of(context).pop(),
-            )
-          ],
-        )
+      bottom: 60.h,
+      child: InkWell(
+        onTap: _getNonce,
+        child: Container(
+          padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
+          decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
+          child: Text('SEND',
+          textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+        ),
+      )
     );
   }
 
-  _buildSendFeeBody() {
-    return Container(
-      padding: EdgeInsets.only(left: 50.w, right: 50.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(height: 14.h),
-          Center(child:
-          Container(
-            width: 75.w,
-            height: 75.w,
-            color: Colors.grey,
-          )),
-          Container(height: 64.h),
-          Text('SEND FROM', textAlign: TextAlign.left,
-            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-          Text(testAccounts[_sendData.from].address,
-              textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xffa0a0a0))),
-          Container(height: 27.h),
-          Text('SEND TO',  textAlign: TextAlign.left,
-            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-          Text(_sendData.to,
-            textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xffa0a0a0))),
-          Container(height: 27.h),
-          Text('AMOUNT',
-            textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-          RichText(
-            textAlign: TextAlign.left,
-            text: TextSpan(children: <TextSpan>[
-              TextSpan(
-                text: '${_sendData.amount} ',
-                style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w500, color: Colors.black)),
-              TextSpan(
-                text: 'MINA (\$35,63)',
-                style: TextStyle(color: Color(0xff979797), fontWeight: FontWeight.w500, fontSize: 16.sp)
-              )]
+  _buildSendFeeBody(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(height: 30.h,),
+        Text('Transaction Summary', textAlign: TextAlign.center, style: TextStyle(fontSize: 28.sp, color: Color(0xff2d2d2d))),
+        Container(height: 17.h,),
+        Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 33.w, left: 50.w, right: 50.w),
+              padding: EdgeInsets.only(top: 33.w + 12.h, left: 37.w, right: 37.w, bottom: 10.h),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.w),
+                color: Colors.white,
+                border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('FROM', textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                  Text(testAccounts[_sendData.from].address,
+                      textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
+                  Container(height: 10.h),
+                  Text('TO',  textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                  Text(_sendData.to,
+                      textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
+                  Container(height: 10.h),
+                  Text('AMOUNT',
+                    textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                  RichText(
+                    textAlign: TextAlign.left,
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: '${_sendData.amount} ',
+                        style: TextStyle(fontSize: 20.sp, color: Color(0xff2d2d2d))),
+                      TextSpan(
+                        text: 'MINA (\$35,63)',
+                        style: TextStyle(color: Color(0xff616161), fontSize: 12.sp)
+                      )]
+                    )
+                  ),
+                  Container(height: 10.h,),
+                  Text('MEMO',
+                    textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                  Text('${_sendData.memo}', textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d)),),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 0,
+              child: Image.asset('images/mina_logo_black_inner.png', width: 66.w, height: 66.w,)
             )
-          ),
-          Container(height: 25.h,),
-          Text('MEMO',
-            textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-          Text('${_sendData.memo}', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),),
-          Container(height: 36.h,),
-          Text('NETWORK FEE',
-            textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67)),),
-          Text('${_sendData.fee}', textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),)
-        ]
-      )
+          ],
+        ),
+        Container(height: 28.h,),
+        Text('NETWORK FEE',
+          textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+        Text('${_sendData.fee}', textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
+      ],
     );
   }
 }
