@@ -48,7 +48,7 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
         Container(height: 30.h),
         Padding(
           padding: EdgeInsets.only(left: 29.w, right: 29.w),
-          child: Text('Which address do you want to use?', textAlign: TextAlign.left, style: TextStyle(fontSize: 30.sp, color: Colors.black)),
+          child: Text('Which address do you want to use?', textAlign: TextAlign.left, style: TextStyle(fontSize: 28.sp, color: Colors.black)),
         ),
         Container(height: 37.h),
         Expanded(

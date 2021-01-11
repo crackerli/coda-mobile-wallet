@@ -59,7 +59,7 @@ class _SendToScreenState extends State<SendToScreen> {
     _sendData = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: primaryBackgroundColor,
+      backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
       body: KeyboardActions(
         tapOutsideToDismiss: true,
@@ -69,10 +69,18 @@ class _SendToScreenState extends State<SendToScreen> {
           nextFocus: false,
           actions: [ KeyboardActionsItem(focusNode: _focusNodeTo), KeyboardActionsItem(focusNode: _focusNodeMemo)]
         ),
-        child: SingleChildScrollView(
-          child: _buildSendToBody(context)
+        child:
+          Container(
+            child: SingleChildScrollView(child: _buildSendToBody(context)),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                alignment: Alignment.bottomCenter,
+                image: AssetImage('images/common_bg.png',),
+                fit: BoxFit.fitWidth
+              ),
+            ),
+          )
         )
-      )
     );
   }
 
@@ -88,13 +96,16 @@ class _SendToScreenState extends State<SendToScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(height: 37.h),
-                Text('Where are you sending MINA to?', textAlign: TextAlign.left, style: TextStyle(fontSize: 30.sp, color: Colors.black)),
-                Container(height: 48.h),
+                Text('Where are you sending MINA to?', textAlign: TextAlign.left, style: TextStyle(fontSize: 28.sp, color: Colors.black)),
+                Container(height: 29.h),
                 Text('SEND TO', textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-                Container(height: 8.h),
+                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                Container(height: 4.h),
                 _buildToAddressField(context),
-                Container(height: 31.h),
+                Container(height: 35.h),
+                Text('MEMO', textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                Container(height: 4.h),
                 _buildMemoField(),
               ],
             )
@@ -129,10 +140,11 @@ class _SendToScreenState extends State<SendToScreen> {
 
   _buildToAddressField(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 18.63.w, right: 18.63.w, top: 13.h, bottom: 13.h),
+      padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 13.h, bottom: 13.h),
       decoration: BoxDecoration(
-        color: Color.fromARGB(20, 116, 116, 128),
-        borderRadius: BorderRadius.all(Radius.circular(10.w))
+        color: Colors.transparent,
+        borderRadius: BorderRadius.all(Radius.circular(2.w)),
+        border: Border.all(color: Color(0xff757575), width: 1.w)
       ),
       child: Row(children: [
         Expanded(
@@ -157,11 +169,11 @@ class _SendToScreenState extends State<SendToScreen> {
             autofocus: false,
             decoration: InputDecoration.collapsed(
               hintText: 'Tap to Paste Address',
-              hintStyle: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 0, 0, 0)))
+              hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
           )),
           Container(width: 12.w),
           InkWell(
-            child: Image.asset('images/qr_scan1.png', width: 22.w, height: 22.w),
+            child: Image.asset('images/qr_scanner.png', width: 28.w, height: 28.w),
             onTap: _fillQrAddress,
           )
         ],
@@ -171,10 +183,11 @@ class _SendToScreenState extends State<SendToScreen> {
 
   _buildMemoField() {
     return Container(
-      padding: EdgeInsets.only(left: 18.63.w, right: 18.63.w, top: 13.h, bottom: 13.h),
+      padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 13.h, bottom: 13.h),
       decoration: BoxDecoration(
-          color: Color.fromARGB(20, 116, 116, 128),
-          borderRadius: BorderRadius.all(Radius.circular(10.w))
+        color: Colors.transparent,
+        borderRadius: BorderRadius.all(Radius.circular(2.w)),
+        border: Border.all(color: Color(0xff757575), width: 1.w)
       ),
       child: TextField(
         enableInteractiveSelection: true,
@@ -187,8 +200,8 @@ class _SendToScreenState extends State<SendToScreen> {
         keyboardType: TextInputType.multiline,
         autofocus: false,
         decoration: InputDecoration.collapsed(
-          hintText: 'PERSONAL NOTE(OPTIONAL)',
-          hintStyle: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 181, 181, 181)))
+          hintText: 'Personal Note(optional)',
+          hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
         )
     );
   }

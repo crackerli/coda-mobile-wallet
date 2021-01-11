@@ -31,27 +31,41 @@ class _SendFromScreenState extends State<SendFromScreen> {
     SendData sendData = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: primaryBackgroundColor,
+      backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(height: 30.h),
-          Padding(
-            padding: EdgeInsets.only(left: 29.w, right: 29.w),
-            child: Text('SEND FROM', textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color.fromARGB(153, 60, 60, 67))),
+      body: Container(
+        child: _buildSendFromBody(context, sendData),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            alignment: Alignment.bottomCenter,
+            image: AssetImage('images/common_bg.png',),
+            fit: BoxFit.fitWidth
           ),
-          Container(height: 10.h),
-          Expanded(
-            flex: 1,
-            child: buildAccountList(
-              (index) {
-                sendData.from = index;
-                Navigator.of(context).pushReplacementNamed(SendToRoute, arguments: sendData);
-              })
-            )
-          ],
+        ),
+      )
+    );
+  }
+
+  _buildSendFromBody(BuildContext context, SendData sendData) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(height: 30.h),
+        Padding(
+          padding: EdgeInsets.only(left: 29.w, right: 29.w),
+          child: Text('SEND FROM', textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 13.sp, color: Color(0xff2d2d2d), fontWeight: FontWeight.w500)),
+        ),
+        Container(height: 10.h),
+        Expanded(
+          flex: 1,
+          child: buildAccountList(
+            (index) {
+            sendData.from = index;
+            Navigator.of(context).pushReplacementNamed(SendToRoute, arguments: sendData);
+          })
         )
+      ],
     );
   }
 }
