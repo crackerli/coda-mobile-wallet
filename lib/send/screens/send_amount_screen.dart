@@ -87,7 +87,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 textAlign: TextAlign.right,
                 text: TextSpan(children: <TextSpan>[
                   TextSpan(
-                    text: '${formatTokenNumber(testAccounts[0].balance)} ',
+                    text: '${formatTokenNumber(testAccounts[_sendData.from].balance)} ',
                       style: TextStyle(fontSize: 16.sp, color: Colors.black)
                   ),
                   TextSpan(

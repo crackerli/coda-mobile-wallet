@@ -1,9 +1,13 @@
-import 'package:coda_wallet/receive/screen/receive_account_list.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/test/test_data.dart';
 import 'package:coda_wallet/types/send_data.dart';
+import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
+import 'package:coda_wallet/wallet_home/blocs/account_events.dart';
+import 'package:coda_wallet/wallet_home/blocs/account_states.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -25,6 +29,20 @@ class WalletHomeScreen extends StatefulWidget {
 
 class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepAliveClientMixin {
   bool _stakeEnabled = true;
+  AccountBloc _accountBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _accountBloc = BlocProvider.of<AccountBloc>(context);
+    _accountBloc.add(GetAccounts(0));
+  }
+
+  @override
+  void dispose() {
+    _accountBloc = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +76,17 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           Container(height: 2.h),
           _buildMinaLogo(),
           Container(height: 10.h),
-          _buildTotalBalance(),
-          _buildFiatBalance(),
+          BlocBuilder<AccountBloc, AccountStates>(
+            builder: (BuildContext context, AccountStates state) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildTotalBalance(),
+                  _buildFiatBalance(),
+                ]
+              );
+            }
+          ),
           Container(height: 21.h),
           _buildStakedPercent(),
           Container(height: 32.h),
@@ -150,7 +177,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         textAlign: TextAlign.center,
         text: TextSpan(children: <TextSpan>[
           TextSpan(
-            text: '123.45 ',
+            text: '${getWalletBalance()} ',
             style: TextStyle(fontSize: 30.sp, color: Colors.black, fontWeight: FontWeight.w500)),
           TextSpan(
             text: 'MINA',
@@ -164,7 +191,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   _buildFiatBalance() {
     return Padding(
       padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
-      child: Text('(\$65.34)', textAlign: TextAlign.center, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: Color(0xff979797)))
+      child: Text('(\$${getWalletPrice()})', textAlign: TextAlign.center, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: Color(0xff979797)))
     );
   }
 

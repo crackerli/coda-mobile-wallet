@@ -3,6 +3,8 @@ import 'package:coda_wallet/stake/screen/stake_screen.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
 import 'package:coda_wallet/txns/screen/txns_screen.dart';
+import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
+import 'package:coda_wallet/wallet_home/blocs/account_states.dart';
 import 'package:coda_wallet/wallet_home/screen/wallet_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +24,12 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   int _currentIndex = 0;
   List<BottomNavigationBarItem> _bottomBarItems;
   final List<Widget> _entryTabs = [
-    WalletHomeScreen(),
+    BlocProvider<AccountBloc>(
+      create: (BuildContext context) {
+        return AccountBloc(GetAccountsLoading(null));
+      },
+      child: WalletHomeScreen()
+    ),
     StakeScreen(),
     BlocProvider<TxnsBloc>(
       create: (BuildContext context) {
