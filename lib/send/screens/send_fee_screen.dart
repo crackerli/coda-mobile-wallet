@@ -5,7 +5,9 @@ import 'package:coda_wallet/send/blocs/send_states.dart';
 import 'package:coda_wallet/send/mutation/send_token_mutation.dart';
 import 'package:coda_wallet/send/query/get_account_nonce.dart';
 import 'package:coda_wallet/test/test_data.dart';
+import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
 import 'package:coda_wallet/types/send_data.dart';
+import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
@@ -15,8 +17,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-_gotoTxnDetail(BuildContext context) {
-  Navigator.pushReplacementNamed(context, TxnDetailRoute, arguments: null);
+_gotoTxnDetail(BuildContext context, SendData sendData) {
+  TxnEntity txnEntity = TxnEntity(testAccounts[sendData.from].address,
+      sendData.to, null, sendData.amount, sendData.fee, sendData.memo, TxnStatusType.PENDING);
+  Navigator.pushReplacementNamed(context, TxnDetailRoute, arguments: txnEntity);
 }
 
 class SendFeeScreen extends StatefulWidget {
@@ -131,7 +135,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     if(state is SendSuccess) {
       ProgressDialog.dismiss(context);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _gotoTxnDetail(context);
+        _gotoTxnDetail(context, _sendData);
       });
     }
 

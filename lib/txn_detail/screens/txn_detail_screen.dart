@@ -1,4 +1,6 @@
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
+import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +16,7 @@ class TxnDetailScreen extends StatefulWidget {
 }
 
 class _TxnDetailScreenState extends State<TxnDetailScreen> {
+  TxnEntity _txnEntity;
 
   @override
   void initState() {
@@ -28,6 +31,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    _txnEntity = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, leading: false),
@@ -104,13 +108,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('B62qksdP349sXvavFnQj7JYeKRfLbLaTsgjGecj8MBfzXcLkY18atHe',
+                child: Text(_txnEntity.from,
                   textAlign: TextAlign.left, maxLines: 3,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161))),
               )
             ],
           ),
-          Container(height: 17.h),
+          Container(height: 16.h),
           Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,13 +127,14 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('B62qksdP349sXvavFnQj7JYeKRfLbLaTsgjGecj8MBfzXcLkY18atHe',
+                child: Text(_txnEntity.to,
                   textAlign: TextAlign.left, maxLines: 3,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161))),
               )
             ],
           ),
           Container(height: 16.h),
+          _txnEntity.txnStatusType != TxnStatusType.PENDING ?
           Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,8 +151,8 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                   textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)),),
               )
             ],
-          ),
-          Container(height: 16.h),
+          ) : Container(),
+          _txnEntity.txnStatusType != TxnStatusType.PENDING ? Container(height: 16.h) : Container(),
           Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,12 +165,12 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('12345.00 MINA (\$46.62)', maxLines: 3,
+                child: Text('${_txnEntity.amount} MINA (\$46.62)', maxLines: 3,
                   textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
               )
             ],
           ),
-          Container(height: 8.h,),
+          Container(height: 16.h,),
           Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,13 +183,12 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('0.1 MINA (\$0.07)', textAlign: TextAlign.left, maxLines: 2,
+                child: Text('${_txnEntity.fee} MINA (\$0.07)', textAlign: TextAlign.left, maxLines: 2,
                   style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],
           ),
-
-          Container(height: 20.h,),
+          Container(height: 16.h,),
           Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,7 +206,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               )
             ],
           ),
-          Container(height: 11.h,),
+          Container(height: 16.h,),
           Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,8 +219,8 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('Sent from Chris', textAlign: TextAlign.left, maxLines: 2,
-                    style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
+                child: Text(_txnEntity.memo, textAlign: TextAlign.left, maxLines: 2,
+                  style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],
           ),
