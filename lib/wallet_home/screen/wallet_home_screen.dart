@@ -203,7 +203,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           Expanded(
             flex: 1,
             child: InkWell(
-              child: Text('Send', textAlign: TextAlign.center),
+              child: Text('SEND', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
               onTap: () => _gotoSendFromScreen(context),
             )
           ),
@@ -211,7 +211,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           Expanded(
             flex: 1,
             child: InkWell(
-              child: Text('Receive', textAlign: TextAlign.center),
+              child: Text('RECEIVE', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
               onTap: () => _gotoReceiveAccountsScreen(context)
             )
           ),

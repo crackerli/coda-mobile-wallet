@@ -1,4 +1,3 @@
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/send/blocs/send_bloc.dart';
 import 'package:coda_wallet/send/blocs/send_events.dart';
@@ -57,11 +56,11 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   }
   
   _getNonce() {
-    // Map<String, dynamic> variables = Map<String, dynamic>();
-    // variables['publicKey'] = _sendBloc.from;
-    // _sendBloc.add(
-    //   GetNonce(GET_NONCE_QUERY, variables: variables));
-    _gotoTxnDetail(context);
+    Map<String, dynamic> variables = Map<String, dynamic>();
+    variables['publicKey'] = _sendBloc.from;
+    _sendBloc.add(
+      GetNonce(GET_NONCE_QUERY, variables: variables));
+//    _gotoTxnDetail(context);
   }
 
   @override
@@ -131,7 +130,9 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
     if(state is SendSuccess) {
       ProgressDialog.dismiss(context);
-      _gotoTxnDetail(context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _gotoTxnDetail(context);
+      });
     }
 
     return Positioned(
