@@ -12,6 +12,10 @@ _gotoSendFromScreen(BuildContext context) {
   Navigator.of(context).pushNamed(SendFromRoute, arguments: sendData);
 }
 
+_gotoReceiveAccountsScreen(BuildContext context) {
+  Navigator.of(context).pushNamed(ReceiveAccountsRoute);
+}
+
 class WalletHomeScreen extends StatefulWidget {
   WalletHomeScreen({Key key}) : super(key: key);
 
@@ -181,9 +185,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
             flex: 1,
             child: InkWell(
               child: Text('Receive', textAlign: TextAlign.center),
-              onTap: () => Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ReceiveAccountsScreen())
-              ),
+              onTap: () => _gotoReceiveAccountsScreen(context)
             )
           ),
         ],

@@ -1,8 +1,13 @@
 import 'package:coda_wallet/receive/screen/receive_account_screen.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+_gotoReceiveAccountScreen(BuildContext context, int index) {
+  Navigator.of(context).pushNamed(ReceiveAccountRoute, arguments: index);
+}
 
 class ReceiveAccountsScreen extends StatefulWidget {
   ReceiveAccountsScreen({Key key}) : super(key: key);
@@ -54,8 +59,7 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
         Expanded(
           flex: 1,
           child: buildAccountList(
-            (index) => Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ReceiveAccountScreen()))
+            (index) => _gotoReceiveAccountScreen(context, index)
           )
         )
       ],

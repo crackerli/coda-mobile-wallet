@@ -9,7 +9,13 @@ RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 const primaryBackgroundColor = Color(0xfff5f8fd);
 const globalHPadding = 20;
 String globalMnemonic;
-String gUnitFiatPrice = '2.00';
+double gUnitFiatPrice = 2.317;
+
+String getTokenFiatPrice(String tokenNumber) {
+  double token = double.parse(tokenNumber);
+  double ret = token * gUnitFiatPrice;
+  return ret.toString();
+}
 
 // Global functions
 String exceptionHandle<T>(QueryResult result) {

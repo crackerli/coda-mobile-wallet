@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/qr_address/qr_image_helper.dart';
+import 'package:coda_wallet/test/test_data.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-
-const _testAddress = 'B62qiXEBsYJtFDxyjPU5kEqKpbFibxrkj5CGERR8NN4uhqNjwoN3Q3S';
 
 class ReceiveAccountScreen extends StatefulWidget {
   ReceiveAccountScreen({Key key}) : super(key: key);
@@ -35,20 +33,23 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    int index = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
       body: RepaintBoundary(
         key: _qrImageKey,
         child: Container(child:
-          _buildReceiveAccountBody(context),
+          _buildReceiveAccountBody(context, index),
           color: Colors.white,
         )
       ),
     );
   }
 
-  _buildReceiveAccountBody(BuildContext context) {
+  _buildReceiveAccountBody(BuildContext context, int index) {
+    String address = testAccounts[index].address;
+    String accountName = testAccounts[index].accountName;
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -62,9 +63,9 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
         Container(height: 24.h),
         Image.asset('images/mina_logo_black_inner.png', width: 66.w, height: 66.w),
         Container(height: 14.h),
-        QrImage(data: _testAddress, size: 200.w, version: QrVersions.auto),
+        QrImage(data: address, size: 200.w, version: QrVersions.auto),
         Container(height: 33.h),
-        Text('Your Address', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Colors.black)),
+        Text(accountName, textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Colors.black)),
         Container(height: 8),
         Container(
           decoration: BoxDecoration(
@@ -83,14 +84,14 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
                 InkWell(
                   child: Image.asset('images/copy_gray.png', width: 18.w, height: 18.w),
                   onTap: () {
-                    Clipboard.setData(ClipboardData(text: _testAddress));
+                    Clipboard.setData(ClipboardData(text: address));
                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
                   },
                 )
               ),
               Container(width: 20.w),
               Flexible(child:
-                Text(_testAddress, textAlign: TextAlign.left, softWrap: true,
+                Text(address, textAlign: TextAlign.left, softWrap: true,
                   style: TextStyle(fontSize: 12.sp, color: Color(0xff786666)), maxLines: 2)),
             ],
           )
