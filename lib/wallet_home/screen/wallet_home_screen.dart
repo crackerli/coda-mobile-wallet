@@ -20,7 +20,7 @@ class WalletHomeScreen extends StatefulWidget {
 }
 
 class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepAliveClientMixin {
-  bool _stakeEnabled = false;
+  bool _stakeEnabled = true;
 
   @override
   Widget build(BuildContext context) {
