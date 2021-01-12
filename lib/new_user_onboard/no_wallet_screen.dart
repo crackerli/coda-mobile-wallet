@@ -26,7 +26,7 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
-      backgroundColor: primaryBackgroundColor,
+      backgroundColor: Colors.white,
       appBar: null,
       body: _buildNoWalletBody()
     );
@@ -36,16 +36,16 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
     return Container(
       padding: EdgeInsets.only(left: 54.w, right: 54.w),
       child: Column(
-          children: [
-            Container(height: 14.h),
-            Container(
-              width: 75.w,
-              height: 75.w,
-              color: Colors.grey,
-            ),
-            Container(height: 64.h),
-            Text('SEND TO', ),
-          ]
+        children: [
+          Container(height: 14.h),
+          Container(
+            width: 75.w,
+            height: 75.w,
+            color: Colors.grey,
+          ),
+          Container(height: 64.h),
+          Text('SEND TO', ),
+        ]
       ),
     );
   }

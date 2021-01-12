@@ -1,4 +1,3 @@
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
