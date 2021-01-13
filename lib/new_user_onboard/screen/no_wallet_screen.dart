@@ -48,9 +48,9 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
         RaisedButton(
           padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-          onPressed: () => null,
+          onPressed: () => Navigator.pushNamed(context, ImportRecoveryPhraseRoute, arguments: null),
           color: Colors.blueAccent,
-          child: Text('Recover Wallet', style: TextStyle(color: Colors.white),)
+          child: Text('Import Wallet', style: TextStyle(color: Colors.white),)
         ),
       ]
     );

@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
@@ -16,10 +15,11 @@ class RecoveryPhraseScreen extends StatefulWidget {
 }
 
 class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
+  String _mnemonic;
 
   @override
   void initState() {
-    globalMnemonic = generateMnemonic();
+    _mnemonic = generateMnemonic();
     super.initState();
   }
 
@@ -32,7 +32,7 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
-      backgroundColor: Color(0xffffffff),
+      backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, actions: false),
       body: _buildRecoveryPhraseBody()
     );
@@ -62,7 +62,7 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
           child: RaisedButton(
             padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-            onPressed: () => Navigator.pushNamed(context, VerifyRecoveryPhraseRoute),
+            onPressed: () => Navigator.pushNamed(context, VerifyRecoveryPhraseRoute, arguments: _mnemonic),
             color: Colors.blueAccent,
             child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
           ),
@@ -72,7 +72,7 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
   }
 
   Widget _buildRecoveryPhraseTable() {
-    List<String> words = globalMnemonic.split(' ');
+    List<String> words = _mnemonic.split(' ');
 
     return Container(
       margin: EdgeInsets.only(left: 48.w, right: 48.w),

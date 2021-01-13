@@ -40,7 +40,7 @@ class _SendToScreenState extends State<SendToScreen> {
     setState(() {});
   }
 
-  bool _checkInputValidation() {
+  _checkInputValidation() {
     if(_sendData.to == null || _sendData.to.isEmpty) {
       setState(() {
         _validInput = false;

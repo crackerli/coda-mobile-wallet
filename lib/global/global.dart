@@ -8,7 +8,7 @@ String globalRpcServer;
 RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 const primaryBackgroundColor = Color(0xfff5f8fd);
 const globalHPadding = 20;
-String globalMnemonic;
+//String globalMnemonic;
 double gUnitFiatPrice = 2.317;
 
 String getTokenFiatPrice(String tokenNumber) {

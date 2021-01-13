@@ -28,11 +28,12 @@ class VerifyRecoveryPhraseScreen extends StatefulWidget {
 }
 
 class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen> {
+  String _mnemonic;
   List<MnemonicBody> _mnemonicTips = List<MnemonicBody>();
   List<String> _mnemonicsFilled = List<String>();
 
   bool _verifyWords() {
-    List<String> words = globalMnemonic.split(' ');
+    List<String> words = _mnemonic.split(' ');
     for(int i = 0; i < _mnemonicsFilled.length; i++) {
       if(words[i] != _mnemonicsFilled[i]) {
         return false;
@@ -44,7 +45,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   _handleSeed(BuildContext context) {
     bool verifyRet = _verifyWords();
     if(verifyRet) {
-      globalPreferences.setString(ENCRYPTED_SEED_KEY, encryptSeed(mnemonicToSeed(globalMnemonic.toString()), '1234'));
+      globalPreferences.setString(ENCRYPTED_SEED_KEY, encryptSeed(mnemonicToSeed(_mnemonic.toString()), '1234'));
       Navigator.popUntil(context, (route) => route.isFirst);
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Wrong input words')));
@@ -52,10 +53,11 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   }
   
   _createRandomMnemonics() {
-    List<String> words = globalMnemonic.split(' ');
-    print('---------------- $words -------------------');
+    if(null != _mnemonicTips && _mnemonicTips.length > 0) {
+      return;
+    }
+    List<String> words = _mnemonic.split(' ');
     words.shuffle();
-    print('================ $words ===================');
     for(int i = 0; i < words.length; i++) {
       MnemonicBody body = MnemonicBody();
       body.hasFilled = false;
@@ -80,7 +82,6 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   @override
   void initState() {
     super.initState();
-    _createRandomMnemonics();
     _mnemonicsFilled.add(_inputRecoveryPhrasesTip);
   }
 
@@ -92,6 +93,8 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    _mnemonic = ModalRoute.of(context).settings.arguments;
+    _createRandomMnemonics();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
