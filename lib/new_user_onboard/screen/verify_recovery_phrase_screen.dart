@@ -1,6 +1,9 @@
 import 'dart:ui';
 
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -27,6 +30,26 @@ class VerifyRecoveryPhraseScreen extends StatefulWidget {
 class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen> {
   List<MnemonicBody> _mnemonicTips = List<MnemonicBody>();
   List<String> _mnemonicsFilled = List<String>();
+
+  bool _verifyWords() {
+    List<String> words = globalMnemonic.split(' ');
+    for(int i = 0; i < _mnemonicsFilled.length; i++) {
+      if(words[i] != _mnemonicsFilled[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  _handleSeed(BuildContext context) {
+    bool verifyRet = _verifyWords();
+    if(verifyRet) {
+      globalPreferences.setString(ENCRYPTED_SEED_KEY, encryptSeed(mnemonicToSeed(globalMnemonic.toString()), '1234'));
+      Navigator.popUntil(context, (route) => route.isFirst);
+    } else {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Wrong input words')));
+    }
+  }
   
   _createRandomMnemonics() {
     List<String> words = globalMnemonic.split(' ');
@@ -39,6 +62,19 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
       body.word = words[i];
       _mnemonicTips.add(body);
     }
+  }
+
+  _clearInputWords() {
+    for(int i = 0; i < _mnemonicTips.length; i++) {
+      MnemonicBody body = _mnemonicTips[i];
+      body.hasFilled = false;
+    }
+
+    _mnemonicsFilled.clear();
+    _mnemonicsFilled.add(_inputRecoveryPhrasesTip);
+    setState(() {
+
+    });
   }
 
   @override
@@ -57,8 +93,8 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
-      backgroundColor: Color(0xffeeeeee),
-      appBar: _buildSettingAppBar(),
+      backgroundColor: Colors.white,
+      appBar: buildNoTitleAppBar(context),
       body: _buildRecoveryPhraseBody()
     );
   }
@@ -74,17 +110,26 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
           _buildRecoveryPhraseFilledTable(),
           Container(height: 19.h),
           _buildRecoveryPhraseTipTable(),
+          Container(height: 19.h),
+          RaisedButton(
+            padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
+            onPressed: _clearInputWords,
+            color: Colors.blueAccent,
+            child: Text('Clear', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
+          ),
         ]),
         Positioned(
           bottom: 84.h,
-          child: RaisedButton(
+          child: Builder(builder: (context) =>
+          RaisedButton(
             padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-            onPressed: null,
+            onPressed: () => _handleSeed(context),
             color: Colors.blueAccent,
             child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
           ),
-        )
+        ))
       ],
     );
   }
@@ -142,27 +187,6 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
           );
         })
       )
-    );
-  }
-
-  _clickWordTofill() {
-
-  }
-
-  Widget _buildSettingAppBar() {
-    return PreferredSize(
-      child: AppBar(
-        title: Text('Setting',
-          style: TextStyle(fontSize: 17.sp, color: Colors.black, fontWeight: FontWeight.w400)),
-        centerTitle: true,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_rounded),
-          tooltip: 'Back',
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      preferredSize: Size.fromHeight(52.h)
     );
   }
 
