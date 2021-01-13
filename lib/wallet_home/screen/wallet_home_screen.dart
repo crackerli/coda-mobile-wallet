@@ -29,13 +29,11 @@ class WalletHomeScreen extends StatefulWidget {
   _WalletHomeScreenState createState() => _WalletHomeScreenState();
 }
 
-class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepAliveClientMixin {
+class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, RouteAware {
   bool _stakeEnabled = true;
   AccountBloc _accountBloc;
 
-  @override
-  void initState() {
-    super.initState();
+  _updateAccounts() {
     String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
     bool newUser;
     if(null == encryptedSeed || encryptedSeed.isEmpty) {
@@ -55,9 +53,55 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _updateAccounts();
+  }
+
+  @override
   void dispose() {
     _accountBloc = null;
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(final AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _updateAccounts();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    print('WalletHomeScreen: didPopNext()');
+    _updateAccounts();
+  }
+
+  @override
+  void didPush() {
+    super.didPush();
+    print('WalletHomeScreen: didPush()');
+  }
+
+  @override
+  void didPushNext() {
+    final route = ModalRoute.of(context).settings.name;
+    print('WalletHomeScreen didPushNext() route: $route');
+  }
+
+  @override
+  void didPop() {
+    final route = ModalRoute.of(context).settings.name;
+    print('WalletHomeScreen didPop() route: $route');
   }
 
   @override

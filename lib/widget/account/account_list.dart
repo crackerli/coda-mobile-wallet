@@ -56,7 +56,7 @@ _buildAccountItem(Function accountClickCb, List<MinaHDAccount> accounts, int ind
                 text: TextSpan(children: [
                   WidgetSpan(
                     alignment: ui.PlaceholderAlignment.middle,
-                    child: Image.asset('images/pool_header.png', width: 12.w, height: 12.w,),
+                    child: accounts[index].isDelegated ? Image.asset('images/pool_header.png', width: 12.w, height: 12.w) : Container(),
                   ),
                   TextSpan(
                     text: ' ${accounts[index].pool}',

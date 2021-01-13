@@ -1,3 +1,7 @@
+import 'dart:typed_data';
+
+import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/send/blocs/send_bloc.dart';
 import 'package:coda_wallet/send/blocs/send_events.dart';
@@ -12,6 +16,9 @@ import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
+import 'package:ffi_mina_signer/types/key_types.dart';
+import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +42,33 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   SendData _sendData;
   SendBloc _sendBloc;
 
-  _send() {
+  Future<Signature> _signPayment() async {
+ //   Uint8List sk = MinaHelper.hexToBytes('1f2c90f146d1035280364cb1a01a89e7586a340972936abd5d72307a0674549c');
+    String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+    Uint8List seed =  decryptSeed(encryptedSeed, '1234');
+    Uint8List accountSeed = generatePrivateKey(seed, _sendData.from);
+    String memo = _sendData.memo;
+    String feePayerAddress = testAccounts[_sendData.from].address;
+    String senderAddress = testAccounts[_sendData.from].address;
+    String receiverAddress = _sendData.to;
+    int fee = getNanoMina(_sendData.fee);
+    int feeToken = 1;
+    int nonce = _sendBloc.nonce;
+    int validUntil = 65535;
+    int tokenId = 1;
+    int amount = getNanoMina(_sendData.amount);
+    int tokenLocked = 0;
+
+    Signature signature = await signPayment(MinaHelper.reverse(accountSeed), memo, feePayerAddress,
+        senderAddress, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, amount, tokenLocked);
+    // print('--signature rx=${signature.rx}--');
+    // print('--signature s=${signature.s}--');
+    // bool rxRet = signature.rx == '27868897936794982770752119679041533974967348280365384398744708741877580834675';
+    // bool sRet = signature.s == '23548656286909298036252341845310377058595185877124773386777818829122223941592';
+    return signature;
+  }
+
+  _send() async {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['from'] = _sendBloc.from;
     variables['to'] = _sendBloc.to;
@@ -44,17 +77,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     variables['fee'] = getNanoMina(_sendBloc.fee);
     variables['nonce'] = _sendBloc.nonce;
     variables['validUntil'] = 65535;
-    // variables['from'] = 'B62qiy32p8kAKnny8ZFwoMhYpBppM1DWVCqAPBYNcXnsAHhnfAAuXgg';
-    // variables['to'] = 'B62qrPN5Y5yq8kGE3FbVKbGTdTAJNdtNtB5sNVpxyRwWGcDEhpMzc8g';
-    // variables['amount'] = 420000000;
-    // variables['memo'] = 'this is a memo';
-    // variables['fee'] = 300000000;
-    // variables['nonce'] = 200;
-    // variables['token'] = 1;
-    // variables['validUntil'] = 10000;
-    // variables['field'] = '6294031020844169724778227166138415676049686510656401727312236286674679501948';
-    // variables['scalar'] = '4626454670027815473460098193984318559610067435921261084455739892582590642453';
+    ProgressDialog.showProgress(context);
+    Signature signature = await _signPayment();
+    variables['field'] = signature.rx;
+    variables['scalar'] = signature.s;
 
+    ProgressDialog.dismiss(context);
     _sendBloc.add(
       Send(SEND_PAYMENT_MUTATION, variables: variables));
   }

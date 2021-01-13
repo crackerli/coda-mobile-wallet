@@ -2,7 +2,11 @@ import 'dart:ui';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/test/test_data.dart';
+import 'package:coda_wallet/types/mina_hd_account_type.dart';
+import 'package:coda_wallet/util/account_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +25,7 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
   TextEditingController _editingController;
   String _mnemonic;
 
-  _processMnemonicWords() {
+  _processMnemonicWords(BuildContext context) async {
     if(_editingController.text.isEmpty) {
       return;
     }
@@ -34,8 +38,14 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
         mnemonicList.add(tmp[i].trim());
       }
     }
-    _mnemonic = mnemonicList.join(' ');
+ //   _mnemonic = mnemonicList.join(' ');
+    _mnemonic = 'course grief vintage slim tell hospital car maze model style elegant kitchen state purpose matrix gas grid enable frown road goddess glove canyon key';
     globalPreferences.setString(ENCRYPTED_SEED_KEY, encryptSeed(mnemonicToSeed(_mnemonic.toString()), '1234'));
+    ProgressDialog.showProgress(context);
+    List<MinaHDAccount> accounts = await deriveDefaultAccount(mnemonicToSeed(_mnemonic));
+    testAccounts.clear();
+    testAccounts.addAll(accounts);
+    ProgressDialog.dismiss(context);
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 
@@ -59,11 +69,11 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, actions: false),
-      body: _buildImportRecoveryPhraseBody()
+      body: _buildImportRecoveryPhraseBody(context)
     );
   }
 
-  _buildImportRecoveryPhraseBody() {
+  _buildImportRecoveryPhraseBody(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -96,7 +106,10 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
         RaisedButton(
           padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-          onPressed: _processMnemonicWords,
+          onPressed: () {
+            _focusNode.unfocus();
+            _processMnemonicWords(context);
+          },
           color: Colors.blueAccent,
           child: Text('Import', style: TextStyle(color: Colors.white),)
         )

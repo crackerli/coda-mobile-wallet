@@ -9,5 +9,12 @@ class TxnEntity {
   String memo;
   TxnStatusType txnStatusType;
 
+  get total {
+    double amountD = double.parse(amount);
+    double feeD = double.parse(fee);
+    double totalD = feeD + amountD;
+    return totalD.toString();
+  }
+
   TxnEntity(this.from, this.to, this.timestamp, this.amount, this.fee, this.memo, this.txnStatusType);
 }
