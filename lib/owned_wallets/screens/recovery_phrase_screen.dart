@@ -1,8 +1,9 @@
 import 'dart:ui';
 
-import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/owned_wallets/screens/verify_recovery_phrase_screen.dart';
+import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
       backgroundColor: Color(0xffffffff),
-      appBar: _buildSettingAppBar(),
+      appBar: buildNoTitleAppBar(context, actions: false),
       body: _buildRecoveryPhraseBody()
     );
   }
@@ -63,10 +64,7 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
           child: RaisedButton(
             padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-            onPressed: () =>
-              Navigator.push(context,
-                MaterialPageRoute(builder: (context) => VerifyRecoveryPhraseScreen())
-              ),
+            onPressed: () => Navigator.pushNamed(context, VerifyRecoveryPhraseRoute),
             color: Colors.blueAccent,
             child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
           ),
@@ -95,22 +93,4 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
       )
     );
   }
-
-  Widget _buildSettingAppBar() {
-    return PreferredSize(
-        child: AppBar(
-          title: Text('Setting',
-              style: TextStyle(fontSize: 17.sp, color: Colors.black, fontWeight: FontWeight.w400)),
-          centerTitle: true,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_rounded),
-            tooltip: 'Back',
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
-        preferredSize: Size.fromHeight(52.h)
-    );
-  }
-
 }

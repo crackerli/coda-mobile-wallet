@@ -1,3 +1,5 @@
+import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/test/test_data.dart';
 import 'package:coda_wallet/types/send_data.dart';
@@ -34,8 +36,22 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   @override
   void initState() {
     super.initState();
-    _accountBloc = BlocProvider.of<AccountBloc>(context);
-    _accountBloc.add(GetAccounts(0));
+    String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+    bool newUser;
+    if(null == encryptedSeed || encryptedSeed.isEmpty) {
+      newUser = true;
+    } else {
+      newUser = false;
+    }
+
+    if(newUser) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushNamed(context, NoWalletRoute);
+      });
+    } else {
+      _accountBloc = BlocProvider.of<AccountBloc>(context);
+      _accountBloc.add(GetAccounts(0));
+    }
   }
 
   @override

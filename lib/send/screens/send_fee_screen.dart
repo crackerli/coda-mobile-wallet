@@ -64,7 +64,6 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     variables['publicKey'] = _sendBloc.from;
     _sendBloc.add(
       GetNonce(GET_NONCE_QUERY, variables: variables));
-//    _gotoTxnDetail(context);
   }
 
   @override

@@ -1,5 +1,4 @@
-import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -28,25 +27,32 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: null,
-      body: _buildNoWalletBody()
+      body: SafeArea(child: _buildNoWalletBody())
     );
   }
 
   _buildNoWalletBody() {
-    return Container(
-      padding: EdgeInsets.only(left: 54.w, right: 54.w),
-      child: Column(
-        children: [
-          Container(height: 14.h),
-          Container(
-            width: 75.w,
-            height: 75.w,
-            color: Colors.grey,
-          ),
-          Container(height: 64.h),
-          Text('SEND TO', ),
-        ]
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        RaisedButton(
+          padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
+          onPressed: () => Navigator.pushNamed(context, RecoveryPhraseRoute, arguments: null),
+          color: Colors.blueAccent,
+          child: Text('New Wallet', style: TextStyle(color: Colors.white),)
+        ),
+        Container(height: 16.h,),
+        RaisedButton(
+          padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
+          onPressed: () => null,
+          color: Colors.blueAccent,
+          child: Text('Recover Wallet', style: TextStyle(color: Colors.white),)
+        ),
+      ]
     );
   }
 }

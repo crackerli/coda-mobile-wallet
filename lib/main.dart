@@ -3,11 +3,9 @@ import 'package:coda_wallet/entry_sheet.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'global/global.dart';
-import 'owned_wallets/blocs/owned_accounts_bloc.dart';
-import 'owned_wallets/blocs/owned_accounts_states.dart';
+import 'new_user_onboard/no_wallet_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
