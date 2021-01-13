@@ -1,6 +1,6 @@
-import 'package:coda_wallet/new_user_onboard/no_wallet_screen.dart';
-import 'package:coda_wallet/owned_wallets/screens/recovery_phrase_screen.dart';
-import 'package:coda_wallet/owned_wallets/screens/verify_recovery_phrase_screen.dart';
+import 'package:coda_wallet/new_user_onboard/screen/no_wallet_screen.dart';
+import 'package:coda_wallet/new_user_onboard/screen/recovery_phrase_screen.dart';
+import 'package:coda_wallet/new_user_onboard/screen/verify_recovery_phrase_screen.dart';
 import 'package:coda_wallet/qr_scan/qr_scanner.dart';
 import 'package:coda_wallet/receive/screen/receive_account_list.dart';
 import 'package:coda_wallet/receive/screen/receive_account_screen.dart';

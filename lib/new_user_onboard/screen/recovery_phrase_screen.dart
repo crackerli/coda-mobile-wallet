@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/owned_wallets/screens/verify_recovery_phrase_screen.dart';
+import 'package:coda_wallet/new_user_onboard/screen/verify_recovery_phrase_screen.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'global/global.dart';
-import 'new_user_onboard/no_wallet_screen.dart';
+import 'new_user_onboard/screen/no_wallet_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
