@@ -8,7 +8,10 @@ buildNoTitleAppBar(BuildContext context, {bool leading = true, bool actions = tr
     child: AppBar(
       actions: [
         InkWell(
-          child: Image.asset('images/close.png', width: 28.w, height: 28.h,),
+          child: Padding(
+            padding: EdgeInsets.only(right: 14.w),
+            child: Image.asset('images/close.png', width: 28.w, height: 28.h,),
+          ),
           onTap: () => Navigator.of(context).pop(),
         )
       ],
