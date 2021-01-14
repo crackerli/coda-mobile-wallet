@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/entry_sheet.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +24,12 @@ class CodaWallet extends StatelessWidget {
     if(null == rpcServer || rpcServer == '') {
       globalPreferences.setString(RPC_SERVER_KEY, DEFAULT_RPC_SERVER);
     }
+    String accountsStr = globalPreferences.getString(GLOBAL_ACCOUNTS_KEY);
+    if(null != accountsStr && accountsStr.isNotEmpty) {
+      Map accountsJson = json.decode(accountsStr);
+      globalHDAccounts = MinaHDAccount.fromMap(accountsJson);
+    }
+    globalEncryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
     return globalPreferences;
   }
 

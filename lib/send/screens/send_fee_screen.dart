@@ -43,7 +43,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
   Future<Signature> _signPayment() async {
     String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
-    Uint8List seed =  decryptSeed(encryptedSeed, '1234');
+    Uint8List seed = decryptSeed(encryptedSeed, '1234');
     Uint8List accountSeed = generatePrivateKey(seed, _sendData.from);
     String memo = _sendData.memo;
     String feePayerAddress = globalHDAccounts.accounts[_sendData.from].address;

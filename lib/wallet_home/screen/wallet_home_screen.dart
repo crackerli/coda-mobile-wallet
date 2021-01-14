@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
@@ -34,9 +36,8 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   AccountBloc _accountBloc;
 
   _updateAccounts() {
-    String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
     bool newUser;
-    if(null == encryptedSeed || encryptedSeed.isEmpty) {
+    if(null == globalEncryptedSeed || globalEncryptedSeed.isEmpty) {
       newUser = true;
     } else {
       newUser = false;
@@ -140,6 +141,11 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           Container(height: 10.h),
           BlocBuilder<AccountBloc, AccountStates>(
             builder: (BuildContext context, AccountStates state) {
+              if(state is GetAccountsFinished) {
+                // Save global accounts info
+                Map accountsJson = globalHDAccounts.toJson();
+                globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+              }
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

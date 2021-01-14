@@ -16,6 +16,8 @@ double gUnitFiatPrice = 2.317;
 // global derived hd accounts from bip44 seed
 MinaHDAccount globalHDAccounts = MinaHDAccount();
 
+String globalEncryptedSeed;
+
 String getTokenFiatPrice(String tokenNumber) {
   double token = double.parse(tokenNumber);
   double ret = token * gUnitFiatPrice;

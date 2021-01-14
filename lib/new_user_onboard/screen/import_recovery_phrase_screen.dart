@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
@@ -38,10 +39,14 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
     }
 //    _mnemonic = mnemonicList.join(' ');
     _mnemonic = 'course grief vintage slim tell hospital car maze model style elegant kitchen state purpose matrix gas grid enable frown road goddess glove canyon key';
-    globalPreferences.setString(ENCRYPTED_SEED_KEY, encryptSeed(mnemonicToSeed(_mnemonic.toString()), '1234'));
+    globalEncryptedSeed = encryptSeed(mnemonicToSeed(_mnemonic.toString()), '1234');
+    globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed);
+
     ProgressDialog.showProgress(context);
     List<AccountBean> accounts = await deriveDefaultAccount(mnemonicToSeed(_mnemonic));
     globalHDAccounts.accounts = accounts;
+    Map accountsJson = globalHDAccounts.toJson();
+    globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
     ProgressDialog.dismiss(context);
     Navigator.popUntil(context, (route) => route.isFirst);
   }
