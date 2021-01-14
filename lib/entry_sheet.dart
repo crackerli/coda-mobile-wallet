@@ -1,3 +1,4 @@
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/setting/setting_screen.dart';
 import 'package:coda_wallet/stake/screen/stake_screen.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
@@ -43,6 +44,9 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   final _pageController = PageController();
 
   void onTap(int index) {
+    if(0 == index) {
+      eventBus.fire(UpdateAccounts());
+    }
     _pageController.jumpToPage(index);
   }
 

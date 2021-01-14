@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
@@ -34,6 +35,7 @@ class WalletHomeScreen extends StatefulWidget {
 class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, RouteAware {
   bool _stakeEnabled = true;
   AccountBloc _accountBloc;
+  var _eventBusOn;
 
   _updateAccounts() {
     bool newUser;
@@ -60,12 +62,16 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     WidgetsBinding.instance.addObserver(this);
     _accountBloc = BlocProvider.of<AccountBloc>(context);
     _updateAccounts();
+    _eventBusOn = eventBus.on<UpdateAccounts>().listen((event) {
+      _updateAccounts();
+    });
   }
 
   @override
   void dispose() {
     _accountBloc = null;
     WidgetsBinding.instance.removeObserver(this);
+    _eventBusOn.cancel();
     super.dispose();
   }
 
