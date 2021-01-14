@@ -45,6 +45,9 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
     Uint8List seed = decryptSeed(encryptedSeed, '1234');
     Uint8List accountSeed = generatePrivateKey(seed, _sendData.from);
+    if(null == _sendData.memo || _sendData.memo.isEmpty) {
+      _sendData.memo = '';
+    }
     String memo = _sendData.memo;
     String feePayerAddress = globalHDAccounts.accounts[_sendData.from].address;
     String senderAddress = globalHDAccounts.accounts[_sendData.from].address;
@@ -105,7 +108,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     _sendData = ModalRoute.of(context).settings.arguments;
     // Default fee to be 0.1
-    _sendData.fee = '0.1';
+    _sendData.fee = '350';
 
     _sendBloc.from = globalHDAccounts.accounts[_sendData.from].address;
     _sendBloc.amount = _sendData.amount;

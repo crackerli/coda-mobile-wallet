@@ -17,7 +17,7 @@ class AccountBloc extends
 
   newCodaService() => _service = CodaService();
 
-  AccountStates get initState => GetAccountsLoading(null);
+  AccountStates get initState => GetAccountsLoading();
 
   @override
   Stream<AccountStates>
@@ -37,6 +37,7 @@ class AccountBloc extends
     variables['publicKey'] = globalHDAccounts.accounts[event.index].address;
 
     try {
+      yield GetAccountsLoading();
       final result = await _service.performQuery(query, variables: variables);
       String balance = result.data['account']['balance']['total'];
       String publicKey = result.data['account']['publicKey'];

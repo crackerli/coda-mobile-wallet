@@ -8,12 +8,11 @@ abstract class AccountStates extends Equatable {
 }
 
 class GetAccountsLoading extends AccountStates {
-  final dynamic data;
 
-  GetAccountsLoading(this.data) : super();
+  GetAccountsLoading() : super();
 
   @override
-  List<Object> get props => data.data;
+  List<Object> get props => null;
 }
 
 class GetAccountsSuccess extends AccountStates {

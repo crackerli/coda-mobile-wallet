@@ -27,7 +27,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   final List<Widget> _entryTabs = [
     BlocProvider<AccountBloc>(
       create: (BuildContext context) {
-        return AccountBloc(GetAccountsLoading(null));
+        return AccountBloc(GetAccountsLoading());
       },
       child: WalletHomeScreen()
     ),
