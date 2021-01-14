@@ -1,4 +1,4 @@
-import 'package:coda_wallet/test/test_data.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,15 +11,15 @@ typedef AccountClickCb = void Function(int index);
 buildAccountList(AccountClickCb accountClickCb) {
   return ListView.separated(
     physics: const AlwaysScrollableScrollPhysics(),
-    itemCount: testAccounts.length,
+    itemCount: globalHDAccounts.accounts.length,
     itemBuilder: (context, index) {
-      return _buildAccountItem(accountClickCb, testAccounts, index);
+      return _buildAccountItem(accountClickCb, globalHDAccounts.accounts, index);
     },
     separatorBuilder: (context, index) { return Container(height: 20.h); }
   );
 }
 
-_buildAccountItem(Function accountClickCb, List<MinaHDAccount> accounts, int index) {
+_buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index) {
   return InkWell(
     onTap: () => accountClickCb(index),
     child:

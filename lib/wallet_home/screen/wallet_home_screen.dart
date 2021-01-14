@@ -1,7 +1,7 @@
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/test/test_data.dart';
+import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_events.dart';
@@ -47,8 +47,9 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         Navigator.pushNamed(context, NoWalletRoute);
       });
     } else {
-      _accountBloc = BlocProvider.of<AccountBloc>(context);
-      _accountBloc.add(GetAccounts(0));
+      if(globalHDAccounts.accounts != null && globalHDAccounts.accounts.isNotEmpty) {
+        _accountBloc.add(GetAccounts(0));
+      }
     }
   }
 
@@ -56,6 +57,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _accountBloc = BlocProvider.of<AccountBloc>(context);
     _updateAccounts();
   }
 

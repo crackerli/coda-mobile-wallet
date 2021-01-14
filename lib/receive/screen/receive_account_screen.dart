@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/qr_address/qr_image_helper.dart';
-import 'package:coda_wallet/test/test_data.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
@@ -48,8 +48,8 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
   }
 
   _buildReceiveAccountBody(BuildContext context, int index) {
-    String address = testAccounts[index].address;
-    String accountName = testAccounts[index].accountName;
+    String address = globalHDAccounts.accounts[index].address;
+    String accountName = globalHDAccounts.accounts[index].accountName;
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(

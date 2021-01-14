@@ -1,3 +1,4 @@
+import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,8 +9,12 @@ String globalRpcServer;
 RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 const primaryBackgroundColor = Color(0xfff5f8fd);
 const globalHPadding = 20;
-//String globalMnemonic;
+
+// global mina unit price, will be retrieved from some exchanges at startup.
 double gUnitFiatPrice = 2.317;
+
+// global derived hd accounts from bip44 seed
+MinaHDAccount globalHDAccounts = MinaHDAccount();
 
 String getTokenFiatPrice(String tokenNumber) {
   double token = double.parse(tokenNumber);

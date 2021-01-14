@@ -13,11 +13,11 @@ import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 
-Future<List<MinaHDAccount>> deriveDefaultAccount(Uint8List seed) async {
-  List<MinaHDAccount> hdAccounts = List<MinaHDAccount>();
+Future<List<AccountBean>> deriveDefaultAccount(Uint8List seed) async {
+  List<AccountBean> hdAccounts = List<AccountBean>();
 
   for(int i = 0; i < DEFAULT_ACCOUNT_NUMBER; i++) {
-    MinaHDAccount account = MinaHDAccount();
+    AccountBean account = AccountBean();
     account.account = i;
     account.accountName = 'Account #$i';
     account.balance = "0";

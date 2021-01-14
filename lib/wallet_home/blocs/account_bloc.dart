@@ -1,4 +1,4 @@
-import 'package:coda_wallet/test/test_data.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/wallet_home/query/account_query.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,21 +34,21 @@ class AccountBloc extends
 
     final query = ACCOUNT_QUERY;
     Map<String, dynamic> variables = Map<String, dynamic>();
-    variables['publicKey'] = testAccounts[event.index].address;
+    variables['publicKey'] = globalHDAccounts.accounts[event.index].address;
 
     try {
       final result = await _service.performQuery(query, variables: variables);
       String balance = result.data['account']['balance']['total'];
       String publicKey = result.data['account']['publicKey'];
       // find it in global accounts
-      for(int i = 0; i < testAccounts.length; i++) {
-        MinaHDAccount account = testAccounts[i];
+      for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
+        AccountBean account = globalHDAccounts.accounts[i];
         if(account.address == publicKey) {
           account.balance = balance;
           break;
         }
       }
-      if(event.index >= testAccounts.length - 1) {
+      if(event.index >= globalHDAccounts.accounts.length - 1) {
         yield GetAccountsFinished();
         return;
       }

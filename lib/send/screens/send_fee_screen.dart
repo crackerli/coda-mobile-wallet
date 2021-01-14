@@ -8,7 +8,6 @@ import 'package:coda_wallet/send/blocs/send_events.dart';
 import 'package:coda_wallet/send/blocs/send_states.dart';
 import 'package:coda_wallet/send/mutation/send_token_mutation.dart';
 import 'package:coda_wallet/send/query/get_account_nonce.dart';
-import 'package:coda_wallet/test/test_data.dart';
 import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
@@ -25,7 +24,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 _gotoTxnDetail(BuildContext context, SendData sendData) {
-  TxnEntity txnEntity = TxnEntity(testAccounts[sendData.from].address,
+  TxnEntity txnEntity = TxnEntity(globalHDAccounts.accounts[sendData.from].address,
       sendData.to, null, sendData.amount, sendData.fee, sendData.memo, TxnStatusType.PENDING);
   Navigator.pushReplacementNamed(context, TxnDetailRoute, arguments: txnEntity);
 }
@@ -43,13 +42,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   SendBloc _sendBloc;
 
   Future<Signature> _signPayment() async {
- //   Uint8List sk = MinaHelper.hexToBytes('1f2c90f146d1035280364cb1a01a89e7586a340972936abd5d72307a0674549c');
     String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
     Uint8List seed =  decryptSeed(encryptedSeed, '1234');
     Uint8List accountSeed = generatePrivateKey(seed, _sendData.from);
     String memo = _sendData.memo;
-    String feePayerAddress = testAccounts[_sendData.from].address;
-    String senderAddress = testAccounts[_sendData.from].address;
+    String feePayerAddress = globalHDAccounts.accounts[_sendData.from].address;
+    String senderAddress = globalHDAccounts.accounts[_sendData.from].address;
     String receiverAddress = _sendData.to;
     int fee = getNanoMina(_sendData.fee);
     int feeToken = 1;
@@ -61,10 +59,6 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
     Signature signature = await signPayment(MinaHelper.reverse(accountSeed), memo, feePayerAddress,
         senderAddress, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, amount, tokenLocked);
-    // print('--signature rx=${signature.rx}--');
-    // print('--signature s=${signature.s}--');
-    // bool rxRet = signature.rx == '27868897936794982770752119679041533974967348280365384398744708741877580834675';
-    // bool sRet = signature.s == '23548656286909298036252341845310377058595185877124773386777818829122223941592';
     return signature;
   }
 
@@ -113,7 +107,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     // Default fee to be 0.1
     _sendData.fee = '0.1';
 
-    _sendBloc.from = testAccounts[_sendData.from].address;
+    _sendBloc.from = globalHDAccounts.accounts[_sendData.from].address;
     _sendBloc.amount = _sendData.amount;
     _sendBloc.memo = _sendData.memo;
     _sendBloc.fee = _sendData.fee;
@@ -207,7 +201,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                 children: [
                   Text('FROM', textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
-                  Text(testAccounts[_sendData.from].address,
+                  Text(globalHDAccounts.accounts[_sendData.from].address,
                       textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
                   Container(height: 10.h),
                   Text('TO',  textAlign: TextAlign.left,

@@ -1,4 +1,4 @@
-import 'package:coda_wallet/test/test_data.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_entity.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
@@ -35,7 +35,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     super.initState();
     print('TxnsScreen initState');
     _txnsBloc = BlocProvider.of<TxnsBloc>(context);
-    _txnsBloc.publicKey = testAccounts[_currentAccount].address;
+    _txnsBloc.publicKey = globalHDAccounts.accounts[_currentAccount].address;
     _refreshTxns();
   }
 

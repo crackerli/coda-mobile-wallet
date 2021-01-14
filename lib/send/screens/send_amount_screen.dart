@@ -1,6 +1,5 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/test/test_data.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
@@ -87,7 +86,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 textAlign: TextAlign.right,
                 text: TextSpan(children: <TextSpan>[
                   TextSpan(
-                    text: '${formatTokenNumber(testAccounts[_sendData.from].balance)} ',
+                    text: '${formatTokenNumber(globalHDAccounts.accounts[_sendData.from].balance)} ',
                       style: TextStyle(fontSize: 16.sp, color: Colors.black)
                   ),
                   TextSpan(
