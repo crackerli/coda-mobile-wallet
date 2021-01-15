@@ -199,7 +199,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     return BorderRadius.only(topRight: Radius.circular(10.w), bottomRight: Radius.circular(10.w));
   }
   
-  _buildFeeItem(int index, bool selected, String speed, String fee, String price) {
+  _buildFeeItem(int index, bool selected, String speed, String feeToken, String feeFiat) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: _feeItemBorderRadius(index),
@@ -218,9 +218,22 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                 children: [
                   Text(speed, textAlign: TextAlign.center, style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600),),
                   Container(height: 4.h,),
-                  Text(fee, textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp),),
+                  //Text(feeToken, textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp),),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: '$feeToken ',
+                        style: TextStyle(fontSize: 12.sp, color: Colors.black, fontWeight: FontWeight.bold)
+                      ),
+                      TextSpan(
+                        text: 'MINA',
+                        style: TextStyle(color: Color(0xff979797), fontWeight: FontWeight.normal, fontSize: 9.sp)
+                      ),
+                    ]),
+                  ),
                   Container(height: 4.h,),
-                  Text('(\$$price)', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, color: Color(0xff2d2d2d))),
+                  Text('(\$$feeFiat)', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, color: Color(0xff2d2d2d))),
                 ],
               ),
             ),
@@ -314,9 +327,9 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildFeeItem(0, false, 'MODERATE', '150.071 MINA', '\$0.05'),
-              _buildFeeItem(1, true, 'FAST', '450.101 MINA', '\$0.07'),
-              _buildFeeItem(2, false, 'VERY FAST', '600.132 MINA', '\$0.07')
+              _buildFeeItem(0, true, 'MODERATE', '150.071', '\$0.05'),
+              _buildFeeItem(1, false, 'FAST', '450.101', '\$0.07'),
+              _buildFeeItem(2, false, 'VERY FAST', '600.132', '\$0.07')
             ],
           )
         )
