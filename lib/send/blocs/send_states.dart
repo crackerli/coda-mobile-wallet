@@ -58,3 +58,20 @@ class GetNonceFail extends SendStates {
   @override
   List<Object> get props => error;
 }
+
+class GetPooledFeeLoading extends SendStates {
+  GetPooledFeeLoading() : super();
+}
+
+class GetPooledFeeSuccess extends SendStates {
+  GetPooledFeeSuccess() : super();
+}
+
+class GetPooledFeeFail extends SendStates {
+  final dynamic error;
+
+  GetPooledFeeFail(this.error) : super();
+
+  @override
+  List<Object> get props => error;
+}

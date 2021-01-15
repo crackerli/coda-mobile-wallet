@@ -11,3 +11,6 @@ const ENCRYPTED_SEED_KEY = 'encrypted_seed_key';
 const DEFAULT_ACCOUNT_NUMBER = 4;
 
 const GLOBAL_ACCOUNTS_KEY = 'global_accounts_key';
+
+const MINIMAL_FEE_COST = 10000000;
+const FEE_COHORT_LENGTH = 80;

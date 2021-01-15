@@ -30,3 +30,13 @@ class GetNonce extends SendEvents {
   @override
   List<Object> get props => [query, variables];
 }
+
+class GetPooledFee extends SendEvents {
+  final String query;
+  final Map<String, dynamic> variables;
+
+  GetPooledFee(this.query, {this.variables}) : super();
+
+  @override
+  List<Object> get props => [query, variables];
+}

@@ -8,6 +8,7 @@ import 'package:coda_wallet/send/blocs/send_events.dart';
 import 'package:coda_wallet/send/blocs/send_states.dart';
 import 'package:coda_wallet/send/mutation/send_token_mutation.dart';
 import 'package:coda_wallet/send/query/get_account_nonce.dart';
+import 'package:coda_wallet/send/query/get_pooled_fee.dart';
 import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
@@ -22,6 +23,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:top_k/top_k.dart';
 
 _gotoTxnDetail(BuildContext context, SendData sendData) {
   TxnEntity txnEntity = TxnEntity(globalHDAccounts.accounts[sendData.from].address,
@@ -83,7 +85,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     _sendBloc.add(
       Send(SEND_PAYMENT_MUTATION, variables: variables));
   }
-  
+
   _getNonce() {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = _sendBloc.from;
@@ -91,10 +93,17 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
       GetNonce(GET_NONCE_QUERY, variables: variables));
   }
 
+  _getPooledFee() {
+    Map<String, dynamic> variables = Map<String, dynamic>();
+    _sendBloc.add(
+      GetPooledFee(POOLED_FEE_QUERY, variables: variables));
+  }
+
   @override
   void initState() {
     super.initState();
     _sendBloc = BlocProvider.of<SendBloc>(context);
+    _getPooledFee();
   }
 
   @override
@@ -191,7 +200,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           children: [
             Container(
               margin: EdgeInsets.only(top: 33.w, left: 50.w, right: 50.w),
-              padding: EdgeInsets.only(top: 33.w + 12.h, left: 37.w, right: 37.w, bottom: 10.h),
+              padding: EdgeInsets.only(top: 18.w + 12.h, left: 20.w, right: 20.w, bottom: 12.h),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.w),
                 color: Colors.white,

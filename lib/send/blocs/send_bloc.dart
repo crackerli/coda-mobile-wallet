@@ -1,8 +1,11 @@
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/send/blocs/pooled_fee_entity.dart';
 import 'package:coda_wallet/send/blocs/send_events.dart';
 import 'package:coda_wallet/send/blocs/send_states.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:top_k/top_k.dart';
 import '../../service/coda_service.dart';
 
 class SendBloc extends
@@ -19,6 +22,8 @@ class SendBloc extends
   bool sendEnabled;
   bool loading;
   int nonce;
+  // this list should have length 3, and 0 is for fastest, 1 for medium, 2 for slow
+  List<BigInt> bestFees = List<BigInt>();
 
   SendBloc(SendStates state) : super(state) {
     _service = CodaService();
@@ -56,6 +61,70 @@ class SendBloc extends
       yield* _mapGetNonceToStates(event);
       return;
     }
+
+    if(event is GetPooledFee) {
+      yield* _mapGetPooledFeeToStates(event);
+      return;
+    }
+
+  }
+
+  Stream<SendStates>
+    _mapGetPooledFeeToStates(GetPooledFee event) async* {
+    final query = event.query;
+    final variables = event.variables ?? null;
+    try {
+      loading = true;
+      yield GetPooledFeeLoading();
+      final result = await _service.performMutation(query, variables: variables);
+      loading = false;
+
+      if(null == result || result.hasException) {
+        String error = exceptionHandle(result);
+        yield GetPooledFeeFail(error);
+        return;
+      }
+
+      List<dynamic> feesStr = result.data['pooledUserCommands'] as List<dynamic>;
+      List<BigInt> fees = List.generate(feesStr.length, (index) => BigInt.parse(feesStr[index]['fee']));
+      _calcBestFees(fees);
+      yield GetPooledFeeSuccess();
+    } catch (e) {
+      print(e);
+      yield GetPooledFeeFail(e.toString());
+    } finally {
+
+    }
+  }
+
+  _calcBestFees(List<BigInt> fees) {
+    if(null == fees || fees.length == 0 || fees.length < 3) {
+      bestFees.clear();
+      bestFees.add(BigInt.from(MINIMAL_FEE_COST));
+      bestFees.add(BigInt.from(MINIMAL_FEE_COST));
+      bestFees.add(BigInt.from(MINIMAL_FEE_COST));
+      return;
+    }
+
+    if(fees.length < FEE_COHORT_LENGTH * 2) {
+      fees.sort((a, b) => a < b ? 1 : -1);
+      bestFees.clear();
+      bestFees.add(fees[0] + BigInt.from(MINIMAL_FEE_COST));
+      bestFees.add(fees[fees.length - 1] + BigInt.from(MINIMAL_FEE_COST));
+      if(fees[fees.length - 1] - BigInt.from(MINIMAL_FEE_COST) < BigInt.from(MINIMAL_FEE_COST)) {
+        bestFees.add(BigInt.from(MINIMAL_FEE_COST));
+      } else {
+        bestFees.add(fees[fees.length - 1] - BigInt.from(MINIMAL_FEE_COST));
+      }
+      return;
+    }
+
+    List<BigInt> topFees = topK(fees, FEE_COHORT_LENGTH * 2, desc: true);
+    bestFees.clear();
+    bestFees.add(topFees[0] + BigInt.from(MINIMAL_FEE_COST));
+    bestFees.add(topFees[FEE_COHORT_LENGTH - 1] + BigInt.from(MINIMAL_FEE_COST));
+    bestFees.add(topFees[FEE_COHORT_LENGTH * 2 - 1] + BigInt.from(MINIMAL_FEE_COST));
+    return;
   }
 
   Stream<SendStates>
