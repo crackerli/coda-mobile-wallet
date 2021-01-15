@@ -105,6 +105,7 @@ flutter:
     - images/qr_scanner.png
     - images/close.png
     - images/sent_success.png
+    - images/fee_selected.png
 
   fonts:
    - family: Entypo

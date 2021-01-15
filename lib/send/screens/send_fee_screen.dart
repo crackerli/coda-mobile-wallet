@@ -15,6 +15,7 @@ import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/fee/fee_clipper.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:ffi_mina_signer/types/key_types.dart';
@@ -186,6 +187,54 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     );
   }
 
+  _feeItemBorderRadius(int index) {
+    if(0 == index) {
+      return BorderRadius.only(topLeft: Radius.circular(10.w), bottomLeft: Radius.circular(10.w));
+    }
+
+    if(1 == index) {
+      return BorderRadius.all(Radius.zero);
+    }
+
+    return BorderRadius.only(topRight: Radius.circular(10.w), bottomRight: Radius.circular(10.w));
+  }
+  
+  _buildFeeItem(int index, bool selected, String speed, String fee, String price) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: _feeItemBorderRadius(index),
+        color: selected ? Colors.green : Colors.white,
+        border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
+      ),
+      padding: EdgeInsets.only(left: 6.w, right: 6.w, top: 6.w, bottom: 6.w),
+      child: Stack(
+        children: [
+          ClipPath(
+            clipper: FeeClipper(),
+            child: Container(
+              color: Colors.white,
+              padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 12.h, bottom: 12.h),
+              child: Column(
+                children: [
+                  Text(speed, textAlign: TextAlign.center, style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600),),
+                  Container(height: 4.h,),
+                  Text(fee, textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp),),
+                  Container(height: 4.h,),
+                  Text('(\$$price)', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, color: Color(0xff2d2d2d))),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            child: selected ? Image.asset('images/fee_selected.png', width: 10.w, height: 10.w,) : Container()
+          )
+        ]
+      )
+    );
+  }
+
   _buildSendFeeBody(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -252,8 +301,26 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
         Container(height: 28.h,),
         Text('NETWORK FEE',
           textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
-        Text('${_sendData.fee}', textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
-      ],
+        Container(height: 10.h,),
+        Container(
+          margin: EdgeInsets.only(left: 20.w, right: 20.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.w),
+            shape: BoxShape.rectangle,
+            border: Border.all(width: 1.0.w, color: Colors.black),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildFeeItem(0, false, 'MODERATE', '150.071 MINA', '\$0.05'),
+              _buildFeeItem(1, true, 'FAST', '450.101 MINA', '\$0.07'),
+              _buildFeeItem(2, false, 'VERY FAST', '600.132 MINA', '\$0.07')
+            ],
+          )
+        )
+      ]
     );
   }
 }
