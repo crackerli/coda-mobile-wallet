@@ -134,7 +134,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
             return Stack(
               alignment: Alignment.center,
               children: [
-                _buildSendFeeBody(context),
+                _buildSendFeeBody(context, state),
                 _buildActionsButton(context, state)
               ]
             );
@@ -248,7 +248,17 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     );
   }
 
-  _buildSendFeeBody(BuildContext context) {
+  _buildSendFeeBody(BuildContext context, state) {
+    if(state is GetPooledFeeLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ProgressDialog.showProgress(context);
+      });
+    }
+
+    if(state is GetPooledFeeFail || state is GetPooledFeeSuccess) {
+      ProgressDialog.dismiss(context);
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -327,9 +337,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildFeeItem(0, true, 'MODERATE', '150.071', '\$0.05'),
-              _buildFeeItem(1, false, 'FAST', '450.101', '\$0.07'),
-              _buildFeeItem(2, false, 'VERY FAST', '600.132', '\$0.07')
+              _buildFeeItem(0, true, 'MODERATE',
+                (_sendBloc.bestFees == null || _sendBloc.bestFees.length == 0) ? '0' : formatTokenNumber(_sendBloc.bestFees[0].toString()), '\$0.05'),
+              _buildFeeItem(1, false, 'FAST',
+                (_sendBloc.bestFees == null || _sendBloc.bestFees.length == 0) ? '0' : formatTokenNumber(_sendBloc.bestFees[1].toString()), '\$0.07'),
+              _buildFeeItem(2, false, 'VERY FAST',
+                (_sendBloc.bestFees == null || _sendBloc.bestFees.length == 0) ? '0' : formatTokenNumber(_sendBloc.bestFees[2].toString()), '\$0.07')
             ],
           )
         )
