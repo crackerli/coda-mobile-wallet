@@ -1,3 +1,5 @@
+import 'package:common_utils/common_utils.dart';
+
 List<String> months = ['DUMMY', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
 String formatTokenNumber(String src) {
@@ -8,6 +10,16 @@ String formatTokenNumber(String src) {
   BigInt tokenNumber = BigInt.parse(src);
   double formattedNumber = tokenNumber.toDouble() / 1000000000.0;
   return formattedNumber.toString();
+}
+
+String formatTokenAsFixed(BigInt number, int fixed) {
+  double feeDouble = number.toDouble() / 1000000000.0;
+  return (NumUtil.getNumByValueDouble(feeDouble, fixed)).toStringAsFixed(fixed);
+}
+
+String formatTokenBigInt(BigInt token) {
+  double feeDouble = token.toDouble() / 1000000000.0;
+  return feeDouble.toString();
 }
 
 String formatHashEllipsis(String src) {

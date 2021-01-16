@@ -28,6 +28,7 @@ class _SendFromScreenState extends State<SendFromScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    print('SendFromScreen: build(context: $context)');
     SendData sendData = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       resizeToAvoidBottomInset: false,

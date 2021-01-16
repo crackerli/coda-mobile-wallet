@@ -55,7 +55,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     String feePayerAddress = globalHDAccounts.accounts[_sendData.from].address;
     String senderAddress = globalHDAccounts.accounts[_sendData.from].address;
     String receiverAddress = _sendData.to;
-    int fee = getNanoMina(_sendData.fee);
+    int fee = _sendBloc.bestFees[_sendBloc.feeIndex].toInt();//getNanoMina(_sendData.fee);
     int feeToken = 1;
     int nonce = _sendBloc.nonce;
     int validUntil = 65535;
@@ -74,7 +74,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     variables['to'] = _sendBloc.to;
     variables['amount'] = getNanoMina(_sendBloc.amount);
     variables['memo'] = _sendBloc.memo;
-    variables['fee'] = getNanoMina(_sendBloc.fee);
+    variables['fee'] = _sendBloc.bestFees[_sendBloc.feeIndex].toInt();//.toString();//getNanoMina(_sendBloc.fee);
     variables['nonce'] = _sendBloc.nonce;
     variables['validUntil'] = 65535;
     ProgressDialog.showProgress(context);
@@ -82,6 +82,8 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     variables['field'] = signature.rx;
     variables['scalar'] = signature.s;
 
+    // Save fee to sendData
+    _sendData.fee = formatTokenBigInt(_sendBloc.bestFees[_sendBloc.feeIndex]);
     ProgressDialog.dismiss(context);
     _sendBloc.add(
       Send(SEND_PAYMENT_MUTATION, variables: variables));
@@ -92,6 +94,14 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     variables['publicKey'] = _sendBloc.from;
     _sendBloc.add(
       GetNonce(GET_NONCE_QUERY, variables: variables));
+  }
+
+  _checkFeeChosen(BuildContext context) {
+    if(_sendBloc.feeIndex == -1) {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Please choose fee!!')));
+    } else {
+      _getNonce();
+    }
   }
 
   _getPooledFee() {
@@ -116,9 +126,8 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    print('SendFeeScreen: build(context: $context)');
     _sendData = ModalRoute.of(context).settings.arguments;
-    // Default fee to be 0.1
-    _sendData.fee = '350';
 
     _sendBloc.from = globalHDAccounts.accounts[_sendData.from].address;
     _sendBloc.amount = _sendData.amount;
@@ -175,16 +184,16 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
     return Positioned(
       bottom: 60.h,
-      child: InkWell(
-        onTap: _getNonce,
+      child: Builder(builder: (context) => InkWell(
+        onTap: () => _checkFeeChosen(context),
         child: Container(
           padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
           decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
           child: Text('SEND',
-          textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+            textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
         ),
       )
-    );
+    ));
   }
 
   _feeItemBorderRadius(int index) {
@@ -200,7 +209,8 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   }
   
   _buildFeeItem(int index, bool selected, String speed, String feeToken, String feeFiat) {
-    return Container(
+    return InkWell(child:
+      Container(
       decoration: BoxDecoration(
         borderRadius: _feeItemBorderRadius(index),
         color: selected ? Colors.green : Colors.white,
@@ -245,6 +255,8 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           )
         ]
       )
+    ),
+      onTap: () => _sendBloc.add(ChooseFee(index)),
     );
   }
 
@@ -255,8 +267,20 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
       });
     }
 
-    if(state is GetPooledFeeFail || state is GetPooledFeeSuccess) {
+    List<BigInt> bestFees = _sendBloc.bestFees;
+
+    if(state is GetPooledFeeFail) {
       ProgressDialog.dismiss(context);
+    }
+
+    if(state is GetPooledFeeSuccess) {
+      bestFees = state.data as List<BigInt>;
+      ProgressDialog.dismiss(context);
+    }
+
+    int feeIndex = _sendBloc.feeIndex;
+    if(state is FeeChosen) {
+      feeIndex = state.index;
     }
 
     return Column(
@@ -337,12 +361,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildFeeItem(0, true, 'MODERATE',
-                (_sendBloc.bestFees == null || _sendBloc.bestFees.length == 0) ? '0' : formatTokenNumber(_sendBloc.bestFees[0].toString()), '\$0.05'),
-              _buildFeeItem(1, false, 'FAST',
-                (_sendBloc.bestFees == null || _sendBloc.bestFees.length == 0) ? '0' : formatTokenNumber(_sendBloc.bestFees[1].toString()), '\$0.07'),
-              _buildFeeItem(2, false, 'VERY FAST',
-                (_sendBloc.bestFees == null || _sendBloc.bestFees.length == 0) ? '0' : formatTokenNumber(_sendBloc.bestFees[2].toString()), '\$0.07')
+              _buildFeeItem(0, 0 == feeIndex, 'MODERATE',
+                formatTokenAsFixed(bestFees[0], 3), '\$0.05'),
+              _buildFeeItem(1, 1 == feeIndex, 'FAST',
+                formatTokenAsFixed(bestFees[1], 3), '\$0.07'),
+              _buildFeeItem(2, 2 == feeIndex, 'VERY FAST',
+                formatTokenAsFixed(bestFees[2], 3), '\$0.07')
             ],
           )
         )

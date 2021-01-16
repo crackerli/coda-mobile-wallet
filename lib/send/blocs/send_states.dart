@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-abstract class SendStates extends Equatable {
-  SendStates();
+abstract class SendStates/* extends Equatable*/ {
+  SendStates() : super();
 
   @override
   List<Object> get props => null;
@@ -64,7 +64,12 @@ class GetPooledFeeLoading extends SendStates {
 }
 
 class GetPooledFeeSuccess extends SendStates {
-  GetPooledFeeSuccess() : super();
+  final dynamic data;
+
+  GetPooledFeeSuccess(this.data) : super();
+
+  @override
+  List<Object> get props => data;
 }
 
 class GetPooledFeeFail extends SendStates {
@@ -74,4 +79,10 @@ class GetPooledFeeFail extends SendStates {
 
   @override
   List<Object> get props => error;
+}
+
+class FeeChosen extends SendStates {
+  final int index;
+
+  FeeChosen(this.index) : super();
 }

@@ -24,9 +24,16 @@ class SendBloc extends
   int nonce;
   // this list should have length 3, and 0 is for fastest, 1 for medium, 2 for slow
   List<BigInt> bestFees = List<BigInt>();
+  // selected fee index
+  int feeIndex;
 
   SendBloc(SendStates state) : super(state) {
     _service = CodaService();
+
+    bestFees.add(BigInt.from(MINIMAL_FEE_COST));
+    bestFees.add(BigInt.from(MINIMAL_FEE_COST));
+    bestFees.add(BigInt.from(MINIMAL_FEE_COST));
+    feeIndex = -1;
   }
 
   bool checkFeeValid() {
@@ -67,6 +74,17 @@ class SendBloc extends
       return;
     }
 
+    if(event is ChooseFee) {
+      yield* _mapFeeChosenToStates(event);
+      return;
+    }
+  }
+
+  Stream<SendStates>
+    _mapFeeChosenToStates(ChooseFee event) async* {
+    int index = event.index;
+    feeIndex = index;
+    yield FeeChosen(index);
   }
 
   Stream<SendStates>
@@ -88,7 +106,7 @@ class SendBloc extends
       List<dynamic> feesStr = result.data['pooledUserCommands'] as List<dynamic>;
       List<BigInt> fees = List.generate(feesStr.length, (index) => BigInt.parse(feesStr[index]['fee']));
       _calcBestFees(fees);
-      yield GetPooledFeeSuccess();
+      yield GetPooledFeeSuccess(bestFees);
     } catch (e) {
       print(e);
       yield GetPooledFeeFail(e.toString());
@@ -116,6 +134,7 @@ class SendBloc extends
       } else {
         bestFees.add(fees[fees.length - 1] - BigInt.from(MINIMAL_FEE_COST));
       }
+      bestFees = bestFees.reversed.toList();
       return;
     }
 
@@ -124,6 +143,7 @@ class SendBloc extends
     bestFees.add(topFees[0] + BigInt.from(MINIMAL_FEE_COST));
     bestFees.add(topFees[FEE_COHORT_LENGTH - 1] + BigInt.from(MINIMAL_FEE_COST));
     bestFees.add(topFees[FEE_COHORT_LENGTH * 2 - 1] + BigInt.from(MINIMAL_FEE_COST));
+    bestFees = bestFees.reversed.toList();
     return;
   }
 

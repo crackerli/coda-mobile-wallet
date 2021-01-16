@@ -40,3 +40,8 @@ class GetPooledFee extends SendEvents {
   @override
   List<Object> get props => [query, variables];
 }
+
+class ChooseFee extends SendEvents {
+  final int index;
+  ChooseFee(this.index) : super();
+}

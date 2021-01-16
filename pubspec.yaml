@@ -41,6 +41,7 @@ dependencies:
   percent_indicator: '^2.1.9'
   event_bus: '^1.1.1'
   top_k: '^1.0.1'
+  common_utils: ^1.2.1
 #  flip_panel: '^1.0.1'
   ffi_mina_signer:
     path: ../ffi_mina_signer/
