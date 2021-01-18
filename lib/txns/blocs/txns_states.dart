@@ -1,62 +1,87 @@
-import 'package:equatable/equatable.dart';
-
-abstract class TxnsStates extends Equatable {
+abstract class TxnsStates {
   TxnsStates();
 
   @override
   List<Object> get props => null;
 }
 
-class RefreshTxnsLoading extends TxnsStates {
+class RefreshPooledTxnsLoading extends TxnsStates {
   final dynamic data;
 
-  RefreshTxnsLoading(this.data) : super();
+  RefreshPooledTxnsLoading(this.data) : super();
 
   @override
   List<Object> get props => data.data;
 }
 
-class RefreshTxnsSuccess extends TxnsStates {
+class RefreshPooledTxnsSuccess extends TxnsStates {
   final dynamic data;
 
-  RefreshTxnsSuccess(this.data) : super();
+  RefreshPooledTxnsSuccess(this.data) : super();
 
   @override
   List<Object> get props => data;
 }
 
-class RefreshTxnsFail extends TxnsStates {
+class RefreshPooledTxnsFail extends TxnsStates {
   final dynamic error;
 
-  RefreshTxnsFail(this.error) : super();
+  RefreshPooledTxnsFail(this.error) : super();
 
   @override
   List<Object> get props => error;
 }
 
-class MoreTxnsLoading extends TxnsStates {
+class RefreshConfirmedTxnsLoading extends TxnsStates {
   final dynamic data;
 
-  MoreTxnsLoading(this.data) : super();
+  RefreshConfirmedTxnsLoading(this.data) : super();
+
+  @override
+  List<Object> get props => data.data;
+}
+
+class RefreshConfirmedTxnsSuccess extends TxnsStates {
+  final dynamic data;
+
+  RefreshConfirmedTxnsSuccess(this.data) : super();
 
   @override
   List<Object> get props => data;
 }
 
-class MoreTxnsSuccess extends TxnsStates {
-  final dynamic data;
-
-  MoreTxnsSuccess(this.data) : super();
-
-  @override
-  List<Object> get props => data;
-}
-
-class MoreTxnsFail extends TxnsStates {
+class RefreshConfirmedTxnsFail extends TxnsStates {
   final dynamic error;
 
-  MoreTxnsFail(this.error) : super();
+  RefreshConfirmedTxnsFail(this.error) : super();
 
   @override
   List<Object> get props => error;
 }
+
+// class MoreConfirmedTxnsLoading extends TxnsStates {
+//   final dynamic data;
+//
+//   MoreConfirmedTxnsLoading(this.data) : super();
+//
+//   @override
+//   List<Object> get props => data;
+// }
+//
+// class MoreConfirmedTxnsSuccess extends TxnsStates {
+//   final dynamic data;
+//
+//   MoreConfirmedTxnsSuccess(this.data) : super();
+//
+//   @override
+//   List<Object> get props => data;
+// }
+//
+// class MoreConfirmedTxnsFail extends TxnsStates {
+//   final dynamic error;
+//
+//   MoreConfirmedTxnsFail(this.error) : super();
+//
+//   @override
+//   List<Object> get props => error;
+// }

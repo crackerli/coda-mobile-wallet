@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-abstract class AccountEvents extends Equatable {
+abstract class AccountEvents/* extends Equatable*/ {
   AccountEvents();
 
   @override

@@ -1,165 +1,108 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
-import 'package:coda_wallet/types/list_operation_type.dart';
+import 'package:coda_wallet/txns/query/confirmed_txns_query.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 import 'txns_entity.dart';
 
 class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   CodaService _service;
-  String _lastCursor;
-  bool _hasNextPage;
-  bool _isTxnsLoading = false;
-  ListOperationType _listOperation;
-  // User commands merged from both pool and blocks
-  List<MergedUserCommand> _mergedUserCommands;
-  String _publicKey;
+  CodaService _serviceFromHttp;
+  bool isTxnsLoading = false;
+  // User commands merged from both pool and archive
+  List<MergedUserCommand> mergedUserCommands;
+  int accountIndex = 0;
+
+  get publicKey => globalHDAccounts.accounts[accountIndex].address;
 
   TxnsBloc(TxnsStates state) : super(state) {
     _service = CodaService();
-    _lastCursor = null;
-    _hasNextPage = false;
-    _isTxnsLoading = false;
-    _listOperation = ListOperationType.NONE;
-//    _publicKey = publicKey;
-    _mergedUserCommands = List<MergedUserCommand>();
+    _serviceFromHttp = CodaService.fromHttp("https://graphql.minaexplorer.com");
+    isTxnsLoading = false;
+    mergedUserCommands = List<MergedUserCommand>();
   }
 
-  TxnsStates get initState => RefreshTxnsLoading(null);
-
-  get lastCursor => _lastCursor;
-  get hasNextPage => _hasNextPage;
-  get isTxnsLoading => _isTxnsLoading;
-  get listOperation => _listOperation;
-  get publicKey => _publicKey;
-
-  set isTxnsLoading(bool txnsLoading) {
-    _isTxnsLoading = txnsLoading;
-  }
-
-  set listOperation(ListOperationType type) {
-    _listOperation = type;
-  }
-
-  set publicKey(String publicKey) => _publicKey = publicKey;
-
-  appendLoadMore() {
-    // Construct a fake item to delegate load more item
-    MergedUserCommand loadMore = MergedUserCommand();
-    loadMore.coinbase = 'load_more';
-    _mergedUserCommands.add(loadMore);
-  }
-
-  removeLoadMore() {
-    if(null == _mergedUserCommands || _mergedUserCommands.length == 0) {
-      return;
-    }
-
-    MergedUserCommand last = _mergedUserCommands.elementAt(_mergedUserCommands.length - 1);
-    if(last.coinbase == 'load_more') {
-      _mergedUserCommands.removeLast();
-    }
-  }
+  TxnsStates get initState => RefreshPooledTxnsLoading(null);
 
   @override
   Stream<TxnsStates> mapEventToState(TxnsEvents event) async* {
-    if(event is RefreshTxns) {
-      yield* _mapRefreshTxnsToStates(event);
+    if(event is RefreshConfirmedTxns) {
+      yield* _mapRefreshConfirmedTxnsToStates(event);
       return;
     }
 
-    if(event is MoreTxns) {
-      yield* _mapMoreTxnsToStates(event);
+    if(event is RefreshPooledTxns) {
+      yield* _mapRefreshPooledTxnsToStates(event);
       return;
     }
   }
 
   Stream<TxnsStates>
-    _mapMoreTxnsToStates(MoreTxns event) async* {
+    _mapRefreshConfirmedTxnsToStates(RefreshConfirmedTxns event) async* {
 
     final query = event.query;
     final variables = event.variables ?? null;
 
     try {
-      _isTxnsLoading = true;
-      appendLoadMore();
-      yield MoreTxnsLoading(_mergedUserCommands);
-      final result = await _service.performQuery(query, variables: variables);
+      isTxnsLoading = true;
+      yield RefreshConfirmedTxnsLoading(mergedUserCommands);
+      final result = await _serviceFromHttp.performQuery(query, variables: variables);
 
       if(null == result || result.hasException) {
         String error = exceptionHandle(result);
-        yield MoreTxnsFail(error);
+        yield RefreshConfirmedTxnsFail(error);
         return;
       }
 
-      List<dynamic> nodes;
-      if(null != result.data['blocks']) {
-        nodes = result.data['blocks']['nodes'] as List<dynamic>;
-      }
+      List<dynamic> transactions = result.data['transactions'];
+      _mergeUserCommandsFromArchiveNode(transactions);
 
-      removeLoadMore();
-      _mergeUserCommandsFromNodes(nodes);
-
-      _hasNextPage = result.data['blocks']['pageInfo']['hasNextPage'];
-      _lastCursor = result.data['blocks']['pageInfo']['lastCursor'];
-
-      yield MoreTxnsSuccess(_mergedUserCommands);
-      _isTxnsLoading = false;
-      _listOperation = ListOperationType.NONE;
+      yield RefreshConfirmedTxnsSuccess(mergedUserCommands);
+      isTxnsLoading = false;
     } catch (e) {
       print(e);
-      yield MoreTxnsFail(e.toString());
-      _isTxnsLoading = false;
-      _listOperation = ListOperationType.NONE;
+      yield RefreshConfirmedTxnsFail(e.toString());
+      isTxnsLoading = false;
     }
   }
 
   Stream<TxnsStates>
-    _mapRefreshTxnsToStates(RefreshTxns event) async* {
+    _mapRefreshPooledTxnsToStates(RefreshPooledTxns event) async* {
 
     final query = event.query;
     final variables = event.variables ?? null;
 
     try {
-      _isTxnsLoading = true;
-      yield RefreshTxnsLoading(_mergedUserCommands);
+      isTxnsLoading = true;
+      yield RefreshPooledTxnsLoading(mergedUserCommands);
       final result = await _service.performQuery(query, variables: variables);
 
       if(null == result || result.hasException) {
         String error = exceptionHandle(result);
-        yield RefreshTxnsFail(error);
+        yield RefreshPooledTxnsFail(error);
         return;
       }
 
       if(null == result.data) {
-        yield RefreshTxnsFail('No data found!');
+        yield RefreshPooledTxnsFail('No data found!');
         return;
       }
 
-      _mergedUserCommands.clear();
-
+      mergedUserCommands.clear();
       List<dynamic> pooledUserCommands = result.data['pooledUserCommands'] as List<dynamic>;
-      List<dynamic> nodes;
-      if(null != result.data['blocks']) {
-        nodes =
-          result.data['blocks']['nodes'] as List<dynamic>;
-      }
-
       _mergeUserCommandsFromPool(pooledUserCommands);
-      _mergeUserCommandsFromNodes(nodes);
 
-      _hasNextPage = result.data['blocks']['pageInfo']['hasNextPage'];
-      _lastCursor = result.data['blocks']['pageInfo']['lastCursor'];
-
-      yield RefreshTxnsSuccess(_mergedUserCommands);
-      _isTxnsLoading = false;
-      _listOperation = ListOperationType.NONE;
+      {
+        Map<String, dynamic> variables = Map<String, dynamic>();
+        variables['publicKey'] = publicKey;
+        add(RefreshConfirmedTxns(CONFIRMED_TXNS_QUERY, variables: variables));
+      }
+      isTxnsLoading = true;
     } catch (e) {
       print(e);
-      yield RefreshTxnsFail(e.toString());
-      _isTxnsLoading = false;
-      _listOperation = ListOperationType.NONE;
+      yield RefreshPooledTxnsFail(e.toString());
+      isTxnsLoading = false;
     }
   }
 
@@ -173,8 +116,9 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
         continue;
       }
 
-      // TODO: Here maybe a bug in graphql server, the filter will return some item not related to the publicKey, need to confirm with Mina Team
-      if(pooledUserCommands[i]['to'] != _publicKey && pooledUserCommands[i]['from'] != _publicKey) {
+      // TODO: Here maybe a bug in graphql server,
+      // the filter will return some item not related to the publicKey, need to confirm with Mina Team
+      if(pooledUserCommands[i]['to'] != publicKey && pooledUserCommands[i]['from'] != publicKey) {
         continue;
       }
       MergedUserCommand mergedUserCommand = MergedUserCommand();
@@ -188,66 +132,33 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       mergedUserCommand.memo = pooledUserCommands[i]['memo'];
       mergedUserCommand.isPooled = true;
       mergedUserCommand.dateTime = '';
-      mergedUserCommand.coinbase = '';
-      mergedUserCommand.isMinted = false;
-      _mergedUserCommands.add(mergedUserCommand);
+      mergedUserCommands.add(mergedUserCommand);
     }
   }
 
-  _mergeUserCommandsFromNodes(List<dynamic> nodes) {
-    if(null == nodes || 0 == nodes.length) {
+  _mergeUserCommandsFromArchiveNode(List<dynamic> transactions) {
+    if(null == transactions || 0 == transactions.length) {
       return;
     }
 
-    for(int i = 0; i < nodes.length; i++) {
-      if(null == nodes[i] || null == nodes[i]['transactions']) {
+    for(int i = 0; i < transactions.length; i++) {
+      if(null == transactions[i]) {
         continue;
       }
-      if(null != nodes[i]['transactions']['userCommands']) {
-        List<dynamic> userCommands = nodes[i]['transactions']['userCommands'];
-        for(int j = 0; j < userCommands.length; j++) {
-          if(null == userCommands[j]) {
-            continue;
-          }
-          // TODO: Here maybe a bug in graphql server, the filter will return some item not related to the publicKey, need to confirm with Mina Team
-          if(userCommands[j]['from'] != _publicKey && userCommands[j]['to'] != _publicKey) {
-            continue;
-          }
-          MergedUserCommand mergedUserCommand = MergedUserCommand();
-          mergedUserCommand.to = userCommands[j]['to'];
-          mergedUserCommand.isDelegation = userCommands[j]['isDelegation'];
-          mergedUserCommand.nonce = userCommands[j]['nonce'];
-          mergedUserCommand.amount = userCommands[j]['amount'];
-          mergedUserCommand.fee = userCommands[j]['fee'];
-          mergedUserCommand.from = userCommands[j]['from'];
-          mergedUserCommand.hash = userCommands[j]['hash'];
-          mergedUserCommand.memo = userCommands[j]['memo'];
-          mergedUserCommand.isPooled = false;
-          mergedUserCommand.dateTime = nodes[i]['protocolState']['blockchainState']['date'];
-          mergedUserCommand.coinbase = '';
-          mergedUserCommand.isMinted = false;
-          _mergedUserCommands.add(mergedUserCommand);
-        }
-      }
 
-      Map<String, dynamic> coinbaseReceiverAccount = nodes[i]['transactions']['coinbaseReceiverAccount'];
-      // Process coinbase
-      if(null != coinbaseReceiverAccount && _publicKey == coinbaseReceiverAccount['publicKey']) {
-        MergedUserCommand mergedUserCommand = MergedUserCommand();
-        mergedUserCommand.to = _publicKey;
-        mergedUserCommand.isDelegation = false;
-        mergedUserCommand.nonce = 0;
-        mergedUserCommand.amount = nodes[i]['transactions']['coinbase'];
-        mergedUserCommand.fee = '';
-        mergedUserCommand.from = 'coinbase';
-        mergedUserCommand.hash = '';
-        mergedUserCommand.memo = '';
-        mergedUserCommand.isPooled = false;
-        mergedUserCommand.dateTime = nodes[i]['protocolState']['blockchainState']['date'];
-        mergedUserCommand.coinbase = nodes[i]['transactions']['coinbase'];
-        mergedUserCommand.isMinted = true;
-        _mergedUserCommands.add(mergedUserCommand);
-      }
+      MergedUserCommand mergedUserCommand = MergedUserCommand();
+      mergedUserCommand.to = transactions[i]['to'];
+      mergedUserCommand.isDelegation = (transactions[i]['kind'] as String) == 'STAKE_DELEGATION';
+      mergedUserCommand.nonce = transactions[i]['nonce'];
+      mergedUserCommand.amount = transactions[i]['amount'];
+      mergedUserCommand.fee = transactions[i]['fee'];
+      mergedUserCommand.from = transactions[i]['from'];
+      mergedUserCommand.hash = transactions[i]['hash'];
+      mergedUserCommand.memo = transactions[i]['memo'];
+      mergedUserCommand.isPooled = false;
+      mergedUserCommand.dateTime =//transactions[i]['dateTime'];
+        DateTime.parse(transactions[i]['dateTime']).millisecondsSinceEpoch.toString();
+      mergedUserCommands.add(mergedUserCommand);
     }
   }
 }

@@ -1,72 +1,9 @@
+import 'package:coda_wallet/txns/blocs/pooled_txns_entity.dart';
+import 'confirmed_txns_entity.dart';
+
 class TxnsEntity {
-  TxnsData data;
-}
-
-class TxnsData {
-  Blocks blocks;
-  List<PooledUserCommand> pooledUserCommands;
-}
-
-class Blocks {
-  List<Node> nodes;
-  PageInfo pageInfo;
-  int totalCount;
-}
-
-class Node {
-  ProtocolState protocolState;
-  Transactions transactions;
-}
-
-class ProtocolState {
-  BlockchainState blockchainState;
-}
-
-class BlockchainState {
-  String date;
-}
-
-class Transactions {
-  List<UserCommand> userCommands;
-  String coinbase;
-  CoinbaseReceiverAccount coinbaseReceiverAccount;
-  List<FeeTransfer> feeTransfer;
-}
-
-class CoinbaseReceiverAccount {
-  String publicKey;
-}
-
-class FeeTransfer {
-  String recipient;
-  String fee;
-}
-
-class PageInfo {
-  bool hasNextPage;
-  String lastCursor;
-}
-
-class UserCommand {
-  String to;
-  String from;
-  String amount;
-  String fee;
-  String memo;
-  bool isDelegation;
-  String hash;
-  int nonce;
-}
-
-class PooledUserCommand {
-  String to;
-  String from;
-  String amount;
-  String fee;
-  String memo;
-  bool isDelegation;
-  String hash;
-  int nonce;
+  ConfirmedTxnsEntity confirmedTxnsEntity;
+  PooledTxnsEntity pooledTxnsEntity;
 }
 
 class MergedUserCommand {
@@ -80,7 +17,5 @@ class MergedUserCommand {
   int nonce;
   bool isPooled;
   String dateTime;
-  String coinbase;
-  bool isMinted;
 }
 

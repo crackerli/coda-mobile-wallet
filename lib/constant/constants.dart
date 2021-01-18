@@ -12,5 +12,5 @@ const DEFAULT_ACCOUNT_NUMBER = 4;
 
 const GLOBAL_ACCOUNTS_KEY = 'global_accounts_key';
 
-const MINIMAL_FEE_COST = 10000000;
+const MINIMAL_FEE_COST = 1000000;
 const FEE_COHORT_LENGTH = 80;

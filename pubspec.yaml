@@ -107,6 +107,9 @@ flutter:
     - images/close.png
     - images/sent_success.png
     - images/fee_selected.png
+    - images/txn_send.png
+    - images/txn_receive.png
+    - images/txn_stake.png
 
   fonts:
    - family: Entypo

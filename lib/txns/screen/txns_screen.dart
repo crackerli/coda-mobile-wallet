@@ -3,7 +3,7 @@ import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_entity.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
-import 'package:coda_wallet/txns/query/txns_query.dart';
+import 'package:coda_wallet/txns/query/pooled_txns_query.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,13 +21,11 @@ class TxnsScreen extends StatefulWidget {
 
 class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMixin {
   TxnsBloc _txnsBloc;
-  int _currentAccount = 0;
 
   _refreshTxns() {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = _txnsBloc.publicKey;
-    variables['before'] = null;
-    _txnsBloc.add(RefreshTxns(TXNS_QUERY, variables: variables));
+    _txnsBloc.add(RefreshPooledTxns(POOLED_TXNS_QUERY, variables: variables));
   }
 
   @override
@@ -35,7 +33,6 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     super.initState();
     print('TxnsScreen initState');
     _txnsBloc = BlocProvider.of<TxnsBloc>(context);
-    _txnsBloc.publicKey = globalHDAccounts.accounts[_currentAccount].address;
     _refreshTxns();
   }
 
@@ -43,6 +40,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   // ignore: must_call_super
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    print('TxnsScreen build(context=$context)');
     return BlocBuilder<TxnsBloc, TxnsStates>(
       builder: (BuildContext context, TxnsStates state) {
         return Column(
@@ -64,7 +62,8 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
         alignment: Alignment.center,
         children: [
           Center(
-            child: Text('Account#0', textAlign: TextAlign.center, style: TextStyle(fontSize: 20.sp, color: Color(0xff212121)))
+            child: Text(globalHDAccounts.accounts[_txnsBloc.accountIndex].accountName,
+              textAlign: TextAlign.center, style: TextStyle(fontSize: 20.sp, color: Color(0xff212121)))
           ),
           Positioned(
             right: 20.w,
@@ -76,7 +75,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   }
 
   _buildTxnBody(BuildContext context, TxnsStates state) {
-    if(state is RefreshTxnsLoading) {
+    if(state is RefreshPooledTxnsLoading) {
       if(state.data == null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ProgressDialog.showProgress(context);
@@ -85,12 +84,17 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
       }
     }
 
-    if(state is RefreshTxnsSuccess) {
+    if(state is RefreshConfirmedTxnsSuccess) {
       ProgressDialog.dismiss(context);
       return _buildTxnList(context, state.data);
     }
 
-    if(state is RefreshTxnsFail) {
+    if(state is RefreshConfirmedTxnsFail) {
+      ProgressDialog.dismiss(context);
+      return _buildErrorScreen(context, state.error.toString());
+    }
+
+    if(state is RefreshConfirmedTxnsFail) {
       ProgressDialog.dismiss(context);
       return _buildErrorScreen(context, state.error.toString());
     }
@@ -121,7 +125,6 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
           ),
         );
       },
-//      controller: _scrollController
     );
   }
 
@@ -136,26 +139,34 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
             text: TextSpan(children: <TextSpan>[
             TextSpan(
               text: '${formattedDate.month}\n',
-              style: TextStyle(fontSize: 11.sp, color: Colors.black)),
+              style: TextStyle(fontSize: 11.sp, color: Color(0xff9e9e9e))),
             TextSpan(
-              text: '${formattedDate.day}',
+              text: '${formattedDate.day}\n',
               style: TextStyle(
-                  color: Colors.black,
+                  color: Color(0xff212121),
                   fontWeight: FontWeight.normal,
-                  fontSize: 20.sp
+                  fontSize: 22.sp
+              )
+            ),
+            TextSpan(
+              text: '${formattedDate.year}',
+              style: TextStyle(
+                color: Color(0xff9e9e9e),
+                fontWeight: FontWeight.normal,
+                fontSize: 11.sp
               )
             ),
           ])),
           Container(width: 20.w,),
-          Image.asset('images/txsend.png', height: 40.w, width: 40.w),
+          getTxnTypeIcon(command),
           Container(width: 14.w),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Sent', textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp)),
+              Text(getTxnTypeStr(command), textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp)),
               Text(command.isPooled ? 'Pending' : formattedDate.hms,
-                textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xffbebebe))),
+                textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575))),
             ],
           ),
           Container(width: 20.w),
@@ -165,14 +176,54 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text('+${formatTokenNumber(command.amount)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 17.sp)),
-                Text('\$65.34', textAlign: TextAlign.right, style: TextStyle(fontSize: 12.sp, color: Color(0xff979797)))
+                Text('${formatTokenNumber(command.amount)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 18.sp)),
+                Text('\$65.34', textAlign: TextAlign.right, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575)))
               ]
             ),
           )
         ],
       ),
     );
+  }
+
+  Widget getTxnTypeIcon(MergedUserCommand command) {
+    if(command.isDelegation) {
+      return Image.asset('images/txn_stake.png', height: 40.w, width: 40.w);
+    }
+
+    if(command.from == _txnsBloc.publicKey) {
+      return Image.asset('images/txn_send.png', height: 40.w, width: 40.w);
+    }
+
+    if(command.to == _txnsBloc.publicKey) {
+      return Image.asset('images/txn_receive.png', height: 40.w, width: 40.w);
+    }
+
+    return Container();
+  }
+
+  String getTxnTypeStr(MergedUserCommand command) {
+    if(command.isDelegation) {
+      if(command.from == _txnsBloc.publicKey && command.from == command.to) {
+        return 'Unstaked';
+      }
+
+      if(command.from == _txnsBloc.publicKey) {
+        return 'Staked';
+      }
+
+      return 'Delegated';
+    }
+
+    if(command.from == _txnsBloc.publicKey) {
+      return 'Sent';
+    }
+
+    if(command.to == _txnsBloc.publicKey) {
+      return 'Received';
+    }
+
+    return 'Unknown';
   }
 
   _buildErrorScreen(BuildContext context, String error) {

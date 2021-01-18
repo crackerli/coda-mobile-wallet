@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-abstract class SendEvents extends Equatable {
+abstract class SendEvents/* extends Equatable*/ {
   SendEvents();
 
   @override
