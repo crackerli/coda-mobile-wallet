@@ -72,6 +72,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     _accountBloc = null;
     WidgetsBinding.instance.removeObserver(this);
     _eventBusOn.cancel();
+    _eventBusOn = null;
     super.dispose();
   }
 

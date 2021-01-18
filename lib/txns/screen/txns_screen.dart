@@ -1,3 +1,4 @@
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_entity.dart';
@@ -20,8 +21,9 @@ class TxnsScreen extends StatefulWidget {
   _TxnsScreenState createState() => _TxnsScreenState();
 }
 
-class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMixin {
+class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, RouteAware {
   TxnsBloc _txnsBloc;
+  var _eventBusOn;
 
   _refreshTxns() {
     Map<String, dynamic> variables = Map<String, dynamic>();
@@ -39,14 +41,59 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   void initState() {
     super.initState();
     print('TxnsScreen initState');
+    WidgetsBinding.instance.addObserver(this);
     _txnsBloc = BlocProvider.of<TxnsBloc>(context);
     _refreshTxns();
+    _eventBusOn = eventBus.on<UpdateTxns>().listen((event) {
+      _refreshTxns();
+    });
   }
 
   @override
   void dispose() {
+    _eventBusOn.cancel();
+    _eventBusOn = null;
     _txnsBloc = null;
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(final AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshTxns();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    print('WalletHomeScreen: didPopNext()');
+    _refreshTxns();
+  }
+
+  @override
+  void didPush() {
+    super.didPush();
+    print('WalletHomeScreen: didPush()');
+  }
+
+  @override
+  void didPushNext() {
+    final route = ModalRoute.of(context).settings.name;
+    print('WalletHomeScreen didPushNext() route: $route');
+  }
+
+  @override
+  void didPop() {
+    final route = ModalRoute.of(context).settings.name;
+    print('WalletHomeScreen didPop() route: $route');
   }
 
   @override

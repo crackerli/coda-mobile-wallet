@@ -31,7 +31,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
       },
       child: WalletHomeScreen()
     ),
-    StakeScreen(),
+//    StakeScreen(),
     BlocProvider<TxnsBloc>(
       create: (BuildContext context) {
         return TxnsBloc(RefreshPooledTxnsLoading(null));
@@ -46,6 +46,10 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   void onTap(int index) {
     if(0 == index) {
       eventBus.fire(UpdateAccounts());
+    }
+
+    if(1 == index) {
+      eventBus.fire(UpdateTxns());
     }
     _pageController.jumpToPage(index);
   }
@@ -65,13 +69,13 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
         label: 'Wallet',
       ),
-      BottomNavigationBarItem(
-        icon: Image.asset("images/stake_tab_unselected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        activeIcon: Image.asset("images/stake_tab_selected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        label:'Stake'
-      ),
+      // BottomNavigationBarItem(
+      //   icon: Image.asset("images/stake_tab_unselected.png",
+      //       fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+      //   activeIcon: Image.asset("images/stake_tab_selected.png",
+      //       fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+      //   label:'Stake'
+      // ),
       BottomNavigationBarItem(
         icon: Image.asset("images/txns_tab_unselected.png",
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
