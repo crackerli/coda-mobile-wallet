@@ -46,7 +46,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
     try {
       isTxnsLoading = true;
-      yield RefreshConfirmedTxnsLoading(mergedUserCommands);
+ //     yield RefreshConfirmedTxnsLoading(mergedUserCommands);
       final result = await _serviceFromHttp.performQuery(query, variables: variables);
 
       if(null == result || result.hasException) {
@@ -95,7 +95,8 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
       {
         Map<String, dynamic> variables = Map<String, dynamic>();
-        variables['publicKey'] = publicKey;
+        variables['from'] = publicKey;
+        variables['to'] = publicKey;
         add(RefreshConfirmedTxns(CONFIRMED_TXNS_QUERY, variables: variables));
       }
       isTxnsLoading = true;

@@ -1,9 +1,9 @@
 const CONFIRMED_TXNS_QUERY = r'''
-  query ConfirmedTxnsQuery($publicKey: String!) {
+  query ConfirmedTxnsQuery($from: String!) {
     transactions(
       limit: 1000
       sortBy: DATETIME_DESC
-      query: {from: $publicKey, canonical: true}
+      query: {from: $from, canonical: true}
     ) {
       fee
       from

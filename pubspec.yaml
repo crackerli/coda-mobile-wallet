@@ -110,6 +110,8 @@ flutter:
     - images/txn_send.png
     - images/txn_receive.png
     - images/txn_stake.png
+    - images/txn_pending.png
+    - images/txn_filter.png
 
   fonts:
    - family: Entypo

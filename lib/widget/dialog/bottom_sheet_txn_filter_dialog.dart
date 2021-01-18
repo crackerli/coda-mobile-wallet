@@ -1,7 +1,7 @@
 import 'package:coda_wallet/widget/tab/customized_tab_indicator.dart';
 import 'package:flutter/material.dart';
 
-showBottomSheet(BuildContext context) {
+showTxnFilterBottomSheet(BuildContext context) {
   List<String> topList = ['All', 'Sent', 'Received', 'Staked'];
   showModalBottomSheet(
     enableDrag: false,
