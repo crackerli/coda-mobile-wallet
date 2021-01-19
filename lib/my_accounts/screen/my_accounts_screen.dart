@@ -30,8 +30,8 @@ class _MyAccountsScreenState extends State<MyAccountsScreen> {
     print('MyAccountsScreen: build(context: $context)');
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xffeeeeee),
-      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xffeeeeee)),
+      backgroundColor: Color(0xfff5f5f5),
+      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),
       body: Stack(
         alignment: Alignment.topCenter,
         children: [

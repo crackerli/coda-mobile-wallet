@@ -27,7 +27,7 @@ class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveCl
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
-      backgroundColor: Color(0xffeeeeee),
+      backgroundColor: Color(0xfff5f5f5),
       appBar: null,
       body: SafeArea(
         child: SingleChildScrollView(
