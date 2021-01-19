@@ -44,8 +44,30 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     WidgetsBinding.instance.addObserver(this);
     _txnsBloc = BlocProvider.of<TxnsBloc>(context);
     _refreshTxns();
-    _eventBusOn = eventBus.on<UpdateTxns>().listen((event) {
-      _refreshTxns();
+    _eventBusOn = eventBus.on<TxnsEventBus>().listen((event) {
+      if(event is UpdateTxns) {
+        _refreshTxns();
+      }
+
+      if(event is FilterTxnsAll) {
+        _txnsBloc.currentFilter = 0;
+        _txnsBloc.add(ChangeFilter());
+      }
+
+      if(event is FilterTxnsSent) {
+        _txnsBloc.currentFilter = 1;
+        _txnsBloc.add(ChangeFilter());
+      }
+
+      if(event is FilterTxnsReceived) {
+        _txnsBloc.currentFilter = 2;
+        _txnsBloc.add(ChangeFilter());
+      }
+
+      if(event is FilterTxnsStaked) {
+        _txnsBloc.currentFilter = 3;
+        _txnsBloc.add(ChangeFilter());
+      }
     });
   }
 
@@ -107,7 +129,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
         builder: (BuildContext context, TxnsStates state) {
           return Column(
             children: [
-              _buildTxnHeader(context),
+              _buildTxnHeader(context, state),
               Container(height: 2.h,),
               Container(height: 0.5.h, color: Color.fromARGB(74, 60, 60, 67)),
               Expanded(flex: 1, child: _buildTxnBody(context, state))
@@ -118,7 +140,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     );
   }
 
-  _buildTxnHeader(BuildContext context) {
+  _buildTxnHeader(BuildContext context, TxnsStates state) {
     return Padding(
       padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
       child: Stack(
@@ -134,12 +156,12 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
             right: 20.w,
             child:
             InkWell(
-              onTap: () => showTxnFilterSheet(context),
+              onTap: () => showTxnFilterSheet(context, _txnsBloc.txnFilters, _txnsBloc.currentFilter),
               child: Row(
               children: [
                 Image.asset('images/txn_filter.png', width: 12.w, height: 8.h,),
                 Container(width: 5.w,),
-                Text('ALL', textAlign: TextAlign.center,
+                Text(_txnsBloc.txnFilters[_txnsBloc.currentFilter], textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 13.sp, color: Color(0xff212121), fontWeight: FontWeight.w500))
               ],
             ))

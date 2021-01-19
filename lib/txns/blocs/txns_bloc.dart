@@ -13,6 +13,8 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   // User commands merged from both pool and archive
   List<MergedUserCommand> mergedUserCommands;
   int accountIndex = 0;
+  int currentFilter = 1;
+  List<String> txnFilters = ['ALL', 'SENT', 'RECEIVED', 'STAKED', 'CANCEL'];
 
   get publicKey => globalHDAccounts.accounts[accountIndex].address;
 
@@ -36,6 +38,15 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       yield* _mapRefreshPooledTxnsToStates(event);
       return;
     }
+
+    if(event is ChangeFilter) {
+      yield* _mapChangeFilterToStates(event);
+    }
+  }
+
+  Stream<TxnsStates>
+    _mapChangeFilterToStates(ChangeFilter event) async* {
+    yield FilterChanged();
   }
 
   Stream<TxnsStates>

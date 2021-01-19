@@ -4,4 +4,14 @@ EventBus eventBus = EventBus();
 
 class UpdateAccounts {}
 
-class UpdateTxns {}
+abstract class TxnsEventBus {}
+
+class UpdateTxns extends TxnsEventBus {}
+
+class FilterTxnsAll extends TxnsEventBus {}
+
+class FilterTxnsSent extends TxnsEventBus {}
+
+class FilterTxnsReceived extends TxnsEventBus {}
+
+class FilterTxnsStaked extends TxnsEventBus {}

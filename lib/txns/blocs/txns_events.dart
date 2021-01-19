@@ -25,6 +25,14 @@ class RefreshConfirmedTxns extends TxnsEvents {
   List<Object> get props => [query, variables];
 }
 
+class ChangeFilter extends TxnsEvents {
+  ChangeFilter();
+}
+
+class ChangeAccount extends TxnsEvents {
+  ChangeAccount();
+}
+
 // class MoreConfirmedTxns extends TxnsEvents {
 //   final String query;
 //   final Map<String, dynamic> variables;
