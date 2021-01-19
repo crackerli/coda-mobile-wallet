@@ -55,7 +55,6 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
       if(event is ChooseAccountTxns) {
         _txnsBloc.accountIndex = event.accountIndex;
-//        _refreshTxns();
         _txnsBloc.add(ChangeAccount());
         return;
       }
@@ -228,6 +227,11 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
     if(state is AccountChanged) {
       _refreshTxns();
+    }
+
+    if(state is FilterChanged) {
+      List<MergedUserCommand> userCommands = state.data as List<MergedUserCommand>;
+      return _buildTxnList(context, userCommands);
     }
 
     return _buildTxnList(context, _txnsBloc.mergedUserCommands);

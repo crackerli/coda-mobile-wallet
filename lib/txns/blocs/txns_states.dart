@@ -10,7 +10,12 @@ class AccountChanged extends TxnsStates {
 }
 
 class FilterChanged extends TxnsStates {
-  FilterChanged();
+  final dynamic data;
+
+  FilterChanged(this.data);
+
+  @override
+  List<Object> get props => data.data;
 }
 
 class RefreshPooledTxnsLoading extends TxnsStates {

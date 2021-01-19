@@ -18,19 +18,39 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   List<String> txnFilters = ['ALL', 'SENT', 'RECEIVED', 'STAKED', 'CANCEL'];
 
   get filteredUserCommands {
+    List<MergedUserCommand> commands = List<MergedUserCommand>();
+    if(mergedUserCommands == null || mergedUserCommands.length == 0) {
+      return commands;
+    }
+
     // Get sent filtered list
     if(currentFilter == 1) {
-      return mergedUserCommands;
+      for(int i = 0; i < mergedUserCommands.length; i++) {
+        if(!mergedUserCommands[i].isDelegation && mergedUserCommands[i].from == publicKey) {
+          commands.add(mergedUserCommands[i]);
+        }
+      }
+      return commands;
     }
 
     // Get received filtered list
     if(currentFilter == 2) {
-      return mergedUserCommands;
+      for(int i = 0; i < mergedUserCommands.length; i++) {
+        if(!mergedUserCommands[i].isDelegation && mergedUserCommands[i].to == publicKey) {
+          commands.add(mergedUserCommands[i]);
+        }
+      }
+      return commands;
     }
 
     // Get staked filtered list
     if(currentFilter == 3) {
-      return mergedUserCommands;
+      for(int i = 0; i < mergedUserCommands.length; i++) {
+        if(mergedUserCommands[i].isDelegation) {
+          commands.add(mergedUserCommands[i]);
+        }
+      }
+      return commands;
     }
 
     // Default return all list
@@ -80,7 +100,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
   Stream<TxnsStates>
     _mapChangeFilterToStates(ChangeFilter event) async* {
-    yield FilterChanged();
+    yield FilterChanged(filteredUserCommands);
     return;
   }
 
@@ -203,7 +223,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       mergedUserCommand.hash = transactions[i]['hash'];
       mergedUserCommand.memo = transactions[i]['memo'];
       mergedUserCommand.isPooled = false;
-      mergedUserCommand.dateTime =//transactions[i]['dateTime'];
+      mergedUserCommand.dateTime =
         DateTime.parse(transactions[i]['dateTime']).millisecondsSinceEpoch.toString();
       mergedUserCommands.add(mergedUserCommand);
     }
