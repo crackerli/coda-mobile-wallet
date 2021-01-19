@@ -157,39 +157,51 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   _buildTxnHeader(BuildContext context, TxnsStates state) {
     return Padding(
       padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
-      child: Stack(
-        alignment: Alignment.centerLeft,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.only(left: 70.w, right: 10.w),
-            child: InkWell(
-              onTap: () => Navigator.pushNamed(context, TxnsChooseAccountRoute),
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.only(left: 70.w, right: 10.w),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(globalHDAccounts.accounts[_txnsBloc.accountIndex].accountName,
-                    textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)
+                  InkWell(
+                    onTap: () => Navigator.pushNamed(context, TxnsChooseAccountRoute),
+                    child:
+                    Text(globalHDAccounts.accounts[_txnsBloc.accountIndex].accountName,
+                      textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)
+                    )
                   ),
                   Container(width: 4.w,),
-                  Image.asset('images/down_expand.png', width: 14.w, height: 14.w,)
+                  InkWell(
+                    onTap: () => Navigator.pushNamed(context, TxnsChooseAccountRoute),
+                    child: Image.asset('images/down_expand.png', width: 14.w, height: 14.w,)
+                  )
                 ]
-              ),
+              )
+            ),
+          ),
+          InkWell(
+            onTap: () => showTxnFilterSheet(context, _txnsBloc.txnFilters, _txnsBloc.currentFilter),
+            child: Container(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset('images/txn_filter.png', width: 12.w, height: 8.h,),
+                  Container(width: 5.w,),
+                  Text(_txnsBloc.txnFilters[_txnsBloc.currentFilter], textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 13.sp, color: Color(0xff212121), fontWeight: FontWeight.w500))
+                ],
+              )
             )
           ),
-          Positioned(
-            right: 20.w,
-            child:
-            InkWell(
-              onTap: () => showTxnFilterSheet(context, _txnsBloc.txnFilters, _txnsBloc.currentFilter),
-              child: Row(
-              children: [
-                Image.asset('images/txn_filter.png', width: 12.w, height: 8.h,),
-                Container(width: 5.w,),
-                Text(_txnsBloc.txnFilters[_txnsBloc.currentFilter], textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 13.sp, color: Color(0xff212121), fontWeight: FontWeight.w500))
-              ],
-            ))
-          )
+          Container(width: 20.w,)
         ],
       ),
     );
@@ -231,6 +243,9 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
     if(state is FilterChanged) {
       List<MergedUserCommand> userCommands = state.data as List<MergedUserCommand>;
+      if(userCommands == null || userCommands.length == 0) {
+        return _buildNoDataScreen(context, 'No transactions found!!!\n Be happy to send or receive Mina');
+      }
       return _buildTxnList(context, userCommands);
     }
 
