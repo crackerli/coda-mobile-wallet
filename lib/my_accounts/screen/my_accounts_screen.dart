@@ -61,7 +61,7 @@ class _MyAccountsScreenState extends State<MyAccountsScreen> {
           flex: 1,
           child: buildAccountList(
             (index) {
-              Navigator.of(context).pushReplacementNamed(SendToRoute);
+              Navigator.of(context).pushReplacementNamed(AccountDetailRoute);
             })
         )
       ],
