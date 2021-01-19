@@ -1,3 +1,4 @@
+import 'package:coda_wallet/my_accounts/screen/my_accounts_screen.dart';
 import 'package:coda_wallet/new_user_onboard/screen/import_recovery_phrase_screen.dart';
 import 'package:coda_wallet/new_user_onboard/screen/no_wallet_screen.dart';
 import 'package:coda_wallet/new_user_onboard/screen/recovery_phrase_screen.dart';
@@ -28,6 +29,7 @@ const NoWalletRoute = '/NoWalletScreen';
 const VerifyRecoveryPhraseRoute = '/VerifyRecoveryPhraseScreen';
 const ImportRecoveryPhraseRoute = '/ImportRecoveryPhraseScreen';
 const TxnsChooseAccountRoute = '/TxnsChooseAccountScreen';
+const MyAccountsRoute = '/MyAccountsScreen';
 
 var globalRoutes = {
   '$SendFromRoute': (context) => SendFromScreen(),
@@ -48,4 +50,5 @@ var globalRoutes = {
   '$VerifyRecoveryPhraseRoute': (context) => VerifyRecoveryPhraseScreen(),
   '$ImportRecoveryPhraseRoute': (context) => ImportRecoveryPhraseScreen(),
   '$TxnsChooseAccountRoute': (context) => TxnsChooseAccountScreen(),
+  '$MyAccountsRoute': (context) => MyAccountsScreen(),
 };

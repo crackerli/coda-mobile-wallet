@@ -3,19 +3,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-buildNoTitleAppBar(BuildContext context, {bool leading = true, bool actions = true}) {
+buildNoTitleAppBar(BuildContext context, {bool leading = true, bool actions = true, Color backgroundColor = Colors.white}) {
   return PreferredSize(
     child: AppBar(
       actions: [
         InkWell(
           child: Padding(
             padding: EdgeInsets.only(right: 14.w),
-            child: Image.asset('images/close.png', width: 28.w, height: 28.h,),
+            child: actions ? Image.asset('images/close.png', width: 28.w, height: 28.h,) : Container(),
           ),
           onTap: () => Navigator.of(context).pop(),
         )
       ],
-      backgroundColor: Colors.white,
+      backgroundColor: backgroundColor,
       leadingWidth: 83.w,
       leading: leading ? InkWell(
         child: Row(children: [

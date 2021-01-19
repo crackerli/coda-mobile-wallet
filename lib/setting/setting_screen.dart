@@ -1,3 +1,4 @@
+import 'package:coda_wallet/route/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -49,7 +50,7 @@ class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveCl
         Container(height: 10.h),
         _buildOuterBorder(),
         InkWell(
-          onTap: null,
+          onTap: () => Navigator.of(context).pushNamed(MyAccountsRoute),
           child: _buildSettingItem(context, 'My Accounts')
         ),
         _buildOuterBorder(),
@@ -115,7 +116,6 @@ class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveCl
   _buildInnerBorder() {
     return Row(
       children: [
-        Container(width: 58.w),
         Expanded(
           flex: 1,
           child: Container(height: 0.5.h, color: Color(0xffc8c7cc))

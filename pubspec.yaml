@@ -115,6 +115,7 @@ flutter:
     - images/filter_logo.png
     - images/down_expand.png
     - images/arrow_right.png
+    - images/create_account.png
 
   fonts:
    - family: Entypo
