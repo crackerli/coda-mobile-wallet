@@ -134,7 +134,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
             right: 20.w,
             child:
             InkWell(
-              onTap: () => showTxnFilterBottomSheet(context),
+              onTap: () => showTxnFilterSheet(context),
               child: Row(
               children: [
                 Image.asset('images/txn_filter.png', width: 12.w, height: 8.h,),
@@ -187,9 +187,9 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
       itemCount: null == commands ? 0 : commands.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            child: _buildTxnItem(commands[index]),
-            onTap: null
+          behavior: HitTestBehavior.translucent,
+          child: _buildTxnItem(commands[index]),
+          onTap: null
         );
       },
       separatorBuilder: (context, index) {

@@ -112,6 +112,7 @@ flutter:
     - images/txn_stake.png
     - images/txn_pending.png
     - images/txn_filter.png
+    - images/filter_logo.png
 
   fonts:
    - family: Entypo

@@ -1,9 +1,9 @@
 const CONFIRMED_TXNS_QUERY = r'''
-  query ConfirmedTxnsQuery($from: String!) {
+  query ConfirmedTxnsQuery($from: String!, $to: String!) {
     transactions(
       limit: 1000
       sortBy: DATETIME_DESC
-      query: {from: $from, canonical: true}
+      query: {OR: [{from: $from}, {to: $to}], AND: {canonical: true}}
     ) {
       fee
       from
