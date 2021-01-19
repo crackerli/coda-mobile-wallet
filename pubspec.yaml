@@ -114,6 +114,7 @@ flutter:
     - images/txn_filter.png
     - images/filter_logo.png
     - images/down_expand.png
+    - images/arrow_right.png
 
   fonts:
    - family: Entypo

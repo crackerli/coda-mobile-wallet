@@ -40,7 +40,7 @@ class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveCl
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(height: 34.h),
+        Container(height: 40.h),
         Padding(
           padding: EdgeInsets.only(left: 14.w),
           child: Text('ACCOUNTS', textAlign: TextAlign.left,
@@ -48,7 +48,10 @@ class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveCl
         ),
         Container(height: 10.h),
         _buildOuterBorder(),
-        _buildSettingItem(context, 'My Accounts'),
+        InkWell(
+          onTap: null,
+          child: _buildSettingItem(context, 'My Accounts')
+        ),
         _buildOuterBorder(),
         Container(height: 42.h),
         Padding(
@@ -70,6 +73,7 @@ class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveCl
           child: Text('OTHER', textAlign: TextAlign.left,
             style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
         ),
+        Container(height: 10.h),
         _buildOuterBorder(),
         _buildSettingItem(context, 'Network Connection'),
         _buildInnerBorder(),
@@ -84,15 +88,17 @@ class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveCl
   _buildSettingItem(BuildContext context, String settingName) {
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 7.h, bottom: 7.h),
+      padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 11.h, bottom: 11.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Container(width: 30.w, height: 30.w, color: Colors.grey,),
-          Container(width: 14.w,),
-          Text(settingName, textAlign: TextAlign.left, style: TextStyle(fontSize: 17.sp),),
+          Expanded(
+            flex: 1,
+            child: Text(settingName, textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp),),
+          ),
+          Image.asset('images/arrow_right.png', width: 8.w, height: 13.h,),
         ],
       ),
     );
