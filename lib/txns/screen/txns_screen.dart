@@ -50,26 +50,38 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     _eventBusOn = eventBus.on<TxnsEventBus>().listen((event) {
       if(event is UpdateTxns) {
         _refreshTxns();
+        return;
+      }
+
+      if(event is ChooseAccountTxns) {
+        _txnsBloc.accountIndex = event.accountIndex;
+//        _refreshTxns();
+        _txnsBloc.add(ChangeAccount());
+        return;
       }
 
       if(event is FilterTxnsAll) {
         _txnsBloc.currentFilter = 0;
         _txnsBloc.add(ChangeFilter());
+        return;
       }
 
       if(event is FilterTxnsSent) {
         _txnsBloc.currentFilter = 1;
         _txnsBloc.add(ChangeFilter());
+        return;
       }
 
       if(event is FilterTxnsReceived) {
         _txnsBloc.currentFilter = 2;
         _txnsBloc.add(ChangeFilter());
+        return;
       }
 
       if(event is FilterTxnsStaked) {
         _txnsBloc.currentFilter = 3;
         _txnsBloc.add(ChangeFilter());
+        return;
       }
     });
   }
@@ -186,7 +198,8 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
   _buildTxnBody(BuildContext context, TxnsStates state) {
     if(state is RefreshPooledTxnsLoading) {
-      if(state.data == null) {
+      List<dynamic> userCommands = state.data as List<dynamic>;
+      if(state.data == null || userCommands.length == 0) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ProgressDialog.showProgress(context);
         });
@@ -211,6 +224,10 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     if(state is RefreshPooledTxnsFail) {
       ProgressDialog.dismiss(context);
       return _buildErrorScreen(context, state.error.toString());
+    }
+
+    if(state is AccountChanged) {
+      _refreshTxns();
     }
 
     return _buildTxnList(context, _txnsBloc.mergedUserCommands);

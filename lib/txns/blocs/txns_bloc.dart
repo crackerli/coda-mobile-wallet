@@ -2,6 +2,7 @@ import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
 import 'package:coda_wallet/txns/query/confirmed_txns_query.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 import 'txns_entity.dart';
@@ -61,12 +62,26 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
     if(event is ChangeFilter) {
       yield* _mapChangeFilterToStates(event);
+      return;
     }
+
+    if(event is ChangeAccount) {
+      yield* _mapChangeAccountToStates(event);
+      return;
+    }
+  }
+
+  Stream<TxnsStates>
+    _mapChangeAccountToStates(ChangeAccount event) async* {
+    mergedUserCommands.clear();
+    yield AccountChanged();
+    return;
   }
 
   Stream<TxnsStates>
     _mapChangeFilterToStates(ChangeFilter event) async* {
     yield FilterChanged();
+    return;
   }
 
   Stream<TxnsStates>

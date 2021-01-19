@@ -1,4 +1,3 @@
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';

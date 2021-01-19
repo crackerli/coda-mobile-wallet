@@ -1,3 +1,4 @@
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
@@ -65,6 +66,7 @@ class _TxnsChooseAccountScreenState extends State<TxnsChooseAccountScreen> {
           flex: 1,
           child: buildAccountList(
             (index) {
+              eventBus.fire(ChooseAccountTxns(index));
               Navigator.of(context).pop();
             }
           )

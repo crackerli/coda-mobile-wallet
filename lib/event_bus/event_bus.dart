@@ -8,6 +8,12 @@ abstract class TxnsEventBus {}
 
 class UpdateTxns extends TxnsEventBus {}
 
+class ChooseAccountTxns extends TxnsEventBus {
+  final int accountIndex;
+
+  ChooseAccountTxns(this.accountIndex);
+}
+
 class FilterTxnsAll extends TxnsEventBus {}
 
 class FilterTxnsSent extends TxnsEventBus {}
