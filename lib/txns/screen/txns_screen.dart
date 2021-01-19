@@ -100,7 +100,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   void didPopNext() {
     super.didPopNext();
     print('WalletHomeScreen: didPopNext()');
-    _refreshTxns();
+//    _refreshTxns();
   }
 
   @override

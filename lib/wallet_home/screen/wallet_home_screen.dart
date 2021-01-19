@@ -93,7 +93,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   void didPopNext() {
     super.didPopNext();
     print('WalletHomeScreen: didPopNext()');
-    _updateAccounts();
+//    _updateAccounts();
   }
 
   @override

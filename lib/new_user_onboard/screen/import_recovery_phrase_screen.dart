@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/account_utils.dart';
@@ -49,6 +50,7 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
     globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
     ProgressDialog.dismiss(context);
     Navigator.popUntil(context, (route) => route.isFirst);
+    eventBus.fire(UpdateAccounts());
   }
 
   @override
