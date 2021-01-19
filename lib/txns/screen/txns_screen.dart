@@ -1,5 +1,6 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_entity.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
@@ -26,6 +27,8 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   var _eventBusOn;
 
   _refreshTxns() {
+    // Restore current filter to ALL if refresh the list
+    _txnsBloc.currentFilter = 0;
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = _txnsBloc.publicKey;
     _txnsBloc.add(RefreshPooledTxns(POOLED_TXNS_QUERY, variables: variables));
@@ -149,8 +152,18 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
           Container(
             width: double.infinity,
             padding: EdgeInsets.only(left: 70.w, right: 10.w),
-            child: Text(globalHDAccounts.accounts[_txnsBloc.accountIndex].accountName,
-              textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600))
+            child: InkWell(
+              onTap: () => Navigator.pushNamed(context, TxnsChooseAccountRoute),
+              child: Row(
+                children: [
+                  Text(globalHDAccounts.accounts[_txnsBloc.accountIndex].accountName,
+                    textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)
+                  ),
+                  Container(width: 4.w,),
+                  Image.asset('images/down_expand.png', width: 14.w, height: 14.w,)
+                ]
+              ),
+            )
           ),
           Positioned(
             right: 20.w,
@@ -183,6 +196,10 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
     if(state is RefreshConfirmedTxnsSuccess) {
       ProgressDialog.dismiss(context);
+      List<dynamic> userCommands = state.data as List<dynamic>;
+      if(userCommands == null || userCommands.length == 0) {
+        return _buildNoDataScreen(context, 'No transactions found!!!\n Be happy to send or receive Mina');
+      }
       return _buildTxnList(context, state.data);
     }
 
@@ -351,9 +368,9 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     );
   }
 
-  _buildNoDataScreen(BuildContext context) {
+  _buildNoDataScreen(BuildContext context, String content) {
     return Center(
-      child: Text('No Transactions found'),
+      child: Text(content, textAlign: TextAlign.center, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),),
     );
   }
 

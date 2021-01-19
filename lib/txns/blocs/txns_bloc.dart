@@ -13,8 +13,28 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   // User commands merged from both pool and archive
   List<MergedUserCommand> mergedUserCommands;
   int accountIndex = 0;
-  int currentFilter = 1;
+  int currentFilter = 0;
   List<String> txnFilters = ['ALL', 'SENT', 'RECEIVED', 'STAKED', 'CANCEL'];
+
+  get filteredUserCommands {
+    // Get sent filtered list
+    if(currentFilter == 1) {
+      return mergedUserCommands;
+    }
+
+    // Get received filtered list
+    if(currentFilter == 2) {
+      return mergedUserCommands;
+    }
+
+    // Get staked filtered list
+    if(currentFilter == 3) {
+      return mergedUserCommands;
+    }
+
+    // Default return all list
+    return mergedUserCommands;
+  }
 
   get publicKey => globalHDAccounts.accounts[accountIndex].address;
 

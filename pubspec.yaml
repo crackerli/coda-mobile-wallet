@@ -113,6 +113,7 @@ flutter:
     - images/txn_pending.png
     - images/txn_filter.png
     - images/filter_logo.png
+    - images/down_expand.png
 
   fonts:
    - family: Entypo

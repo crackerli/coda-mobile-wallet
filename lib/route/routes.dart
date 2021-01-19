@@ -11,6 +11,7 @@ import 'package:coda_wallet/send/screens/send_fee_screen.dart';
 import 'package:coda_wallet/send/screens/send_from_screen.dart';
 import 'package:coda_wallet/send/screens/send_to_screen.dart';
 import 'package:coda_wallet/txn_detail/screens/txn_detail_screen.dart';
+import 'package:coda_wallet/txns/screen/txns_choose_account.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,6 +27,7 @@ const RecoveryPhraseRoute = '/RecoveryPhraseScreen';
 const NoWalletRoute = '/NoWalletScreen';
 const VerifyRecoveryPhraseRoute = '/VerifyRecoveryPhraseScreen';
 const ImportRecoveryPhraseRoute = '/ImportRecoveryPhraseScreen';
+const TxnsChooseAccountRoute = '/TxnsChooseAccountScreen';
 
 var globalRoutes = {
   '$SendFromRoute': (context) => SendFromScreen(),
@@ -45,4 +47,5 @@ var globalRoutes = {
   '$NoWalletRoute': (context) => NoWalletScreen(),
   '$VerifyRecoveryPhraseRoute': (context) => VerifyRecoveryPhraseScreen(),
   '$ImportRecoveryPhraseRoute': (context) => ImportRecoveryPhraseScreen(),
+  '$TxnsChooseAccountRoute': (context) => TxnsChooseAccountScreen(),
 };
