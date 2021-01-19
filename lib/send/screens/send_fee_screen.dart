@@ -11,6 +11,7 @@ import 'package:coda_wallet/send/query/get_account_nonce.dart';
 import 'package:coda_wallet/send/query/get_pooled_fee.dart';
 import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
 import 'package:coda_wallet/types/send_data.dart';
+import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
@@ -24,11 +25,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:top_k/top_k.dart';
 
 _gotoTxnDetail(BuildContext context, SendData sendData) {
   TxnEntity txnEntity = TxnEntity(globalHDAccounts.accounts[sendData.from].address,
-      sendData.to, null, sendData.amount, sendData.fee, sendData.memo, TxnStatusType.PENDING);
+    sendData.to, null, sendData.amount, sendData.fee, sendData.memo, TxnStatus.PENDING, TxnType.SEND);
   Navigator.pushReplacementNamed(context, TxnDetailRoute, arguments: txnEntity);
 }
 

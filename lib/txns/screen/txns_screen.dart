@@ -1,11 +1,14 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_entity.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
 import 'package:coda_wallet/txns/query/pooled_txns_query.dart';
+import 'package:coda_wallet/types/transaction_type.dart';
+import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/dialog/bottom_sheet_txn_filter_dialog.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
@@ -251,6 +254,34 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
     return _buildTxnList(context, _txnsBloc.mergedUserCommands);
   }
+
+  _gotoTxnDetail(BuildContext context, MergedUserCommand userCommand) {
+    if(userCommand == null) {
+      return;
+    }
+
+    TxnType txnType;
+    if(!userCommand.isDelegation) {
+      if(userCommand.from == _txnsBloc.publicKey) {
+        txnType = TxnType.SEND;
+      } else {
+        txnType = TxnType.RECEIVE;
+      }
+    } else {
+      txnType = TxnType.DELEGATION;
+    }
+
+    TxnEntity txnEntity = TxnEntity(
+      userCommand.from,
+      userCommand.to,
+      userCommand.dateTime,
+      formatTokenBigInt(BigInt.parse(userCommand.amount)),
+      formatTokenBigInt(BigInt.parse(userCommand.fee)),
+      userCommand.memo,
+      userCommand.isPooled ? TxnStatus.PENDING : TxnStatus.CONFIRMED,
+      txnType);
+    Navigator.pushNamed(context, TxnDetailRoute, arguments: txnEntity);
+  }
   
   _buildTxnList(BuildContext context, List<MergedUserCommand> commands) {
     if(null == commands || commands.length == 0) {
@@ -264,7 +295,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
           child: _buildTxnItem(commands[index]),
-          onTap: null
+          onTap: () => _gotoTxnDetail(context, commands[index])
         );
       },
       separatorBuilder: (context, index) {

@@ -1,5 +1,7 @@
 import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
+import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
+import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,6 +72,44 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
     );
   }
 
+  String getTxnStatusStr() {
+    if(_txnEntity.txnStatus == TxnStatus.PENDING) {
+      return 'Transaction Pending';
+    }
+    if(_txnEntity.txnType == TxnType.RECEIVE) {
+      return 'Transaction received';
+    }
+
+    if(_txnEntity.txnType == TxnType.SEND) {
+      return 'Transaction sent';
+    }
+
+    if(_txnEntity.txnType == TxnType.DELEGATION) {
+      return 'Transaction Staked';
+    }
+
+    return 'Unknown';
+  }
+
+  getTxnTypeIcon() {
+    if(_txnEntity.txnStatus == TxnStatus.PENDING) {
+      return Image.asset('images/txn_pending.png', width: 52.w, height: 52.w);
+    }
+    if(_txnEntity.txnType == TxnType.RECEIVE) {
+      return Image.asset('images/txn_receive.png', width: 52.w, height: 52.w);
+    }
+
+    if(_txnEntity.txnType == TxnType.SEND) {
+      return Image.asset('images/txn_send.png', width: 52.w, height: 52.w);
+    }
+
+    if(_txnEntity.txnType == TxnType.DELEGATION) {
+      return Image.asset('images/txn_stake.png', width: 52.w, height: 52.w);
+    }
+
+    return Container();
+  }
+
   _buildSendFeeBody() {
     return Container(
       padding: EdgeInsets.only(left: 50.w, right: 50.w),
@@ -78,12 +118,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(height: 23.h),
-          Center(child:
-          Text('Transaction Sent', textAlign: TextAlign.left,
-            style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.normal, color: Color(0xff2d2d2d)))
-          ),
+          Center(child: getTxnTypeIcon()),
           Container(height: 15.h),
-          Center(child: Image.asset('images/sent_success.png', width: 52.w, height: 52.w)),
+          Center(
+            child: Text(getTxnStatusStr(), textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.normal, color: Color(0xff2d2d2d))
+            )
+          ),
           Container(height: 28.h),
           Container(
             width: double.infinity,
@@ -133,7 +174,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             ],
           ),
           Container(height: 16.h),
-          _txnEntity.txnStatusType != TxnStatusType.PENDING ?
+          _txnEntity.txnStatus != TxnStatus.PENDING ?
           Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,12 +187,12 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('31 Dec 2020 23:59:00',
+                child: Text(formatDateTime(_txnEntity.timestamp),
                   textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)),),
               )
             ],
           ) : Container(),
-          _txnEntity.txnStatusType != TxnStatusType.PENDING ? Container(height: 16.h) : Container(),
+          _txnEntity.txnStatus != TxnStatus.PENDING ? Container(height: 16.h) : Container(),
           Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,

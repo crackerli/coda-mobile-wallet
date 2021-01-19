@@ -1,3 +1,4 @@
+import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
 
 class TxnEntity {
@@ -7,7 +8,8 @@ class TxnEntity {
   String amount;
   String fee;
   String memo;
-  TxnStatusType txnStatusType;
+  TxnStatus txnStatus;
+  TxnType txnType;
 
   get total {
     double amountD = double.parse(amount);
@@ -16,5 +18,5 @@ class TxnEntity {
     return totalD.toString();
   }
 
-  TxnEntity(this.from, this.to, this.timestamp, this.amount, this.fee, this.memo, this.txnStatusType);
+  TxnEntity(this.from, this.to, this.timestamp, this.amount, this.fee, this.memo, this.txnStatus, this.txnType);
 }

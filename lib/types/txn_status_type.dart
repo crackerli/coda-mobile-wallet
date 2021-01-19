@@ -1,4 +1,4 @@
-enum TxnStatusType {
+enum TxnStatus {
   NONE,
   PENDING,
   CONFIRMED,
