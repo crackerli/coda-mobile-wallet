@@ -24,10 +24,15 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: null,
-      body: SafeArea(child: _buildNoWalletBody())
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: null,
+        body: SafeArea(child: _buildNoWalletBody())
+      )
     );
   }
 
