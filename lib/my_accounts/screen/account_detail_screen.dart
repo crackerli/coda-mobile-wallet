@@ -6,6 +6,7 @@ import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AccountDetailScreen extends StatefulWidget {
@@ -130,7 +131,15 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset('images/copy_gray.png', width: 22.w, height: 27.h,),
+                        Builder(builder: (context) =>
+                          InkWell(
+                            child: Image.asset('images/copy_gray.png', width: 22.w, height: 27.h),
+                            onTap: () {
+                              Clipboard.setData(ClipboardData(text: globalHDAccounts.accounts[_accountIndex].address));
+                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
+                            },
+                          )
+                        ),
                         Container(width: 6.w,),
                         Flexible(child:
                           Text(globalHDAccounts.accounts[_accountIndex].address, maxLines: 2, overflow: TextOverflow.visible,
