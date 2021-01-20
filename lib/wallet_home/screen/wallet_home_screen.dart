@@ -229,7 +229,10 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           padding: EdgeInsets.all(10.w),
           width: 44.w,
           height: 44.w,
-          child: Image.asset('images/qr_code_icon.png')
+          child: InkWell(
+            onTap: () => _gotoReceiveAccountsScreen(context),
+            child: Image.asset('images/qr_code_icon.png')
+          )
         ),
         Container(width: 28.w)
       ],
