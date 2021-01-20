@@ -39,10 +39,15 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
         mnemonicList.add(tmp[i].trim());
       }
     }
-//    _mnemonic = mnemonicList.join(' ');
+    _mnemonic = mnemonicList.join(' ');
+    bool validateRet = validateMnemonic(_mnemonic);
+    if(!validateRet) {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Can not find any accounts under this seed!!')));
+      return;
+    }
     print('start convert mnemonic words to seed');
     ProgressDialog.showProgress(context);
-    _mnemonic = 'course grief vintage slim tell hospital car maze model style elegant kitchen state purpose matrix gas grid enable frown road goddess glove canyon key';
+//    _mnemonic = 'course grief vintage slim tell hospital car maze model style elegant kitchen state purpose matrix gas grid enable frown road goddess glove canyon key';
     Uint8List seed = await mnemonicToSeed(_mnemonic.toString());
     print('start to encrypted seed');
     globalEncryptedSeed = encryptSeed(seed, '1234');
@@ -113,17 +118,19 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
           )
         ),
         Container(height: 16.h,),
-        RaisedButton(
-          padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-          onPressed: () {
-            _focusNode.unfocus();
-            _processMnemonicWords(context);
-          },
-          color: Colors.blueAccent,
-          child: Text('Import', style: TextStyle(color: Colors.white),)
-        )
-      ],
+        Builder(
+          builder: (context) =>
+            RaisedButton(
+              padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
+              onPressed: () {
+                _focusNode.unfocus();
+                _processMnemonicWords(context);
+              },
+              color: Colors.blueAccent,
+              child: Text('Import', style: TextStyle(color: Colors.white),)
+          ))
+        ],
     );
   }
 }
