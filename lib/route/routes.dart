@@ -1,5 +1,6 @@
 import 'package:coda_wallet/my_accounts/screen/account_detail_screen.dart';
 import 'package:coda_wallet/my_accounts/screen/create_account_screen.dart';
+import 'package:coda_wallet/my_accounts/screen/edit_account_screen.dart';
 import 'package:coda_wallet/my_accounts/screen/my_accounts_screen.dart';
 import 'package:coda_wallet/new_user_onboard/screen/import_recovery_phrase_screen.dart';
 import 'package:coda_wallet/new_user_onboard/screen/no_wallet_screen.dart';
@@ -34,6 +35,7 @@ const TxnsChooseAccountRoute = '/TxnsChooseAccountScreen';
 const MyAccountsRoute = '/MyAccountsScreen';
 const AccountDetailRoute = '/AccountDetailScreen';
 const CreateAccountRoute = '/CreateAccountScreen';
+const EditAccountRoute = '/EditAccountScreen';
 
 var globalRoutes = {
   '$SendFromRoute': (context) => SendFromScreen(),
@@ -57,4 +59,5 @@ var globalRoutes = {
   '$MyAccountsRoute': (context) => MyAccountsScreen(),
   '$AccountDetailRoute': (context) => AccountDetailScreen(),
   '$CreateAccountRoute': (context) => CreateAccountScreen(),
+  '$EditAccountRoute': (context) => EditAccountScreen(),
 };

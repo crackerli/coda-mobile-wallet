@@ -1,4 +1,6 @@
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
@@ -16,14 +18,21 @@ class AccountDetailScreen extends StatefulWidget {
 
 class _AccountDetailScreenState extends State<AccountDetailScreen> {
   int _accountIndex = 0;
+  var _eventBusOn;
 
   @override
   void initState() {
     super.initState();
+    _eventBusOn = eventBus.on<UpdateMyAccounts>().listen((event) {
+      setState(() {
+      });
+    });
   }
 
   @override
   void dispose() {
+    _eventBusOn.cancel();
+    _eventBusOn = null;
     super.dispose();
   }
 
@@ -49,7 +58,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
     return Positioned(
       bottom: 60.h,
       child: Builder(builder: (context) => InkWell(
-        onTap: null,
+        onTap: () => Navigator.pushNamed(context, EditAccountRoute, arguments: _accountIndex),
         child: Container(
           padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
           decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
