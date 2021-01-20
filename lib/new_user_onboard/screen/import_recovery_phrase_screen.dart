@@ -45,16 +45,16 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Can not find any accounts under this seed!!')));
       return;
     }
-    print('start convert mnemonic words to seed');
+    print('[import wallet]: start convert mnemonic words to seed');
     ProgressDialog.showProgress(context);
 //    _mnemonic = 'course grief vintage slim tell hospital car maze model style elegant kitchen state purpose matrix gas grid enable frown road goddess glove canyon key';
     Uint8List seed = await mnemonicToSeed(_mnemonic.toString());
-    print('start to encrypted seed');
+    print('[import wallet]: start to encrypted seed');
     globalEncryptedSeed = encryptSeed(seed, '1234');
-    print('save seed String');
+    print('[import wallet]: save seed String');
     globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed);
 
-    print('start to derive account');
+    print('[import wallet]: start to derive account');
     List<AccountBean> accounts = await deriveDefaultAccount(seed);
     globalHDAccounts.accounts = accounts;
     Map accountsJson = globalHDAccounts.toJson();

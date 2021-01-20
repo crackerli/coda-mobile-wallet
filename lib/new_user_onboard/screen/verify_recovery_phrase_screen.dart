@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/types/mina_hd_account_type.dart';
+import 'package:coda_wallet/util/account_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -40,20 +45,36 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
         return false;
       }
     }
-    return true;
+
+    bool validateRet = validateMnemonic(_mnemonicsFilled.join(' '));
+    return validateRet;
   }
 
   _handleSeed(BuildContext context) async {
     bool verifyRet = _verifyWords();
     if(verifyRet) {
+      print('[new wallet]: start convert mnemonic words to seed');
+      ProgressDialog.showProgress(context);
+
       Uint8List seed = await mnemonicToSeed(_mnemonic.toString());
-      globalPreferences.setString(ENCRYPTED_SEED_KEY, encryptSeed(seed, '1234'));
+      print('[new wallet]: start to encrypted seed');
+      globalEncryptedSeed = encryptSeed(seed, '1234');
+      print('[new wallet]: save seed String');
+      globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed);
+
+      print('[new wallet]: start to derive account');
+      List<AccountBean> accounts = await deriveDefaultAccount(seed);
+      globalHDAccounts.accounts = accounts;
+      Map accountsJson = globalHDAccounts.toJson();
+      globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+      ProgressDialog.dismiss(context);
       Navigator.popUntil(context, (route) => route.isFirst);
+      eventBus.fire(UpdateAccounts());
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Wrong input words')));
     }
   }
-  
+
   _createRandomMnemonics() {
     if(null != _mnemonicTips && _mnemonicTips.length > 0) {
       return;
@@ -132,7 +153,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
             onPressed: () => _handleSeed(context),
             color: Colors.blueAccent,
-            child: Text('Continue', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
+            child: Text('Confirm', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
           ),
         ))
       ],
@@ -140,21 +161,27 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   }
 
   Widget _buildRecoveryPhraseFilledTable() {
-    return Container(
-      margin: EdgeInsets.only(left: 48.w, right: 48.w),
-      padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 10.h, bottom: 10.h),
-      color: Colors.white,
-      child: Wrap(
-        spacing: 10.w,
-        runSpacing: 15.h,
-        children: List.generate(_mnemonicsFilled.length, (index) {
-          return Text(
-            '${_mnemonicsFilled[index]}',
-            style: TextStyle(color: Colors.blue, fontSize: 18.sp, fontWeight: FontWeight.w400),
-          );}
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 18.sp * 6 + 20.h,
+      ),
+      child:
+        Container(
+          margin: EdgeInsets.only(left: 48.w, right: 48.w),
+          padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 10.h, bottom: 10.h),
+          color: Colors.white,
+          child: Wrap(
+            spacing: 10.w,
+            runSpacing: 15.h,
+            children: List.generate(_mnemonicsFilled.length, (index) {
+            return Text(
+              '${_mnemonicsFilled[index]}',
+              style: TextStyle(color: Colors.blue, fontSize: 18.sp, fontWeight: FontWeight.w400),
+            );
+          }
         )
       )
-    );
+    ));
   }
 
   Widget _buildRecoveryPhraseTipTable() {
