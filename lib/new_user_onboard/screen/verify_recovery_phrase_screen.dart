@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:coda_wallet/constant/constants.dart';
@@ -42,10 +43,11 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
     return true;
   }
 
-  _handleSeed(BuildContext context) {
+  _handleSeed(BuildContext context) async {
     bool verifyRet = _verifyWords();
     if(verifyRet) {
-      globalPreferences.setString(ENCRYPTED_SEED_KEY, encryptSeed(mnemonicToSeed(_mnemonic.toString()), '1234'));
+      Uint8List seed = await mnemonicToSeed(_mnemonic.toString());
+      globalPreferences.setString(ENCRYPTED_SEED_KEY, encryptSeed(seed, '1234'));
       Navigator.popUntil(context, (route) => route.isFirst);
     } else {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Wrong input words')));

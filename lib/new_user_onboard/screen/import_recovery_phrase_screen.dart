@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
@@ -39,12 +40,17 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
       }
     }
 //    _mnemonic = mnemonicList.join(' ');
+    print('start convert mnemonic words to seed');
+    ProgressDialog.showProgress(context);
     _mnemonic = 'course grief vintage slim tell hospital car maze model style elegant kitchen state purpose matrix gas grid enable frown road goddess glove canyon key';
-    globalEncryptedSeed = encryptSeed(mnemonicToSeed(_mnemonic.toString()), '1234');
+    Uint8List seed = await mnemonicToSeed(_mnemonic.toString());
+    print('start to encrypted seed');
+    globalEncryptedSeed = encryptSeed(seed, '1234');
+    print('save seed String');
     globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed);
 
-    ProgressDialog.showProgress(context);
-    List<AccountBean> accounts = await deriveDefaultAccount(mnemonicToSeed(_mnemonic));
+    print('start to derive account');
+    List<AccountBean> accounts = await deriveDefaultAccount(seed);
     globalHDAccounts.accounts = accounts;
     Map accountsJson = globalHDAccounts.toJson();
     globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
