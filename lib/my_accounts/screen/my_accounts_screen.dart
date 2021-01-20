@@ -1,3 +1,4 @@
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
@@ -12,14 +13,21 @@ class MyAccountsScreen extends StatefulWidget {
 }
 
 class _MyAccountsScreenState extends State<MyAccountsScreen> {
+  var _eventBusOn;
 
   @override
   void initState() {
     super.initState();
+    _eventBusOn = eventBus.on<UpdateMyAccounts>().listen((event) {
+      setState(() {
+      });
+    });
   }
 
   @override
   void dispose() {
+    _eventBusOn.cancel();
+    _eventBusOn = null;
     super.dispose();
   }
 
@@ -38,7 +46,10 @@ class _MyAccountsScreenState extends State<MyAccountsScreen> {
           Positioned(
             bottom: 39.h,
             right: 31.w,
-            child: Image.asset('images/create_account.png', width: 56.w, height: 56.w,)
+            child: InkWell(
+              onTap: () => Navigator.of(context).pushNamed(CreateAccountRoute),
+              child: Image.asset('images/create_account.png', width: 56.w, height: 56.w,)
+            )
           )
         ],
       ),

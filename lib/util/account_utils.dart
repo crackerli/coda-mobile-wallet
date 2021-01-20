@@ -30,3 +30,18 @@ Future<List<AccountBean>> deriveDefaultAccount(Uint8List seed) async {
   }
   return hdAccounts;
 }
+
+Future<AccountBean> deriveNewAccount(Uint8List seed, int accountIndex, String accountName) async {
+
+  AccountBean account = AccountBean();
+  account.account = accountIndex;
+  account.accountName = accountName;
+  account.balance = "0";
+  account.pool = "";
+  account.isDelegated = false;
+  Uint8List privateKey = generatePrivateKey(seed, accountIndex);
+  String address = await getAddressFromSecretKeyAsync(MinaHelper.reverse(privateKey));
+  account.address = address;
+
+  return account;
+}

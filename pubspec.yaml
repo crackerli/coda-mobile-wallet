@@ -92,6 +92,7 @@ flutter:
     - images/down_expand.png
     - images/arrow_right.png
     - images/create_account.png
+    - images/input_delete.png
 
   fonts:
    - family: Entypo

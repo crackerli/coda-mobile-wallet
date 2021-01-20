@@ -21,3 +21,5 @@ class FilterTxnsSent extends TxnsEventBus {}
 class FilterTxnsReceived extends TxnsEventBus {}
 
 class FilterTxnsStaked extends TxnsEventBus {}
+
+class UpdateMyAccounts {}

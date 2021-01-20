@@ -8,7 +8,7 @@ const RPC_SERVER_KEY = 'rpc_server_key';
 const ENCRYPTED_SEED_KEY = 'encrypted_seed_key';
 
 // Default derived accounts number, only one if app published
-const DEFAULT_ACCOUNT_NUMBER = 4;
+const DEFAULT_ACCOUNT_NUMBER = 1;
 
 const GLOBAL_ACCOUNTS_KEY = 'global_accounts_key';
 
