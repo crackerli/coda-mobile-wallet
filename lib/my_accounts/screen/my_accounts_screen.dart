@@ -1,5 +1,4 @@
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +60,7 @@ class _MyAccountsScreenState extends State<MyAccountsScreen> {
           flex: 1,
           child: buildAccountList(
             (index) {
-              Navigator.of(context).pushReplacementNamed(AccountDetailRoute);
+              Navigator.of(context).pushNamed(AccountDetailRoute, arguments: index);
             })
         )
       ],

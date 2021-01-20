@@ -1,4 +1,5 @@
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +15,7 @@ class AccountDetailScreen extends StatefulWidget {
 }
 
 class _AccountDetailScreenState extends State<AccountDetailScreen> {
-  int accountIndex = 0;
+  int _accountIndex = 0;
 
   @override
   void initState() {
@@ -30,13 +31,14 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     print('AccountDetailScreen: build(context: $context)');
+    _accountIndex = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),
       body: Stack(
         alignment: Alignment.center,
         children: [
-          _buildSendFeeBody(context),
+          _buildAccountDetailBody(context),
           _buildActionsButton(context)
         ]
       )
@@ -58,7 +60,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
     );
   }
 
-  _buildSendFeeBody(BuildContext context) {
+  _buildAccountDetailBody(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -67,7 +69,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
           Container(height: 30.h,),
           Padding(
             padding: EdgeInsets.only(left: 30.w, right: 30.w),
-            child: Text(globalHDAccounts.accounts[accountIndex].accountName,
+            child: Text(globalHDAccounts.accounts[_accountIndex].accountName,
               textAlign: TextAlign.left, style: TextStyle(fontSize: 28.sp, color: Color(0xff2d2d2d)))
           ),
           Container(height: 17.h,),
@@ -89,8 +91,19 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                   children: [
                     Text('BALANCE', textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff616161))),
-                    Text('7823456.78',
-                      textAlign: TextAlign.left, style: TextStyle(fontSize: 32.sp, color: Color(0xff2d2d2d))),
+                    RichText(
+                      textAlign: TextAlign.left,
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '${formatTokenNumber(globalHDAccounts.accounts[_accountIndex].balance)} ',
+                              style: TextStyle(fontSize: 24.sp, color: Color(0xff2d2d2d))),
+                          TextSpan(
+                            text: 'MINA',
+                              style: TextStyle(color: Color(0xff2d2d2d), fontWeight: FontWeight.normal, fontSize: 14.sp)),
+                        ]
+                      )
+                    ),
                     Text('\$1234.56',
                       textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, color: Color(0xff616161))),
                     Container(height: 19.h,),
@@ -111,7 +124,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                           Image.asset('images/copy_gray.png', width: 22.w, height: 27.h,),
                           Container(width: 6.w,),
                           Flexible(child:
-                          Text(globalHDAccounts.accounts[accountIndex].address, maxLines: 2, overflow: TextOverflow.visible,
+                          Text(globalHDAccounts.accounts[_accountIndex].address, maxLines: 2, overflow: TextOverflow.visible,
                             textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, color: Color(0xff616161)))),
                         ],
                       )
