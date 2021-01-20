@@ -60,30 +60,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - images/coda_logo.png
-    - images/lock-normal.png
-    - images/unlock-normal.png
-    - images/appbar_back.png
-    - images/txsend.png
-    - images/txreceive.png
-    - images/locked.png
-    - images/unlocked.png
-    - images/qr_scan.png
-    - images/qr_scan1.png
-    - images/qr_scan2.png
-    - images/contact_address.png
-    - images/locked_black.png
-    - images/unlocked_green.png
-    - images/setting.png
-    - images/delete.png
-    - images/edit_name.png
-    - images/tx_failed.png
-    - images/tx_pending.png
-    - images/tx_success.png
-    - images/tx_timeout.png
-    - images/tx_unsubmit.png
-    - images/navigate_next.png
-    - images/staking.png
     - copy_gray.png
     - images/wallet_tab_unselected.png
     - images/wallet_tab_selected.png
