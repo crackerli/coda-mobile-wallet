@@ -93,6 +93,9 @@ flutter:
     - images/arrow_right.png
     - images/create_account.png
     - images/input_delete.png
+    - images/password_logo.png
+    - images/password_hide.png
+    - images/password_show.png
 
   fonts:
    - family: Entypo

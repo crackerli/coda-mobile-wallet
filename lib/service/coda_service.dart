@@ -10,9 +10,9 @@ class CodaService {
   CodaService() {
     HttpClient httpClient = HttpClient();
     IOClient ioClient;
-    // httpClient.findProxy = (url) {
-    //   return HttpClient.findProxyFromEnvironment(url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
-    // };
+    httpClient.findProxy = (url) {
+      return HttpClient.findProxyFromEnvironment(url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
+    };
 
     ioClient = IOClient(httpClient);
     globalRpcServer = globalPreferences.getString(RPC_SERVER_KEY);
