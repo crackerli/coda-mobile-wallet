@@ -30,10 +30,11 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    print('MyAccountsScreen: build(context: $context)');
+    print('PasswordInputWidget: build(context: $context)');
     return KeyboardActions(
       tapOutsideToDismiss: false,
       autoScroll: false,
+      disableScroll: true,
       config: KeyboardActionsConfig(
         keyboardSeparatorColor: Colors.grey,
         nextFocus: false,
