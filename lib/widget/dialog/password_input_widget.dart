@@ -1,6 +1,7 @@
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 class PasswordInputWidget extends StatefulWidget {
   PasswordInputWidget({Key key}) : super(key: key);
@@ -10,6 +11,9 @@ class PasswordInputWidget extends StatefulWidget {
 }
 
 class _PasswordInputWidgetState extends State<PasswordInputWidget> {
+  FocusNode _focusNodePassword = FocusNode();
+  TextEditingController _editingControllerPassword = TextEditingController();
+  bool _showPassword = false;
 
   @override
   void initState() {
@@ -18,6 +22,8 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
 
   @override
   void dispose() {
+    _focusNodePassword?.dispose();
+    _editingControllerPassword?.dispose();
     super.dispose();
   }
 
@@ -25,15 +31,27 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     print('MyAccountsScreen: build(context: $context)');
-    return Container(
+    return KeyboardActions(
+      tapOutsideToDismiss: false,
+      autoScroll: false,
+      config: KeyboardActionsConfig(
+        keyboardSeparatorColor: Colors.grey,
+        nextFocus: false,
+        actions: [
+          KeyboardActionsItem(focusNode: _focusNodePassword)
+        ]
+      ),
+      child: Container(
       height: 200,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5.w)),
-          color: Colors.white
+        borderRadius: BorderRadius.all(Radius.circular(5.w)),
+        color: Colors.white
       ),
       padding: EdgeInsets.only(top: 12.h, bottom: 12.h, left: 12.w, right: 12.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Image.asset('images/password_logo.png', width: 40.w, height: 40.w,),
           Container(height: 12.h,),
@@ -43,19 +61,42 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
             padding: EdgeInsets.only(top: 12.h, bottom: 12.h),
             child: Row(
               children: [
+                Container(width: 8,),
                 Expanded(
                   flex: 1,
-                  child: Container(),
+                  child: TextField(
+                    enableInteractiveSelection: true,
+                    focusNode: _focusNodePassword,
+                    controller: _editingControllerPassword,
+                    onChanged: (text) {
+
+                    },
+                    maxLines: 1,
+                    obscureText: _showPassword ? false : true,
+                    keyboardType: TextInputType.text,
+                    autofocus: false,
+                    decoration: InputDecoration.collapsed(
+                      hintText: 'Please input seed password',
+                      hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
+                  )
                 ),
-                Container(width: 8.w,),
-                Image.asset('images/password_hide.png', width: 20.w, height: 20.w,),
+                Container(width: 4.w,),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      _showPassword = !_showPassword;
+                    });
+                  },
+                  child: _showPassword ? Image.asset('images/password_show.png', width: 20.w, height: 20.w,)
+                    : Image.asset('images/password_hide.png', width: 20.w, height: 20.w,),
+                ),
                 Container(width: 8.w,),
               ],
             ),
             decoration: BoxDecoration(
-                color: Color(0xfff5f5f5),
-                borderRadius: BorderRadius.all(Radius.circular(5.w)),
-                border: Border.all(width: 1.w, color: Color(0xff22d2d))
+              color: Color(0xfff5f5f5),
+              borderRadius: BorderRadius.all(Radius.circular(5.w)),
+              border: Border.all(width: 1.w, color: Color(0xff22d2d))
             ),
           ),
           Container(height: 32.h,),
@@ -65,11 +106,10 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 50.w, right: 50.w),
               decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
               child: Text('CONFIRM',
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
             ),
           )
         ],
-      ),
-    );
+    )));
   }
 }
