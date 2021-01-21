@@ -45,6 +45,7 @@ class _SendToScreenState extends State<SendToScreen> {
         _validInput = false;
       });
     } else {
+      _sendData.memo = '';
       _gotoSendAmount(context, _sendData);
     }
   }
