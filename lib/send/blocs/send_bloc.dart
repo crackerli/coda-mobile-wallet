@@ -78,6 +78,28 @@ class SendBloc extends
       yield* _mapFeeChosenToStates(event);
       return;
     }
+
+    if(event is InputWrongPassword) {
+      yield* _mapWrongPasswordToStates(event);
+      return;
+    }
+
+    if(event is ClearWrongPassword) {
+      yield* _mapClearWrongPasswordToStates(event);
+      return;
+    }
+  }
+
+  Stream<SendStates>
+    _mapClearWrongPasswordToStates(ClearWrongPassword event) async* {
+    yield SeedPasswordCleared();
+    return;
+  }
+
+  Stream<SendStates>
+    _mapWrongPasswordToStates(InputWrongPassword event) async* {
+    yield SeedPasswordWrong();
+    return;
   }
 
   Stream<SendStates>
@@ -201,7 +223,11 @@ class SendBloc extends
         return;
       }
 
-      nonce = int.parse(result.data['account']['nonce']);
+      if(null == result.data['account']['nonce']) {
+        nonce = 0;
+      } else {
+        nonce = int.parse(result.data['account']['nonce']);
+      }
       yield GetNonceSuccess();
     } catch (e) {
       print(e);

@@ -23,3 +23,9 @@ class FilterTxnsReceived extends TxnsEventBus {}
 class FilterTxnsStaked extends TxnsEventBus {}
 
 class UpdateMyAccounts {}
+
+class SendPasswordInput {
+  final String password;
+
+  SendPasswordInput(this.password);
+}

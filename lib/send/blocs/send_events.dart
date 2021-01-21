@@ -45,3 +45,11 @@ class ChooseFee extends SendEvents {
   final int index;
   ChooseFee(this.index) : super();
 }
+
+class InputWrongPassword extends SendEvents {
+  InputWrongPassword() : super();
+}
+
+class ClearWrongPassword extends SendEvents {
+  ClearWrongPassword() : super();
+}

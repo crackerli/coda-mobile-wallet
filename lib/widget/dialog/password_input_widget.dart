@@ -1,3 +1,4 @@
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -102,7 +103,14 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
           ),
           Container(height: 32.h,),
           InkWell(
-            onTap: null,
+            onTap: () {
+              if(null == _editingControllerPassword.text || _editingControllerPassword.text.isEmpty) {
+                return;
+              }
+              FocusScope.of(context).unfocus();
+              eventBus.fire(SendPasswordInput(_editingControllerPassword.text));
+              Navigator.of(context).pop();
+            },
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 50.w, right: 50.w),
               decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),

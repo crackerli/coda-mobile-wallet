@@ -86,3 +86,11 @@ class FeeChosen extends SendStates {
 
   FeeChosen(this.index) : super();
 }
+
+class SeedPasswordWrong extends SendStates {
+  SeedPasswordWrong() : super();
+}
+
+class SeedPasswordCleared extends SendStates {
+  SeedPasswordCleared() : super();
+}

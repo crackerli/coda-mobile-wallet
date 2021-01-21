@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/send/blocs/send_bloc.dart';
@@ -16,6 +17,7 @@ import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/dialog/password_input_dialog.dart';
 import 'package:coda_wallet/widget/fee/fee_clipper.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
@@ -43,11 +45,10 @@ class SendFeeScreen extends StatefulWidget {
 class _SendFeeScreenState extends State<SendFeeScreen> {
   SendData _sendData;
   SendBloc _sendBloc;
+  var _eventBusOn;
+  Uint8List _accountPrivateKey;
 
   Future<Signature> _signPayment() async {
-    String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
-    Uint8List seed = decryptSeed(encryptedSeed, '1234');
-    Uint8List accountSeed = generatePrivateKey(seed, _sendData.from);
     if(null == _sendData.memo || _sendData.memo.isEmpty) {
       _sendData.memo = '';
     }
@@ -63,7 +64,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     int amount = getNanoMina(_sendData.amount);
     int tokenLocked = 0;
 
-    Signature signature = await signPayment(MinaHelper.reverse(accountSeed), memo, feePayerAddress,
+    Signature signature = await signPayment(MinaHelper.reverse(_accountPrivateKey), memo, feePayerAddress,
         senderAddress, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, amount, tokenLocked);
     return signature;
   }
@@ -100,7 +101,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     if(_sendBloc.feeIndex == -1) {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Please choose fee!!')));
     } else {
-      _getNonce();
+      showDecryptSeedDialog(context);
     }
   }
 
@@ -114,12 +115,26 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   void initState() {
     super.initState();
     _sendBloc = BlocProvider.of<SendBloc>(context);
+    _eventBusOn = eventBus.on<SendPasswordInput>().listen((event) {
+      String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+      print('SendFeeScreen: start to decrypt seed');
+      try {
+        Uint8List seed = decryptSeed(encryptedSeed, event.password);
+        _accountPrivateKey = generatePrivateKey(seed, _sendData.from);
+        _getNonce();
+      } catch(error) {
+        print('password not right');
+        _sendBloc.add(InputWrongPassword());
+      }
+    });
     _getPooledFee();
   }
 
   @override
   void dispose() {
     _sendBloc = null;
+    _eventBusOn.cancel();
+    _eventBusOn = null;
     super.dispose();
   }
 
@@ -261,6 +276,14 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   }
 
   _buildSendFeeBody(BuildContext context, state) {
+    if(state is SeedPasswordWrong) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text('Wrong password!!')));
+      });
+      _sendBloc.add(ClearWrongPassword());
+    }
+
     if(state is GetPooledFeeLoading) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ProgressDialog.showProgress(context);
