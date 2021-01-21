@@ -55,7 +55,7 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Image.asset('images/password_logo.png', width: 40.w, height: 40.w,),
+          Image.asset('images/password_unlock_logo.png', width: 40.w, height: 40.w,),
           Container(height: 12.h,),
           Text('PLEASE INPUT PASSWORD', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.sp),),
           Container(height: 12,),
