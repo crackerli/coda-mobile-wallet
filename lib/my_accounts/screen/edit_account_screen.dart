@@ -97,7 +97,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
   _buildAccountField(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 8.h, bottom: 8.h),
+      padding: EdgeInsets.only(left: 15.w, right: 10.w, top: 8.h, bottom: 8.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(0.w)),
@@ -123,7 +123,10 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
         ),
         Container(width: 12.w),
         InkWell(
-          child: Image.asset('images/input_delete.png', width: 28.w, height: 28.w),
+          child: Container(
+            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 4.w, right: 4.w),
+            child: Image.asset('images/input_delete.png', width: 18.w, height: 18.w),
+          ),
           onTap: () {
             setState(() {
               _accountController.text = '';
