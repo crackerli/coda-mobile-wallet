@@ -4,6 +4,7 @@ import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -205,7 +206,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('${_txnEntity.amount} MINA (\$46.62)', maxLines: 3,
+                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)} MINA (\$46.62)', maxLines: 3,
                   textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
               )
             ],
@@ -223,7 +224,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('${_txnEntity.fee} MINA (\$0.07)', textAlign: TextAlign.left, maxLines: 2,
+                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.fee)} MINA (\$0.07)', textAlign: TextAlign.left, maxLines: 2,
                   style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],
@@ -241,7 +242,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('${_txnEntity.total} MINA (\$356.11)', textAlign: TextAlign.left, maxLines: 2,
+                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.total)} MINA (\$356.11)', textAlign: TextAlign.left, maxLines: 2,
                     style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],

@@ -1,6 +1,7 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
+import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -87,7 +88,7 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
                   overflow: TextOverflow.ellipsis,
                   text: TextSpan(children: <TextSpan>[
                     TextSpan(
-                      text: '${formatTokenNumber(accounts[index].balance)} ',
+                      text: '${MinaHelper.getMinaStrByNanoStr(accounts[index].balance)} ',
                       style: TextStyle(fontSize: 22.sp, color: Color(0xff616161))),
                     TextSpan(
                       text: 'MINA',

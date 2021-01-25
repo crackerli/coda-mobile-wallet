@@ -56,12 +56,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     String feePayerAddress = globalHDAccounts.accounts[_sendData.from].address;
     String senderAddress = globalHDAccounts.accounts[_sendData.from].address;
     String receiverAddress = _sendData.to;
-    int fee = _sendBloc.bestFees[_sendBloc.feeIndex].toInt();//getNanoMina(_sendData.fee);
-    int feeToken = 1;
+    BigInt fee = _sendBloc.bestFees[_sendBloc.feeIndex];
+    BigInt feeToken = BigInt.from(1);
     int nonce = _sendBloc.nonce;
     int validUntil = 65535;
-    int tokenId = 1;
-    int amount = getNanoMina(_sendData.amount);
+    BigInt tokenId = BigInt.from(1);
+    BigInt amount = BigInt.tryParse(_sendData.amount);
     int tokenLocked = 0;
 
     Signature signature = await signPayment(MinaHelper.reverse(_accountPrivateKey), memo, feePayerAddress,
@@ -73,9 +73,9 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['from'] = _sendBloc.from;
     variables['to'] = _sendBloc.to;
-    variables['amount'] = getNanoMina(_sendBloc.amount);
+    variables['amount'] = _sendBloc.amount;
     variables['memo'] = _sendBloc.memo;
-    variables['fee'] = _sendBloc.bestFees[_sendBloc.feeIndex].toInt();//.toString();//getNanoMina(_sendBloc.fee);
+    variables['fee'] = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
     variables['nonce'] = _sendBloc.nonce;
     variables['validUntil'] = 65535;
     ProgressDialog.showProgress(context);
@@ -84,7 +84,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     variables['scalar'] = signature.s;
 
     // Save fee to sendData
-    _sendData.fee = formatTokenBigInt(_sendBloc.bestFees[_sendBloc.feeIndex]);
+    _sendData.fee = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
     ProgressDialog.dismiss(context);
     _sendBloc.add(
       Send(SEND_PAYMENT_MUTATION, variables: variables));
@@ -346,7 +346,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                     textAlign: TextAlign.left,
                     text: TextSpan(children: <TextSpan>[
                       TextSpan(
-                        text: '${_sendData.amount} ',
+                        text: '${MinaHelper.getMinaStrByNanoStr(_sendData.amount)} ',
                         style: TextStyle(fontSize: 20.sp, color: Color(0xff2d2d2d))),
                       TextSpan(
                         text: 'MINA',
@@ -385,11 +385,11 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _buildFeeItem(0, 0 == feeIndex, 'MODERATE',
-                formatTokenAsFixed(bestFees[0], 3), '\$0.05'),
+                formatFeeAsFixed(bestFees[0], 3), '\$0.05'),
               _buildFeeItem(1, 1 == feeIndex, 'FAST',
-                formatTokenAsFixed(bestFees[1], 3), '\$0.07'),
+                formatFeeAsFixed(bestFees[1], 3), '\$0.07'),
               _buildFeeItem(2, 2 == feeIndex, 'VERY FAST',
-                formatTokenAsFixed(bestFees[2], 3), '\$0.07')
+                formatFeeAsFixed(bestFees[2], 3), '\$0.07')
             ],
           )
         )

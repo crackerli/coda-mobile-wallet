@@ -1,17 +1,19 @@
 import 'package:coda_wallet/global/global.dart';
+import 'package:ffi_mina_signer/util/mina_helper.dart';
 
 String getWalletBalance() {
   if(globalHDAccounts == null
-      || globalHDAccounts.accounts == null
-      || globalHDAccounts.accounts.length == 0) {
+    || globalHDAccounts.accounts == null
+    || globalHDAccounts.accounts.length == 0) {
     return '0';
   }
-  double walletBalance = 0.0;
+
+  BigInt walletBalance = BigInt.from(0);
   for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
-    double balance = double.parse(globalHDAccounts.accounts[i].balance);
+    BigInt balance = BigInt.tryParse(globalHDAccounts.accounts[i].balance);
     walletBalance = balance + walletBalance;
   }
-  return (walletBalance / 1000000000).toString();
+  return MinaHelper.getMinaStrByNanoNum(walletBalance);
 }
 
 String getWalletPrice() {

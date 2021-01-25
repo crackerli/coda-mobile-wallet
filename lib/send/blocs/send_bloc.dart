@@ -126,7 +126,7 @@ class SendBloc extends
       }
 
       List<dynamic> feesStr = result.data['pooledUserCommands'] as List<dynamic>;
-      List<BigInt> fees = List.generate(feesStr.length, (index) => BigInt.parse(feesStr[index]['fee']));
+      List<BigInt> fees = List.generate(feesStr.length, (index) => BigInt.tryParse(feesStr[index]['fee']));
       _calcBestFees(fees);
       yield GetPooledFeeSuccess(bestFees);
     } catch (e) {

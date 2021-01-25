@@ -4,6 +4,7 @@ import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -23,6 +24,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   List<Widget> _keys;
   List<String> _inputAmount;
   StringBuffer _amountBuffer;
+  String _amountStr;
   String _fiatPrice = '\$0.00';
   SendData _sendData;
   bool _validInput = false;
@@ -86,7 +88,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 textAlign: TextAlign.right,
                 text: TextSpan(children: <TextSpan>[
                   TextSpan(
-                    text: '${formatTokenNumber(globalHDAccounts.accounts[_sendData.from].balance)} ',
+                    text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts[_sendData.from].balance)} ',
                       style: TextStyle(fontSize: 16.sp, color: Colors.black)
                   ),
                   TextSpan(
@@ -113,7 +115,10 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
           Positioned(
             bottom: 60.h,
             child: InkWell(
-              onTap: _validInput ? () => _gotoSendFee(context, _sendData) : null,
+              onTap: _validInput ? () {
+                _sendData.amount = MinaHelper.getNanoStrByMinaStr(_amountStr);
+                _gotoSendFee(context, _sendData);
+              } : null,
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
                 decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
@@ -137,7 +142,8 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
     _fiatPrice = _formatFiatPrice();
     try {
       double sendAmount = double.parse(_amountBuffer.toString());
-      _sendData.amount = _amountBuffer.toString();
+      //_sendData.amount = _amountBuffer.toString();
+      _amountStr = _amountBuffer.toString();
       if(sendAmount == 0.0) {
         _validInput = false;
       } else {

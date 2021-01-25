@@ -12,6 +12,7 @@ import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/dialog/bottom_sheet_txn_filter_dialog.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -275,8 +276,8 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
       userCommand.from,
       userCommand.to,
       userCommand.dateTime,
-      formatTokenBigInt(BigInt.parse(userCommand.amount)),
-      formatTokenBigInt(BigInt.parse(userCommand.fee)),
+      userCommand.amount,
+      userCommand.fee,
       userCommand.memo,
       userCommand.isPooled ? TxnStatus.PENDING : TxnStatus.CONFIRMED,
       txnType);
@@ -364,7 +365,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text('${formatTokenNumber(command.amount)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 18.sp)),
+                Text('${MinaHelper.getMinaStrByNanoStr(command.amount)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 18.sp)),
                 Text('\$65.34', textAlign: TextAlign.right, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575)))
               ]
             ),

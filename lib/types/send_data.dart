@@ -2,6 +2,6 @@ class SendData {
   int from;
   String to;
   String memo;
-  String amount;
-  String fee;
+  String amount; // Always be nano mina string
+  String fee; // Always be nano mina string
 }

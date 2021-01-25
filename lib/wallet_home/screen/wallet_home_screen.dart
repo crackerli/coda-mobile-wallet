@@ -9,6 +9,7 @@ import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_events.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_states.dart';
+import 'package:coda_wallet/widget/dialog/encrypt_seed_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

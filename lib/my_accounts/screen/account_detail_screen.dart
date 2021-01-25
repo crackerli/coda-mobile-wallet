@@ -1,9 +1,11 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -106,7 +108,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                          text: '${formatTokenNumber(globalHDAccounts.accounts[_accountIndex].balance)} ',
+                          text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts[_accountIndex].balance)} ',
                             style: TextStyle(fontSize: 24.sp, color: Color(0xff2d2d2d))),
                         TextSpan(
                           text: 'MINA',
