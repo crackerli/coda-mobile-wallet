@@ -128,8 +128,8 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
 
   @override
   void dispose() {
-    _focusNode.dispose();
-    _editingController.dispose();
+    _focusNode?.dispose();
+    _editingController?.dispose();
     super.dispose();
   }
 
@@ -138,7 +138,7 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
-      appBar: buildNoTitleAppBar(context, actions: false),
+      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),
       body: Padding(
         padding: EdgeInsets.only(left: 24.w, right: 24.w),
         child: KeyboardActions(

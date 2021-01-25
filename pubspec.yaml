@@ -99,6 +99,8 @@ flutter:
     - images/password_unlock_logo.png
     - images/import_wallet_bg.png
     - images/mina_logo_white_trans.png
+    - images/security_alert_blue.png
+    - images/security_alert_gray.png
 
   fonts:
    - family: Entypo
