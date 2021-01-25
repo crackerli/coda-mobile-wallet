@@ -97,6 +97,8 @@ flutter:
     - images/password_hide.png
     - images/password_show.png
     - images/password_unlock_logo.png
+    - images/import_wallet_bg.png
+    - images/mina_logo_white_trans.png
 
   fonts:
    - family: Entypo

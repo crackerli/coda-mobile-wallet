@@ -1,4 +1,5 @@
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -31,7 +32,18 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: null,
-        body: SafeArea(child: _buildNoWalletBody())
+        body: SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                alignment: Alignment.bottomCenter,
+                image: AssetImage('images/import_wallet_bg.png',),
+                fit: BoxFit.fitWidth
+              ),
+            ),
+            child: _buildNoWalletBody()
+          )
+        )
       )
     );
   }
@@ -42,20 +54,29 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RaisedButton(
-          padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-          onPressed: () => Navigator.pushNamed(context, RecoveryPhraseRoute, arguments: null),
-          color: Colors.blueAccent,
-          child: Text('New Wallet', style: TextStyle(color: Colors.white),)
+        Container(height: 100.h,),
+        Image.asset('images/mina_logo_white_trans.png', width: 104.w, height: 95.h,),
+        Container(height: 26.h,),
+        Text('Mina Wallet', textAlign: TextAlign.center, style: TextStyle(fontSize: 28.sp, color: Colors.white)),
+        Container(height: 132.h,),
+        InkWell(
+          onTap: () => Navigator.pushNamed(context, RecoveryPhraseRoute, arguments: null),
+          child: Container(
+            padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 60.w, right: 60.w),
+            decoration: getMinaButtonDecoration(topColor: Color(0xffffffff)),
+            child: Text('CREATE NEW WALLET',
+            textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+          )
         ),
-        Container(height: 16.h,),
-        RaisedButton(
-          padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 80, right: 80),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-          onPressed: () => Navigator.pushNamed(context, ImportRecoveryPhraseRoute, arguments: null),
-          color: Colors.blueAccent,
-          child: Text('Import Wallet', style: TextStyle(color: Colors.white),)
+        Container(height: 26.h,),
+        InkWell(
+          onTap: () => Navigator.pushNamed(context, ImportRecoveryPhraseRoute, arguments: null),
+          child: Container(
+            padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 64.w, right: 64.w),
+            decoration: getMinaButtonDecoration(topColor: Color(0xffd9d9d9)),
+            child: Text('RESTORE A WALLET',
+              textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+          )
         ),
       ]
     );
