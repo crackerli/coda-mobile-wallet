@@ -2,6 +2,7 @@ import 'package:coda_wallet/my_accounts/screen/account_detail_screen.dart';
 import 'package:coda_wallet/my_accounts/screen/create_account_screen.dart';
 import 'package:coda_wallet/my_accounts/screen/edit_account_screen.dart';
 import 'package:coda_wallet/my_accounts/screen/my_accounts_screen.dart';
+import 'package:coda_wallet/new_user_onboard/screen/encrypt_seed_screen.dart';
 import 'package:coda_wallet/new_user_onboard/screen/import_recovery_phrase_screen.dart';
 import 'package:coda_wallet/new_user_onboard/screen/no_wallet_screen.dart';
 import 'package:coda_wallet/new_user_onboard/screen/recovery_phrase_screen.dart';
@@ -36,6 +37,7 @@ const MyAccountsRoute = '/MyAccountsScreen';
 const AccountDetailRoute = '/AccountDetailScreen';
 const CreateAccountRoute = '/CreateAccountScreen';
 const EditAccountRoute = '/EditAccountScreen';
+const EncryptSeedRoute = '/EncryptSeedScreen';
 
 var globalRoutes = {
   '$SendFromRoute': (context) => SendFromScreen(),
@@ -60,4 +62,5 @@ var globalRoutes = {
   '$AccountDetailRoute': (context) => AccountDetailScreen(),
   '$CreateAccountRoute': (context) => CreateAccountScreen(),
   '$EditAccountRoute': (context) => EditAccountScreen(),
+  '$EncryptSeedRoute': (context) => EncryptSeedScreen(),
 };
