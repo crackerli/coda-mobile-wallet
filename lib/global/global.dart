@@ -34,7 +34,7 @@ String exceptionHandle<T>(QueryResult result) {
     if(result.exception == null ||
       result.exception.graphqlErrors == null ||
       result.exception.graphqlErrors.length == 0) {
-      return 'Network Error';
+      return 'Network Error, Please Check Network Connectivity And Try Again';
     }
   }
   GraphQLError error = result.exception?.graphqlErrors[0];

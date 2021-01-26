@@ -12,6 +12,7 @@ import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/dialog/bottom_sheet_txn_filter_dialog.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -422,15 +423,21 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(error),
-          Container(height: 8.h,),
-          RaisedButton(
-            padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 40.w, right: 40.w),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-            onPressed: _refreshTxns,
-            color: Colors.blueAccent,
-            child: Text('Retry', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-          )
+          Padding(
+            padding: EdgeInsets.only(),
+            child: Text(error, textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 18.sp),),
+          ),
+          Container(height: 16.h,),
+          InkWell(
+            onTap: _refreshTxns,
+            child: Container(
+              padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
+              decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
+              child: Text('TRY AGAIN',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+            )
+          ),
         ]
       ),
     );
