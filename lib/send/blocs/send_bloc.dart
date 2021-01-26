@@ -226,7 +226,12 @@ class SendBloc extends
       if(null == result.data['account']['nonce']) {
         nonce = 0;
       } else {
-        nonce = int.parse(result.data['account']['nonce']);
+        if(null == result.data['account']['inferredNonce']) {
+          nonce = int.tryParse(result.data['account']['nonce']);
+        } else {
+          // Always using inferred nonce if it is not null
+          nonce = int.tryParse(result.data['account']['inferredNonce']);
+        }
       }
       yield GetNonceSuccess();
     } catch (e) {
