@@ -126,10 +126,10 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
                 children: <TextSpan>[
                   TextSpan(
                     text: '${index + 1} ',
-                    style: TextStyle(fontSize: 14.sp, color: Color(0xff9e9e9e))),
+                    style: TextStyle(fontSize: 16.sp, color: Color(0xff9e9e9e))),
                   TextSpan(
                     text: '${words[index]}',
-                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 14.sp)),
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 16.sp)),
                 ]
               )
             );
