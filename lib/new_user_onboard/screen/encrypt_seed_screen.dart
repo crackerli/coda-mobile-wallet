@@ -30,36 +30,50 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
   TextEditingController _controllerConfirm;
   bool _showOrigin = false;
   bool _showConfirm = false;
+  bool _alertChecked = false;
   String _mnemonic;
-  bool _inputValidated = false;
+  bool _buttonEnabled = false;
 
-  _checkPassword(BuildContext context) {}
-
-  _processMnemonicWords(BuildContext context) async {
-    // if(_editingController.text.isEmpty) {
-    //   return;
-    // }
-    //
-    // List<String> tmp = _editingController.text.trim().split(' ');
-    // tmp.remove("");
-    // List<String> mnemonicList = List<String>();
-    // for(int i = 0; i < tmp.length; i++) {
-    //   if(tmp[i] != '') {
-    //     mnemonicList.add(tmp[i].trim());
-    //   }
-    // }
-    //_mnemonic = mnemonicList.join(' ');
-    //   _mnemonic = 'course grief vintage slim tell hospital car maze model style elegant kitchen state purpose matrix gas grid enable frown road goddess glove canyon key';
-    bool validateRet = validateMnemonic(_mnemonic);
-    if(!validateRet) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Can not find any accounts under this seed!!')));
+  _checkPassword(BuildContext context) {
+    if(_controllerOrigin.text == null || _controllerOrigin.text.isEmpty) {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid password!')));
       return;
     }
+
+    if(_controllerConfirm.text == null || _controllerConfirm.text.isEmpty) {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid password')));
+      return;
+    }
+
+    if(_controllerConfirm.text != _controllerOrigin.text) {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Passwords are inconsistent!')));
+      return;
+    }
+
+    _processMnemonicWords(context);
+  }
+
+  _checkInput(BuildContext context) {
+    if(_alertChecked &&
+      _controllerOrigin.text != null &&
+      _controllerConfirm.text != null &&
+      _controllerConfirm.text.isNotEmpty &&
+      _controllerOrigin.text.isNotEmpty) {
+      _buttonEnabled = true;
+    } else {
+      _buttonEnabled = false;
+    }
+    setState(() {
+
+    });
+  }
+
+  _processMnemonicWords(BuildContext context) async {
     print('[import wallet]: start convert mnemonic words to seed');
     ProgressDialog.showProgress(context);
-    Uint8List seed = await mnemonicToSeed(_mnemonic.toString());
+    Uint8List seed = await mnemonicToSeed(_mnemonic);
     print('[import wallet]: start to encrypted seed');
-    globalEncryptedSeed = encryptSeed(seed, '1234');
+    globalEncryptedSeed = encryptSeed(seed, _controllerConfirm.text);
     print('[import wallet]: save seed String');
     globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed);
 
@@ -128,7 +142,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
         Text('Create Password', textAlign: TextAlign.left, style: TextStyle(fontSize: 28.sp, color: Color(0xff2d2d2d)),),
         Container(height: 26.h,),
         Container(
-        padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 15.h, bottom: 15.h),
+        padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 15.h, bottom: 15.h),
         child: Row(children: [
           Container(width: 8,),
           Expanded(
@@ -138,14 +152,14 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
               focusNode: _focusNodeOrigin,
               controller: _controllerOrigin,
               onChanged: (text) {
-
+                _checkInput(context);
               },
               maxLines: 1,
               obscureText: _showOrigin ? false : true,
               keyboardType: TextInputType.text,
               autofocus: false,
               decoration: InputDecoration.collapsed(
-                hintText: 'Please input seed password',
+                hintText: 'Password',
                 hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
             )
           ),
@@ -156,8 +170,8 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
                 _showOrigin = !_showOrigin;
               });
             },
-            child: _showOrigin ? Image.asset('images/password_show.png', width: 20.w, height: 20.w,)
-              : Image.asset('images/password_hide.png', width: 20.w, height: 20.w,),
+            child: _showOrigin ? Image.asset('images/pwd_hide.png', width: 20.w, height: 20.w,)
+              : Image.asset('images/pwd_show.png', width: 20.w, height: 20.w,),
           ),
           Container(width: 8.w,)]),
           decoration: BoxDecoration(
@@ -168,7 +182,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
         ),
         Container(height: 12.h,),
         Container(
-          padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 15.h, bottom: 15.h),
+          padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 15.h, bottom: 15.h),
           child: Row(children: [
             Container(width: 8,),
             Expanded(
@@ -178,14 +192,14 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
                 focusNode: _focusNodeConfirm,
                 controller: _controllerConfirm,
                 onChanged: (text) {
-
+                  _checkInput(context);
                 },
                 maxLines: 1,
                 obscureText: _showConfirm ? false : true,
                 keyboardType: TextInputType.text,
                 autofocus: false,
                 decoration: InputDecoration.collapsed(
-                  hintText: 'Please input seed password',
+                  hintText: 'Confirm Password',
                   hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
                 )
               ),
@@ -196,8 +210,8 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
                     _showConfirm = !_showConfirm;
                   });
                 },
-                child: _showConfirm ? Image.asset('images/password_show.png', width: 20.w, height: 20.w,)
-                  : Image.asset('images/password_hide.png', width: 20.w, height: 20.w,),
+                child: _showConfirm ? Image.asset('images/pwd_hide.png', width: 20.w, height: 20.w,)
+                  : Image.asset('images/pwd_show.png', width: 20.w, height: 20.w,),
               ),
               Container(width: 8.w,),
             ],
@@ -214,7 +228,13 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Image.asset('images/security_alert_blue.png', width: 28.w, height: 28.w,),
+            InkWell(
+              onTap: () {
+                _alertChecked = !_alertChecked;
+                _checkInput(context);
+              },
+              child: Image.asset(_alertChecked ? 'images/security_alert_blue.png' : 'images/security_alert_gray.png', width: 28.w, height: 28.w,),
+            ),
             Container(width: 14.w,),
             Flexible(
               child: Text('I understand that if I lose my password, I will not be able to access my funds.',
@@ -226,13 +246,13 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
         Builder(builder: (context) =>
           Center(child:
             InkWell(
-              onTap: _inputValidated ? () => _checkPassword(context) : null,
+              onTap: _buttonEnabled ? () => _checkPassword(context) : null,
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
-                decoration: getMinaButtonDecoration(topColor: Color(_inputValidated ? 0xffeeeeee : 0x4deeeeee)),
+                decoration: getMinaButtonDecoration(topColor: Color(_buttonEnabled ? 0xffeeeeee : 0x4deeeeee)),
                 child: Text('NEXT',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(_inputValidated ? 0xff2d2d2d : 0x4d2d2d2d))),
+                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(_buttonEnabled ? 0xff2d2d2d : 0x4d2d2d2d))),
               )
             ),
           )

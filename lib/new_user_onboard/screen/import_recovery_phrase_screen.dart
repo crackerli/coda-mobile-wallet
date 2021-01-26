@@ -81,44 +81,6 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
     }
   }
 
-  _processMnemonicWords(BuildContext context) async {
-    if(_editingController.text.isEmpty) {
-      return;
-    }
-
-    List<String> tmp = _editingController.text.trim().split(' ');
-    tmp.remove("");
-    List<String> mnemonicList = List<String>();
-    for(int i = 0; i < tmp.length; i++) {
-      if(tmp[i] != '') {
-        mnemonicList.add(tmp[i].trim());
-      }
-    }
-    _mnemonic = mnemonicList.join(' ');
- //   _mnemonic = 'course grief vintage slim tell hospital car maze model style elegant kitchen state purpose matrix gas grid enable frown road goddess glove canyon key';
-    bool validateRet = validateMnemonic(_mnemonic);
-    if(!validateRet) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Can not find any accounts under this seed!!')));
-      return;
-    }
-    print('[import wallet]: start convert mnemonic words to seed');
-    ProgressDialog.showProgress(context);
-    Uint8List seed = await mnemonicToSeed(_mnemonic.toString());
-    print('[import wallet]: start to encrypted seed');
-    globalEncryptedSeed = encryptSeed(seed, '1234');
-    print('[import wallet]: save seed String');
-    globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed);
-
-    print('[import wallet]: start to derive account');
-    List<AccountBean> accounts = await deriveDefaultAccount(seed);
-    globalHDAccounts.accounts = accounts;
-    Map accountsJson = globalHDAccounts.toJson();
-    globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
-    ProgressDialog.dismiss(context);
-    Navigator.popUntil(context, (route) => route.isFirst);
-    eventBus.fire(UpdateAccounts());
-  }
-
   @override
   void initState() {
     super.initState();

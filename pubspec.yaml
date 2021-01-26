@@ -101,6 +101,8 @@ flutter:
     - images/mina_logo_white_trans.png
     - images/security_alert_blue.png
     - images/security_alert_gray.png
+    - images/pwd_show.png
+    - images/pwd_hide.png
 
   fonts:
    - family: Entypo
