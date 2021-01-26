@@ -91,8 +91,8 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
                       _showPassword = !_showPassword;
                     });
                   },
-                  child: _showPassword ? Image.asset('images/pwd_show.png', width: 20.w, height: 20.w,)
-                    : Image.asset('images/pwd_hide.png', width: 20.w, height: 20.w,),
+                  child: _showPassword ? Image.asset('images/pwd_hide.png', width: 20.w, height: 20.w,)
+                    : Image.asset('images/pwd_show.png', width: 20.w, height: 20.w,),
                 ),
                 Container(width: 8.w,),
               ],
