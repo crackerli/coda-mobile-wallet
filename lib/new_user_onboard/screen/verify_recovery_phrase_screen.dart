@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/account_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
@@ -38,42 +39,29 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   String _mnemonic;
   List<MnemonicBody> _mnemonicTips = List<MnemonicBody>();
   List<String> _mnemonicsFilled = List<String>();
+  bool _buttonEnabled = false;
 
-  bool _verifyWords() {
+  _verifyWords(BuildContext context) {
+    if(_mnemonicsFilled == null || _mnemonicsFilled.isEmpty || _mnemonicsFilled.length < 12) {
+      setState(() {
+        _buttonEnabled = false;
+      });
+      return;
+    }
     List<String> words = _mnemonic.split(' ');
     for(int i = 0; i < _mnemonicsFilled.length; i++) {
       if(words[i] != _mnemonicsFilled[i]) {
-        return false;
+        setState(() {
+          _buttonEnabled = false;
+        });
+        return;
       }
     }
 
-    bool validateRet = validateMnemonic(_mnemonicsFilled.join(' '));
-    return validateRet;
-  }
-
-  _handleSeed(BuildContext context) async {
-    bool verifyRet = _verifyWords();
-    if(verifyRet) {
-      print('[new wallet]: start convert mnemonic words to seed');
-      ProgressDialog.showProgress(context);
-
-      Uint8List seed = await mnemonicToSeed(_mnemonic.toString());
-      print('[new wallet]: start to encrypted seed');
-      globalEncryptedSeed = encryptSeed(seed, '1234');
-      print('[new wallet]: save seed String');
-      globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed);
-
-      print('[new wallet]: start to derive account');
-      List<AccountBean> accounts = await deriveDefaultAccount(seed);
-      globalHDAccounts.accounts = accounts;
-      Map accountsJson = globalHDAccounts.toJson();
-      globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
-      ProgressDialog.dismiss(context);
-      Navigator.popUntil(context, (route) => route.isFirst);
-      eventBus.fire(UpdateAccounts());
-    } else {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Wrong input words')));
-    }
+    setState(() {
+      _buttonEnabled = true;
+    });
+    return;
   }
 
   _createRandomMnemonics() {
@@ -99,7 +87,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
     _mnemonicsFilled.clear();
     _mnemonicsFilled.add(_inputRecoveryPhrasesTip);
     setState(() {
-
+      _buttonEnabled = false;
     });
   }
 
@@ -149,19 +137,12 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
             )
           ),
-          // RaisedButton(
-          //   padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
-          //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-          //   onPressed: _clearInputWords,
-          //   color: Colors.blueAccent,
-          //   child: Text('Clear', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-          // ),
         ]),
-        Positioned(
+        _buttonEnabled ? Positioned(
           bottom: 84.h,
           child: Builder(builder: (context) =>
             InkWell(
-              onTap: null,
+              onTap: () => Navigator.pushNamed(context, EncryptSeedRoute, arguments: _mnemonic),
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
                 decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
@@ -170,14 +151,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
               )
             )
-          // RaisedButton(
-          //   padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 100.w, right: 100.w),
-          //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-          //   onPressed: () => _handleSeed(context),
-          //   color: Colors.blueAccent,
-          //   child: Text('Confirm', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-          // ),
-        ))
+        )) : Container()
       ],
     );
   }
@@ -238,8 +212,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
               } else {
                 _mnemonicsFilled.add(_mnemonicTips[index].word);
               }
-              setState(() {
-              });
+              _verifyWords(context);
             },
           );
         })
