@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void showDecryptSeedDialog(
   BuildContext context,
+  String from
 ) {
   showDialog(
     context: context,
@@ -14,7 +15,7 @@ void showDecryptSeedDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5.w))
         ),
-        child: PasswordInputWidget()
+        child: PasswordInputWidget(from)
       );
     }
   );

@@ -1,11 +1,13 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class PasswordInputWidget extends StatefulWidget {
-  PasswordInputWidget({Key key}) : super(key: key);
+  String _from;
+  PasswordInputWidget(this._from, {Key key}) : super(key: key);
 
   @override
   _PasswordInputWidgetState createState() => _PasswordInputWidgetState();
@@ -89,8 +91,8 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
                       _showPassword = !_showPassword;
                     });
                   },
-                  child: _showPassword ? Image.asset('images/password_show.png', width: 20.w, height: 20.w,)
-                    : Image.asset('images/password_hide.png', width: 20.w, height: 20.w,),
+                  child: _showPassword ? Image.asset('images/pwd_show.png', width: 20.w, height: 20.w,)
+                    : Image.asset('images/pwd_hide.png', width: 20.w, height: 20.w,),
                 ),
                 Container(width: 8.w,),
               ],
@@ -108,7 +110,11 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
                 return;
               }
               FocusScope.of(context).unfocus();
-              eventBus.fire(SendPasswordInput(_editingControllerPassword.text));
+              if(widget._from == SendFeeRoute) {
+                eventBus.fire(SendPasswordInput(_editingControllerPassword.text));
+              } else if(widget._from == CreateAccountRoute) {
+                eventBus.fire(NewAccountPasswordInput(_editingControllerPassword.text));
+              }
               Navigator.of(context).pop();
             },
             child: Container(

@@ -4,9 +4,11 @@ import 'dart:typed_data';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/account_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/dialog/decrypt_seed_dialog.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
@@ -24,14 +26,21 @@ class CreateAccountScreen extends StatefulWidget {
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   FocusNode _focusNodeAccount = FocusNode();
   TextEditingController _accountController = TextEditingController();
+  var _eventBusOn;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    _eventBusOn = eventBus.on<NewAccountPasswordInput>().listen((event) {
+      _deriveNewAccount(event.password);
+    });
   }
 
   @override
   void dispose() {
+    _eventBusOn.cancel();
+    _eventBusOn = null;
     _focusNodeAccount?.dispose();
     _accountController?.dispose();
     super.dispose();
@@ -42,6 +51,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     print('CreateAccountScreen: build(context: $context)');
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xfff5f5f5),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),
@@ -84,7 +94,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         Container(height: 19.h,),
         Center(
           child: InkWell(
-          onTap: () => _deriveNewAccount(context),
+          onTap: () => showDecryptSeedDialog(context, CreateAccountRoute),//_deriveNewAccount(context),
           child: Container(
             padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
             decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
@@ -139,8 +149,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     );
   }
 
-  _deriveNewAccount(BuildContext context) async {
-    Uint8List seed = decryptSeed(globalEncryptedSeed, '1234');
+  _deriveNewAccount(String password) async {
+    Uint8List seed;
+    try {
+      seed = decryptSeed(globalEncryptedSeed, password);
+    } catch(error) {
+      print('password not right');
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(content: Text('Wrong password')));
+      return;
+    }
     ProgressDialog.showProgress(context);
     String accountName = '';
     if(null == _accountController.text || _accountController.text.isEmpty) {

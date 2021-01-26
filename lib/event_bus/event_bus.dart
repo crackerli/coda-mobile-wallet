@@ -29,3 +29,9 @@ class SendPasswordInput {
 
   SendPasswordInput(this.password);
 }
+
+class NewAccountPasswordInput {
+  final String password;
+
+  NewAccountPasswordInput(this.password);
+}

@@ -101,7 +101,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     if(_sendBloc.feeIndex == -1) {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Please choose fee!!')));
     } else {
-      showDecryptSeedDialog(context);
+      showDecryptSeedDialog(context, SendFeeRoute);
     }
   }
 
