@@ -60,7 +60,7 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
         Text('Mina Wallet', textAlign: TextAlign.center, style: TextStyle(fontSize: 28.sp, color: Colors.white)),
         Container(height: 132.h,),
         InkWell(
-          onTap: () => Navigator.pushNamed(context, RecoveryPhraseRoute, arguments: null),
+          onTap: () => Navigator.pushNamed(context, NewWalletAlertRoute, arguments: null),
           child: Container(
             padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 60.w, right: 60.w),
             decoration: getMinaButtonDecoration(topColor: Color(0xffffffff)),
