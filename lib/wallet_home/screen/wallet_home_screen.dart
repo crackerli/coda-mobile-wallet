@@ -38,7 +38,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   AccountBloc _accountBloc;
   var _eventBusOn;
 
-  _updateAccounts() {
+  _updateAccounts({bool newRoute = false}) {
     bool newUser;
     if(null == globalEncryptedSeed || globalEncryptedSeed.isEmpty) {
       newUser = true;
@@ -46,7 +46,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       newUser = false;
     }
 
-    if(newUser) {
+    if(newUser && newRoute) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushNamed(context, NoWalletRoute);
       });
@@ -62,7 +62,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _accountBloc = BlocProvider.of<AccountBloc>(context);
-    _updateAccounts();
+    _updateAccounts(newRoute: true);
     _eventBusOn = eventBus.on<UpdateAccounts>().listen((event) {
       _updateAccounts();
     });

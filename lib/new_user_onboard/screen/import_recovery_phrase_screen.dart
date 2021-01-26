@@ -1,14 +1,6 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:ui';
-import 'package:coda_wallet/constant/constants.dart';
-import 'package:coda_wallet/event_bus/event_bus.dart';
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/types/mina_hd_account_type.dart';
-import 'package:coda_wallet/util/account_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
-import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';

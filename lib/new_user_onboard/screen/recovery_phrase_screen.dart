@@ -34,8 +34,8 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: buildNoTitleAppBar(context, actions: false),
+      backgroundColor: Color(0xfff5f5f5),
+      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),
       body: Padding(
         padding: EdgeInsets.only(left: 28.w, right: 28.w),
         child: _buildRecoveryPhraseBody()
