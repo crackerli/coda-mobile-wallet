@@ -26,6 +26,7 @@ class _MyAccountsScreenState extends State<MyAccountsScreen> {
 
   @override
   void dispose() {
+    print('MyAccountsScreen: dispose()');
     _eventBusOn.cancel();
     _eventBusOn = null;
     super.dispose();

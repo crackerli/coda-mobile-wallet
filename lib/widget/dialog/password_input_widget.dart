@@ -45,8 +45,8 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
           KeyboardActionsItem(focusNode: _focusNodePassword)
         ]
       ),
-      child: Container(
-      height: 200,
+      child: IntrinsicHeight(child:
+      Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(5.w)),
         color: Colors.white
@@ -80,8 +80,8 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
                     keyboardType: TextInputType.text,
                     autofocus: false,
                     decoration: InputDecoration.collapsed(
-                      hintText: 'Please input seed password',
-                      hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
+                      hintText: 'Input seed password',
+                      hintStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
                   )
                 ),
                 Container(width: 4.w,),
@@ -125,6 +125,6 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
             ),
           )
         ],
-    )));
+    ))));
   }
 }
