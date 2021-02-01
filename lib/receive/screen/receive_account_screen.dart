@@ -73,7 +73,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
             borderRadius: BorderRadius.circular(7.w),
             shape: BoxShape.rectangle,
           ),
-          padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 13.h, bottom: 13.h),
+          padding: EdgeInsets.only(left: 12.w, right: 12.w, top: 13.h, bottom: 13.h),
           margin: EdgeInsets.only(left: 51.w, right: 51.w),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -89,10 +89,10 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
                   },
                 )
               ),
-              Container(width: 20.w),
+              Container(width: 8.w),
               Flexible(child:
                 Text(address, textAlign: TextAlign.left, softWrap: true,
-                  style: TextStyle(fontSize: 12.sp, color: Color(0xff786666)), maxLines: 2)),
+                  style: TextStyle(fontSize: 12.sp, color: Color(0xff786666)), maxLines: 3)),
             ],
           )
         ),
