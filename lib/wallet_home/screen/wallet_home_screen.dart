@@ -282,7 +282,10 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           Expanded(
             flex: 1,
             child: InkWell(
-              child: Text('SEND', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+              child: Container(
+                padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 6.h, bottom: 6.h),
+                child: Text('SEND', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+              ),
               onTap: () => _gotoSendFromScreen(context),
             )
           ),
@@ -290,7 +293,10 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           Expanded(
             flex: 1,
             child: InkWell(
-              child: Text('RECEIVE', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+              child: Container(
+                padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 6.h, bottom: 6.h),
+                child: Text('RECEIVE', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+              ),
               onTap: () => _gotoReceiveAccountsScreen(context)
             )
           ),
@@ -299,7 +305,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       width: 263.w,
       height: 49.h,
       decoration: getMinaButtonDecoration(),
-      margin: EdgeInsets.all(10),
+//      margin: EdgeInsets.all(10),
     );
   }
 
