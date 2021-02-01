@@ -1,7 +1,6 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/send_data.dart';
-import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
@@ -28,6 +27,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   String _fiatPrice = '\$0.00';
   SendData _sendData;
   bool _validInput = false;
+  BigInt _balance = BigInt.from(0);
 
   String _formatFiatPrice() {
     return '\$$_amountBuffer';
@@ -54,6 +54,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     _sendData = ModalRoute.of(context).settings.arguments;
+    _balance = BigInt.tryParse(globalHDAccounts.accounts[_sendData.from].balance);
     _keys = List.generate(_keyString.length, (index) => _buildKey(index));
     return Scaffold(
       backgroundColor: Colors.white,
@@ -112,13 +113,21 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
               _buildDecimalKeyboard(),
             ],)
           ),
+          Builder(builder: (context) =>
           Positioned(
             bottom: 60.h,
             child: InkWell(
               onTap: _validInput ? () {
-                _sendData.amount = MinaHelper.getNanoStrByMinaStr(_amountStr);
-                _gotoSendFee(context, _sendData);
-              } : null,
+                BigInt nanoAmount = MinaHelper.getNanoNumByMinaStr(_amountStr);
+                if(nanoAmount > _balance) {
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Not enough balance')));
+                } else {
+                  _sendData.amount = MinaHelper.getNanoStrByMinaStr(_amountStr);
+                  _gotoSendFee(context, _sendData);
+                }
+              } : () {
+                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid input amount!!')));
+              },
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
                 decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
@@ -126,7 +135,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                     textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
               ),
             )
-          ),
+          )),
           Positioned(
             top: 29.h,
             right: 47.w,
@@ -140,11 +149,19 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
     _amountBuffer.clear();
     _amountBuffer.writeAll(_inputAmount);
     _fiatPrice = _formatFiatPrice();
-    try {
-      double sendAmount = double.parse(_amountBuffer.toString());
-      //_sendData.amount = _amountBuffer.toString();
+    // First, use double to confirm if the input is a valid number
+    double sendAmount = double.tryParse(_amountBuffer.toString());
+    if(null == sendAmount) {
+      // Invalid user input
+      _validInput = false;
+      setState(() {
+
+      });
+      return;
+    } else {
+      // User input is valid number
       _amountStr = _amountBuffer.toString();
-      if(sendAmount == 0.0) {
+      if (sendAmount == 0.0) {
         _validInput = false;
       } else {
         _validInput = true;
@@ -152,11 +169,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
       setState(() {
 
       });
-    } catch(e) {
-      _validInput = false;
-      setState(() {
-
-      });
+      return;
     }
   }
 
