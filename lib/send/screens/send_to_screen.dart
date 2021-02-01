@@ -39,13 +39,24 @@ class _SendToScreenState extends State<SendToScreen> {
     setState(() {});
   }
 
+  _base58Check(String src) {
+    if(src.length != 55 || src.substring(0, 4) != 'B62q') {
+      return false;
+    }
+
+    return true;
+  }
+
   _checkInputValidation() {
-    if(_sendData.to == null || _sendData.to.isEmpty) {
+    if(_sendData.to == null || _sendData.to.isEmpty || !_base58Check(_sendData.to)) {
       setState(() {
         _validInput = false;
       });
     } else {
-      _sendData.memo = '';
+      if(_memoController.text == null || _memoController.text.isEmpty) {
+        _sendData.memo = '';
+      }
+
       _gotoSendAmount(context, _sendData);
     }
   }
@@ -149,7 +160,7 @@ class _SendToScreenState extends State<SendToScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Text('You must enter an address',
+          Text('You must enter a valid address',
             textAlign: TextAlign.right, style: TextStyle(fontSize: 16.sp, color: _validInput ? Colors.transparent : Colors.red)),
         ],
       )
