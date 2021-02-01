@@ -102,13 +102,13 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
               Container(
                 height: 54.h,
                 child: Center(
-                  child: Text(_amountBuffer.toString(), textAlign: TextAlign.left, maxLines: 1, overflow: TextOverflow.visible,
-                    style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.normal, color: Colors.black))
+                  child: Text(_amountBuffer.toString(), textAlign: TextAlign.left, maxLines: 2, overflow: TextOverflow.visible,
+                    style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.normal, color: Colors.black))
                 )
               ),
               Container(height: 6.h,),
               Text(_fiatPrice, textAlign: TextAlign.left, maxLines: 1,
-                style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.normal, color: Color(0xff979797))),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.normal, color: Color(0xff979797))),
               Container(height: 20.h),
               _buildDecimalKeyboard(),
             ],)
@@ -176,7 +176,9 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
 
   _fillAllInput() {
     _amountBuffer.clear();
-    _amountBuffer.write(MinaHelper.getMinaStrByNanoNum(_balance));
+    _inputAmount.clear();
+    _inputAmount.add(MinaHelper.getMinaStrByNanoNum(_balance));
+    _amountBuffer.writeAll(_inputAmount);
     _fiatPrice = _formatFiatPrice();
     _checkInputAmount(_amountBuffer.toString());
   }
