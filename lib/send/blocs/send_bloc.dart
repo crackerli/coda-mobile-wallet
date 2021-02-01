@@ -1,6 +1,5 @@
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/send/blocs/pooled_fee_entity.dart';
 import 'package:coda_wallet/send/blocs/send_events.dart';
 import 'package:coda_wallet/send/blocs/send_states.dart';
 import 'package:coda_wallet/util/format_utils.dart';
@@ -26,6 +25,26 @@ class SendBloc extends
   List<BigInt> bestFees = List<BigInt>();
   // selected fee index
   int feeIndex;
+  // After fee selection, if the balance is less than user input amount+fee, then we should adjust the send amount
+  BigInt get finalAmount {
+    if(null == feeIndex || -1 == feeIndex || null == bestFees || bestFees.isEmpty) {
+      return BigInt.tryParse(amount);
+    }
+
+    BigInt chosenFee = bestFees[feeIndex];
+    BigInt balance = BigInt.tryParse(globalHDAccounts.accounts[account].balance);
+    BigInt inputAmount = BigInt.tryParse(amount);
+    if(null != balance && null != inputAmount) {
+      if(balance < (chosenFee + inputAmount)) {
+        // Adjust send amount
+        return balance - chosenFee;
+      } else {
+        return inputAmount;
+      }
+    } else {
+      return inputAmount;
+    }
+  }
 
   SendBloc(SendStates state) : super(state) {
     _service = CodaService();

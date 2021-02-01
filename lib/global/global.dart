@@ -27,14 +27,18 @@ String getTokenFiatPrice(String tokenNumber) {
 // Global functions
 String exceptionHandle<T>(QueryResult result) {
   if(null == result) {
-    return 'Unknown Error';
+    String error = 'Unknown Error';
+    print(error);
+    return error;
   }
 
   if(result.hasException) {
     if(result.exception == null ||
       result.exception.graphqlErrors == null ||
       result.exception.graphqlErrors.length == 0) {
-      return 'Network Error, Please Check Network Connectivity And Try Again';
+      String error = 'Network Error, Please Check Network Connectivity And Try Again';
+      print(error);
+      return error;
     }
   }
   GraphQLError error = result.exception?.graphqlErrors[0];

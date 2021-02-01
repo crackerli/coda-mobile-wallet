@@ -61,7 +61,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     int nonce = _sendBloc.nonce;
     int validUntil = 65535;
     BigInt tokenId = BigInt.from(1);
-    BigInt amount = BigInt.tryParse(_sendData.amount);
+    BigInt amount = _sendBloc.finalAmount;
     int tokenLocked = 0;
 
     Signature signature = await signPayment(MinaHelper.reverse(_accountPrivateKey), memo, feePayerAddress,
@@ -73,7 +73,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['from'] = _sendBloc.from;
     variables['to'] = _sendBloc.to;
-    variables['amount'] = _sendBloc.amount;
+    variables['amount'] = _sendBloc.finalAmount.toString();
     variables['memo'] = _sendBloc.memo;
     variables['fee'] = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
     variables['nonce'] = _sendBloc.nonce;
@@ -149,6 +149,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     _sendBloc.memo = _sendData.memo;
     _sendBloc.fee = _sendData.fee;
     _sendBloc.to = _sendData.to;
+    _sendBloc.account = _sendData.from;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
@@ -243,7 +244,6 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                 children: [
                   Text(speed, textAlign: TextAlign.center, style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600),),
                   Container(height: 4.h,),
-                  //Text(feeToken, textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp),),
                   RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(children: <TextSpan>[
@@ -346,7 +346,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                     textAlign: TextAlign.left,
                     text: TextSpan(children: <TextSpan>[
                       TextSpan(
-                        text: '${MinaHelper.getMinaStrByNanoStr(_sendData.amount)} ',
+                        text: '${MinaHelper.getMinaStrByNanoNum(_sendBloc.finalAmount)} ',
                         style: TextStyle(fontSize: 20.sp, color: Color(0xff2d2d2d))),
                       TextSpan(
                         text: 'MINA',
