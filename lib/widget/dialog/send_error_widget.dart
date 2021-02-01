@@ -1,0 +1,66 @@
+import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class SendErrorWidget extends StatefulWidget {
+  String _error;
+  SendErrorWidget(this._error, {Key key}) : super(key: key);
+
+  @override
+  _SendErrorWidgetState createState() => _SendErrorWidgetState();
+}
+
+class _SendErrorWidgetState extends State<SendErrorWidget> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    print('SendErrorWidget: build(context: $context)');
+    return Padding(
+      padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 20.h, bottom: 20.h),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(),
+              ),
+              Image.asset('images/close.png', width: 40.w, height: 40.w,),
+            ],
+          ),
+          Image.asset('images/send_error_alert.png', width: 60.w, height: 51.h,),
+          Container(height: 24.h,),
+          Text('Transaction Error', textAlign: TextAlign.center, style: TextStyle(fontSize: 26.sp, color: Color(0xff2d2d2d)),),
+          Container(height: 15.h,),
+          Text(widget._error, textAlign: TextAlign.center, maxLines: 3,
+            style: TextStyle(fontSize: 16.sp, color: Color(0xff2d2d2d)),),
+          Container(height: 33.h,),
+          InkWell(
+            onTap: null,
+            child: Container(
+              padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
+              decoration: getMinaButtonDecoration(topColor: Color(0xfff5f5f5)),
+              child: Text('TRY AGAIN',
+                textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+            ),
+          ),
+          Container(height: 16.h,)
+        ],
+      )
+    );
+  }
+}

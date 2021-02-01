@@ -104,6 +104,7 @@ flutter:
     - images/pwd_show.png
     - images/pwd_hide.png
     - images/new_wallet_alert.png
+    - images/send_error_alert.png
 
   fonts:
    - family: Entypo
