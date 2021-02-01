@@ -139,18 +139,19 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
           Positioned(
             top: 29.h,
             right: 47.w,
-            child: Text('SEND ALL', textAlign: TextAlign.right,
-              style: TextStyle(color: Color(0xff2d2d2d), fontWeight: FontWeight.w600, fontSize: 13.sp)))
+            child: InkWell(
+              child: Text('SEND ALL', textAlign: TextAlign.right,
+                style: TextStyle(color: Color(0xff2d2d2d), fontWeight: FontWeight.w600, fontSize: 13.sp)),
+              onTap: _fillAllInput,
+            )
+          )
         ]
     );
   }
 
-  _fillInput() {
-    _amountBuffer.clear();
-    _amountBuffer.writeAll(_inputAmount);
-    _fiatPrice = _formatFiatPrice();
+  _checkInputAmount(String amountString) {
     // First, use double to confirm if the input is a valid number
-    double sendAmount = double.tryParse(_amountBuffer.toString());
+    double sendAmount = double.tryParse(amountString);
     if(null == sendAmount) {
       // Invalid user input
       _validInput = false;
@@ -171,6 +172,20 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
       });
       return;
     }
+  }
+
+  _fillAllInput() {
+    _amountBuffer.clear();
+    _amountBuffer.write(MinaHelper.getMinaStrByNanoNum(_balance));
+    _fiatPrice = _formatFiatPrice();
+    _checkInputAmount(_amountBuffer.toString());
+  }
+
+  _fillInput() {
+    _amountBuffer.clear();
+    _amountBuffer.writeAll(_inputAmount);
+    _fiatPrice = _formatFiatPrice();
+    _checkInputAmount(_amountBuffer.toString());
   }
 
   _tapOnKeyCallback(int index) {
