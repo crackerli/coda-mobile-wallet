@@ -1,10 +1,14 @@
+import 'package:coda_wallet/event_bus/event_bus.dart';
+import 'package:coda_wallet/types/send_error_type.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+// ignore: must_be_immutable
 class SendErrorWidget extends StatefulWidget {
+  SendErrorType _errorType;
   String _error;
-  SendErrorWidget(this._error, {Key key}) : super(key: key);
+  SendErrorWidget(this._errorType, this._error, {Key key}) : super(key: key);
 
   @override
   _SendErrorWidgetState createState() => _SendErrorWidgetState();
@@ -39,7 +43,10 @@ class _SendErrorWidgetState extends State<SendErrorWidget> {
                 flex: 1,
                 child: Container(),
               ),
-              Image.asset('images/close.png', width: 40.w, height: 40.w,),
+              InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Image.asset('images/close.png', width: 40.w, height: 40.w,),
+              )
             ],
           ),
           Image.asset('images/send_error_alert.png', width: 60.w, height: 51.h,),
@@ -50,7 +57,20 @@ class _SendErrorWidgetState extends State<SendErrorWidget> {
             style: TextStyle(fontSize: 16.sp, color: Color(0xff2d2d2d)),),
           Container(height: 33.h,),
           InkWell(
-            onTap: null,
+            onTap: () {
+              if(widget._errorType == SendErrorType.GET_POOL_FEE) {
+                eventBus.fire(GetPooledFeeAgain());
+              }
+
+              if(widget._errorType == SendErrorType.GET_NONCE) {
+                eventBus.fire(GetNonceAgain());
+              }
+
+              if(widget._errorType == SendErrorType.SEND_PAYMENT) {
+                eventBus.fire(SendPaymentAgain());
+              }
+              Navigator.of(context).pop();
+            },
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
               decoration: getMinaButtonDecoration(topColor: Color(0xfff5f5f5)),

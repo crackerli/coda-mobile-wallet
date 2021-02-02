@@ -12,12 +12,14 @@ import 'package:coda_wallet/send/query/get_account_nonce.dart';
 import 'package:coda_wallet/send/query/get_pooled_fee.dart';
 import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
 import 'package:coda_wallet/types/send_data.dart';
+import 'package:coda_wallet/types/send_error_type.dart';
 import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/dialog/decrypt_seed_dialog.dart';
+import 'package:coda_wallet/widget/dialog/send_error_dialog.dart';
 import 'package:coda_wallet/widget/fee/fee_clipper.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
@@ -115,16 +117,34 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   void initState() {
     super.initState();
     _sendBloc = BlocProvider.of<SendBloc>(context);
-    _eventBusOn = eventBus.on<SendPasswordInput>().listen((event) {
-      String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
-      print('SendFeeScreen: start to decrypt seed');
-      try {
-        Uint8List seed = decryptSeed(encryptedSeed, event.password);
-        _accountPrivateKey = generatePrivateKey(seed, _sendData.from);
+    _eventBusOn = eventBus.on<SendEventBus>().listen((event) {
+      if(event is SendPasswordInput) {
+        String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+        print('SendFeeScreen: start to decrypt seed');
+        try {
+          Uint8List seed = decryptSeed(encryptedSeed, event.password);
+          _accountPrivateKey = generatePrivateKey(seed, _sendData.from);
+          _getNonce();
+        } catch (error) {
+          print('password not right');
+          _sendBloc.add(InputWrongPassword());
+        }
+        return;
+      }
+
+      if(event is SendPaymentAgain) {
         _getNonce();
-      } catch(error) {
-        print('password not right');
-        _sendBloc.add(InputWrongPassword());
+        return;
+      }
+
+      if(event is GetNonceAgain) {
+        _getNonce();
+        return;
+      }
+
+      if(event is GetPooledFeeAgain) {
+        _getPooledFee();
+        return;
       }
     });
     _getPooledFee();
@@ -185,6 +205,15 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
     if(state is GetNonceFail || state is SendFail) {
       ProgressDialog.dismiss(context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (state is GetNonceFail) {
+          showSendErrorDialog(context, SendErrorType.GET_NONCE, state.error);
+        }
+
+        if (state is SendFail) {
+          showSendErrorDialog(context, SendErrorType.SEND_PAYMENT, state.error);
+        }
+      });
     }
 
     if(state is GetNonceSuccess) {
@@ -294,6 +323,9 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
     if(state is GetPooledFeeFail) {
       ProgressDialog.dismiss(context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSendErrorDialog(context, SendErrorType.GET_POOL_FEE, state.error);
+      });
     }
 
     if(state is GetPooledFeeSuccess) {

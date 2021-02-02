@@ -24,11 +24,19 @@ class FilterTxnsStaked extends TxnsEventBus {}
 
 class UpdateMyAccounts {}
 
-class SendPasswordInput {
+abstract class SendEventBus {}
+
+class SendPasswordInput extends SendEventBus {
   final String password;
 
   SendPasswordInput(this.password);
 }
+
+class SendPaymentAgain extends SendEventBus {}
+
+class GetNonceAgain extends SendEventBus {}
+
+class GetPooledFeeAgain extends SendEventBus {}
 
 class NewAccountPasswordInput {
   final String password;
