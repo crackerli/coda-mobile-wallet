@@ -1,3 +1,4 @@
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
 import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
@@ -62,7 +63,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
     return Positioned(
       bottom: 60.h,
       child: InkWell(
-        onTap: null,
+        onTap: () => openUrl('https://minaexplorer.com/wallet/${_txnEntity.from}'),
         child: Container(
           padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 40.w, right: 40.w),
           decoration: getMinaButtonDecoration(topColor: Color(0xfff5f5f5)),

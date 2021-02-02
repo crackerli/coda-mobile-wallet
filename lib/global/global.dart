@@ -2,6 +2,7 @@ import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Global variables
 SharedPreferences globalPreferences;
@@ -43,4 +44,12 @@ String exceptionHandle<T>(QueryResult result) {
   }
   GraphQLError error = result.exception?.graphqlErrors[0];
   return error.message;
+}
+
+openUrl(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }
