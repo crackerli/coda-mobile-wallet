@@ -5,6 +5,7 @@ import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -261,7 +262,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text(_txnEntity.memo, textAlign: TextAlign.left, maxLines: 2,
+                child: Text('${decodeBase58Check(_txnEntity.memo)}', textAlign: TextAlign.left, maxLines: 2,
                   style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],
