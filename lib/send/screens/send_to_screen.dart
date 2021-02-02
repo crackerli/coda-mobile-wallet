@@ -225,6 +225,7 @@ class _SendToScreenState extends State<SendToScreen> {
         onChanged: (text) {
           _sendData.memo = text;
         },
+        maxLength: 16,
         maxLines: null,
         keyboardType: TextInputType.multiline,
         autofocus: false,
