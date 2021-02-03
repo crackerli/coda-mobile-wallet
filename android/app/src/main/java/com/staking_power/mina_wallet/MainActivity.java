@@ -1,4 +1,4 @@
-package com.staking_power.coda_wallet;
+package com.staking_power.mina_wallet;
 
 import io.flutter.embedding.android.FlutterActivity;
 
