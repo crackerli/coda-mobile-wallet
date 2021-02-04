@@ -445,7 +445,22 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
   _buildNoDataScreen(BuildContext context, String content) {
     return Center(
-      child: Text(content, textAlign: TextAlign.center, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset('images/txns_no_data.png', width: 50.w, height: 50.h,),
+          Container(height: 16.h,),
+          Text('No Transactions', textAlign: TextAlign.center, style: TextStyle(fontSize: 28.sp),),
+          Container(height: 14.h,),
+          Padding(
+            padding: EdgeInsets.only(left: 70.w, right: 70.w),
+            child: Text('Send or receive MINA to initiate your first transactions', maxLines: 2,
+              textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp),),
+          )
+        ],
+      )
     );
   }
 
