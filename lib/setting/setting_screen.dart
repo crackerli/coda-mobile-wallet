@@ -11,7 +11,7 @@ class SettingScreen extends StatefulWidget {
   _SettingScreenState createState() => _SettingScreenState();
 }
 
-class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveClientMixin {
+class _SettingScreenState extends State<SettingScreen> {
 
   @override
   void initState() {
@@ -30,8 +30,15 @@ class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveCl
       backgroundColor: Color(0xfff5f5f5),
       appBar: null,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: _buildSettingItems(context)
+        child: Container(
+          child: _buildSettingItems(context),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              alignment: Alignment.bottomCenter,
+              image: AssetImage('images/common_bg.png',),
+                fit: BoxFit.fitWidth
+            ),
+          ),
         )
       )
     );
@@ -123,7 +130,4 @@ class _SettingScreenState extends State<SettingScreen> with AutomaticKeepAliveCl
       ],
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
