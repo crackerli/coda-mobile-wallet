@@ -1,4 +1,5 @@
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/widget/dialog/remove_wallet_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -70,11 +71,11 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
         Container(height: 10.h),
         _buildOuterBorder(),
-        _buildSettingItem(context, 'Recovery Phrase'),
-        _buildInnerBorder(),
-        _buildSettingItem(context, 'App Lock'),
-        _buildInnerBorder(),
-        _buildSettingItem(context, 'Restore Wallet'),
+        // _buildSettingItem(context, 'Recovery Phrase'),
+        // _buildInnerBorder(),
+        // _buildSettingItem(context, 'App Lock'),
+        // _buildInnerBorder(),
+        _buildSettingItem(context, 'Change Password'),
         _buildOuterBorder(),
         Container(height: 49.h),
         Padding(
@@ -88,10 +89,13 @@ class _SettingScreenState extends State<SettingScreen> {
           onTap: () => Navigator.of(context).pushNamed(NetworkSettingRoute),
           child: _buildSettingItem(context, 'Network Connection'),
         ),
+ //       _buildInnerBorder(),
+//        _buildSettingItem(context, 'Local Fiat Currency'),
         _buildInnerBorder(),
-        _buildSettingItem(context, 'Local Fiat Currency'),
-        _buildInnerBorder(),
-        _buildSettingItem(context, 'Remove Wallet'),
+        InkWell(
+          onTap: () => showRemoveWalletDialog(context),
+          child: _buildSettingItem(context, 'Remove Wallet'),
+        ),
         _buildInnerBorder(),
         _buildVersionItem(context),
         _buildOuterBorder(),
