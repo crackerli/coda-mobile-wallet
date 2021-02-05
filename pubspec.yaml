@@ -29,7 +29,6 @@ dependencies:
   equatable: ^1.1.1
   qr_flutter: ^3.2.0
   qr_code_scanner: ^0.0.13
-  flutter_speed_dial: ^1.2.5
   flutter_screenutil: ^3.1.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -43,6 +42,7 @@ dependencies:
   top_k: '^1.0.1'
   common_utils: ^1.2.1
   url_launcher: ^5.7.10
+  package_info: ^0.4.3+4
 #  flip_panel: '^1.0.1'
   ffi_mina_signer:
     path: ../ffi_mina_signer/

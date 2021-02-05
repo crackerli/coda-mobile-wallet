@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:package_info/package_info.dart';
 
 class SettingScreen extends StatefulWidget {
   SettingScreen({Key key}) : super(key: key);
@@ -88,8 +89,44 @@ class _SettingScreenState extends State<SettingScreen> {
         _buildSettingItem(context, 'Local Fiat Currency'),
         _buildInnerBorder(),
         _buildSettingItem(context, 'Remove Wallet'),
+        _buildInnerBorder(),
+        _buildVersionItem(context),
         _buildOuterBorder(),
       ],
+    );
+  }
+
+  Future<String> _getPackageInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+    return version;
+  }
+
+  _buildVersionItem(BuildContext context) {
+    return FutureBuilder(
+      future: _getPackageInfo(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if(snapshot.connectionState == ConnectionState.done) {
+          return Container(
+            color: Colors.white,
+            padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 11.h, bottom: 11.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Text('App Version', textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp),),
+                ),
+                Text(snapshot.data, textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d)),),
+              ],
+            ),
+          );
+        } else {
+          return Container();
+        }
+      }
     );
   }
 
