@@ -54,7 +54,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     if(null == _sendData.memo || _sendData.memo.isEmpty) {
       _sendData.memo = '';
     }
-    String memo = MinaHelper.byteToHex(MinaHelper.stringToBytesUtf8(_sendBloc.memo));//_sendData.memo;
+    String memo = _sendData.memo;
     String feePayerAddress = globalHDAccounts.accounts[_sendData.from].address;
     String senderAddress = globalHDAccounts.accounts[_sendData.from].address;
     String receiverAddress = _sendData.to;
@@ -76,7 +76,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     variables['from'] = _sendBloc.from;
     variables['to'] = _sendBloc.to;
     variables['amount'] = _sendBloc.finalAmount.toString();
-    variables['memo'] = MinaHelper.byteToHex(MinaHelper.stringToBytesUtf8(_sendBloc.memo));//_sendBloc.memo;
+    variables['memo'] = _sendBloc.memo;
     variables['fee'] = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
     variables['nonce'] = _sendBloc.nonce;
     variables['validUntil'] = 65535;

@@ -4,6 +4,7 @@ import 'package:coda_wallet/util/navigations.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
@@ -222,10 +223,13 @@ class _SendToScreenState extends State<SendToScreen> {
         enableInteractiveSelection: true,
         focusNode: _focusNodeMemo,
         controller: _memoController,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp('[\u0020-\u007F]')),
+        ],
         onChanged: (text) {
           _sendData.memo = text;
         },
-        maxLength: 16,
+        maxLength: 31,
         maxLines: null,
         keyboardType: TextInputType.multiline,
         autofocus: false,
