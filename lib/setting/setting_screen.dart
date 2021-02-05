@@ -84,7 +84,10 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
         Container(height: 10.h),
         _buildOuterBorder(),
-        _buildSettingItem(context, 'Network Connection'),
+        InkWell(
+          onTap: () => Navigator.of(context).pushNamed(NetworkSettingRoute),
+          child: _buildSettingItem(context, 'Network Connection'),
+        ),
         _buildInnerBorder(),
         _buildSettingItem(context, 'Local Fiat Currency'),
         _buildInnerBorder(),
