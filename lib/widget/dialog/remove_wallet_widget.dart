@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/material.dart';
@@ -136,12 +138,16 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
                   print('SendFeeScreen: start to decrypt seed');
                   try {
                     Uint8List seed = decryptSeed(encryptedSeed, _controllerRemoveWallet.text);
-                    // Successfully decrypt, remove wallet.
+                    // Successfully decrypt, remove wallet, reset all global data.
+                    globalHDAccounts = MinaHDAccount();
+                    globalEncryptedSeed = '';
                     globalPreferences.setString(ENCRYPTED_SEED_KEY, '');
-                    Navigator.pushReplacementNamed(context, NoWalletRoute);
+                    eventBus.fire(RemoveWalletSucceed());
+                    Navigator.of(context).pop();
                   } catch (error) {
                     print('password not right');
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Wrong password!!')));
+                    eventBus.fire(RemoveWalletFail());
+                    Navigator.of(context).pop();
                   }
                 },
                 child: Container(

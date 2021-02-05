@@ -1,3 +1,4 @@
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/dialog/remove_wallet_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,14 +15,31 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
+  var _eventBusOn;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    _eventBusOn = eventBus.on<RemoveWalletEventBus>().listen((event) {
+      if(event is RemoveWalletFail) {
+        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Wrong password')));
+        return;
+      }
+
+      if(event is RemoveWalletSucceed) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushNamed(NoWalletRoute);
+        });
+        return;
+      }
+    });
   }
 
   @override
   void dispose() {
+    _eventBusOn.cancel();
+    _eventBusOn = null;
     super.dispose();
   }
 
@@ -29,6 +47,7 @@ class _SettingScreenState extends State<SettingScreen> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Color(0xfff5f5f5),
       appBar: null,
       body: SafeArea(
