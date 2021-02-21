@@ -51,13 +51,25 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
         borderRadius: BorderRadius.all(Radius.circular(5.w)),
         color: Colors.white
       ),
-      padding: EdgeInsets.only(top: 12.h, bottom: 12.h, left: 12.w, right: 12.w),
+      padding: EdgeInsets.only(top: 2.h, bottom: 12.h, left: 12.w, right: 12.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Image.asset('images/password_unlock_logo.png', width: 40.w, height: 40.w,),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(),
+              ),
+              InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Image.asset('images/close.png', width: 28.w, height: 28.w,),
+              )
+            ],
+          ),
+          Image.asset('images/password_unlock_logo.png', width: 50.w, height: 50.w,),
           Container(height: 12.h,),
           Text('PLEASE INPUT PASSWORD', textAlign: TextAlign.left, style: TextStyle(color: Colors.black, fontSize: 14.sp),),
           Container(height: 12,),
@@ -119,7 +131,7 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
             },
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 50.w, right: 50.w),
-              decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
+              decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
               child: Text('CONFIRM',
                 textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
             ),
