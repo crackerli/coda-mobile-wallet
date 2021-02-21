@@ -144,7 +144,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                         ),
                         Container(width: 6.w,),
                         Flexible(child:
-                          Text(globalHDAccounts.accounts[_accountIndex].address, maxLines: 2, overflow: TextOverflow.visible,
+                          Text(globalHDAccounts.accounts[_accountIndex].address, maxLines: 3, overflow: TextOverflow.visible,
                             textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, color: Color(0xff616161)))),
                       ],
                     )
