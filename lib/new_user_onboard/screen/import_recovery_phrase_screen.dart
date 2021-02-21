@@ -160,7 +160,7 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
               onTap: _inputValidated ? () => _checkMnemonic(context) : null,
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
-                decoration: getMinaButtonDecoration(topColor: Color(_inputValidated ? 0xffeeeeee : 0x4deeeeee)),
+                decoration: getMinaButtonDecoration(topColor: Color(_inputValidated ? 0xffe0e0e0 : 0x4deeeeee)),
                 child: Text('NEXT',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(_inputValidated ? 0xff2d2d2d : 0x4d2d2d2d))),
