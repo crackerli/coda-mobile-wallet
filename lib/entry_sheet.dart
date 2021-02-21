@@ -128,7 +128,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         unselectedFontSize: 12.sp,
         iconSize: 24.h,
         onTap: onTap,
-        fixedColor: Color(0xff5a4fa4),
+        fixedColor: Colors.red,
         unselectedItemColor: Colors.black,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
