@@ -131,7 +131,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
             onTap: _clearInputWords,
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
-              decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
+              decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
               child: Text('CLEAR',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
@@ -145,7 +145,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
               onTap: () => Navigator.pushNamed(context, EncryptSeedRoute, arguments: _mnemonic),
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
-                decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
+                decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
                 child: Text('CONTINUE',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),

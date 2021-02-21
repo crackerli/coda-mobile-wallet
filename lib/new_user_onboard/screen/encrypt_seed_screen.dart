@@ -233,7 +233,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
                 _alertChecked = !_alertChecked;
                 _checkInput(context);
               },
-              child: Image.asset(_alertChecked ? 'images/security_alert_blue.png' : 'images/security_alert_gray.png', width: 28.w, height: 28.w,),
+              child: Image.asset(_alertChecked ? 'images/security_alert_gold.png' : 'images/security_alert_gray.png', width: 28.w, height: 28.w,),
             ),
             Container(width: 14.w,),
             Flexible(
@@ -249,8 +249,8 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
               onTap: _buttonEnabled ? () => _checkPassword(context) : null,
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
-                decoration: getMinaButtonDecoration(topColor: Color(_buttonEnabled ? 0xffeeeeee : 0x4deeeeee)),
-                child: Text('NEXT',
+                decoration: getMinaButtonDecoration(topColor: Color(_buttonEnabled ? 0xffe0e0e0 : 0x4deeeeee)),
+                child: Text('CONTINUE',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(_buttonEnabled ? 0xff2d2d2d : 0x4d2d2d2d))),
               )

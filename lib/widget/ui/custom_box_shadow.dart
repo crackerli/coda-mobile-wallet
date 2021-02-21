@@ -25,23 +25,16 @@ class CustomBoxShadow extends BoxShadow {
   }
 }
 
-// final minaButtonDecoration = BoxDecoration(
-//   border: Border.all(color: Colors.black, width: 1),
-//   borderRadius: BorderRadius.only(topLeft: Radius.circular(4.0.w), bottomRight: Radius.circular(4.0.w)),
-//   boxShadow: [
-//     CustomBoxShadow(color: Colors.black, offset: Offset(5.0, 2.9), blurStyle: BlurStyle.outer),
-//     CustomBoxShadow(color: Colors.white, offset: Offset(4.4, 2.4), blurStyle: BlurStyle.inner),
-//     CustomBoxShadow(color: Colors.white),
-//   ]
-// );
+
 
 getMinaButtonDecoration({Color topColor = Colors.white}) {
   return BoxDecoration(
     border: Border.all(color: Colors.black, width: 1),
-    borderRadius: BorderRadius.only(topLeft: Radius.circular(4.0.w), bottomRight: Radius.circular(4.0.w)),
+    borderRadius: BorderRadius.all(Radius.circular(1.0.w)),
+    //BorderRadius.only(topLeft: Radius.circular(4.0.w), bottomRight: Radius.circular(4.0.w)),
     boxShadow: [
-      CustomBoxShadow(color: Colors.black, offset: Offset(5.0, 2.9), blurStyle: BlurStyle.outer),
-      CustomBoxShadow(color: Colors.white, offset: Offset(4.4, 2.4), blurStyle: BlurStyle.inner),
+//      CustomBoxShadow(color: Colors.black, offset: Offset(5.0, 2.9), blurStyle: BlurStyle.outer),
+//      CustomBoxShadow(color: Colors.white, offset: Offset(4.4, 2.4), blurStyle: BlurStyle.inner),
       CustomBoxShadow(color: topColor),
     ]
   );

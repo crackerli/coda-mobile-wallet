@@ -107,6 +107,7 @@ flutter:
     - images/new_wallet_alert.png
     - images/send_error_alert.png
     - images/txns_no_data.png
+    - security_alert_gold.png
 
   fonts:
    - family: Entypo

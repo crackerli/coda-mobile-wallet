@@ -35,11 +35,7 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
         body: SafeArea(
           child: Container(
             decoration: BoxDecoration(
-              image: DecorationImage(
-                alignment: Alignment.bottomCenter,
-                image: AssetImage('images/import_wallet_bg.png',),
-                fit: BoxFit.fitWidth
-              ),
+              color: Color(0xffb5b18c),
             ),
             child: _buildNoWalletBody()
           )
@@ -55,7 +51,7 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(height: 100.h,),
-        Image.asset('images/mina_logo_white_trans.png', width: 104.w, height: 95.h,),
+        Image.asset('images/mina_logo_white_trans.png', width: 134.w, height: 122.h,),
         Container(height: 26.h,),
         Text('Mina Wallet', textAlign: TextAlign.center, style: TextStyle(fontSize: 28.sp, color: Colors.white)),
         Container(height: 132.h,),
