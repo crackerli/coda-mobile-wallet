@@ -5,6 +5,7 @@ import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,11 +50,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             ]
           ),
           decoration: BoxDecoration(
-            image: DecorationImage(
-              alignment: Alignment.bottomCenter,
-              image: AssetImage('images/common_bg.png',),
-              fit: BoxFit.fitWidth
-            ),
+            gradient: backgroundGradient
           ),
         ),
       )
@@ -67,7 +64,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
         onTap: () => openUrl('https://minaexplorer.com/wallet/${_txnEntity.from}'),
         child: Container(
           padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 40.w, right: 40.w),
-          decoration: getMinaButtonDecoration(topColor: Color(0xfff5f5f5)),
+          decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
           child: Text('VIEW IN BLOCK EXPLORER',
             textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
         ),
