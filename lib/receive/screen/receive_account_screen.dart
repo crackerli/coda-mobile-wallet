@@ -20,14 +20,17 @@ class ReceiveAccountScreen extends StatefulWidget {
 
 class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
   final GlobalKey _qrImageKey = GlobalKey();
+  bool _addressCopied = false;
 
   @override
   void initState() {
     super.initState();
+    _addressCopied = false;
   }
 
   @override
   void dispose() {
+    _addressCopied = false;
     super.dispose();
   }
 
@@ -62,12 +65,12 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
         Container(height: 14.h),
         QrImage(data: address, size: 200.w, version: QrVersions.auto),
         Container(height: 33.h),
-        Text(accountName, textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Colors.black)),
+        Text(accountName, textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Color(0xff212121), fontWeight: FontWeight.w500)),
         Container(height: 8),
         Container(
           decoration: BoxDecoration(
-            color: Color(0xffe6e5eb),
-            borderRadius: BorderRadius.circular(7.w),
+            color: _addressCopied ? Color(0xff616161) : Color(0xffbdbdbd),
+            borderRadius: BorderRadius.circular(4.w),
             shape: BoxShape.rectangle,
           ),
           padding: EdgeInsets.only(left: 12.w, right: 12.w, top: 13.h, bottom: 13.h),
@@ -82,14 +85,19 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
                   child: Image.asset('images/copy_gray.png', width: 18.w, height: 18.w),
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: address));
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
+                    setState(() {
+                      _addressCopied = true;
+                    });
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
+                    });
                   },
                 )
               ),
               Container(width: 8.w),
               Flexible(child:
                 Text(address, textAlign: TextAlign.left, softWrap: true,
-                  style: TextStyle(fontSize: 12.sp, color: Color(0xff786666)), maxLines: 3)),
+                  style: TextStyle(fontSize: 12.sp, color: _addressCopied ? Colors.white : Color(0xff616161)), maxLines: 3)),
             ],
           )
         ),
@@ -99,8 +107,8 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
             onTap: () async { await _checkStoragePermission(context); },
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
-              decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
-              child: Text('SAVE IMAGE', style: TextStyle(color: Colors.black),),
+              decoration: getMinaButtonDecoration(topColor: Colors.white),
+              child: Text('SAVE IMAGE', style: TextStyle(color: Color(0xff2d2d2d), fontSize: 12.sp, fontWeight: FontWeight.w500),),
             ),
           )
         )
