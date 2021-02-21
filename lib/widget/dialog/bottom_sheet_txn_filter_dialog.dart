@@ -73,7 +73,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, int currentFilter
                   width: 266.w,
                   padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
                   decoration: getMinaButtonDecoration(
-                    topColor: 0 == currentFilter ? Color(0xff9fe4c9) : Color(0xffeeeeee)
+                    topColor: 0 == currentFilter ? Colors.white : Color(0xffeeeeee)
                   ),
                   child: Text(actions[0],
                     textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
@@ -89,7 +89,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, int currentFilter
                   width: 266.w,
                   padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
                   decoration: getMinaButtonDecoration(
-                    topColor: 1 == currentFilter ? Color(0xff9fe4c9) : Color(0xffeeeeee)
+                    topColor: 1 == currentFilter ? Colors.white : Color(0xffeeeeee)
                   ),
                   child: Text(actions[1],
                     textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
@@ -105,7 +105,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, int currentFilter
                   width: 266.w,
                   padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
                   decoration: getMinaButtonDecoration(
-                    topColor: 2 == currentFilter ? Color(0xff9fe4c9) : Color(0xffeeeeee)
+                    topColor: 2 == currentFilter ? Colors.white : Color(0xffeeeeee)
                   ),
                   child: Text(actions[2],
                     textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
@@ -121,7 +121,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, int currentFilter
                   width: 266.w,
                   padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
                   decoration: getMinaButtonDecoration(
-                    topColor: 3 == currentFilter ? Color(0xff9fe4c9) : Color(0xffeeeeee)
+                    topColor: 3 == currentFilter ? Colors.white : Color(0xffeeeeee)
                   ),
                   child: Text(actions[3],
                     textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),

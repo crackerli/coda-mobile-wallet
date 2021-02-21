@@ -2,6 +2,7 @@ import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -35,11 +36,7 @@ class _TxnsChooseAccountScreenState extends State<TxnsChooseAccountScreen> {
       body: Container(
         child: _buildSendFromBody(context),
         decoration: BoxDecoration(
-          image: DecorationImage(
-            alignment: Alignment.bottomCenter,
-            image: AssetImage('images/common_bg.png',),
-            fit: BoxFit.fitWidth
-          ),
+          gradient: backgroundGradient
         ),
       )
     );
