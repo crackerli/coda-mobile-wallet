@@ -2,6 +2,7 @@ import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -36,11 +37,7 @@ class _SendFromScreenState extends State<SendFromScreen> {
       body: Container(
         child: _buildSendFromBody(context, sendData),
         decoration: BoxDecoration(
-          image: DecorationImage(
-            alignment: Alignment.bottomCenter,
-            image: AssetImage('images/common_bg.png',),
-            fit: BoxFit.fitWidth
-          ),
+          gradient: backgroundGradient
         ),
       )
     );

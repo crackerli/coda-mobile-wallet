@@ -3,6 +3,7 @@ import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,11 +63,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
       body: Container(
         child: _buildSendToBody(context),
         decoration: BoxDecoration(
-          image: DecorationImage(
-            alignment: Alignment.bottomCenter,
-            image: AssetImage('images/common_bg.png',),
-            fit: BoxFit.fitWidth
-          ),
+          gradient: backgroundGradient
         ),
       )
     );
@@ -130,7 +127,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
               },
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
-                decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
+                decoration: getMinaButtonDecoration(topColor: Colors.white),
                 child: Text('CONTINUE',
                     textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
               ),

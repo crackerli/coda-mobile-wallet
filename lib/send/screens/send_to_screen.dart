@@ -3,6 +3,7 @@ import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/navigations.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -97,11 +98,7 @@ class _SendToScreenState extends State<SendToScreen> {
           Container(
             child: SingleChildScrollView(child: _buildSendToBody(context)),
             decoration: BoxDecoration(
-              image: DecorationImage(
-                alignment: Alignment.bottomCenter,
-                image: AssetImage('images/common_bg.png',),
-                fit: BoxFit.fitWidth
-              ),
+              gradient: backgroundGradient
             ),
           )
         )
@@ -142,7 +139,7 @@ class _SendToScreenState extends State<SendToScreen> {
             onTap: _checkInputValidation,
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
-              decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
+              decoration: getMinaButtonDecoration(topColor: Colors.white),
               child: Text('CONTINUE',
                 textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
             ),
@@ -172,7 +169,7 @@ class _SendToScreenState extends State<SendToScreen> {
     return Container(
       padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 13.h, bottom: 13.h),
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(2.w)),
         border: Border.all(color: Color(0xff757575), width: 1.w)
       ),
@@ -215,7 +212,7 @@ class _SendToScreenState extends State<SendToScreen> {
     return Container(
       padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 13.h, bottom: 13.h),
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(2.w)),
         border: Border.all(color: Color(0xff757575), width: 1.w)
       ),

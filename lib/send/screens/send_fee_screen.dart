@@ -22,6 +22,7 @@ import 'package:coda_wallet/widget/dialog/decrypt_seed_dialog.dart';
 import 'package:coda_wallet/widget/dialog/send_error_dialog.dart';
 import 'package:coda_wallet/widget/fee/fee_clipper.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:ffi_mina_signer/types/key_types.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
@@ -186,11 +187,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           }
         ),
         decoration: BoxDecoration(
-          image: DecorationImage(
-            alignment: Alignment.bottomCenter,
-            image: AssetImage('images/common_bg.png',),
-            fit: BoxFit.fitWidth
-          ),
+          gradient: backgroundGradient
         ),
       )
     );
@@ -233,7 +230,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
         onTap: () => _checkFeeChosen(context),
         child: Container(
           padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
-          decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
+          decoration: getMinaButtonDecoration(topColor: Colors.white),
           child: Text('SEND',
             textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
         ),
@@ -258,7 +255,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
       Container(
       decoration: BoxDecoration(
         borderRadius: _feeItemBorderRadius(index),
-        color: selected ? Colors.green : Colors.white,
+        color: selected ? Color(0xffbfb556) : Colors.white,
         border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
       ),
       padding: EdgeInsets.only(left: 6.w, right: 6.w, top: 6.w, bottom: 6.w),
