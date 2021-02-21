@@ -4,6 +4,7 @@ import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/qr_address/qr_image_helper.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -52,11 +53,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
     String accountName = globalHDAccounts.accounts[index].accountName;
     return Container(
       decoration: BoxDecoration(
-        image: DecorationImage(
-          alignment: Alignment.bottomCenter,
-          image: AssetImage('images/common_bg.png',),
-          fit: BoxFit.fitWidth
-        ),
+        gradient: backgroundGradient
       ),
       child: Column(
       children: [

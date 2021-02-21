@@ -10,6 +10,7 @@ import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_events.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_states.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -131,11 +132,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   _buildStakedHome(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        image: DecorationImage(
-          alignment: Alignment.bottomCenter,
-          image: AssetImage('images/wallet_staked_bg.png',),
-          fit: BoxFit.fitWidth
-        ),
+        gradient: backgroundGradient
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
