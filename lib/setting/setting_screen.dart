@@ -54,11 +54,7 @@ class _SettingScreenState extends State<SettingScreen> {
         child: Container(
           child: _buildSettingItems(context),
           decoration: BoxDecoration(
-            image: DecorationImage(
-              alignment: Alignment.bottomCenter,
-              image: AssetImage('images/common_bg.png',),
-                fit: BoxFit.fitWidth
-            ),
+            color: Colors.white
           ),
         )
       )
@@ -134,7 +130,7 @@ class _SettingScreenState extends State<SettingScreen> {
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if(snapshot.connectionState == ConnectionState.done) {
           return Container(
-            color: Colors.white,
+            color: Color(0xfff5f5f5),
             padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 11.h, bottom: 11.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -158,7 +154,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   _buildSettingItem(BuildContext context, String settingName) {
     return Container(
-      color: Colors.white,
+      color: Color(0xfff5f5f5),
       padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 11.h, bottom: 11.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
