@@ -10,16 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
-class RemoveWalletWidget extends StatefulWidget {
-  RemoveWalletWidget({Key key}) : super(key: key);
+class ChangePasswordWidget extends StatefulWidget {
+  ChangePasswordWidget({Key key}) : super(key: key);
 
   @override
-  _RemoveWalletWidgetState createState() => _RemoveWalletWidgetState();
+  _ChangePasswordWidgetState createState() => _ChangePasswordWidgetState();
 }
 
-class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
-  FocusNode _focusNodeRemoveWallet = FocusNode();
-  TextEditingController _controllerRemoveWallet = TextEditingController();
+class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
+  FocusNode _focusNodeChangePassword = FocusNode();
+  TextEditingController _controllerChangePassword = TextEditingController();
   bool _showPassword = false;
 
   @override
@@ -29,8 +29,8 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
 
   @override
   void dispose() {
-    _focusNodeRemoveWallet?.dispose();
-    _controllerRemoveWallet?.dispose();
+    _focusNodeChangePassword?.dispose();
+    _controllerChangePassword?.dispose();
     super.dispose();
   }
 
@@ -46,7 +46,7 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
         keyboardSeparatorColor: Colors.grey,
         nextFocus: false,
         actions: [
-          KeyboardActionsItem(focusNode: _focusNodeRemoveWallet)
+          KeyboardActionsItem(focusNode: _focusNodeChangePassword)
         ]
       ),
       child: IntrinsicHeight(
@@ -90,8 +90,8 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
                       flex: 1,
                       child: TextField(
                         enableInteractiveSelection: true,
-                        focusNode: _focusNodeRemoveWallet,
-                        controller: _controllerRemoveWallet,
+                        focusNode: _focusNodeChangePassword,
+                        controller: _controllerChangePassword,
                         onChanged: (text) {
 
                         },
@@ -122,43 +122,39 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
                   color: Color(0xfff5f5f5),
                   borderRadius: BorderRadius.all(Radius.circular(5.w)),
                   border: Border.all(width: 1.w, color: Color(0xff22d2d))
+                  ),
                 ),
-              ),
-              Container(height: 32.h,),
-              Builder(builder: (BuildContext context) =>
-              InkWell(
-                onTap: () {
-                  if(null == _controllerRemoveWallet.text || _controllerRemoveWallet.text.isEmpty) {
-                    return;
-                  }
-                  FocusScope.of(context).unfocus();
-                  String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
-                  print('SendFeeScreen: start to decrypt seed');
-                  try {
-                    Uint8List seed = decryptSeed(encryptedSeed, _controllerRemoveWallet.text);
-                    // Successfully decrypt, remove wallet, reset all global data.
-                    globalHDAccounts = MinaHDAccount();
-                    globalEncryptedSeed = '';
-                    globalPreferences.setString(ENCRYPTED_SEED_KEY, '');
-                    eventBus.fire(RemoveWalletSucceed());
-                    Navigator.of(context).pop();
-                  } catch (error) {
-                    print('password not right');
-                    eventBus.fire(RemoveWalletFail());
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 50.w, right: 50.w),
-                  decoration: getMinaButtonDecoration(topColor: Color(0xfff5f5f5)),
-                  child: Text('REMOVE',
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
-                ),
-              ))
-            ],
-          )
+                Container(height: 32.h,),
+                Builder(builder: (BuildContext context) =>
+                  InkWell(
+                    onTap: () {
+                      if(null == _controllerChangePassword.text || _controllerChangePassword.text.isEmpty) {
+                        return;
+                      }
+                      FocusScope.of(context).unfocus();
+                      String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+                      print('SendFeeScreen: start to decrypt seed');
+                      try {
+                        Uint8List seed = decryptSeed(encryptedSeed, _controllerChangePassword.text);
+                        // Pop encrypt seed dialog
+                        Navigator.of(context).pop();
+                      } catch (error) {
+                        print('password not right');
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 50.w, right: 50.w),
+                      decoration: getMinaButtonDecoration(topColor: Color(0xfff5f5f5)),
+                        child: Text('REMOVE',
+                          textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                        ),
+                      )
+                    )
+                  ],
+                )
+            )
         )
-      )
     );
   }
 }
