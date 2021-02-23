@@ -68,7 +68,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     int tokenLocked = 0;
 
     Signature signature = await signPayment(MinaHelper.reverse(_accountPrivateKey), memo, feePayerAddress,
-        senderAddress, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, amount, tokenLocked);
+        senderAddress, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, amount, tokenLocked, globalNetworkId);
     return signature;
   }
 

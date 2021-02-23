@@ -19,6 +19,11 @@ MinaHDAccount globalHDAccounts = MinaHDAccount();
 
 String globalEncryptedSeed;
 
+const MAIN_NET_ID = 1;
+const TEST_NET_ID = 0;
+
+int globalNetworkId = TEST_NET_ID;
+
 String getTokenFiatPrice(String tokenNumber) {
   double token = double.parse(tokenNumber);
   double ret = token * gUnitFiatPrice;
