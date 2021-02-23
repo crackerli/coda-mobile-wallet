@@ -116,8 +116,8 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                       ]
                     )
                   ),
-                  Text('\$1234.56',
-                    textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, color: Color(0xff616161))),
+                  // Text('\$1234.56',
+                  //   textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, color: Color(0xff616161))),
                   Container(height: 19.h,),
                   Text('ADDRESS', textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff616161))),

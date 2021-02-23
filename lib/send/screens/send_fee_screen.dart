@@ -283,8 +283,8 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                       ),
                     ]),
                   ),
-                  Container(height: 4.h,),
-                  Text('(\$$feeFiat)', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, color: Color(0xff2d2d2d))),
+                  // Container(height: 4.h,),
+                  // Text('(\$$feeFiat)', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, color: Color(0xff2d2d2d))),
                 ],
               ),
             ),
@@ -383,7 +383,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                       )]
                     )
                   ),
-                  Text('(\$353.62)', textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp, color: Color(0xff616161)),),
+                  // Text('(\$353.62)', textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp, color: Color(0xff616161)),),
                   Container(height: 10.h,),
                   Text('MEMO',
                     textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),

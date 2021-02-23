@@ -205,7 +205,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)} MINA (\$46.62)', maxLines: 3,
+                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)} MINA', maxLines: 3,
                   textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
               )
             ],
@@ -223,7 +223,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.fee)} MINA (\$0.07)', textAlign: TextAlign.left, maxLines: 2,
+                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.fee)} MINA', textAlign: TextAlign.left, maxLines: 2,
                   style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],
@@ -241,7 +241,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.total)} MINA (\$356.11)', textAlign: TextAlign.left, maxLines: 2,
+                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.total)} MINA', textAlign: TextAlign.left, maxLines: 2,
                     style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],

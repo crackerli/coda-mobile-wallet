@@ -103,9 +103,9 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                     style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.normal, color: Colors.black))
                 )
               ),
-              Container(height: 6.h,),
-              Text(_fiatPrice, textAlign: TextAlign.left, maxLines: 1,
-                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.normal, color: Color(0xff979797))),
+              // Container(height: 6.h,),
+              // Text(_fiatPrice, textAlign: TextAlign.left, maxLines: 1,
+              //   style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.normal, color: Color(0xff979797))),
               Container(height: 20.h),
               _buildDecimalKeyboard(),
             ],)

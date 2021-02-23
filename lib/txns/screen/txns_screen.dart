@@ -367,7 +367,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
               mainAxisSize: MainAxisSize.max,
               children: [
                 Text('${MinaHelper.getMinaStrByNanoStr(command.amount)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 18.sp)),
-                Text('\$65.34', textAlign: TextAlign.right, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575)))
+                Text('${MinaHelper.getMinaStrByNanoStr(command.fee)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575)))
               ]
             ),
           )
