@@ -140,9 +140,11 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         children: [
           Container(height: 8.h),
           _buildQRTipIcon(),
-          Container(height: 2.h),
+          Container(height: 80.h),
           _buildMinaLogo(),
-          Container(height: 10.h),
+          Container(height: 40.h),
+          Text('MINA WALLET BALANCE', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575))),
+          Container(height: 1.h,),
           BlocBuilder<AccountBloc, AccountStates>(
             builder: (BuildContext context, AccountStates state) {
               if(state is GetAccountsFinished) {
@@ -154,14 +156,12 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildTotalBalance(),
-                  _buildFiatBalance(),
+   //               _buildFiatBalance(),
                 ]
               );
             }
           ),
-          Container(height: 21.h),
-          _buildStakedPercent(),
-          Container(height: 32.h),
+          Container(height: 56.h,),
           _buildActionButton(context)
         ]
       ),
@@ -240,7 +240,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     return Container(
       width: double.infinity,
       child: Center(
-        child: Image.asset('images/mina_logo_inner.png', width: 75.w, height: 75.w,),
+        child: Image.asset('images/mina_logo_inner.png', width: 101.w, height: 92.w,),
       )
     );
   }
@@ -302,26 +302,6 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       height: 49.h,
       decoration: getMinaButtonDecoration(),
 //      margin: EdgeInsets.all(10),
-    );
-  }
-
-  _buildStakedPercent() {
-    return CircularPercentIndicator(
-      radius: 70.w,
-      lineWidth: 5.0,
-      percent: 0.7,
-      center: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(children: <TextSpan>[
-          TextSpan(
-            text: '100%\n',
-            style: TextStyle(fontSize: 20.sp, color: Colors.black, fontWeight: FontWeight.w500)),
-          TextSpan(
-            text: 'STAKED',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 11.sp)),
-        ]
-      )),
-      progressColor: Color(0xff2a63f7),
     );
   }
 

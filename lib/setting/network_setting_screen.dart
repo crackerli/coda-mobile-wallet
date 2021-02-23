@@ -34,11 +34,7 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
         padding: EdgeInsets.only(left: 16.w, right: 16.w),
         child: _buildNetworkSettingBody(context),
         decoration: BoxDecoration(
-          image: DecorationImage(
-            alignment: Alignment.bottomCenter,
-            image: AssetImage('images/common_bg.png',),
-            fit: BoxFit.fitWidth
-          ),
+          color: Colors.white
         ),
       )
     );
