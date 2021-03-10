@@ -63,10 +63,16 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   _initBottomBarItems() {
     _bottomBarItems = [
       BottomNavigationBarItem(
-        icon: Image.asset("images/wallet_tab_unselected.png",
+        icon: Padding(
+          padding: EdgeInsets.only(bottom: 6.h),
+          child: Image.asset("images/wallet_tab_unselected.png",
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        activeIcon: Image.asset("images/wallet_tab_selected.png",
+        ),
+        activeIcon: Padding(
+          padding: EdgeInsets.only(bottom: 6.h),
+          child: Image.asset("images/wallet_tab_selected.png",
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        ),
         label: 'Wallet',
       ),
       // BottomNavigationBarItem(
@@ -77,18 +83,30 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
       //   label:'Stake'
       // ),
       BottomNavigationBarItem(
-        icon: Image.asset("images/txns_tab_unselected.png",
+        icon: Padding(
+          padding: EdgeInsets.only(bottom: 6.h),
+          child: Image.asset("images/txns_tab_unselected.png",
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        activeIcon: Image.asset("images/txns_tab_selected.png",
+        ),
+        activeIcon: Padding(
+          padding: EdgeInsets.only(bottom: 6.h),
+          child: Image.asset("images/txns_tab_selected.png",
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        label:'Transaction'
+        ),
+        label:'Transactions'
       ),
       BottomNavigationBarItem(
-        icon: Image.asset("images/settings_tab_unselected.png",
+        icon: Padding(
+          padding: EdgeInsets.only(bottom: 6.h),
+          child: Image.asset("images/settings_tab_unselected.png",
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        activeIcon: Image.asset("images/settings_tab_selected.png",
+        ),
+        activeIcon: Padding(
+          padding: EdgeInsets.only(bottom: 6.h),
+          child: Image.asset("images/settings_tab_selected.png",
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-        label:'Setting'
+        ),
+        label:'Settings'
       ),
     ];
   }
@@ -130,8 +148,8 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         onTap: onTap,
         fixedColor: Colors.red,
         unselectedItemColor: Colors.black,
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
-        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
       )
     );
   }
