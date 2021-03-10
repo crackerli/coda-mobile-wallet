@@ -65,7 +65,7 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
               ),
               InkWell(
                 onTap: () => Navigator.of(context).pop(),
-                child: Image.asset('images/close.png', width: 28.w, height: 28.w,),
+                child: Image.asset('images/close.png', width: 18.w, height: 18.w,),
               )
             ],
           ),

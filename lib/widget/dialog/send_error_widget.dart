@@ -45,7 +45,7 @@ class _SendErrorWidgetState extends State<SendErrorWidget> {
               ),
               InkWell(
                 onTap: () => Navigator.of(context).pop(),
-                child: Image.asset('images/close.png', width: 40.w, height: 40.w,),
+                child: Image.asset('images/close.png', width: 18.w, height: 18.w,),
               )
             ],
           ),
