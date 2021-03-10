@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-///加载弹框
 class ProgressDialog {
   static bool _isShowing = false;
 
-  ///展示
   static void showProgress(BuildContext context,
-      {Widget child = const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.red),)}) {
+      {Widget child = const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Color(0xffB5B18C)),)}) {
     if(!_isShowing) {
       _isShowing = true;
       Navigator.push(
