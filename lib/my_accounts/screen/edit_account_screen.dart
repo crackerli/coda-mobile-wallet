@@ -87,7 +87,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 120.w, right: 120.w),
               decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
               child: Text('SAVE',
-                textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
             ),
           )
         )

@@ -98,7 +98,7 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
               decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
               child: Text('CONTINUE',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
             )
           ),
         )

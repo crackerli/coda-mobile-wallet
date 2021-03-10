@@ -99,7 +99,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
             decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
             child: Text('CREATE',
-              textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+              textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
           ),
         ))
       ],

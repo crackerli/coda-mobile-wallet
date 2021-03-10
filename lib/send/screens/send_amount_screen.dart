@@ -129,7 +129,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
                 decoration: getMinaButtonDecoration(topColor: Colors.white),
                 child: Text('CONTINUE',
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
               ),
             )
           )),

@@ -435,7 +435,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
               decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
               child: Text('TRY AGAIN',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
             )
           ),
         ]

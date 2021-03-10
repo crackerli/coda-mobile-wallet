@@ -61,7 +61,7 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
             padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 60.w, right: 60.w),
             decoration: getMinaButtonDecoration(topColor: Color(0xffffffff)),
             child: Text('CREATE NEW WALLET',
-            textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+            textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
           )
         ),
         Container(height: 26.h,),
@@ -71,7 +71,7 @@ class _NoWalletScreenState extends State<NoWalletScreen> {
             padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 64.w, right: 64.w),
             decoration: getMinaButtonDecoration(topColor: Color(0xffd9d9d9)),
             child: Text('RESTORE A WALLET',
-              textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+              textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
           )
         ),
       ]

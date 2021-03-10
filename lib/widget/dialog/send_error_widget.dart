@@ -75,7 +75,7 @@ class _SendErrorWidgetState extends State<SendErrorWidget> {
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
               decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
               child: Text('TRY AGAIN',
-                textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
             ),
           ),
           Container(height: 16.h,)

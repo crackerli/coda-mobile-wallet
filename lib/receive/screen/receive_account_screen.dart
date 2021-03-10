@@ -108,7 +108,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
               decoration: getMinaButtonDecoration(topColor: Colors.white),
-              child: Text('SAVE IMAGE', style: TextStyle(color: Color(0xff2d2d2d), fontSize: 12.sp, fontWeight: FontWeight.w500),),
+              child: Text('SAVE IMAGE', style: TextStyle(color: Color(0xff2d2d2d), fontSize: 12.sp, fontWeight: FontWeight.w600),),
             ),
           )
         )

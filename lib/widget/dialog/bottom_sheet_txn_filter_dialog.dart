@@ -76,7 +76,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, int currentFilter
                     topColor: 0 == currentFilter ? Colors.white : Color(0xffeeeeee)
                   ),
                   child: Text(actions[0],
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                 ),
               ),
               Container(height: 11.h,),
@@ -92,7 +92,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, int currentFilter
                     topColor: 1 == currentFilter ? Colors.white : Color(0xffeeeeee)
                   ),
                   child: Text(actions[1],
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                 ),
               ),
               Container(height: 11.h,),
@@ -108,7 +108,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, int currentFilter
                     topColor: 2 == currentFilter ? Colors.white : Color(0xffeeeeee)
                   ),
                   child: Text(actions[2],
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                 ),
               ),
               Container(height: 11.h,),
@@ -124,7 +124,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, int currentFilter
                     topColor: 3 == currentFilter ? Colors.white : Color(0xffeeeeee)
                   ),
                   child: Text(actions[3],
-                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                 ),
               ),
               Container(height: 22.h,),

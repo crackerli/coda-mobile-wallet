@@ -136,7 +136,7 @@ class _PasswordSetWidgetState extends State<PasswordSetWidget> {
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 50.w, right: 50.w),
                 decoration: getMinaButtonDecoration(topColor: Color(0xff9fe4c9)),
                 child: Text('CONFIRM',
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                 ),
               )
             ],

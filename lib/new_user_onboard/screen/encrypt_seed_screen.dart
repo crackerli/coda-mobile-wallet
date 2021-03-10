@@ -252,7 +252,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
                 decoration: getMinaButtonDecoration(topColor: Color(_buttonEnabled ? 0xffe0e0e0 : 0x4deeeeee)),
                 child: Text('CONTINUE',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(_buttonEnabled ? 0xff2d2d2d : 0x4d2d2d2d))),
+                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(_buttonEnabled ? 0xff2d2d2d : 0x4d2d2d2d))),
               )
             ),
           )

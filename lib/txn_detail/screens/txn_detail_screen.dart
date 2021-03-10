@@ -66,7 +66,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
           padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 40.w, right: 40.w),
           decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
           child: Text('VIEW IN BLOCK EXPLORER',
-            textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+            textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
         ),
       )
     );
