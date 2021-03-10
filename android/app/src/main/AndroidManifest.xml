@@ -14,7 +14,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Mina Wallet"
+        android:label="StakingPower Wallet"
         android:largeHeap="true"
         android:icon="@mipmap/ic_launcher">
         <activity

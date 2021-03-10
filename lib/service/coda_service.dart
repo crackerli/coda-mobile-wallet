@@ -1,4 +1,5 @@
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/global/build_config.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:graphql/client.dart';
 import 'dart:io';
@@ -10,9 +11,12 @@ class CodaService {
   CodaService() {
     HttpClient httpClient = HttpClient();
     IOClient ioClient;
-    httpClient.findProxy = (url) {
-      return HttpClient.findProxyFromEnvironment(url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
-    };
+    if(debugConfig) {
+      httpClient.findProxy = (url) {
+        return HttpClient.findProxyFromEnvironment(
+          url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
+      };
+    }
 
     ioClient = IOClient(httpClient);
     globalRpcServer = globalPreferences.getString(RPC_SERVER_KEY);
@@ -30,9 +34,12 @@ class CodaService {
   CodaService.fromHttp(String uri) {
     HttpClient httpClient = HttpClient();
     IOClient ioClient;
-    httpClient.findProxy = (url) {
-      return HttpClient.findProxyFromEnvironment(url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
-    };
+    if(debugConfig) {
+      httpClient.findProxy = (url) {
+        return HttpClient.findProxyFromEnvironment(
+          url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
+      };
+    }
 
     ioClient = IOClient(httpClient);
     globalRpcServer = globalPreferences.getString(RPC_SERVER_KEY);

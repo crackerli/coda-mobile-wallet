@@ -14,3 +14,7 @@ const GLOBAL_ACCOUNTS_KEY = 'global_accounts_key';
 
 const MINIMAL_FEE_COST = 1000000;
 const FEE_COHORT_LENGTH = 80;
+
+// Network id used for signature generated in mina signer
+const MAIN_NET_ID = 1;
+const TEST_NET_ID = 0;

@@ -4,6 +4,8 @@ import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'build_config.dart';
+
 // Global variables
 SharedPreferences globalPreferences;
 String globalRpcServer;
@@ -19,10 +21,7 @@ MinaHDAccount globalHDAccounts = MinaHDAccount();
 
 String globalEncryptedSeed;
 
-const MAIN_NET_ID = 1;
-const TEST_NET_ID = 0;
-
-int globalNetworkId = TEST_NET_ID;
+int globalNetworkId = networkIdConfig;
 
 String getTokenFiatPrice(String tokenNumber) {
   double token = double.parse(tokenNumber);
