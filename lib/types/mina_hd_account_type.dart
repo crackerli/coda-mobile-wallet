@@ -56,6 +56,7 @@ class AccountBean {
   String pool;
   // handle the balance as nano mina
   String balance;
+  bool isActive;
 
   static AccountBean fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
@@ -66,6 +67,7 @@ class AccountBean {
     accountsBean.isDelegated = map['isDelegated'];
     accountsBean.pool = map['pool'];
     accountsBean.balance = map['balance'];
+    accountsBean.isActive = map['isActive'];
     return accountsBean;
   }
 
@@ -76,5 +78,6 @@ class AccountBean {
     "isDelegated": isDelegated,
     "pool": pool,
     "balance": balance,
+    "isActive": isActive
   };
 }
