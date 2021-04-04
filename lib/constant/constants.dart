@@ -1,7 +1,15 @@
 const APPBAR_HEIGHT = 52;
 const APPBAR_TITLE_FONT_SIZE = 68;
 const BOTTOM_BAR_ITEM_SIZE = 22;
-const DEFAULT_RPC_SERVER = 'http://207.180.212.167:3085/graphql';
+//const DEFAULT_RPC_SERVER = 'http://207.180.212.167:3085/graphql';
+const DEFAULT_RPC_SERVER = FIGMENT_MAINNET_RPC_SERVER;
+const DEFAULT_INDEXER_SERVER = FIGMENT_MAINNET_INDEXER_SERVER;
+// add your own figment api key here
+const FIGMENT_API_KEY = '';
+const FIGMENT_MAINNET_RPC_SERVER = 'https://mina-mainnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
+const FIGMENT_MAINNET_INDEXER_SERVER = 'https://mina--mainnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
+const FIGMENT_DEVNET_RPC_SERVER = 'https://mina-devnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
+const FIGMENT_DEVNET_INDEXER_SERVER = 'https://mina--devnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
 const RPC_SERVER_KEY = 'rpc_server_key';
 
 // Encrypted seed
