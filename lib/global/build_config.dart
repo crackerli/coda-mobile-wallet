@@ -5,4 +5,4 @@ bool debugConfig = false;
 
 // If using 'TEST_NET_ID', then the generated signature can be only used in Mina testnet, such as TestWorld
 // If using 'MAIN_NET_ID', then the generated signature can be only used in Mina main net.
-int networkIdConfig = TEST_NET_ID;
+int networkIdConfig = MAIN_NET_ID;
