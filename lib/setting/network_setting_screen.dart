@@ -42,14 +42,14 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
 
   _buildCommonNodeItems(BuildContext context) {
     List<DropdownMenuItem<int>> items = List<DropdownMenuItem<int>>();
-    DropdownMenuItem<int> item = DropdownMenuItem(child: Text('http://144.91.118.33:3085/graphql'), value: 0,);
+    DropdownMenuItem<int> item = DropdownMenuItem(child: Text('https://mina-mainnet--graphql.datahub.figment.io/'), value: 0,);
     items.add(item);
     return items;
   }
 
   _buildArchiveNodeItems(BuildContext context) {
     List<DropdownMenuItem<int>> items = List<DropdownMenuItem<int>>();
-    DropdownMenuItem<int> item = DropdownMenuItem(child: Text('https://graphql.minaexplorer.com'), value: 0,);
+    DropdownMenuItem<int> item = DropdownMenuItem(child: Text('https://mina--mainnet--indexer.datahub.figment.io/'), value: 0,);
     items.add(item);
     return items;
   }
