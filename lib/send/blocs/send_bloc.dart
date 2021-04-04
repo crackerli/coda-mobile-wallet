@@ -145,8 +145,13 @@ class SendBloc extends
       }
 
       List<dynamic> feesStr = result.data['pooledUserCommands'] as List<dynamic>;
-      List<BigInt> fees = List.generate(feesStr.length, (index) => BigInt.tryParse(feesStr[index]['fee']));
-      _calcBestFees(fees);
+      if(feesStr == null || feesStr.length == 0) {
+        _calcBestFees(null);
+      } else {
+        List<BigInt> fees = List.generate(
+            feesStr.length, (index) => BigInt.tryParse(feesStr[index]['fee']) ?? 0);
+        _calcBestFees(fees);
+      }
       yield GetPooledFeeSuccess(bestFees);
     } catch (e) {
       print(e);
@@ -242,14 +247,20 @@ class SendBloc extends
         return;
       }
 
-      if(null == result.data['account']['nonce']) {
+      if(null == result.data || null == result.data['account']) {
+        yield GetNonceFail('Get nonce failed!');
+        return;
+      }
+
+      Map<String, dynamic> account = result.data['account'];
+      if(null == account['nonce']) {
         nonce = 0;
       } else {
-        if(null == result.data['account']['inferredNonce']) {
-          nonce = int.tryParse(result.data['account']['nonce']);
+        if(null == account['inferredNonce']) {
+          nonce = int.tryParse(account['nonce']) ?? 0;
         } else {
           // Always using inferred nonce if it is not null
-          nonce = int.tryParse(result.data['account']['inferredNonce']);
+          nonce = int.tryParse(account['inferredNonce']) ?? 0;
         }
       }
       yield GetNonceSuccess();

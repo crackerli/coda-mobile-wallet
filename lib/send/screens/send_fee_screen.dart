@@ -33,7 +33,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 _gotoTxnDetail(BuildContext context, SendData sendData) {
   TxnEntity txnEntity = TxnEntity(globalHDAccounts.accounts[sendData.from].address,
-    sendData.to, null, sendData.amount, sendData.fee, sendData.memo, TxnStatus.PENDING, TxnType.SEND);
+    sendData.to, null, sendData.amount, sendData.fee, sendData.memo, TxnStatus.PENDING, TxnType.SEND, true);
   Navigator.pushReplacementNamed(context, TxnDetailRoute, arguments: txnEntity);
 }
 
