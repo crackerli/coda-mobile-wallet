@@ -9,6 +9,7 @@ class TxnEntity {
   String amount;
   String fee;
   String memo;
+  bool isIndexerMemo;
   TxnStatus txnStatus;
   TxnType txnType;
 
@@ -19,5 +20,5 @@ class TxnEntity {
     return totalB.toString();
   }
 
-  TxnEntity(this.from, this.to, this.timestamp, this.amount, this.fee, this.memo, this.txnStatus, this.txnType);
+  TxnEntity(this.from, this.to, this.timestamp, this.amount, this.fee, this.memo, this.txnStatus, this.txnType, this.isIndexerMemo);
 }

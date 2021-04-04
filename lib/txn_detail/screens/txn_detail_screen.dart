@@ -259,7 +259,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('${decodeBase58Check(_txnEntity.memo)}', textAlign: TextAlign.left, maxLines: 2,
+                child: Text('${_txnEntity.isIndexerMemo ? _txnEntity.memo : decodeBase58Check(_txnEntity.memo)}', textAlign: TextAlign.left, maxLines: 2,
                   style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],
