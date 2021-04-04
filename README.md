@@ -38,3 +38,13 @@ This is a community tool developed under the policy of Mina Project Grants, not 
     Camera permission required to scan the QR code image shared by other Mina users
 
 # Ios Permissions
+
+
+# Examples
+<p float="left">
+<img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/1.%20create-wallet-3.jpeg" width="200" ><img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/5.%20send-1.jpeg" width="200" ><img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/4.%20add-account-3.jpeg" width="200" ><img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/5.%20send-6.jpeg" width="200" >
+</p>
+
+<p float="left">
+<img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/5.%20send-4.jpeg" width="200" ><img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/6.%20receive-2.jpeg" width="200" ><img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/5.%20send-2.jpeg" width="200" ><img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/5.%20send-3.jpeg" width="200" >
+</p>
