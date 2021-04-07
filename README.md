@@ -38,7 +38,14 @@ This is a community tool developed under the policy of Mina Project Grants, not 
     Camera permission required to scan the QR code image shared by other Mina users
 
 # Ios Permissions
-
+    <key>NSAppleMusicUsageDescription</key>. 
+    <string>StakingPower wallet want to access you media library to save qr image</string>. 
+    <key>NSCameraUsageDescription</key>. 
+    <string>StakingPower wallet need your camera to scan the qr code</string>. 
+    <key>NSPhotoLibraryAddUsageDescription</key>. 
+    <string>StakingPower wallet needs to access your photo Library</string>. 
+    <key>NSPhotoLibraryUsageDescription</key>. 
+    <string>StakingPower wallet want to access you photo library to save qr image</string>. 
 
 # Examples
 <p float="left">
