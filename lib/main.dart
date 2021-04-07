@@ -40,7 +40,8 @@ class CodaWallet extends StatelessWidget {
         if(snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
             showPerformanceOverlay: false,
-            title: 'Mina Wallet',
+            title: 'StakingPower Wallet',
+            //debugShowCheckedModeBanner:false,
             routes: globalRoutes,
             theme: ThemeData(
               brightness: Brightness.light,
