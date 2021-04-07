@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Mina Wallet</string>
+	<string>StakingPower Wallet</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -27,15 +27,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Mina mobile wallet want to access you media library to save qr image</string>
+	<string>StakingPower wallet want to access you media library to save qr image</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Mina wallet need your camera to scan the qr code</string>
+	<string>StakingPower wallet need your camera to scan the qr code</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Mina mobile wallet needs to access your photo Library</string>
+	<string>StakingPower wallet needs to access your photo Library</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Mina mobile wallet want to access you photo library to save qr image</string>
+	<string>StakingPower wallet want to access you photo library to save qr image</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
