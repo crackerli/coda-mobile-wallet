@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 import 'account_events.dart';
 import 'account_states.dart';
+import 'package:coda_wallet/util/safe_map.dart';
 
 class AccountBloc extends
   Bloc<AccountEvents, AccountStates> {
@@ -34,13 +35,26 @@ class AccountBloc extends
 
     final query = ACCOUNT_QUERY;
     Map<String, dynamic> variables = Map<String, dynamic>();
-    variables['publicKey'] = globalHDAccounts.accounts[event.index].address;
+    variables['publicKey'] = globalHDAccounts?.accounts[event?.index]?.address;
 
     try {
       yield GetAccountsLoading();
       final result = await _service.performQuery(query, variables: variables);
-      String balance = result.data['account']['balance']['total'];
-      String publicKey = result.data['account']['publicKey'];
+      if(null == result || result.hasException) {
+        // If one account fail, we continue to next if not finished
+        if(event.index >= globalHDAccounts.accounts.length - 1) {
+          yield GetAccountsFinished();
+        } else {
+          add(GetAccounts(event.index + 1));
+        }
+        return;
+      }
+
+      // Parse data from Json map, convert it to safe map for safe nested access
+      SafeMap safeMap = SafeMap(result.data);
+      // If the balance is null, then we can say this account is not active
+      String balance = safeMap['account']['balance']['total'].value;
+      String publicKey = safeMap['account']['publicKey'].value;
       // find it in global accounts
       for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
         AccountBean account = globalHDAccounts.accounts[i];
@@ -54,6 +68,7 @@ class AccountBloc extends
         return;
       }
 
+      // Continue to get next account info
       add(GetAccounts(event.index + 1));
     } catch (e) {
       print(e);
