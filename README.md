@@ -46,6 +46,14 @@ This is a community tool developed under the policy of Mina Project Grants, not 
     <string>StakingPower wallet needs to access your photo Library</string>. 
     <key>NSPhotoLibraryUsageDescription</key>. 
     <string>StakingPower wallet want to access you photo library to save qr image</string>. 
+    
+# Install on iOS
+    1. Install TestFlight
+    2. Scan the QR code image below and follow the instructions.  
+<img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/StakingPower_Wallet_TestFlight_QR_Image.png" >
+
+# Install on Android
+    Search "StakingPower Wallet" on Google Play and install it.
 
 # Examples
 <p float="left">
