@@ -16,8 +16,6 @@ class AccountBloc extends
     _service = CodaService();
   }
 
-  newCodaService() => _service = CodaService();
-
   AccountStates get initState => GetAccountsLoading();
 
   @override
