@@ -129,9 +129,9 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       List<IndexerTxnEntity> transactions = List<IndexerTxnEntity>();
 
       if(null != data && data.length > 0) {
-        for(int i = 0; i < data.length; i++) {
-          transactions.add(IndexerTxnEntity.fromMap(data[i]));
-        }
+        data.forEach((element) {
+          transactions.add(IndexerTxnEntity.fromMap(element));
+        });
       }
       _mergeUserCommandsFromArchiveNode(transactions);
 
@@ -269,28 +269,22 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       return;
     }
 
-    for(int i = 0; i < transactions.length; i++) {
-      if(null == transactions[i]) {
-        continue;
-      }
-
-      IndexerTxnEntity transaction = transactions[i];
+    transactions.forEach((transaction) {
       MergedUserCommand mergedUserCommand = MergedUserCommand();
-      mergedUserCommand.to = transaction.receiver;
-      mergedUserCommand.isDelegation = (transaction.type) == 'delegation';
-      mergedUserCommand.nonce = transaction.nonce;
-      mergedUserCommand.amount = transaction.amount;
-      mergedUserCommand.fee = transaction.fee;
-      mergedUserCommand.from = transaction.sender;
-      mergedUserCommand.hash = transaction.hash;
-      mergedUserCommand.memo = transaction.memo ?? '';
-      mergedUserCommand.isPooled = false;
-      mergedUserCommand.blockHeight = transaction.blockHeight;
-      mergedUserCommand.isIndexerMemo = true;
-      DateTime dateTime = DateTime.tryParse(transaction.time);
-      String milliseconds = dateTime == null ? '' : dateTime.millisecondsSinceEpoch.toString();
-      mergedUserCommand.dateTime = milliseconds;
+      mergedUserCommand.to                = transaction?.receiver;
+      mergedUserCommand.isDelegation      = (transaction?.type) == 'delegation';
+      mergedUserCommand.nonce             = transaction?.nonce;
+      mergedUserCommand.amount            = transaction?.amount;
+      mergedUserCommand.fee               = transaction?.fee;
+      mergedUserCommand.from              = transaction?.sender;
+      mergedUserCommand.hash              = transaction?.hash;
+      mergedUserCommand.memo              = transaction?.memo ?? '';
+      mergedUserCommand.isPooled          = false;
+      mergedUserCommand.blockHeight       = transaction?.blockHeight;
+      mergedUserCommand.isIndexerMemo     = true;
+      DateTime dateTime                   = DateTime.tryParse(transaction?.time);
+      mergedUserCommand.dateTime          = (dateTime == null ? '' : dateTime.millisecondsSinceEpoch.toString());
       mergedUserCommands.add(mergedUserCommand);
-    }
+    });
   }
 }
