@@ -6,9 +6,12 @@ import 'dart:io';
 import 'package:http/io_client.dart';
 
 class CodaService {
+  static final CodaService _instance = CodaService._internal();
+
+  factory CodaService() => _instance;
   GraphQLClient _client;
 
-  CodaService() {
+  CodaService._internal() {
     HttpClient httpClient = HttpClient();
     IOClient ioClient;
     if(debugConfig) {
