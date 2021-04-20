@@ -31,29 +31,6 @@ class CodaService {
     _client = GraphQLClient(link: httpLink, cache: GraphQLCache());
   }
 
-  CodaService.fromHttp(String uri) {
-    HttpClient httpClient = HttpClient();
-    IOClient ioClient;
-    if(debugConfig) {
-      httpClient.findProxy = (url) {
-        return HttpClient.findProxyFromEnvironment(
-          url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
-      };
-    }
-
-    ioClient = IOClient(httpClient);
-    globalRpcServer = globalPreferences.getString(RPC_SERVER_KEY);
-    final HttpLink httpLink = HttpLink(
-        uri,
-        defaultHeaders: <String, String> {
-          'content-type': 'application/json',
-        },
-        httpClient: ioClient
-    );
-
-    _client = GraphQLClient(link: httpLink, cache: GraphQLCache());
-  }
-
   Future<QueryResult> performQuery(String query,
       {Map<String, dynamic> variables}) async {
     QueryOptions options = QueryOptions(document: gql(query), variables: variables, fetchPolicy: FetchPolicy.cacheAndNetwork);

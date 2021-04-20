@@ -3,7 +3,6 @@ import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
 import 'package:coda_wallet/txns/query/confirmed_txns_query.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 import 'indexer_txns_entity.dart';
@@ -11,7 +10,6 @@ import 'txns_entity.dart';
 
 class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   CodaService _service;
-//  CodaService _serviceFromHttp;
   IndexerService _indexerService;
   bool isTxnsLoading = false;
   // User commands merged from both pool and archive
@@ -64,7 +62,6 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
   TxnsBloc(TxnsStates state) : super(state) {
     _service = CodaService();
-//    _serviceFromHttp = CodaService.fromHttp("https://graphql.minaexplorer.com");
     _indexerService = IndexerService();
     isTxnsLoading = false;
     mergedUserCommands = List<MergedUserCommand>();
@@ -107,35 +104,6 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     yield FilterChanged(filteredUserCommands);
     return;
   }
-
- //  Stream<TxnsStates>
- //    _mapRefreshConfirmedTxnsToStates(RefreshConfirmedTxns event) async* {
- //
- //    final query = event.query;
- //    final variables = event.variables ?? null;
- //
- //    try {
- //      isTxnsLoading = true;
- // //     yield RefreshConfirmedTxnsLoading(mergedUserCommands);
- //      final result = await _serviceFromHttp.performQuery(query, variables: variables);
- //
- //      if(null == result || result.hasException) {
- //        String error = exceptionHandle(result);
- //        yield RefreshConfirmedTxnsFail(error);
- //        return;
- //      }
- //
- //      List<dynamic> transactions = result.data['transactions'];
- //      _mergeUserCommandsFromArchiveNode(transactions);
- //
- //      yield RefreshConfirmedTxnsSuccess(mergedUserCommands);
- //      isTxnsLoading = false;
- //    } catch (e) {
- //      print(e);
- //      yield RefreshConfirmedTxnsFail(e.toString());
- //      isTxnsLoading = false;
- //    }
- //  }
 
   Stream<TxnsStates>
     _mapRefreshConfirmedTxnsToStates(RefreshConfirmedTxns event) async* {
@@ -295,32 +263,6 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       mergedUserCommands.add(mergedUserCommand);
     }
   }
-
-  // _mergeUserCommandsFromArchiveNode(List<dynamic> transactions) {
-  //   if(null == transactions || 0 == transactions.length) {
-  //     return;
-  //   }
-  //
-  //   for(int i = 0; i < transactions.length; i++) {
-  //     if(null == transactions[i]) {
-  //       continue;
-  //     }
-  //
-  //     MergedUserCommand mergedUserCommand = MergedUserCommand();
-  //     mergedUserCommand.to = transactions[i]['to'];
-  //     mergedUserCommand.isDelegation = (transactions[i]['kind'] as String) == 'STAKE_DELEGATION';
-  //     mergedUserCommand.nonce = transactions[i]['nonce'];
-  //     mergedUserCommand.amount = transactions[i]['amount'];
-  //     mergedUserCommand.fee = transactions[i]['fee'];
-  //     mergedUserCommand.from = transactions[i]['from'];
-  //     mergedUserCommand.hash = transactions[i]['hash'];
-  //     mergedUserCommand.memo = transactions[i]['memo'];
-  //     mergedUserCommand.isPooled = false;
-  //     mergedUserCommand.dateTime =
-  //       DateTime.parse(transactions[i]['dateTime']).millisecondsSinceEpoch.toString();
-  //     mergedUserCommands.add(mergedUserCommand);
-  //   }
-  // }
 
   _mergeUserCommandsFromArchiveNode(List<IndexerTxnEntity> transactions) {
     if(null == transactions || 0 == transactions.length) {
