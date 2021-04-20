@@ -3,6 +3,7 @@ import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
 import 'package:coda_wallet/txns/query/confirmed_txns_query.dart';
+import 'package:coda_wallet/util/safe_map.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 import 'indexer_txns_entity.dart';
@@ -193,42 +194,37 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
   // Parse user commands from best chain, with the latest block height
   _parseUserCommandsFromBestChain(Map<String, dynamic> block) {
-    Map<String, dynamic> protocolState = block == null ? null : block['protocolState'];
-    Map<String, dynamic> blockchainState = protocolState == null ? null : protocolState['blockchainState'];
-    String dateTime = blockchainState == null ? null : blockchainState['date'];
-    Map<String, dynamic> consensusState = protocolState == null ? null : protocolState['consensusState'];
-    String blockHeight = consensusState == null ? 0 : consensusState['blockHeight'];
+    if(null == block) {
+      return;
+    }
 
-    Map<String, dynamic> transactions = block == null ? null : block['transactions'];
+    SafeMap safeBlock = SafeMap(block);
+    List<dynamic> userCommands = safeBlock['transactions']['userCommands'].value;
+    if(null == userCommands || userCommands.length == 0) return;
 
-    if(null == transactions || null == transactions['userCommands']) return;
-
-    List<dynamic> userCommands = transactions['userCommands'];
-    if(userCommands.length == 0) return;
-
-    for(int i = 0; i < userCommands.length; i++) {
-      Map<String, dynamic> userCommand = userCommands[i];
-
-      String sender = userCommand == null ? null : userCommand['from'];
-      String receiver = userCommand == null ? null : userCommand['to'];
+    userCommands.forEach((userCommand) {
+      SafeMap safeUserCommand = SafeMap(userCommand);
+      String sender = safeUserCommand['from'].value ?? '';
+      String receiver = safeUserCommand['to'].value ?? '';
 
       if(publicKey == sender || publicKey == receiver) {
         MergedUserCommand mergedUserCommand = MergedUserCommand();
-        mergedUserCommand.blockHeight = int.tryParse(blockHeight) ?? 0;
-        mergedUserCommand.dateTime = dateTime;
-        mergedUserCommand.hash = userCommand == null ? null : userCommand['hash'];
-        mergedUserCommand.memo = userCommand == null ? null : userCommand['memo'];
-        mergedUserCommand.fee = userCommand == null ? null : userCommand['fee'];
-        mergedUserCommand.amount = userCommand == null ? null : userCommand['amount'];
-        mergedUserCommand.nonce = userCommand == null ? null : userCommand['nonce'];
-        mergedUserCommand.isDelegation = userCommand == null ? null : userCommand['isDelegation'];
-        mergedUserCommand.from = sender;
-        mergedUserCommand.to = receiver;
-        mergedUserCommand.isPooled = false;
-        mergedUserCommand.isIndexerMemo = false;
+        mergedUserCommand.blockHeight       = int.tryParse(safeBlock['protocolState']['consensusState']['blockHeight'].value) ?? 0;
+        print('In Best Chain, block height is: ${mergedUserCommand.blockHeight}');
+        mergedUserCommand.dateTime          = safeBlock['protocolState']['blockchainState']['date'].value ?? '';
+        mergedUserCommand.hash              = safeUserCommand['hash'].value;
+        mergedUserCommand.memo              = safeUserCommand['memo'].value;
+        mergedUserCommand.fee               = safeUserCommand['fee'].value;
+        mergedUserCommand.amount            = safeUserCommand['amount'].value;
+        mergedUserCommand.nonce             = safeUserCommand['nonce'].value;
+        mergedUserCommand.isDelegation      = safeUserCommand['isDelegation'].value;
+        mergedUserCommand.from              = sender;
+        mergedUserCommand.to                = receiver;
+        mergedUserCommand.isPooled          = false;
+        mergedUserCommand.isIndexerMemo     = false;
         mergedUserCommands.add(mergedUserCommand);
       }
-    }
+    });
   }
 
   _mergeUserCommandsFromPool(List<dynamic> pooledUserCommands) {
@@ -236,51 +232,46 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       return;
     }
 
-    for(int i = 0; i < pooledUserCommands.length; i++) {
-      if(null == pooledUserCommands[i]) {
-        continue;
-      }
-
-      Map<String, dynamic> pooledUserCommand = pooledUserCommands[i];
+    pooledUserCommands.forEach((pooledUserCommand) {
+      SafeMap safeUserCommand = SafeMap(pooledUserCommand);
       // TODO: Here maybe a bug in graphql server,
       // the filter will return some item not related to the publicKey, need to confirm with Mina Team
-      if(pooledUserCommand['to'] != publicKey && pooledUserCommand['from'] != publicKey) {
-        continue;
+      if(pooledUserCommand['to'] == publicKey || pooledUserCommand['from'] == publicKey) {
+        MergedUserCommand mergedUserCommand = MergedUserCommand();
+        mergedUserCommand.to                = safeUserCommand['to'].value           ?? '';
+        mergedUserCommand.isDelegation      = safeUserCommand['isDelegation'].value ?? false;
+        mergedUserCommand.nonce             = safeUserCommand['nonce'].value        ?? 0;
+        mergedUserCommand.amount            = safeUserCommand['amount'].value       ?? '';
+        mergedUserCommand.fee               = safeUserCommand['fee'].value          ?? '';
+        mergedUserCommand.from              = safeUserCommand['from'].value         ?? '';
+        mergedUserCommand.hash              = safeUserCommand['hash'].value         ?? '';
+        mergedUserCommand.memo              = safeUserCommand['memo'].value         ?? '';
+        mergedUserCommand.isPooled          = true;
+        mergedUserCommand.dateTime          = '';
+        mergedUserCommand.blockHeight       = 0;
+        mergedUserCommand.isIndexerMemo     = false;
+        mergedUserCommands.add(mergedUserCommand);
       }
-      MergedUserCommand mergedUserCommand = MergedUserCommand();
-      mergedUserCommand.to = pooledUserCommand['to'];
-      mergedUserCommand.isDelegation = pooledUserCommand['isDelegation'];
-      mergedUserCommand.nonce = pooledUserCommand['nonce'];
-      mergedUserCommand.amount = pooledUserCommand['amount'];
-      mergedUserCommand.fee = pooledUserCommand['fee'];
-      mergedUserCommand.from = pooledUserCommand['from'];
-      mergedUserCommand.hash = pooledUserCommand['hash'];
-      mergedUserCommand.memo = pooledUserCommand['memo'];
-      mergedUserCommand.isPooled = true;
-      mergedUserCommand.dateTime = '';
-      mergedUserCommand.blockHeight = 0;
-      mergedUserCommand.isIndexerMemo = false;
-      mergedUserCommands.add(mergedUserCommand);
-    }
+    });
   }
 
-  _mergeUserCommandsFromArchiveNode(List<IndexerTxnEntity> transactions) {
-    if(null == transactions || 0 == transactions.length) {
+  _mergeUserCommandsFromArchiveNode(List<IndexerTxnEntity> userCommands) {
+    if(null == userCommands || 0 == userCommands.length) {
       return;
     }
 
-    transactions.forEach((transaction) {
+    userCommands.forEach((transaction) {
       MergedUserCommand mergedUserCommand = MergedUserCommand();
-      mergedUserCommand.to                = transaction?.receiver;
+      mergedUserCommand.to                = transaction?.receiver    ?? '';
+      mergedUserCommand.nonce             = transaction?.nonce       ?? 0;
+      mergedUserCommand.amount            = transaction?.amount      ?? '';
+      mergedUserCommand.fee               = transaction?.fee         ?? '';
+      mergedUserCommand.from              = transaction?.sender      ?? '';
+      mergedUserCommand.hash              = transaction?.hash        ?? '';
+      mergedUserCommand.memo              = transaction?.memo        ?? '';
+      mergedUserCommand.blockHeight       = transaction?.blockHeight ?? 0;
       mergedUserCommand.isDelegation      = (transaction?.type) == 'delegation';
-      mergedUserCommand.nonce             = transaction?.nonce;
-      mergedUserCommand.amount            = transaction?.amount;
-      mergedUserCommand.fee               = transaction?.fee;
-      mergedUserCommand.from              = transaction?.sender;
-      mergedUserCommand.hash              = transaction?.hash;
-      mergedUserCommand.memo              = transaction?.memo ?? '';
       mergedUserCommand.isPooled          = false;
-      mergedUserCommand.blockHeight       = transaction?.blockHeight;
       mergedUserCommand.isIndexerMemo     = true;
       DateTime dateTime                   = DateTime.tryParse(transaction?.time);
       mergedUserCommand.dateTime          = (dateTime == null ? '' : dateTime.millisecondsSinceEpoch.toString());

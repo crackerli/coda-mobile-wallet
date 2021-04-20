@@ -17,7 +17,7 @@ class IndexerService {
       BaseOptions options = BaseOptions();
       options.baseUrl = "$DEFAULT_INDEXER_SERVER/transactions";
       options.receiveTimeout = 1000 * 15;
-      options.connectTimeout = 5000;
+      options.connectTimeout = 10000;
       _client = Dio(options);
 
       (_client.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
