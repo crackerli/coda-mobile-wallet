@@ -19,10 +19,8 @@ void main() {
 class CodaWallet extends StatelessWidget {
   Future<SharedPreferences> _initStoredData() async {
     globalPreferences = await SharedPreferences.getInstance();
-    String rpcServer = globalPreferences.getString(RPC_SERVER_KEY);
-    if(null == rpcServer || rpcServer == '') {
-      globalPreferences.setString(RPC_SERVER_KEY, DEFAULT_RPC_SERVER);
-    }
+    int currentNetworkId = globalPreferences.getInt(CURRENT_NETWORK_ID);
+    print('Current network id: $currentNetworkId');
     String accountsStr = globalPreferences.getString(GLOBAL_ACCOUNTS_KEY);
     if(null != accountsStr && accountsStr.isNotEmpty) {
       Map accountsJson = json.decode(accountsStr);

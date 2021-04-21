@@ -1,3 +1,7 @@
+import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/event_bus/event_bus.dart';
+import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/service/coda_service.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +16,15 @@ class NetworkSettingScreen extends StatefulWidget {
 }
 
 class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
+
+  _getServerDomain(String url) {
+    if(null == url || url.isEmpty) {
+      return '';
+    }
+
+    int index = url.indexOf('/', 8);
+    return url.substring(0, index);
+  }
 
   @override
   void initState() {
@@ -40,17 +53,12 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
     );
   }
 
-  _buildCommonNodeItems(BuildContext context) {
+  _buildNetworkItems(BuildContext context) {
     List<DropdownMenuItem<int>> items = List<DropdownMenuItem<int>>();
-    DropdownMenuItem<int> item = DropdownMenuItem(child: Text('https://mina-mainnet--graphql.datahub.figment.io/'), value: 0,);
-    items.add(item);
-    return items;
-  }
-
-  _buildArchiveNodeItems(BuildContext context) {
-    List<DropdownMenuItem<int>> items = List<DropdownMenuItem<int>>();
-    DropdownMenuItem<int> item = DropdownMenuItem(child: Text('https://mina--mainnet--indexer.datahub.figment.io/'), value: 0,);
-    items.add(item);
+    DropdownMenuItem<int> item0 = DropdownMenuItem(child: Text(NETWORK_LIST[0]), value: 0);
+    DropdownMenuItem<int> item1 = DropdownMenuItem(child: Text(NETWORK_LIST[1]), value: 1);
+    items.add(item0);
+    items.add(item1);
     return items;
   }
 
@@ -61,33 +69,41 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Container(height: 20.h,),
-        Container(
-          width: double.infinity,
-          child: Center(
-            child: Text('Network Setting', textAlign: TextAlign.center, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w600),),
-          ),
+        DropdownButton(
+          items: _buildNetworkItems(context),
+          value: getCurrentNetworkId(),
+          onChanged: (index) {
+            setState(() {
+              setCurrentNetworkId(index);
+              // Coda service use singleton, so need to set the new client.
+              CodaService().setClient(index);
+              eventBus.fire(NetworkChange());
+            });
+          }
         ),
         Container(height: 24.h,),
         Text('Mina Broadcast Node', textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),),
         Container(height: 8.h,),
-        DropdownButton(
-          items: _buildCommonNodeItems(context),
-          hint: Text('http://144.91.118.33:3085/graphql'),
-          value: 0,
-          onChanged: (index) {
-
-          }
+        Container(
+          padding: EdgeInsets.all(4.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4.w),
+            color: Colors.white,
+            border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
+          ),
+          child: Text(_getServerDomain(RPC_SERVER_LIST[getCurrentNetworkId()])),
         ),
         Container(height: 24.h,),
         Text('Mina Archive Node', textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600)),
         Container(height: 8.h,),
-        DropdownButton(
-          items: _buildArchiveNodeItems(context),
-          hint: Text('https://graphql.minaexplorer.com'),
-          value: 0,
-          onChanged: (index) {
-
-          }
+        Container(
+          padding: EdgeInsets.all(4.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4.w),
+            color: Colors.white,
+            border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
+          ),
+          child: Text(_getServerDomain(RPC_SERVER_LIST[getCurrentNetworkId()])),
         ),
       ],
     );

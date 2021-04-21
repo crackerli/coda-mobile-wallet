@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/build_config.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 
@@ -15,7 +16,7 @@ class IndexerService {
   IndexerService._internal() {
     if (null == _client) {
       BaseOptions options = BaseOptions();
-      options.baseUrl = "$DEFAULT_INDEXER_SERVER/transactions";
+//      options.baseUrl = "$DEFAULT_INDEXER_SERVER/transactions";
       options.receiveTimeout = 1000 * 15;
       options.connectTimeout = 10000;
       _client = Dio(options);
@@ -37,7 +38,10 @@ class IndexerService {
   }
 
   Future<Response> getTransactions(String account) async {
-    String requestUrl = "$DEFAULT_INDEXER_SERVER/transactions";
+    int networkId = getCurrentNetworkId();
+    String indexerServer = INDEXER_SERVER_LIST[networkId];
+    String requestUrl = "$indexerServer/transactions";
+    print('Current indexer server using: $requestUrl');
 
     Map<String, dynamic> map = Map<String, dynamic>();
     map['account']= account;

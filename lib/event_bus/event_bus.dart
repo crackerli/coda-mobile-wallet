@@ -44,8 +44,10 @@ class NewAccountPasswordInput {
   NewAccountPasswordInput(this.password);
 }
 
-abstract class RemoveWalletEventBus {}
+abstract class SettingChangeEventBus {}
 
-class RemoveWalletSucceed extends RemoveWalletEventBus {}
+class RemoveWalletSucceed extends SettingChangeEventBus {}
 
-class RemoveWalletFail extends RemoveWalletEventBus {}
+class RemoveWalletFail extends SettingChangeEventBus {}
+
+class NetworkChange extends SettingChangeEventBus {}

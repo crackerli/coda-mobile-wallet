@@ -12,23 +12,29 @@ class CodaService {
   GraphQLClient _client;
 
   CodaService._internal() {
+    int networkId = getCurrentNetworkId();
+    setClient(networkId);
+  }
+
+  setClient(int networkId) {
     HttpClient httpClient = HttpClient();
     IOClient ioClient;
     if(debugConfig) {
       httpClient.findProxy = (url) {
         return HttpClient.findProxyFromEnvironment(
-          url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
+            url, environment: {'http_proxy': 'http://192.168.84.201:9999'});
       };
     }
 
     ioClient = IOClient(httpClient);
-    globalRpcServer = globalPreferences.getString(RPC_SERVER_KEY);
+    String rpcServer = RPC_SERVER_LIST[networkId];
+    print('Rpc server current using: $rpcServer');
     final HttpLink httpLink = HttpLink(
-        globalRpcServer,
-        defaultHeaders: <String, String> {
-          'content-type': 'application/json',
-        },
-        httpClient: ioClient
+      rpcServer,
+      defaultHeaders: <String, String> {
+        'content-type': 'application/json',
+      },
+      httpClient: ioClient
     );
 
     _client = GraphQLClient(link: httpLink, cache: GraphQLCache());

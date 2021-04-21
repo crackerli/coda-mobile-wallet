@@ -1,14 +1,13 @@
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'build_config.dart';
-
 // Global variables
 SharedPreferences globalPreferences;
-String globalRpcServer;
+
 RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 const primaryBackgroundColor = Color(0xfff5f8fd);
 const globalHPadding = 20;
@@ -20,8 +19,6 @@ double gUnitFiatPrice = 2.317;
 MinaHDAccount globalHDAccounts = MinaHDAccount();
 
 String globalEncryptedSeed;
-
-int globalNetworkId = networkIdConfig;
 
 String getTokenFiatPrice(String tokenNumber) {
   double token = double.parse(tokenNumber);
@@ -56,4 +53,23 @@ openUrl(String url) async {
   } else {
     throw 'Could not launch $url';
   }
+}
+
+int getCurrentNetworkId() {
+  int currentNetworkId = globalPreferences.getInt(CURRENT_NETWORK_ID);
+
+  if(null == currentNetworkId) {
+    globalPreferences.setInt(CURRENT_NETWORK_ID, MAIN_NET_ID);
+    return MAIN_NET_ID;
+  }
+
+  return currentNetworkId;
+}
+
+setCurrentNetworkId(int networkId) {
+  int currentNetworkId = globalPreferences.getInt(CURRENT_NETWORK_ID);
+  if(currentNetworkId == networkId) {
+    return;
+  }
+  globalPreferences.setInt(CURRENT_NETWORK_ID, networkId);
 }

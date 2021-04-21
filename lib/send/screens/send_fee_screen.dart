@@ -67,8 +67,10 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     BigInt amount = _sendBloc.finalAmount;
     int tokenLocked = 0;
 
+    int networkId = getCurrentNetworkId();
+    print('Current network id using to sending: $networkId');
     Signature signature = await signPayment(MinaHelper.reverse(_accountPrivateKey), memo, feePayerAddress,
-        senderAddress, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, amount, tokenLocked, globalNetworkId);
+        senderAddress, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, amount, tokenLocked, networkId);
     return signature;
   }
 

@@ -1,16 +1,13 @@
 const APPBAR_HEIGHT = 52;
 const APPBAR_TITLE_FONT_SIZE = 68;
 const BOTTOM_BAR_ITEM_SIZE = 22;
-//const DEFAULT_RPC_SERVER = 'http://207.180.212.167:3085/graphql';
-const DEFAULT_RPC_SERVER = FIGMENT_MAINNET_RPC_SERVER;
-const DEFAULT_INDEXER_SERVER = FIGMENT_MAINNET_INDEXER_SERVER;
+
 // add your own figment api key here
 const FIGMENT_API_KEY = '';
 const FIGMENT_MAINNET_RPC_SERVER = 'https://mina-mainnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
 const FIGMENT_MAINNET_INDEXER_SERVER = 'https://mina--mainnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
 const FIGMENT_DEVNET_RPC_SERVER = 'https://mina-devnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
 const FIGMENT_DEVNET_INDEXER_SERVER = 'https://mina--devnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
-const RPC_SERVER_KEY = 'rpc_server_key';
 
 // Encrypted seed
 const ENCRYPTED_SEED_KEY = 'encrypted_seed_key';
@@ -26,3 +23,12 @@ const FEE_COHORT_LENGTH = 80;
 // Network id used for signature generated in mina signer
 const MAIN_NET_ID = 1;
 const TEST_NET_ID = 0;
+
+// Key to retrieve current network used, mainnet or testnet
+const CURRENT_NETWORK_ID = 'current_network_id_key';
+
+const List<String> RPC_SERVER_LIST = [FIGMENT_DEVNET_RPC_SERVER, FIGMENT_MAINNET_RPC_SERVER];
+const List<String> INDEXER_SERVER_LIST = [FIGMENT_DEVNET_INDEXER_SERVER, FIGMENT_MAINNET_INDEXER_SERVER];
+
+const List<String> NETWORK_LIST = ['Testnet', 'Mainnet'];
+

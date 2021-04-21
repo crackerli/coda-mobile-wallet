@@ -1,6 +1,7 @@
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/widget/dialog/change_password_dialog.dart';
 import 'package:coda_wallet/widget/dialog/remove_wallet_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,8 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   void initState() {
     super.initState();
-    _eventBusOn = eventBus.on<RemoveWalletEventBus>().listen((event) {
+    print('Setting Screen inited');
+    _eventBusOn = eventBus.on<SettingChangeEventBus>().listen((event) {
       if(event is RemoveWalletFail) {
         _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Wrong password')));
         return;
@@ -34,6 +36,11 @@ class _SettingScreenState extends State<SettingScreen> {
         });
         return;
       }
+
+      if(event is NetworkChange) {
+        setState(() { });
+        return;
+      }
     });
   }
 
@@ -41,6 +48,7 @@ class _SettingScreenState extends State<SettingScreen> {
   void dispose() {
     _eventBusOn.cancel();
     _eventBusOn = null;
+    print('Setting Screen disposed');
     super.dispose();
   }
 
@@ -106,7 +114,7 @@ class _SettingScreenState extends State<SettingScreen> {
         _buildOuterBorder(),
         InkWell(
           onTap: () => Navigator.of(context).pushNamed(NetworkSettingRoute),
-          child: _buildSettingItem(context, 'Network Connection'),
+          child: _buildSettingItem(context, 'Network Connection', currentValue: NETWORK_LIST[getCurrentNetworkId()]),
         ),
  //       _buildInnerBorder(),
 //        _buildSettingItem(context, 'Local Fiat Currency'),
@@ -156,7 +164,7 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  _buildSettingItem(BuildContext context, String settingName) {
+  _buildSettingItem(BuildContext context, String settingName, {String currentValue = ''}) {
     return Container(
       color: Color(0xfff5f5f5),
       padding: EdgeInsets.only(left: 14.w, right: 14.w, top: 11.h, bottom: 11.h),
@@ -169,6 +177,8 @@ class _SettingScreenState extends State<SettingScreen> {
             flex: 1,
             child: Text(settingName, textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp),),
           ),
+          Text(currentValue, textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp),),
+          Container(width: 4.w,),
           Image.asset('images/arrow_right.png', width: 8.w, height: 13.h,),
         ],
       ),
