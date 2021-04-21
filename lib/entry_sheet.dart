@@ -120,6 +120,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   @override
   void dispose() {
     _pageController.dispose();
+    print('EntrySheet dispose');
     super.dispose();
   }
 
