@@ -20,5 +20,18 @@ class MergedUserCommand {
   bool isPooled;
   String dateTime;
   int blockHeight;
+
+  @override
+  int get hashCode {
+    return hash?.hashCode ?? 123456789;
+  }
+
+  @override
+  bool operator ==(other) {
+    if(other is! MergedUserCommand) {
+      return false;
+    }
+    return hash == other.hash;
+  }
 }
 

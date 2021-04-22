@@ -1,6 +1,6 @@
 const POOLED_TXNS_QUERY = r'''
   query PooledTxnsQuery($publicKey: PublicKey!) {
-    bestChain(maxLength: 1) {
+    bestChain(maxLength: 2) {
       transactions {
         userCommands {
           hash

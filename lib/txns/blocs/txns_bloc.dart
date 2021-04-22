@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
@@ -136,6 +138,14 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       }
       _mergeUserCommandsFromArchiveNode(transactions);
 
+      // Sometimes we may see the same user commands in both archive node and best chain,
+      // So need to remove the duplicated items.
+      if(null != mergedUserCommands && mergedUserCommands.length > 0) {
+        List<MergedUserCommand> temp = LinkedHashSet<MergedUserCommand>.from(
+            mergedUserCommands).toList();
+        mergedUserCommands.clear();
+        mergedUserCommands.addAll(temp);
+      }
       yield RefreshConfirmedTxnsSuccess(mergedUserCommands);
       isTxnsLoading = false;
     } catch (e) {
@@ -170,11 +180,12 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       mergedUserCommands.clear();
       List<dynamic> pooledUserCommands = result.data['pooledUserCommands'] as List<dynamic>;
       _mergeUserCommandsFromPool(pooledUserCommands);
-      // Figment's indexer server is one block height behind the latest,
+      // Figment's indexer server is one or more blocks height behind the latest,
       // so we need to read the latest block from best chain.
       List<dynamic> bestChain = result.data['bestChain'];
-      if(null != bestChain && bestChain.length > 0) {
-        // We get only one block, the latest.
+      if(null != bestChain && bestChain.length > 1) {
+        // We get only the latest two blocks.
+        _parseUserCommandsFromBestChain(bestChain[1]);
         _parseUserCommandsFromBestChain(bestChain[0]);
       }
 
