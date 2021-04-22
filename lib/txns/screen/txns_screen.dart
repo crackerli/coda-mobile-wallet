@@ -183,7 +183,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                       textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)
                     )
                   ),
-                  Container(width: 4.w,),
+                  Container(width: 1.w,),
                   InkWell(
                     onTap: () => Navigator.pushNamed(context, TxnsChooseAccountRoute),
                     child: Image.asset('images/down_expand.png', width: 14.w, height: 14.w,)

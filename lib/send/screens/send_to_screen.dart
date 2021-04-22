@@ -23,15 +23,22 @@ class SendToScreen extends StatefulWidget {
 class _SendToScreenState extends State<SendToScreen> {
   TextEditingController _toController   = TextEditingController();
   TextEditingController _memoController = TextEditingController();
-  dynamic _qrResult;
   final _focusNodeTo       = FocusNode();
   final _focusNodeMemo     = FocusNode();
   bool _validInput = true;
   SendData _sendData;
 
   _fillQrAddress() async {
-    _qrResult = await toQrScanScreen(context);
-    _toController.text = '$_qrResult';
+    dynamic qrResult = await toQrScanScreen(context);
+    _setToAddress('$qrResult');
+  }
+
+  _setToAddress(String address) {
+    if(null == address || address.isEmpty) {
+      return;
+    }
+
+    _toController.text = address;
     _sendData.to = _toController.text;
     if(null != _toController.text && _toController.text.isNotEmpty) {
       _validInput = true;
@@ -119,8 +126,31 @@ class _SendToScreenState extends State<SendToScreen> {
                 Container(height: 37.h),
                 Text('Where are you sending MINA to?', textAlign: TextAlign.left, style: TextStyle(fontSize: 28.sp, color: Colors.black)),
                 Container(height: 29.h),
-                Text('SEND TO', textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('SEND TO', textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                    InkWell(
+                      onTap: () async {
+                        ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
+                        if(null != data) {
+                          _setToAddress(data.text);
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(left: 4.w, right: 4.w, top: 4.h, bottom: 4.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.w),
+                          color: Colors.white,
+                          border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
+                        ),
+                        child: Text('Paste', style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                      )
+                    ),
+                  ],
+                ),
                 Container(height: 4.h),
                 _buildToAddressField(context),
                 _buildInvalidateTip(),
@@ -177,6 +207,7 @@ class _SendToScreenState extends State<SendToScreen> {
         Expanded(
           flex: 1,
           child: TextField(
+            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Colors.black),
             enableInteractiveSelection: true,
             focusNode: _focusNodeTo,
             controller: _toController,
