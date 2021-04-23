@@ -38,7 +38,7 @@ class AccountBloc extends
     try {
       yield GetAccountsLoading();
       final result = await _service.performQuery(query, variables: variables);
-      if(null == result || result.hasException) {
+      if(null == result || result.hasException || null == result.data) {
         // If one account fail, we continue to next if not finished
         if(event.index >= globalHDAccounts.accounts.length - 1) {
           yield GetAccountsFinished();
@@ -49,17 +49,26 @@ class AccountBloc extends
       }
 
       // Parse data from Json map, convert it to safe map for safe nested access
-      SafeMap safeMap = SafeMap(result.data);
-      // If the balance is null, then we can say this account is not active
-      String balance = safeMap['account']['balance']['total'].value;
-      String publicKey = safeMap['account']['publicKey'].value;
-      // find it in global accounts
-      for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
-        AccountBean account = globalHDAccounts.accounts[i];
-        if(account.address == publicKey) {
-          account.balance = balance;
-          break;
-        }
+      dynamic accounts = result.data['accounts'];
+      if((accounts as List).isEmpty) {
+        globalHDAccounts?.accounts[event?.index]?.balance = '0';
+        globalHDAccounts?.accounts[event?.index]?.isActive = false;
+      } else {
+        // If the account is null, then we can say this account is not active
+        // We use only the first account
+        Map<String, dynamic> account = accounts[0] as Map<String, dynamic>;
+        SafeMap safeAccount = SafeMap(account);
+        String balance = safeAccount['balance']['total'].value;
+        String publicKey = safeAccount['publicKey'].value;
+        // find it in global accounts
+        for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
+          AccountBean account = globalHDAccounts.accounts[i];
+          if(account.address == publicKey) {
+            account.balance = balance;
+            account.isActive = true;
+            break;
+          }
+        };
       }
       if(event.index >= globalHDAccounts.accounts.length - 1) {
         yield GetAccountsFinished();

@@ -81,26 +81,28 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
                 Container(width: 20.w,),
                 Expanded(
                   flex: 1,
-                  child:
-                RichText(
-                  textAlign: TextAlign.right,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(children: <TextSpan>[
-                    TextSpan(
-                      text: '${MinaHelper.getMinaStrByNanoStr(accounts[index].balance)} ',
-                      style: TextStyle(fontSize: 22.sp, color: Color(0xff616161))),
-                    TextSpan(
-                      text: 'MINA',
-                      style: TextStyle(
-                        color: Color(0xff2d2d2d),
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.sp
-                      )
-                    ),
-                  ]),
-                ),
-                )],
+                  child: (accounts[index].isActive ?? false) ?
+                    RichText(
+                      textAlign: TextAlign.right,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(children: <TextSpan>[
+                        TextSpan(
+                          text: '${MinaHelper.getMinaStrByNanoStr(accounts[index].balance)} ',
+                          style: TextStyle(fontSize: 22.sp, color: Color(0xff616161))),
+                        TextSpan(
+                          text: 'MINA',
+                          style: TextStyle(
+                            color: Color(0xff2d2d2d),
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12.sp
+                          )
+                        ),
+                      ]
+                    )
+                  ) : Text('Inactive', textAlign: TextAlign.right, style: TextStyle(fontSize: 16.sp, color: Colors.redAccent))
+                )
+              ],
             )
           ]
       ),

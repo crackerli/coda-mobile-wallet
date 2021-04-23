@@ -1,8 +1,6 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/types/mina_hd_account_type.dart';
-import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
@@ -103,6 +101,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                 children: [
                   Text('BALANCE', textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff616161))),
+                  (globalHDAccounts.accounts[_accountIndex].isActive ?? false) ?
                   RichText(
                     textAlign: TextAlign.left,
                     text: TextSpan(
@@ -115,7 +114,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                             style: TextStyle(color: Color(0xff2d2d2d), fontWeight: FontWeight.normal, fontSize: 14.sp)),
                       ]
                     )
-                  ),
+                  ) : Text('Inactive', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.normal, fontSize: 18.sp)),
                   // Text('\$1234.56',
                   //   textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, color: Color(0xff616161))),
                   Container(height: 19.h,),
