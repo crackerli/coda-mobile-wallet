@@ -31,7 +31,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
       },
       child: WalletHomeScreen()
     ),
-//    StakeScreen(),
+    StakeScreen(),
     BlocProvider<TxnsBloc>(
       create: (BuildContext context) {
         return TxnsBloc(RefreshPooledTxnsLoading(null));
@@ -75,13 +75,18 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         ),
         label: 'Wallet',
       ),
-      // BottomNavigationBarItem(
-      //   icon: Image.asset("images/stake_tab_unselected.png",
-      //       fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-      //   activeIcon: Image.asset("images/stake_tab_selected.png",
-      //       fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
-      //   label:'Stake'
-      // ),
+      BottomNavigationBarItem(
+        icon: Padding(
+          padding: EdgeInsets.only(bottom: 6.h),
+          child: Image.asset("images/stake_tab_unselected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+        ),
+        activeIcon: Padding(
+          padding: EdgeInsets.only(bottom: 6.h),
+          child: Image.asset("images/stake_tab_selected.png",
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w)),
+        label:'Stake'
+      ),
       BottomNavigationBarItem(
         icon: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
