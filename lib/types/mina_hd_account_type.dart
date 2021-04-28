@@ -52,11 +52,14 @@ class AccountBean {
   int account;
   String accountName;
   String address;
+  // Deprecated
   bool isDelegated;
+  // Deprecated
   String pool;
   // handle the balance as nano mina
   String balance;
   bool isActive;
+  String stakingAddress;
 
   static AccountBean fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
@@ -68,6 +71,7 @@ class AccountBean {
     accountsBean.pool = map['pool'];
     accountsBean.balance = map['balance'];
     accountsBean.isActive = map['isActive'];
+    accountsBean.stakingAddress = map['stakingAddress'];
     return accountsBean;
   }
 
@@ -78,6 +82,7 @@ class AccountBean {
     "isDelegated": isDelegated,
     "pool": pool,
     "balance": balance,
-    "isActive": isActive
+    "isActive": isActive,
+    "stakingAddress": stakingAddress
   };
 }

@@ -5,7 +5,9 @@ const ACCOUNT_QUERY = r'''
       publicKey
       stakingActive
       token
-      delegate
+      delegateAccount {
+        publicKey
+      }
       balance {
         total
       }

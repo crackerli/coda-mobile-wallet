@@ -1,6 +1,12 @@
+import 'dart:convert';
+
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/service/indexer_service.dart';
+import 'package:coda_wallet/stake_provider/blocs/providers_entity.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/wallet_home/query/account_query.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
 import 'account_events.dart';
@@ -11,9 +17,11 @@ class AccountBloc extends
   Bloc<AccountEvents, AccountStates> {
 
   CodaService _service;
+  IndexerService _indexerService;
 
   AccountBloc(AccountStates state) : super(state) {
     _service = CodaService();
+    _indexerService = IndexerService();
   }
 
   AccountStates get initState => GetAccountsLoading();
@@ -53,6 +61,7 @@ class AccountBloc extends
       if((accounts as List).isEmpty) {
         globalHDAccounts?.accounts[event?.index]?.balance = '0';
         globalHDAccounts?.accounts[event?.index]?.isActive = false;
+        globalHDAccounts?.accounts[event?.index]?.stakingAddress = '';
       } else {
         // If the account is null, then we can say this account is not active
         // We use only the first account
@@ -60,12 +69,14 @@ class AccountBloc extends
         SafeMap safeAccount = SafeMap(account);
         String balance = safeAccount['balance']['total'].value;
         String publicKey = safeAccount['publicKey'].value;
+        String stakingAddress = safeAccount['delegateAccount']['publicKey'].value;
         // find it in global accounts
         for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
           AccountBean account = globalHDAccounts.accounts[i];
           if(account.address == publicKey) {
             account.balance = balance;
             account.isActive = true;
+            account.stakingAddress = stakingAddress;
             break;
           }
         };
@@ -82,5 +93,34 @@ class AccountBloc extends
     } finally {
 
     }
+  }
+
+  getProviders() async {
+    Response response = await _indexerService.getProviders();
+
+    if(null == response) {
+      return;
+    }
+
+    if(response.statusCode != 200) {
+      return;
+    }
+
+    // Convert provider list to map for quick access.
+    ProvidersEntity providersEntity = ProvidersEntity.fromMap(response.data);
+    if(null == providersEntity || null == providersEntity.stakingProviders) {
+      return;
+    }
+
+    Map<String, dynamic> mapProviders = Map<String, dynamic>();
+    providersEntity.stakingProviders.forEach((provider) {
+      if(null != provider && null != provider.providerAddress && provider.providerAddress.isNotEmpty) {
+        mapProviders['${provider.providerAddress}'] = provider;
+      }
+    });
+
+    // Saved the provider list to local storage
+    String storeProviders = json.encode(mapProviders);
+    globalPreferences.setString(STAKETAB_PROVIDER_KEY, storeProviders);
   }
 }

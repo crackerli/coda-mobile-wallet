@@ -4,6 +4,7 @@ import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
@@ -60,8 +61,10 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   @override
   void initState() {
     super.initState();
+    print('WalletHomeScreen initState');
     WidgetsBinding.instance.addObserver(this);
     _accountBloc = BlocProvider.of<AccountBloc>(context);
+    _accountBloc.getProviders();
     _updateAccounts(newRoute: true);
     _eventBusOn = eventBus.on<UpdateAccounts>().listen((event) {
       _updateAccounts();

@@ -9,6 +9,11 @@ const FIGMENT_MAINNET_INDEXER_SERVER = 'https://mina--mainnet--indexer.datahub.f
 const FIGMENT_DEVNET_RPC_SERVER = 'https://mina-devnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
 const FIGMENT_DEVNET_INDEXER_SERVER = 'https://mina--devnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
 
+const STAKETAB_PROVIDERS = 'https://api.staketab.com/mina/get_providers';
+
+// Local stored provider list
+const STAKETAB_PROVIDER_KEY = 'staketab_provider_key';
+
 // Encrypted seed
 const ENCRYPTED_SEED_KEY = 'encrypted_seed_key';
 

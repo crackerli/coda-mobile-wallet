@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/stake_provider/blocs/providers_entity.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
@@ -9,18 +13,37 @@ import 'dart:ui' as ui;
 
 typedef AccountClickCb = void Function(int index);
 
+String _getStakingProvider(String stakingAddress, Map<String, dynamic> providerMap) {
+  if(null == stakingAddress || stakingAddress.isEmpty) {
+    return '';
+  }
+
+  if(null == providerMap || null == providerMap[stakingAddress]) {
+    return formatHashEllipsis(stakingAddress);
+  }
+
+  Staking_providersBean provider = providerMap[stakingAddress];
+  return provider.providerTitle;
+}
+
 buildAccountList(AccountClickCb accountClickCb) {
+  String providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
+  Map<String, dynamic> providerMap;
+  if(null != providerString && providerString.isNotEmpty) {
+    providerMap = json.decode(providerString);
+  }
+
   return ListView.separated(
     physics: const AlwaysScrollableScrollPhysics(),
     itemCount: globalHDAccounts.accounts.length,
     itemBuilder: (context, index) {
-      return _buildAccountItem(accountClickCb, globalHDAccounts.accounts, index);
+      return _buildAccountItem(accountClickCb, globalHDAccounts.accounts, index, providerMap);
     },
     separatorBuilder: (context, index) { return Container(height: 20.h); }
   );
 }
 
-_buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index) {
+_buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index, Map<String, dynamic> providerMap) {
   return InkWell(
     onTap: () => accountClickCb(index),
     child:
@@ -30,7 +53,7 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
         color: Colors.white,
         border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
       ),
-      margin: EdgeInsets.only(left: 18.w, right: 18.w),
+      margin: EdgeInsets.only(left: 12.w, right: 12.w),
       padding: EdgeInsets.all(16.w),
       child: Column(
         children: [
@@ -38,7 +61,7 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              RichText(
+                RichText(
                 textAlign: TextAlign.left,
                 text: TextSpan(
                   style: TextStyle(textBaseline: TextBaseline.alphabetic, ),
@@ -52,15 +75,22 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
                 ),
               ),
               Container(width: 20.w,),
+              (accounts[index].stakingAddress.isNotEmpty && accounts[index].stakingAddress != accounts[index].address) ?
               RichText(
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                maxLines: 1,
                 textAlign: TextAlign.right,
                 text: TextSpan(children: [
                   WidgetSpan(
                     alignment: ui.PlaceholderAlignment.middle,
-                    child: accounts[index].isDelegated ? Image.asset('images/pool_header.png', width: 12.w, height: 12.w) : Container(),
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 2.h),
+                      child: Image.asset('images/pool_header.png', width: 12.w, height: 12.w)
+                    )
                   ),
                   TextSpan(
-                    text: ' ${accounts[index].pool}',
+                    text: ' ${_getStakingProvider(accounts[index].stakingAddress, providerMap)}',
                     style: TextStyle(
                       color: Color(0xff616161),
                       fontWeight: FontWeight.normal,
@@ -68,8 +98,7 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
                     )
                   ),
                 ]),
-              ),
-              ],
+              ) : Container()],
             ),
             Container(height: 4.h),
             Row(
@@ -89,7 +118,7 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
                       text: TextSpan(children: <TextSpan>[
                         TextSpan(
                           text: '${MinaHelper.getMinaStrByNanoStr(accounts[index].balance)} ',
-                          style: TextStyle(fontSize: 22.sp, color: Color(0xff616161))),
+                          style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w600, color: Color(0xff616161))),
                         TextSpan(
                           text: 'MINA',
                           style: TextStyle(

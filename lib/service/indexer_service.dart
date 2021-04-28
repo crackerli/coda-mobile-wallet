@@ -50,4 +50,9 @@ class IndexerService {
 
     return response;
   }
+
+  Future<Response> getProviders() async {
+    Response response = await _client.get(STAKETAB_PROVIDERS);
+    return response;
+  }
 }
