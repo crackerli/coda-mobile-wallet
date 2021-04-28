@@ -44,6 +44,7 @@ dependencies:
   url_launcher: ^5.7.10
   package_info: ^0.4.3+4
   dio: ^3.0.10
+  cached_network_image: ^2.5.0
 #  flip_panel: '^1.0.1'
   ffi_mina_signer:
     path: ../ffi_mina_signer/
