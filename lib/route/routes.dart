@@ -17,7 +17,8 @@ import 'package:coda_wallet/send/screens/send_fee_screen.dart';
 import 'package:coda_wallet/send/screens/send_from_screen.dart';
 import 'package:coda_wallet/send/screens/send_to_screen.dart';
 import 'package:coda_wallet/setting/network_setting_screen.dart';
-import 'package:coda_wallet/stake/screen/stake_providers_screen.dart';
+import 'package:coda_wallet/stake_provider/blocs/stake_providers_bloc.dart';
+import 'package:coda_wallet/stake_provider/screen/stake_providers_screen.dart';
 import 'package:coda_wallet/txn_detail/screens/txn_detail_screen.dart';
 import 'package:coda_wallet/txns/screen/txns_choose_account.dart';
 import 'package:flutter/cupertino.dart';
@@ -71,5 +72,10 @@ var globalRoutes = {
   '$EncryptSeedRoute': (context) => EncryptSeedScreen(),
   '$NewWalletAlertRoute': (context) => NewWalletAlertScreen(),
   '$NetworkSettingRoute': (context) => NetworkSettingScreen(),
-  '$StakeProviderRoute': (context) => StakeProviderScreen(),
+  '$StakeProviderRoute': (context) => BlocProvider<StakeProvidersBloc>(
+    create: (BuildContext context) {
+      return StakeProvidersBloc(null);
+    },
+    child: StakeProviderScreen()
+  ),
 };

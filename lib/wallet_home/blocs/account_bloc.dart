@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/indexer_service.dart';
-import 'package:coda_wallet/stake_provider/blocs/providers_entity.dart';
+import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/wallet_home/query/account_query.dart';
 import 'package:dio/dio.dart';

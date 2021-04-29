@@ -3,12 +3,17 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/stake_provider/blocs/providers_entity.dart';
+import 'package:coda_wallet/stake_provider/blocs/stake_providers_bloc.dart';
+import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
+import 'package:coda_wallet/stake_provider/blocs/stake_providers_events.dart';
+import 'package:coda_wallet/stake_provider/blocs/stake_providers_states.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StakeProviderScreen extends StatefulWidget {
@@ -20,26 +25,31 @@ class StakeProviderScreen extends StatefulWidget {
 
 class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
-  List<Staking_providersBean> _providerList;
+ // List<Staking_providersBean> _providerList;
+  StakeProvidersBloc _stakeProvidersBloc;
 
   @override
   void initState() {
     super.initState();
-    String providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
-    Map<String, dynamic> providerMap;
-    if(null != providerString && providerString.isNotEmpty) {
-      providerMap = json.decode(providerString);
-    }
+    // String providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
+    // Map<String, dynamic> providerMap;
+    // if(null != providerString && providerString.isNotEmpty) {
+    //   providerMap = json.decode(providerString);
+    // }
+    //
+    // // Convert provider map to provider list
+    // if(null != providerMap) {
+    //   _providerList =
+    //     providerMap.entries.map((entry) => Staking_providersBean.fromMap(entry.value)).toList();
+    // }
 
-    // Convert provider map to provider list
-    if(null != providerMap) {
-      _providerList =
-        providerMap.entries.map((entry) => Staking_providersBean.fromMap(entry.value)).toList();
-    }
+    _stakeProvidersBloc = BlocProvider.of<StakeProvidersBloc>(context);
+    _stakeProvidersBloc.add(GetStakeProviders());
   }
 
   @override
   void dispose() {
+    _stakeProvidersBloc = null;
     super.dispose();
   }
 
@@ -69,7 +79,11 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         Container(height: 14.h),
         Container(height: 0.5.h, color: Color(0xff757575),),
         Expanded(
-          child: _buildProviderList(context, _providerList)
+          child: BlocBuilder<StakeProvidersBloc, StakeProvidersStates>(
+            builder: (BuildContext context, StakeProvidersStates state) {
+              return _buildProviderList(context, state);
+            }
+          )
         )
       ],
     );
@@ -103,35 +117,58 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
     );
   }
 
-  _buildProviderList(BuildContext context, List<Staking_providersBean> providers) {
-    if(null == providers || providers.length == 0) {
+  _buildProviderList(BuildContext context, StakeProvidersStates state) {
+    if(state is GetStakeProvidersLoading) {
+      print('adfadfadfdsfdsafdsafsdfasdf');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ProgressDialog.showProgress(context);
+      });
       return Container();
     }
 
-    return ListView.separated(
-      physics: const AlwaysScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: null == providers ? 0 : providers.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: _buildProviderItem(context, providers[index]),
-          onTap: () => {
+    if(state is GetStakeProvidersFail) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ProgressDialog.dismiss(context);
+      });
+      // Return error page
+      return Container();
+    }
 
-          });
-      },
-      separatorBuilder: (context, index) {
-        return Container(
-          height: 1.h,
-          child: Row(
-            children: [
-              Expanded(flex: 1, child: Container()),
-              Expanded(flex: 6, child: Container(color: Color(0xffc1c1c1)))
-            ],
-          ),
-        );
-      },
-    );
+    if(state is GetStakeProvidersSuccess) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ProgressDialog.dismiss(context);
+      });
+
+      List<Staking_providersBean> providers = (state as GetStakeProvidersSuccess).data as List<Staking_providersBean>;
+      if(null == providers || providers.length == 0) {
+        return Container();
+      }
+
+      return ListView.separated(
+        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: null == providers ? 0 : providers.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            child: _buildProviderItem(context, providers[index]),
+            onTap: () => {
+
+            });
+        },
+        separatorBuilder: (context, index) {
+          return Container(
+            height: 1.h,
+            child: Row(
+              children: [
+                Expanded(flex: 1, child: Container()),
+                Expanded(flex: 6, child: Container(color: Color(0xffc1c1c1)))
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 
   _buildProviderItem(BuildContext context, Staking_providersBean provider) {
