@@ -7,6 +7,7 @@ import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_events.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_states.dart';
+import 'package:coda_wallet/util/providers_utils.dart';
 import 'package:dio/dio.dart';
 
 class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates> {
@@ -53,17 +54,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
         return;
       }
 
-      Map<String, dynamic> mapProviders = Map<String, dynamic>();
-      providersEntity.stakingProviders.forEach((provider) {
-        if (null != provider && null != provider.providerAddress &&
-            provider.providerAddress.isNotEmpty) {
-          mapProviders['${provider.providerAddress}'] = provider;
-        }
-      });
-
-      // Saved the provider list to local storage
-      String storeProviders = json.encode(mapProviders);
-      globalPreferences.setString(STAKETAB_PROVIDER_KEY, storeProviders);
+      storeProvidersMap(providersEntity.stakingProviders);
       yield GetStakeProvidersSuccess(providersEntity.stakingProviders);
       isProvidersLoading = true;
     } catch (e) {

@@ -159,7 +159,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
             behavior: HitTestBehavior.translucent,
             child: _buildProviderItem(context, providers[index]),
             onTap: () => {
-
+              print('Click on provider item')
             });
         },
         separatorBuilder: (context, index) {
@@ -203,8 +203,14 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${provider.providerTitle ?? ''}', textAlign: TextAlign.left, maxLines: 1,
-                overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
+              InkWell(
+                child: Text('${provider.providerTitle ?? ''}', textAlign: TextAlign.left, maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
+                onTap: () {
+                  openUrl(provider?.website ?? '');
+                },
+              ),
               Container(height: 3.h,),
               Text('${formatHashEllipsis(provider.providerAddress ?? '')}', textAlign: TextAlign.left, maxLines: 1,
                   overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500)),

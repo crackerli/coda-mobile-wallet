@@ -22,7 +22,7 @@ String _getStakingProvider(String stakingAddress, Map<String, dynamic> providerM
     return formatHashEllipsis(stakingAddress);
   }
 
-  Staking_providersBean provider = providerMap[stakingAddress];
+  Staking_providersBean provider = Staking_providersBean.fromMap(providerMap[stakingAddress]);
   return provider.providerTitle;
 }
 

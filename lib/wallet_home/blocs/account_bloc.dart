@@ -5,6 +5,7 @@ import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
+import 'package:coda_wallet/util/providers_utils.dart';
 import 'package:coda_wallet/wallet_home/query/account_query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,31 +97,23 @@ class AccountBloc extends
   }
 
   getProviders() async {
-    Response response = await _indexerService.getProviders();
+    try {
+      Response response = await _indexerService.getProviders();
 
-    if(null == response) {
-      return;
-    }
-
-    if(response.statusCode != 200) {
-      return;
-    }
-
-    // Convert provider list to map for quick access.
-    ProvidersEntity providersEntity = ProvidersEntity.fromMap(response.data);
-    if(null == providersEntity || null == providersEntity.stakingProviders) {
-      return;
-    }
-
-    Map<String, dynamic> mapProviders = Map<String, dynamic>();
-    providersEntity.stakingProviders.forEach((provider) {
-      if(null != provider && null != provider.providerAddress && provider.providerAddress.isNotEmpty) {
-        mapProviders['${provider.providerAddress}'] = provider;
+      if (null == response || response.statusCode != 200) {
+        return;
       }
-    });
 
-    // Saved the provider list to local storage
-    String storeProviders = json.encode(mapProviders);
-    globalPreferences.setString(STAKETAB_PROVIDER_KEY, storeProviders);
+      // Convert provider list to map for quick access.
+      ProvidersEntity providersEntity = ProvidersEntity.fromMap(response.data);
+      if (null == providersEntity || null == providersEntity.stakingProviders) {
+        return;
+      }
+
+      storeProvidersMap(providersEntity.stakingProviders);
+    } catch (e) {
+      print('Error happen when get providers: ${e.toString()}');
+    } finally {}
   }
+
 }
