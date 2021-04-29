@@ -30,40 +30,47 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
 
   Stream<StakeProvidersStates>
     _mapGetStakeProviders(GetStakeProviders event) async* {
-
     yield GetStakeProvidersLoading('Providers Loading...');
     isProvidersLoading = true;
-    Response response = await _indexerService.getProviders();
+    try {
+      Response response = await _indexerService.getProviders();
 
-    if(null == response) {
-      String error = 'Unknown Error!';
-      yield GetStakeProvidersFail(error);
-      return;
-    }
-
-    if(response.statusCode != 200) {
-      String error = response.statusMessage;
-      yield GetStakeProvidersFail(error);
-      return;
-    }
-
-    // Convert provider list to map for quick access.
-    ProvidersEntity providersEntity = ProvidersEntity.fromMap(response.data);
-    if(null == providersEntity || null == providersEntity.stakingProviders) {
-      return;
-    }
-
-    Map<String, dynamic> mapProviders = Map<String, dynamic>();
-    providersEntity.stakingProviders.forEach((provider) {
-      if(null != provider && null != provider.providerAddress && provider.providerAddress.isNotEmpty) {
-        mapProviders['${provider.providerAddress}'] = provider;
+      if (null == response) {
+        String error = 'Unknown Error!';
+        yield GetStakeProvidersFail(error);
+        return;
       }
-    });
 
-    // Saved the provider list to local storage
-    String storeProviders = json.encode(mapProviders);
-    globalPreferences.setString(STAKETAB_PROVIDER_KEY, storeProviders);
-    yield GetStakeProvidersSuccess(providersEntity.stakingProviders);
-    isProvidersLoading = true;
+      if (response.statusCode != 200) {
+        String error = response.statusMessage;
+        yield GetStakeProvidersFail(error);
+        return;
+      }
+
+      // Convert provider list to map for quick access.
+      ProvidersEntity providersEntity = ProvidersEntity.fromMap(response.data);
+      if (null == providersEntity || null == providersEntity.stakingProviders) {
+        return;
+      }
+
+      Map<String, dynamic> mapProviders = Map<String, dynamic>();
+      providersEntity.stakingProviders.forEach((provider) {
+        if (null != provider && null != provider.providerAddress &&
+            provider.providerAddress.isNotEmpty) {
+          mapProviders['${provider.providerAddress}'] = provider;
+        }
+      });
+
+      // Saved the provider list to local storage
+      String storeProviders = json.encode(mapProviders);
+      globalPreferences.setString(STAKETAB_PROVIDER_KEY, storeProviders);
+      yield GetStakeProvidersSuccess(providersEntity.stakingProviders);
+      isProvidersLoading = true;
+    } catch (e) {
+      print('${e.toString()}');
+      yield GetStakeProvidersFail('Network Error, Please check and try again!');
+    } finally {
+
+    }
   }
 }

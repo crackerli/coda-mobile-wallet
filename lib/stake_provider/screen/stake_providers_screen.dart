@@ -10,6 +10,7 @@ import 'package:coda_wallet/stake_provider/blocs/stake_providers_states.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -25,8 +26,11 @@ class StakeProviderScreen extends StatefulWidget {
 
 class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
- // List<Staking_providersBean> _providerList;
   StakeProvidersBloc _stakeProvidersBloc;
+
+  _getStakeProviders() {
+    _stakeProvidersBloc.add(GetStakeProviders());
+  }
 
   @override
   void initState() {
@@ -44,7 +48,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
     // }
 
     _stakeProvidersBloc = BlocProvider.of<StakeProvidersBloc>(context);
-    _stakeProvidersBloc.add(GetStakeProviders());
+    _getStakeProviders();
   }
 
   @override
@@ -119,7 +123,6 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
   _buildProviderList(BuildContext context, StakeProvidersStates state) {
     if(state is GetStakeProvidersLoading) {
-      print('adfadfadfdsfdsafdsafsdfasdf');
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ProgressDialog.showProgress(context);
       });
@@ -130,8 +133,10 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ProgressDialog.dismiss(context);
       });
+
+      String error = state.data;
       // Return error page
-      return Container();
+      return _buildErrorScreen(context, error);
     }
 
     if(state is GetStakeProvidersSuccess) {
@@ -141,7 +146,8 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
       List<Staking_providersBean> providers = (state as GetStakeProvidersSuccess).data as List<Staking_providersBean>;
       if(null == providers || providers.length == 0) {
-        return Container();
+        String error = 'No providers found, Please contact StakeTab and try again';
+        return _buildErrorScreen(context, error);
       }
 
       return ListView.separated(
@@ -169,6 +175,8 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         },
       );
     }
+
+    return Container();
   }
 
   _buildProviderItem(BuildContext context, Staking_providersBean provider) {
@@ -239,5 +247,32 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         ),
       ],
     ));
+  }
+
+  _buildErrorScreen(BuildContext context, String error) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(),
+              child: Text(error, textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 18.sp),),
+            ),
+            Container(height: 16.h,),
+            InkWell(
+              onTap: _getStakeProviders,
+              child: Container(
+                padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
+                decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
+                child: Text('TRY AGAIN',
+                  textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+              )
+          ),
+        ]
+      ),
+    );
   }
 }
