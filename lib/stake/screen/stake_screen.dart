@@ -1,3 +1,4 @@
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/animation/flip_counter.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,7 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
 
   @override
   Widget build(BuildContext context) {
+    print('StakeScreen build()');
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     return _buildWalletHomeBody();
   }
@@ -48,7 +50,9 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
           Container(height: 35.h),
           Container(
             height: 240.h,
-            child: buildAccountList(null)
+            child: buildAccountList((index) {
+              Navigator.of(context).pushNamed(StakeProviderRoute, arguments: index);
+            })
           )
         ]),
         Positioned(
@@ -82,5 +86,5 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }

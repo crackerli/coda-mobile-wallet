@@ -17,6 +17,7 @@ class SendBloc extends
   String memo;
   String amount;
   String fee;
+  bool isDelegation;
   int account;
   bool sendEnabled;
   bool loading;

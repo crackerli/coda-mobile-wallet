@@ -1,12 +1,11 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_bloc.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_events.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_states.dart';
+import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
@@ -16,6 +15,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+_gotoDelegationFee(BuildContext context, SendData delegationData) {
+  Navigator.pushReplacementNamed(context, SendFeeRoute, arguments: delegationData);
+}
+
+// Some providers name has non-ascii code, need to remove them
+// And need to limited the length of generated memo to less than 31
+_getValidMemo(String providerName) {
+  if(null == providerName || providerName.isEmpty) {
+    return 'Delegate to unknown';
+  }
+
+  String validName = providerName.replaceAll('[^\\x00-\\x7F]', '');
+  String memo = 'Delegate to $validName';
+  if(memo.length > 30) {
+    return memo.substring(0, 30);
+  }
+
+  return memo;
+}
 
 class StakeProviderScreen extends StatefulWidget {
   StakeProviderScreen({Key key}) : super(key: key);
@@ -27,6 +46,7 @@ class StakeProviderScreen extends StatefulWidget {
 class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
   StakeProvidersBloc _stakeProvidersBloc;
+  int _accountIndex;
 
   _getStakeProviders() {
     _stakeProvidersBloc.add(GetStakeProviders());
@@ -35,18 +55,6 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
   @override
   void initState() {
     super.initState();
-    // String providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
-    // Map<String, dynamic> providerMap;
-    // if(null != providerString && providerString.isNotEmpty) {
-    //   providerMap = json.decode(providerString);
-    // }
-    //
-    // // Convert provider map to provider list
-    // if(null != providerMap) {
-    //   _providerList =
-    //     providerMap.entries.map((entry) => Staking_providersBean.fromMap(entry.value)).toList();
-    // }
-
     _stakeProvidersBloc = BlocProvider.of<StakeProvidersBloc>(context);
     _getStakeProviders();
   }
@@ -60,6 +68,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    _accountIndex = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -158,8 +167,14 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
             child: _buildProviderItem(context, providers[index]),
-            onTap: () => {
-              print('Click on provider item')
+            onTap: () {
+              SendData delegationData = SendData();
+              delegationData.isDelegation = true;
+              delegationData.to = providers[index].providerAddress;
+              delegationData.memo = _getValidMemo(providers[index].providerTitle);
+              delegationData.from = _accountIndex;
+              delegationData.amount = '0';
+              _gotoDelegationFee(context, delegationData);
             });
         },
         separatorBuilder: (context, index) {

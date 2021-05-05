@@ -7,6 +7,7 @@ import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/send/blocs/send_bloc.dart';
 import 'package:coda_wallet/send/blocs/send_events.dart';
 import 'package:coda_wallet/send/blocs/send_states.dart';
+import 'package:coda_wallet/send/mutation/delegate_token_mutation.dart';
 import 'package:coda_wallet/send/mutation/send_token_mutation.dart';
 import 'package:coda_wallet/send/query/get_account_nonce.dart';
 import 'package:coda_wallet/send/query/get_pooled_fee.dart';
@@ -74,25 +75,60 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     return signature;
   }
 
+  Future<Signature> _signDelegation() async {
+    if(null == _sendData.memo || _sendData.memo.isEmpty) {
+      _sendData.memo = '';
+    }
+    String memo = _sendData.memo;
+    String feePayerAddress = globalHDAccounts.accounts[_sendData.from].address;
+    String senderAddress = globalHDAccounts.accounts[_sendData.from].address;
+    String receiverAddress = _sendData.to;
+    BigInt fee = _sendBloc.bestFees[_sendBloc.feeIndex];
+    BigInt feeToken = BigInt.from(1);
+    int nonce = _sendBloc.nonce;
+    int validUntil = 65535;
+    BigInt tokenId = BigInt.from(1);
+    int tokenLocked = 0;
+
+    int networkId = getCurrentNetworkId();
+    print('Current network id using to sending: $networkId');
+    Signature signature = await signDelegation(MinaHelper.reverse(_accountPrivateKey), memo, feePayerAddress,
+        senderAddress, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, tokenLocked, networkId);
+    return signature;
+  }
+
   _send() async {
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['from'] = _sendBloc.from;
     variables['to'] = _sendBloc.to;
-    variables['amount'] = _sendBloc.finalAmount.toString();
+    if(!_sendBloc.isDelegation) {
+      variables['amount'] = _sendBloc.finalAmount.toString();
+    }
     variables['memo'] = _sendBloc.memo;
     variables['fee'] = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
     variables['nonce'] = _sendBloc.nonce;
     variables['validUntil'] = 65535;
     ProgressDialog.showProgress(context);
-    Signature signature = await _signPayment();
-    variables['field'] = signature.rx;
-    variables['scalar'] = signature.s;
+    if(_sendBloc.isDelegation) {
+      Signature signature = await _signDelegation();
+      variables['field'] = signature.rx;
+      variables['scalar'] = signature.s;
+    } else {
+      Signature signature = await _signPayment();
+      variables['field'] = signature.rx;
+      variables['scalar'] = signature.s;
+    }
 
     // Save fee to sendData
     _sendData.fee = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
     ProgressDialog.dismiss(context);
-    _sendBloc.add(
-      Send(SEND_PAYMENT_MUTATION, variables: variables));
+    if(_sendBloc.isDelegation) {
+      _sendBloc.add(
+        Send(SEND_DELEGATION_MUTATION, variables: variables));
+    } else {
+      _sendBloc.add(
+        Send(SEND_PAYMENT_MUTATION, variables: variables));
+    }
   }
 
   _getNonce() {
@@ -173,6 +209,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     _sendBloc.fee = _sendData.fee;
     _sendBloc.to = _sendData.to;
     _sendBloc.account = _sendData.from;
+    _sendBloc.isDelegation = _sendData.isDelegation;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
@@ -349,7 +386,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           alignment: Alignment.topCenter,
           children: [
             Container(
-              margin: EdgeInsets.only(top: 33.w, left: 50.w, right: 50.w),
+              margin: EdgeInsets.only(top: 33.w, left: 42.w, right: 42.w),
               padding: EdgeInsets.only(top: 18.w + 12.h, left: 20.w, right: 20.w, bottom: 12.h),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.w),
@@ -361,6 +398,11 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Text('TYPE', textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                  Text((_sendBloc.isDelegation ?? false) ? 'Delegation' : 'Payment',
+                      textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
+                  Container(height: 10.h),
                   Text('FROM', textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                   Text(globalHDAccounts.accounts[_sendData.from].address,
@@ -370,9 +412,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                   Text(_sendData.to,
                       textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
-                  Container(height: 10.h),
+                  !_sendBloc.isDelegation ?
+                  Container(height: 10.h) : Container(),
+                  !_sendBloc.isDelegation ?
                   Text('AMOUNT',
-                    textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                    textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))) : Container(),
+                  !_sendBloc.isDelegation ?
                   RichText(
                     textAlign: TextAlign.left,
                     text: TextSpan(children: <TextSpan>[
@@ -384,7 +429,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                         style: TextStyle(color: Color(0xff616161), fontSize: 12.sp)
                       )]
                     )
-                  ),
+                  ) : Container(),
                   // Text('(\$353.62)', textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp, color: Color(0xff616161)),),
                   Container(height: 10.h,),
                   Text('MEMO',

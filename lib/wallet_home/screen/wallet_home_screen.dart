@@ -4,7 +4,6 @@ import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
@@ -20,6 +19,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 _gotoSendFromScreen(BuildContext context) {
   SendData sendData = SendData();
+  sendData.isDelegation = false;
   Navigator.of(context).pushNamed(SendFromRoute, arguments: sendData);
 }
 
@@ -143,9 +143,9 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         children: [
           Container(height: 8.h),
           _buildQRTipIcon(),
-          Container(height: 80.h),
+          Container(height: 35.h),
           _buildMinaLogo(),
-          Container(height: 40.h),
+          Container(height: 36.h),
           Text('MINA WALLET BALANCE', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575))),
           Container(height: 1.h,),
           BlocBuilder<AccountBloc, AccountStates>(
@@ -164,7 +164,9 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
               );
             }
           ),
-          Container(height: 56.h,),
+          Container(height: 41.h),
+          _buildStakedPercent(),
+          Container(height: 43.h),
           _buildActionButton(context)
         ]
       ),
@@ -190,9 +192,9 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       Expanded(child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-              alignment: Alignment.bottomCenter,
-              image: AssetImage('images/no_staking_bg.png',),
-              fit: BoxFit.fitWidth
+            alignment: Alignment.bottomCenter,
+            image: AssetImage('images/no_staking_bg.png',),
+            fit: BoxFit.fitWidth
           ),
         ),
         child: Center(
@@ -243,7 +245,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     return Container(
       width: double.infinity,
       child: Center(
-        child: Image.asset('images/mina_logo_inner.png', width: 101.w, height: 92.w,),
+        child: Image.asset('images/mina_logo_inner.png', width: 80.w, height: 73.w,),
       )
     );
   }
@@ -305,6 +307,27 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       height: 49.h,
       decoration: getMinaButtonDecoration(),
 //      margin: EdgeInsets.all(10),
+    );
+  }
+
+  _buildStakedPercent() {
+    return CircularPercentIndicator(
+      radius: 82.w,
+      lineWidth: 5.0,
+      percent: 0.0,
+      center: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(children: <TextSpan>[
+          TextSpan(
+            text: '0%\n',
+            style: TextStyle(fontSize: 18.sp, color: Colors.black, fontWeight: FontWeight.w500)),
+          TextSpan(
+            text: 'STAKED',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal, fontSize: 10.sp)),
+          ]
+        )
+      ),
+      progressColor: Colors.red,
     );
   }
 
