@@ -1,5 +1,8 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/setting/setting_screen.dart';
+import 'package:coda_wallet/stake/blocs/stake_bloc.dart';
+import 'package:coda_wallet/stake/blocs/stake_events.dart';
+import 'package:coda_wallet/stake/blocs/stake_states.dart';
 import 'package:coda_wallet/stake/screen/stake_screen.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
@@ -31,7 +34,12 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
       },
       child: WalletHomeScreen()
     ),
-    StakeScreen(),
+    BlocProvider<StakeBloc>(
+      create: (BuildContext context) {
+        return StakeBloc(GetConsensusStateLoading(null));
+      },
+      child: StakeScreen()
+    ),
     BlocProvider<TxnsBloc>(
       create: (BuildContext context) {
         return TxnsBloc(RefreshPooledTxnsLoading(null));

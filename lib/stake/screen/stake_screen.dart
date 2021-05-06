@@ -1,8 +1,14 @@
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/stake/blocs/stake_bloc.dart';
+import 'package:coda_wallet/stake/blocs/stake_events.dart';
+import 'package:coda_wallet/stake/blocs/stake_states.dart';
+import 'package:coda_wallet/stake/query/get_consensus_state.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
-import 'package:coda_wallet/widget/animation/flip_counter.dart';
+import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StakeScreen extends StatefulWidget {
@@ -14,6 +20,20 @@ class StakeScreen extends StatefulWidget {
 
 class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClientMixin {
   bool _stakeEnabled = true;
+  StakeBloc _stakeBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _stakeBloc = BlocProvider.of<StakeBloc>(context);
+    _stakeBloc.add(GetConsensusState(CONSENSUS_STATE_QUERY));
+  }
+
+  @override
+  void dispose() {
+    _stakeBloc = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,45 +58,67 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
           Container(height: 52.h),
           Text('You Are Staking!', textAlign: TextAlign.center, style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)),
           Container(height: 41.h),
-          Text('STAKING RETURNS', textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-          Container(height: 19.h),
-          AnimatedFlipCounter(
-            duration: Duration(milliseconds: 1000),
-            value: 12345,
-            color: Colors.black,
-            size: 50,
+          Padding(
+            padding: EdgeInsets.only(left: 13.w, right: 13.w),
+            child: BlocBuilder<StakeBloc, StakeStates>(
+              builder: (BuildContext context, StakeStates state) {
+                int epoch = 0;
+                int slot = 0;
+                if(state is GetConsensusStateFailed) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ProgressDialog.dismiss(context);
+                    String error = state.data;
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text(error)));
+                  });
+                }
+
+                if(state is GetConsensusStateLoading) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ProgressDialog.showProgress(context);
+                  });
+                }
+
+                if(state is GetConsensusStateSuccess) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ProgressDialog.dismiss(context);
+                  });
+                  epoch = state?.epoch ?? 0;
+                  slot = state?.slot ?? 0;
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text('Epoch: $epoch', textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Colors.black),),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Progress: ', textAlign: TextAlign.right,
+                          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Colors.black),),
+                        Container(width: 4.w,),
+                        SizedBox(width: 120.w, height: 20.h,
+                          child: LinearProgressIndicator(
+                            value: slot / SLOT_PER_EPOCH,
+                            backgroundColor: Colors.grey[200],
+                            valueColor: AlwaysStoppedAnimation(Colors.redAccent),),
+                        )
+                      ],
+                    )
+                  ],
+                );
+              }
+            )
           ),
-          Container(height: 35.h),
-          Container(
-            height: 240.h,
+          Container(height: 14.h),
+          Expanded(
             child: buildAccountList((index) {
               Navigator.of(context).pushNamed(StakeProviderRoute, arguments: index);
             })
           )
         ]),
-        Positioned(
-          bottom: 35.h,
-          child: Column(
-            children: [
-              RaisedButton(
-                padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 40.w, right: 40.w),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-                onPressed: null,
-                color: Colors.blueAccent,
-                child: Text('Stake More Tokens', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-              ),
-              Container(height: 12.h,),
-              RaisedButton(
-                padding: EdgeInsets.only(top: 11.h, bottom: 11.h, left: 40.w, right: 40.w),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.w))),
-                onPressed: null,
-                color: Colors.blueAccent,
-                child: Text('Change Staking Pool', style: TextStyle(fontSize: 17.sp, color: Colors.white, fontWeight: FontWeight.w600))
-              ),
-            ],
-          )
-        )
       ],
     );
   }
