@@ -6,6 +6,7 @@ import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/types/send_data.dart';
+import 'package:coda_wallet/util/stake_utils.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_events.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_states.dart';
@@ -160,12 +161,12 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
                 children: [
                   _buildTotalBalance(),
    //               _buildFiatBalance(),
+                  Container(height: 41.h),
+                  _buildStakedPercent(),
                 ]
               );
             }
           ),
-          Container(height: 41.h),
-          _buildStakedPercent(),
           Container(height: 43.h),
           _buildActionButton(context)
         ]
@@ -311,15 +312,16 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   }
 
   _buildStakedPercent() {
+    double stakePercent = double.tryParse(getStakePercent()) ?? 0.0;
     return CircularPercentIndicator(
       radius: 82.w,
       lineWidth: 5.0,
-      percent: 0.0,
+      percent: stakePercent,
       center: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(children: <TextSpan>[
           TextSpan(
-            text: '0%\n',
+            text: '${(stakePercent * 100).toStringAsFixed(1)}%\n',
             style: TextStyle(fontSize: 18.sp, color: Colors.black, fontWeight: FontWeight.w500)),
           TextSpan(
             text: 'STAKED',
