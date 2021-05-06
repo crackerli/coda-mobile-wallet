@@ -25,3 +25,20 @@ String getStakePercent() {
 
   return percent;
 }
+
+bool walletStaking() {
+  if(null == globalHDAccounts || null == globalHDAccounts.accounts) {
+    return false;
+  }
+
+  bool isStaking = false;
+  globalHDAccounts.accounts.forEach((account) {
+    if(null != account && account.isActive) {
+      if(account.stakingAddress.isNotEmpty && account.stakingAddress != account.address) {
+        isStaking = true;;
+      }
+    }
+  });
+
+  return isStaking;
+}

@@ -4,6 +4,7 @@ import 'package:coda_wallet/stake/blocs/stake_bloc.dart';
 import 'package:coda_wallet/stake/blocs/stake_events.dart';
 import 'package:coda_wallet/stake/blocs/stake_states.dart';
 import 'package:coda_wallet/stake/query/get_consensus_state.dart';
+import 'package:coda_wallet/util/stake_utils.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -55,9 +56,20 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
       alignment: Alignment.center,
       children: [
         Column(children: [
-          Container(height: 52.h),
-          Text('You Are Staking!', textAlign: TextAlign.center, style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)),
-          Container(height: 41.h),
+          Container(height: 42.h),
+          Container(
+            width: double.infinity,
+            child: Center(
+              child: Image.asset('images/stake_logo_deep_color.png', width: 80.w, height: 80.w,),
+            )
+          ),
+          Container(height: 10.h),
+          walletStaking() ?
+          Text('You Are Staking!', textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)) :
+          Text('You Are Not Staking!', textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)),
+          Container(height: 20.h),
           Padding(
             padding: EdgeInsets.only(left: 13.w, right: 13.w),
             child: BlocBuilder<StakeBloc, StakeStates>(

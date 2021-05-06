@@ -109,7 +109,8 @@ flutter:
     - images/new_wallet_alert.png
     - images/send_error_alert.png
     - images/txns_no_data.png
-    - security_alert_gold.png
+    - images/security_alert_gold.png
+    - images/stake_logo_deep_color.png
 
   fonts:
    - family: Entypo
