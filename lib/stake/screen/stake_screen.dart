@@ -127,7 +127,7 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
           Container(height: 14.h),
           Expanded(
             child: buildAccountList((index) {
-              Navigator.of(context).pushNamed(StakeProviderRoute, arguments: index);
+              Navigator.of(context).pushNamed(AccountNoStakeRoute, arguments: index);
             })
           )
         ]),
