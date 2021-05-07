@@ -18,6 +18,7 @@ import 'package:coda_wallet/send/screens/send_from_screen.dart';
 import 'package:coda_wallet/send/screens/send_to_screen.dart';
 import 'package:coda_wallet/setting/network_setting_screen.dart';
 import 'package:coda_wallet/stake/screen/account_no_stake_screen.dart';
+import 'package:coda_wallet/stake/screen/account_stake_screen.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_bloc.dart';
 import 'package:coda_wallet/stake_provider/screen/stake_providers_screen.dart';
 import 'package:coda_wallet/txn_detail/screens/txn_detail_screen.dart';
@@ -47,6 +48,7 @@ const NewWalletAlertRoute = '/NewWalletAlertScreen';
 const NetworkSettingRoute = '/NetworkSettingScreen';
 const StakeProviderRoute = '/StakeProviderScreen';
 const AccountNoStakeRoute = '/AccountNoStakeScreen';
+const AccountStakeRoute = '/AccountStakeScreen';
 
 var globalRoutes = {
   '$SendFromRoute': (context) => SendFromScreen(),
@@ -81,4 +83,5 @@ var globalRoutes = {
     child: StakeProviderScreen()
   ),
   '$AccountNoStakeRoute': (context) => AccountNoStakeScreen(),
+  '$AccountStakeRoute': (context) => AccountStakeScreen(),
 };

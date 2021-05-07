@@ -45,7 +45,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              _buildSendFeeBody(),
+              _buildTxnDetailBody(),
               _buildActionsButton(context),
             ]
           ),
@@ -110,7 +110,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
     return Container();
   }
 
-  _buildSendFeeBody() {
+  _buildTxnDetailBody() {
     return Container(
       padding: EdgeInsets.only(left: 50.w, right: 50.w),
       child: Column(

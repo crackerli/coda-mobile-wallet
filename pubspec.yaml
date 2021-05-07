@@ -111,6 +111,7 @@ flutter:
     - images/txns_no_data.png
     - images/security_alert_gold.png
     - images/stake_logo_deep_color.png
+    - images/account_staked.png
 
   fonts:
    - family: Entypo
