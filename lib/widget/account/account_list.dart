@@ -75,7 +75,9 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
                 ),
               ),
               Container(width: 20.w,),
-              (accounts[index].stakingAddress.isNotEmpty && accounts[index].stakingAddress != accounts[index].address) ?
+              (accounts[index].stakingAddress != null &&
+                accounts[index].stakingAddress.isNotEmpty &&
+                (accounts[index].stakingAddress != accounts[index].address)) ?
               RichText(
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,

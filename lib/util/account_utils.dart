@@ -24,6 +24,7 @@ Future<List<AccountBean>> deriveDefaultAccount(Uint8List seed) async {
     account.pool = "";
     account.isDelegated = false;
     account.isActive = false;
+    account.stakingAddress = '';
     Uint8List privateKey = generatePrivateKey(seed, i);
     String address = await getAddressFromSecretKeyAsync(MinaHelper.reverse(privateKey));
     account.address = address;
@@ -41,6 +42,7 @@ Future<AccountBean> deriveNewAccount(Uint8List seed, int accountIndex, String ac
   account.pool = "";
   account.isDelegated = false;
   account.isActive = false;
+  account.stakingAddress = '';
   Uint8List privateKey = generatePrivateKey(seed, accountIndex);
   String address = await getAddressFromSecretKeyAsync(MinaHelper.reverse(privateKey));
   account.address = address;
