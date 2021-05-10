@@ -257,36 +257,44 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 (_provider?.discordUsername ?? '').isNotEmpty ?
-                InkWell(
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: _provider?.discordUsername ?? ''));
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Discord user name copied into clipboard!!')));
-                  },
-                  child: Image.asset('images/discord.png', height: 26.h, width: 26.w,)
+                Builder(builder: (context) =>
+                  InkWell(
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: _provider?.discordUsername ?? ''));
+                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Discord user name copied into clipboard!!')));
+                    },
+                    child: Image.asset('images/discord.png', height: 26.h, width: 26.w,)
+                  )
                 ) : Container(),
                 (_provider?.telegram ?? '').isNotEmpty ?
-                InkWell(
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: _provider?.telegram ?? ''));
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Telegram handle copied into clipboard!!')));
-                  },
-                  child: Image.asset('images/telegram.png', height: 26.h, width: 26.w,)
+                Builder(builder: (context) =>
+                  InkWell(
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: _provider?.telegram ?? ''));
+                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Telegram handle copied into clipboard!!')));
+                    },
+                    child: Image.asset('images/telegram.png', height: 26.h, width: 26.w,)
+                  )
                 ) : Container(),
                 (_provider?.twitter ?? '').isNotEmpty ?
-                InkWell(
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: _provider?.twitter ?? ''));
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Twitter account copied into clipboard!!')));
-                  },
-                  child: Image.asset('images/twitter.png', height: 26.h, width: 26.w,)
+                Builder(builder: (context) =>
+                  InkWell(
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: _provider?.twitter ?? ''));
+                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Twitter account copied into clipboard!!')));
+                    },
+                    child: Image.asset('images/twitter.png', height: 26.h, width: 26.w,)
+                  )
                 ) : Container(),
                 (_provider?.email ?? '').isNotEmpty ?
-                InkWell(
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: _provider?.email ?? ''));
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Email copied into clipboard!!')));
-                  },
-                  child: Image.asset('images/mail.png', height: 26.h, width: 26.w,)
+                Builder(builder: (context) =>
+                  InkWell(
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: _provider?.email ?? ''));
+                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Email copied into clipboard!!')));
+                    },
+                    child: Image.asset('images/mail.png', height: 26.h, width: 26.w,)
+                  )
                 ) : Container(),
               ],
             ),
