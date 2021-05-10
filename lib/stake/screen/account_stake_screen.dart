@@ -113,7 +113,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       Container(height: 28.h,),
       Row(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 1,
@@ -132,7 +132,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       Container(height: 16.h),
       Row(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 1,
@@ -169,7 +169,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       Container(height: 16.h),
       Row(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 1,
@@ -187,7 +187,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       Container(height: 16.h,),
       Row(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 1,
@@ -205,7 +205,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       Container(height: 16.h,),
       Row(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 1,
@@ -223,7 +223,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       Container(height: 16.h,),
       Row(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 1,
@@ -241,7 +241,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       Container(height: 16.h,),
       Row(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 1,

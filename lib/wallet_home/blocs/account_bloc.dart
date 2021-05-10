@@ -50,8 +50,11 @@ class AccountBloc extends
       if(null == result || result.hasException || null == result.data) {
         // If one account fail, we continue to next if not finished
         if(event.index >= globalHDAccounts.accounts.length - 1) {
+          print('1. Get all accounts info finished');
           yield GetAccountsFinished();
+          getProviders();
         } else {
+          print('1. To get account ${event.index + 1}');
           add(GetAccounts(event.index + 1));
         }
         return;
@@ -83,11 +86,14 @@ class AccountBloc extends
         };
       }
       if(event.index >= globalHDAccounts.accounts.length - 1) {
+        print('2. Get all accounts info finished');
         yield GetAccountsFinished();
+        getProviders();
         return;
       }
 
       // Continue to get next account info
+      print('2. To get account ${event.index + 1}');
       add(GetAccounts(event.index + 1));
     } catch (e) {
       print(e);
@@ -111,6 +117,7 @@ class AccountBloc extends
       }
 
       storeProvidersMap(providersEntity.stakingProviders);
+      print('Get providers done!!');
     } catch (e) {
       print('Error happen when get providers: ${e.toString()}');
     } finally {}

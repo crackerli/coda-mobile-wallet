@@ -65,7 +65,6 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     print('WalletHomeScreen initState');
     WidgetsBinding.instance.addObserver(this);
     _accountBloc = BlocProvider.of<AccountBloc>(context);
-    _accountBloc.getProviders();
     _updateAccounts(newRoute: true);
     _eventBusOn = eventBus.on<UpdateAccounts>().listen((event) {
       _updateAccounts();

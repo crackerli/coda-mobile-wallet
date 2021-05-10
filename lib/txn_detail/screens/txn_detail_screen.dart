@@ -249,7 +249,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
           Container(height: 16.h,),
           Row(
             mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 flex: 1,
