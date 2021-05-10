@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AccountStakeScreen extends StatefulWidget {
@@ -76,12 +78,18 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
               Text('Know Your Provider', textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
               Container(height: 12.h,),
               _buildProvider(context),
-              Container(height: 48.h,),
-              Container(
-                padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 60.w, right: 60.w),
-                decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
-                child: Text('CHANGE STAKING POOL',
-                  textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+              Container(height: 40.h,),
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).pushReplacementNamed(
+                    StakeProviderRoute, arguments: _accountIndex);
+                },
+                child: Container(
+                  padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 60.w, right: 60.w),
+                  decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
+                  child: Text('CHANGE STAKING POOL',
+                    textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                )
               ),
               Container(height: 20.h,),
             ],
@@ -166,13 +174,13 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Expanded(
             flex: 1,
             child: Text('STAKE SUM', textAlign: TextAlign.right,
-                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))),
+              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))),
           ),
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('${_provider?.stakedSum ?? ''}', maxLines: 3,
-                textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
+            child: Text('${_provider?.stakedSum?.floor()?.toString() ?? ''}', maxLines: 3,
+              textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
           )
         ],
       ),
@@ -189,8 +197,8 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('${_provider?.stakePercent ?? ''}', textAlign: TextAlign.left, maxLines: 2,
-                style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
+            child: Text('${_provider?.stakePercent?.toString() ?? ''}%', textAlign: TextAlign.left, maxLines: 2,
+              style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
           )
         ],
       ),
@@ -207,8 +215,8 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('${_provider?.providerFee ?? ''}', textAlign: TextAlign.left, maxLines: 2,
-                style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
+            child: Text('${_provider?.providerFee ?? ''}%', textAlign: TextAlign.left, maxLines: 2,
+              style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
           )
         ],
       ),
@@ -243,8 +251,45 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('123456', textAlign: TextAlign.left, maxLines: 2,
-                style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                (_provider?.discordUsername ?? '').isNotEmpty ?
+                InkWell(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: _provider?.discordUsername ?? ''));
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Discord user name copied into clipboard!!')));
+                  },
+                  child: Image.asset('images/discord.png', height: 26.h, width: 26.w,)
+                ) : Container(),
+                (_provider?.telegram ?? '').isNotEmpty ?
+                InkWell(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: _provider?.telegram ?? ''));
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Telegram handle copied into clipboard!!')));
+                  },
+                  child: Image.asset('images/telegram.png', height: 26.h, width: 26.w,)
+                ) : Container(),
+                (_provider?.twitter ?? '').isNotEmpty ?
+                InkWell(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: _provider?.twitter ?? ''));
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Twitter account copied into clipboard!!')));
+                  },
+                  child: Image.asset('images/twitter.png', height: 26.h, width: 26.w,)
+                ) : Container(),
+                (_provider?.email ?? '').isNotEmpty ?
+                InkWell(
+                  onTap: () {
+                    Clipboard.setData(ClipboardData(text: _provider?.email ?? ''));
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Email copied into clipboard!!')));
+                  },
+                  child: Image.asset('images/mail.png', height: 26.h, width: 26.w,)
+                ) : Container(),
+              ],
+            ),
           )
         ],
       ),

@@ -219,7 +219,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               InkWell(
-                child: Text('${provider.providerTitle ?? ''}', textAlign: TextAlign.left, maxLines: 1,
+                child: Text('${provider?.providerTitle ?? ''}', textAlign: TextAlign.left, maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
                 onTap: () {
@@ -227,7 +227,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                 },
               ),
               Container(height: 3.h,),
-              Text('${formatHashEllipsis(provider.providerAddress ?? '')}', textAlign: TextAlign.left, maxLines: 1,
+              Text('${formatHashEllipsis(provider?.providerAddress ?? '')}', textAlign: TextAlign.left, maxLines: 1,
                   overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500)),
             ],
           ),
@@ -241,7 +241,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('${provider.stakedSum.floor().toString()}', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
+                Text('${provider?.stakedSum?.floor()?.toString() ?? ''}', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),),
                 Container(height: 3.h,),
                 Text('${provider.stakePercent.toString()}%', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -255,7 +255,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
           child: Container(
           padding: EdgeInsets.only(left: 3.w),
             child: Center(
-              child: Text('${provider.providerFee}%', textAlign: TextAlign.end, maxLines: 1, overflow: TextOverflow.ellipsis,
+              child: Text('${provider?.providerFee ?? ''}%', textAlign: TextAlign.end, maxLines: 1, overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),),
             )
           )
@@ -263,7 +263,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         Container(width: 1.w,),
         Expanded(
           flex: 3,
-          child: Text('${provider.payoutTerms}', textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,
+          child: Text('${provider?.payoutTerms ?? ''}', textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,
             style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400))
         ),
       ],

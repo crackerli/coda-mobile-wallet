@@ -1,3 +1,4 @@
+import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,8 @@ class AccountNoStakeScreen extends StatefulWidget {
 
 class _AccountNoStakeScreenState extends State<AccountNoStakeScreen> {
 
+  int _accountIndex;
+
   @override
   void initState() {
     super.initState();
@@ -27,6 +30,7 @@ class _AccountNoStakeScreenState extends State<AccountNoStakeScreen> {
   Widget build(BuildContext context) {
     print('AccountNoStakeScreen build()');
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    _accountIndex = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, leading: true),
@@ -52,11 +56,17 @@ class _AccountNoStakeScreenState extends State<AccountNoStakeScreen> {
                 textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, color: Colors.black),),
             ),
             Container(height: 188.h,),
-            Container(
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pushReplacementNamed(
+                  StakeProviderRoute, arguments: _accountIndex);
+              },
+            child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 60.w, right: 60.w),
               decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
               child: Text('SELECT A STAKING PROVIDER',
                 textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+            )
             ),
           ],
         )

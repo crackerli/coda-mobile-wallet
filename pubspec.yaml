@@ -112,6 +112,10 @@ flutter:
     - images/security_alert_gold.png
     - images/stake_logo_deep_color.png
     - images/account_staked.png
+    - images/twitter.png
+    - images/discord.png
+    - images/mail.png
+    - images/telegram.png
 
   fonts:
    - family: Entypo
