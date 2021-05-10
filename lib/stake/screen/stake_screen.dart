@@ -1,4 +1,5 @@
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/stake/blocs/stake_bloc.dart';
 import 'package:coda_wallet/stake/blocs/stake_events.dart';
@@ -127,7 +128,16 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
           Container(height: 14.h),
           Expanded(
             child: buildAccountList((index) {
-              Navigator.of(context).pushNamed(AccountNoStakeRoute, arguments: index);
+              // Check if this account has been staked.
+              String accountAddress = globalHDAccounts.accounts[index].address;
+              String stakeAddress = globalHDAccounts.accounts[index].stakingAddress;
+              if(null == stakeAddress || stakeAddress.isEmpty || (accountAddress == stakeAddress)) {
+                Navigator.of(context).pushNamed(
+                  AccountNoStakeRoute, arguments: index);
+              } else {
+                Navigator.of(context).pushNamed(
+                  AccountStakeRoute, arguments: index);
+              }
             })
           )
         ]),

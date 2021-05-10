@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,10 +17,17 @@ class AccountStakeScreen extends StatefulWidget {
 }
 
 class _AccountStakeScreenState extends State<AccountStakeScreen> {
+  int _accountIndex = -1;
+  Map<String, dynamic> _providerMap;
+  Staking_providersBean _provider = null;
 
   @override
   void initState() {
     super.initState();
+    String providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
+    if(null != providerString && providerString.isNotEmpty) {
+      _providerMap = json.decode(providerString);
+    }
   }
 
   @override
@@ -27,6 +39,9 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
   Widget build(BuildContext context) {
     print('AccountStakeScreen build()');
     ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    _accountIndex = ModalRoute.of(context).settings.arguments;
+    String stakingAddress = globalHDAccounts.accounts[_accountIndex].stakingAddress;
+    _provider = Staking_providersBean.fromMap(_providerMap[stakingAddress]);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, leading: true),
@@ -52,14 +67,14 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
                     text: 'You Are Staking with ',
                       style: TextStyle(fontSize: 18.sp, color: Colors.black, fontWeight: FontWeight.normal)),
                   TextSpan(
-                    text: 'StakingPower',
+                    text: '${_provider?.providerTitle ?? ''}',
                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18.sp)),
                   ]
                 )
               ),
               Container(height: 20.h,),
-              Text('Know Your Provider'),
-              Container(height: 20.h,),
+              Text('Know Your Provider', textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
+              Container(height: 12.h,),
               _buildProvider(context),
               Container(height: 48.h,),
               Container(
@@ -100,7 +115,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('Staking Power',
+            child: Text('${_provider?.providerTitle ?? ''}',
               textAlign: TextAlign.left, maxLines: 3,
               style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161))),
           )
@@ -119,7 +134,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('https://www.stakingpower.com',
+            child: Text('${_provider?.website ?? ''}',
               textAlign: TextAlign.left, maxLines: 3,
                 style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161))),
           )
@@ -138,7 +153,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('B62qfjwi34iakdfajffkjafkasjflsa',
+            child: Text('${_provider?.providerAddress ?? ''}',
               textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)),),
           )
         ],
@@ -156,7 +171,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('1234567.789', maxLines: 3,
+            child: Text('${_provider?.stakedSum ?? ''}', maxLines: 3,
                 textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
           )
         ],
@@ -174,7 +189,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('0.09', textAlign: TextAlign.left, maxLines: 2,
+            child: Text('${_provider?.stakePercent ?? ''}', textAlign: TextAlign.left, maxLines: 2,
                 style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
           )
         ],
@@ -192,7 +207,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('5%', textAlign: TextAlign.left, maxLines: 2,
+            child: Text('${_provider?.providerFee ?? ''}', textAlign: TextAlign.left, maxLines: 2,
                 style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
           )
         ],
@@ -210,7 +225,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('1 / Epoch', textAlign: TextAlign.left, maxLines: 2,
+            child: Text('${_provider?.payoutTerms ?? ''}', textAlign: TextAlign.left, maxLines: 2,
               style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
           )
         ],
