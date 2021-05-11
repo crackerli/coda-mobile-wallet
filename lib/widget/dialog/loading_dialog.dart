@@ -5,23 +5,15 @@ class ProgressDialog {
   static bool _isShowing = false;
 
   static void showProgress(BuildContext context,
-      {Widget child = const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Color(0xffB5B18C)),)}) {
+    {Widget child = const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Color(0xffB5B18C)))}) {
     if(!_isShowing) {
       _isShowing = true;
-      Navigator.push(
-        context,
-        _PopRoute(
-          child: _Progress(
-            child: child,
-          ),
-        ),
-      );
+      Navigator.push(context, _PopRoute(child: _Progress(child: child)));
     }
   }
 
-  ///隐藏
   static void dismiss(BuildContext context) {
-    if (_isShowing) {
+    if(_isShowing) {
       Navigator.of(context).pop();
       _isShowing = false;
     }
@@ -35,16 +27,16 @@ class _Progress extends StatelessWidget {
   _Progress({
     Key key,
     @required this.child,
-  })  : assert(child != null),
-        super(key: key);
+  }) : assert(child != null), super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Material(
-        color: Colors.transparent,
-        child: Center(
-          child: child,
-        ));
+      color: Colors.transparent,
+      child: Center(
+        child: child,
+      )
+    );
   }
 }
 
@@ -66,7 +58,7 @@ class _PopRoute extends PopupRoute {
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
+    Animation<double> secondaryAnimation) {
     return child;
   }
 
