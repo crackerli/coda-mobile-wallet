@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProgressDialog {
   static bool _isShowing = false;
@@ -31,11 +32,14 @@ class _Progress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Center(
-        child: child,
-      )
+    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    return WillPopScope(
+      onWillPop: () {
+        print('Progress Dialog dismissed');
+        ProgressDialog._isShowing = false;
+        return Future.value(true);
+      },
+      child: Center(child: SizedBox(width: 60.w, height: 60.w, child: child))
     );
   }
 }

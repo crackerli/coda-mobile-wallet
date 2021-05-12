@@ -17,7 +17,7 @@ class IndexerService {
     if (null == _client) {
       BaseOptions options = BaseOptions();
 //      options.baseUrl = "$DEFAULT_INDEXER_SERVER/transactions";
-      options.receiveTimeout = 1000 * 15;
+      options.receiveTimeout = 1000 * 60;
       options.connectTimeout = 10000;
       _client = Dio(options);
 
