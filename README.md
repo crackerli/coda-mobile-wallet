@@ -4,12 +4,14 @@ A Mina mobile wallet developed by flutter, support both android and ios.
 # Declaration
 This is a community tool developed under the policy of Mina Project Grants, not developed by o1labs.
 
-# Feature Contents v1.0.0
+# Feature Contents v1.1.0
 1. Mina keys and accounts management.
 2. Send and receive tokens.
 3. Check the transaction lists.
 4. Check the transaction detail.
 5. Calculate the best fees.
+6. Mina token staking.
+7. Network switch.
 
 # How to build
 1. Clone https://github.com/crackerli/ffi_mina_signer.git
