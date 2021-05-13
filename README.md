@@ -53,7 +53,7 @@ This is a community tool developed under the policy of Mina Project Grants, not 
 <img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/StakingPower_Wallet_TestFlight_QR_Image.png" >
 
 # Install on Android
-    Search "StakingPower Wallet" on Google Play and install it.
+    Search "StakingPower" on Google Play and install it.
 
 # Examples
 <p float="left">
