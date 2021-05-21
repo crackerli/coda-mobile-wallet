@@ -39,20 +39,20 @@ dependencies:
   permission_handler: ^5.0.1+1
   percent_indicator: '^2.1.9'
   event_bus: '^1.1.1'
-  top_k: '^1.0.1'
+#  top_k: '^1.0.1'
   common_utils: ^1.2.1
   url_launcher: ^5.7.10
   package_info: ^0.4.3+4
   dio: ^3.0.10
   cached_network_image: ^2.5.0
-#  flip_panel: '^1.0.1'
+  collection: ^1.14.12
   ffi_mina_signer:
     path: ../ffi_mina_signer/
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  gql_code_gen: ^0.1.5
+ # gql_code_gen: ^0.1.5
   mockito: ^4.1.1
 
 # For information on the generic Dart part of this file, see the
