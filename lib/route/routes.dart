@@ -20,6 +20,7 @@ import 'package:coda_wallet/setting/network_setting_screen.dart';
 import 'package:coda_wallet/stake/screen/account_no_stake_screen.dart';
 import 'package:coda_wallet/stake/screen/account_stake_screen.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_bloc.dart';
+import 'package:coda_wallet/stake_provider/blocs/stake_providers_states.dart';
 import 'package:coda_wallet/stake_provider/screen/stake_providers_screen.dart';
 import 'package:coda_wallet/txn_detail/screens/txn_detail_screen.dart';
 import 'package:coda_wallet/txns/screen/txns_choose_account.dart';
@@ -78,7 +79,7 @@ var globalRoutes = {
   '$NetworkSettingRoute': (context) => NetworkSettingScreen(),
   '$StakeProviderRoute': (context) => BlocProvider<StakeProvidersBloc>(
     create: (BuildContext context) {
-      return StakeProvidersBloc(null);
+      return StakeProvidersBloc(GetStakeProvidersLoading(''));
     },
     child: StakeProviderScreen()
   ),

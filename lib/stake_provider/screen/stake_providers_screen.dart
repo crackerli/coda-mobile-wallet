@@ -161,7 +161,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         ProgressDialog.dismiss(context);
       });
 
-      List<Staking_providersBean> providers = (state as GetStakeProvidersSuccess).data as List<Staking_providersBean>;
+      List<Staking_providersBean?> providers = state.data as List<Staking_providersBean?>;
       if(null == providers || providers.length == 0) {
         String error = 'No providers found, Please contact StakeTab and try again';
         return _buildErrorScreen(context, error);
@@ -174,12 +174,12 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         itemBuilder: (context, index) {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
-            child: _buildProviderItem(context, providers[index]),
+            child: _buildProviderItem(context, providers![index]!),
             onTap: () {
               SendData delegationData = SendData();
               delegationData.isDelegation = true;
-              delegationData.to = providers[index].providerAddress!;
-              delegationData.memo = _getValidMemo(providers[index].providerTitle!);
+              delegationData.to = providers[index]!.providerAddress!;
+              delegationData.memo = _getValidMemo(providers[index]!.providerTitle!);
               delegationData.from = _accountIndex;
               delegationData.amount = '0';
               _gotoDelegationFee(context, delegationData);
