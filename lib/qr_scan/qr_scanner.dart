@@ -101,7 +101,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
     controller.scannedDataStream.listen((scanData) {
       if(!_hasPopped) {
         _hasPopped = true;
-        Navigator.pop(context, scanData);
+        Navigator.pop(context, scanData?.code ?? 'Invalid Bar Code');
       }
       // setState(() {
       //   result = scanData;

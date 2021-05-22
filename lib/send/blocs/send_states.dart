@@ -5,6 +5,10 @@ abstract class SendStates {
   List<Object>? get props => null;
 }
 
+class SendPrepare extends SendStates {
+  SendPrepare() : super();
+}
+
 class FeeValidated extends SendStates {
   FeeValidated() : super();
 }

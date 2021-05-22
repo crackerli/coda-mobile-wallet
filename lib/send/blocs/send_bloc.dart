@@ -16,7 +16,7 @@ class SendBloc extends
   late String from;
   late String memo;
   late String amount;
-  late String fee;
+  String? fee;
   late bool isDelegation;
   late int account;
   late bool sendEnabled;
@@ -57,7 +57,7 @@ class SendBloc extends
   }
 
   bool checkFeeValid() {
-    if(null == fee || fee.isEmpty) {
+    if(null == fee || fee!.isEmpty) {
       sendEnabled = false;
       return false;
     }

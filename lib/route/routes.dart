@@ -12,6 +12,7 @@ import 'package:coda_wallet/qr_scan/qr_scanner.dart';
 import 'package:coda_wallet/receive/screen/receive_account_list.dart';
 import 'package:coda_wallet/receive/screen/receive_account_screen.dart';
 import 'package:coda_wallet/send/blocs/send_bloc.dart';
+import 'package:coda_wallet/send/blocs/send_states.dart';
 import 'package:coda_wallet/send/screens/send_amount_screen.dart';
 import 'package:coda_wallet/send/screens/send_fee_screen.dart';
 import 'package:coda_wallet/send/screens/send_from_screen.dart';
@@ -56,7 +57,7 @@ var globalRoutes = {
   '$SendToRoute': (context) => SendToScreen(),
   '$SendFeeRoute': (context) => BlocProvider<SendBloc>(
     create: (BuildContext context) {
-      return SendBloc(null);
+      return SendBloc(SendPrepare());
     },
     child: SendFeeScreen()
   ),
