@@ -31,7 +31,7 @@ class StakeBloc extends Bloc<StakeEvents, StakeStates> {
 
     try {
       isStakeLoading = true;
-      final result = await _codaService.performQuery(query, variables: variables!);
+      final result = await _codaService.performQuery(query, variables: variables ?? {});
 
       if(null == result) {
         String error = 'Unknown Error!';

@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 class IndexerService {
 
   static final IndexerService _instance = IndexerService._internal();
-  late Dio _client;
+  Dio? _client;
 
   factory IndexerService() => _instance;
 
@@ -21,7 +21,7 @@ class IndexerService {
       options.connectTimeout = 10000;
       _client = Dio(options);
 
-      (_client.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+      (_client!.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (client) {
         client.findProxy = (url) {
           if(debugConfig) {
@@ -46,13 +46,13 @@ class IndexerService {
     Map<String, dynamic> map = Map<String, dynamic>();
     map['account']= account;
 
-    Response response = await _client.get(requestUrl, queryParameters: map);
+    Response response = await _client!.get(requestUrl, queryParameters: map);
 
     return response;
   }
 
   Future<Response> getProviders() async {
-    Response response = await _client.get(STAKETAB_PROVIDERS);
+    Response response = await _client!.get(STAKETAB_PROVIDERS);
     return response;
   }
 }

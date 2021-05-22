@@ -1,5 +1,5 @@
 class PooledFeeEntity {
-  late List<PooledUserCommandsBean?> pooledUserCommands;
+  List<PooledUserCommandsBean?>? pooledUserCommands;
 
   static PooledFeeEntity? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;

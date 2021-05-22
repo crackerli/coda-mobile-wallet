@@ -221,8 +221,8 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
   _buildTxnBody(BuildContext context, TxnsStates state) {
     if(state is RefreshPooledTxnsLoading) {
-      List<dynamic> userCommands = state.data as List<dynamic>;
-      if(state.data == null || userCommands.length == 0) {
+      List<dynamic> userCommands = (state.data ?? []) as List<dynamic>;
+      if(userCommands.length == 0) {
         WidgetsBinding.instance!.addPostFrameCallback((_) {
           ProgressDialog.showProgress(context);
         });

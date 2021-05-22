@@ -3,21 +3,21 @@ class AccountEntity {
 }
 
 class AccountData {
-  late Account account;
+  Account? account;
 }
 
 class Account {
-  late String nonce;
-  late bool stakingActive;
-  late String token;
-  late Balance balance;
-  late DelegateAccount delegateAccount;
+  String? nonce;
+  bool? stakingActive;
+  String? token;
+  Balance? balance;
+  DelegateAccount? delegateAccount;
 }
 
 class Balance {
-  late String total;
+  String? total;
 }
 
 class DelegateAccount {
-  late String publicKey;
+  String? publicKey;
 }
