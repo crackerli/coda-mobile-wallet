@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AccountStakeScreen extends StatefulWidget {
-  AccountStakeScreen({Key key}) : super(key: key);
+  AccountStakeScreen({Key? key}) : super(key: key);
 
   @override
   _AccountStakeScreenState createState() => _AccountStakeScreenState();
@@ -20,13 +20,13 @@ class AccountStakeScreen extends StatefulWidget {
 
 class _AccountStakeScreenState extends State<AccountStakeScreen> {
   int _accountIndex = -1;
-  Map<String, dynamic> _providerMap;
-  Staking_providersBean _provider = null;
+  late Map<String, dynamic> _providerMap;
+  Staking_providersBean? _provider = null;
 
   @override
   void initState() {
     super.initState();
-    String providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
+    String? providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
     if(null != providerString && providerString.isNotEmpty) {
       _providerMap = json.decode(providerString);
     }
@@ -40,10 +40,18 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
   @override
   Widget build(BuildContext context) {
     print('AccountStakeScreen build()');
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    _accountIndex = ModalRoute.of(context).settings.arguments;
-    String stakingAddress = globalHDAccounts.accounts[_accountIndex].stakingAddress;
-    _provider = Staking_providersBean.fromMap(_providerMap[stakingAddress]);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
+    _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
+    String? stakingAddress = globalHDAccounts.accounts[_accountIndex]!.stakingAddress;
+    _provider = Staking_providersBean.fromMap(_providerMap[stakingAddress])!;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, leading: true),
@@ -303,14 +311,14 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       ),
       Container(height: 28.h),
       Container(
-          width: double.infinity,
-          height: 1.h,
-          color: Color(0xff757575)),
+        width: double.infinity,
+        height: 1.h,
+        color: Color(0xff757575)),
       Container(height: 2.h,),
       Container(
-          width: double.infinity,
-          height: 1.h,
-          color: Color(0xff757575)),
+        width: double.infinity,
+        height: 1.h,
+        color: Color(0xff757575)),
     ],);
   }
 }

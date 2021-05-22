@@ -12,7 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class ReceiveAccountScreen extends StatefulWidget {
-  ReceiveAccountScreen({Key key}) : super(key: key);
+  ReceiveAccountScreen({Key? key}) : super(key: key);
 
   @override
   _ReceiveAccountScreenState createState() => _ReceiveAccountScreenState();
@@ -36,8 +36,16 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    int index = ModalRoute.of(context).settings.arguments;
+//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
+    int index = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
@@ -52,8 +60,8 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
   }
 
   _buildReceiveAccountBody(BuildContext context, int index) {
-    String address = globalHDAccounts.accounts[index].address;
-    String accountName = globalHDAccounts.accounts[index].accountName;
+    String? address = globalHDAccounts.accounts[index]!.address;
+    String? accountName = globalHDAccounts.accounts[index]!.accountName;
     return Container(
       decoration: BoxDecoration(
         gradient: backgroundGradient
@@ -63,9 +71,9 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
         Container(height: 24.h),
         Image.asset('images/mina_logo_black_inner.png', width: 66.w, height: 66.w),
         Container(height: 14.h),
-        QrImage(data: address, size: 200.w, version: QrVersions.auto),
+        QrImage(data: address ?? '', size: 200.w, version: QrVersions.auto),
         Container(height: 33.h),
-        Text(accountName, textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Color(0xff212121), fontWeight: FontWeight.w500)),
+        Text(accountName ?? '', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Color(0xff212121), fontWeight: FontWeight.w500)),
         Container(height: 8),
         Container(
           decoration: BoxDecoration(
@@ -88,7 +96,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
                     setState(() {
                       _addressCopied = true;
                     });
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                    WidgetsBinding.instance!.addPostFrameCallback((_) {
                       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
                     });
                   },
@@ -96,7 +104,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
               ),
               Container(width: 8.w),
               Flexible(child:
-                Text(address, textAlign: TextAlign.left, softWrap: true,
+                Text(address ?? '', textAlign: TextAlign.left, softWrap: true,
                   style: TextStyle(fontSize: 12.sp, color: _addressCopied ? Colors.white : Color(0xff616161)), maxLines: 3)),
             ],
           )
@@ -122,12 +130,12 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
     ].request();
     var status = await Permission.storage.status;
     print(status);
-    if (status.isUndetermined) {
-      openAppSettings();
-    } else {
+    if (status.isGranted) {
       saveImageAsFile(_qrImageKey).then((value) {
-        _saveQRImage(context, value);
+        _saveQRImage(context, value!);
       });
+    } else {
+      openAppSettings();
     }
   }
 

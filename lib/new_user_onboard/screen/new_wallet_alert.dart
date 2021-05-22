@@ -8,7 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NewWalletAlertScreen extends StatefulWidget {
-  NewWalletAlertScreen({Key key}) : super(key: key);
+  NewWalletAlertScreen({Key? key}) : super(key: key);
 
   @override
   _NewWalletAlertScreenState createState() => _NewWalletAlertScreenState();
@@ -28,7 +28,15 @@ class _NewWalletAlertScreenState extends State<NewWalletAlertScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+  //  ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),

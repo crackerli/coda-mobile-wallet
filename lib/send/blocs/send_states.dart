@@ -1,10 +1,8 @@
-import 'package:equatable/equatable.dart';
-
-abstract class SendStates/* extends Equatable*/ {
+abstract class SendStates {
   SendStates() : super();
 
   @override
-  List<Object> get props => null;
+  List<Object>? get props => null;
 }
 
 class FeeValidated extends SendStates {

@@ -1,9 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:coda_wallet/constant/constants.dart';
-import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class ChangePasswordWidget extends StatefulWidget {
-  ChangePasswordWidget({Key key}) : super(key: key);
+  ChangePasswordWidget({Key? key}) : super(key: key);
 
   @override
   _ChangePasswordWidgetState createState() => _ChangePasswordWidgetState();
@@ -36,7 +34,15 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('RemoveWalletWidget: build(context: $context)');
     return KeyboardActions(
       tapOutsideToDismiss: false,
@@ -132,10 +138,10 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                         return;
                       }
                       FocusScope.of(context).unfocus();
-                      String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+                      String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
                       print('SendFeeScreen: start to decrypt seed');
                       try {
-                        Uint8List seed = decryptSeed(encryptedSeed, _controllerChangePassword.text);
+                        Uint8List seed = decryptSeed(encryptedSeed!, _controllerChangePassword.text);
                         // Pop encrypt seed dialog
                         Navigator.of(context).pop();
                       } catch (error) {

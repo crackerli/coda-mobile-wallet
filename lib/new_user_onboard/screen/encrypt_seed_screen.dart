@@ -17,21 +17,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class EncryptSeedScreen extends StatefulWidget {
-  EncryptSeedScreen({Key key}) : super(key: key);
+  EncryptSeedScreen({Key? key}) : super(key: key);
 
   @override
   _EncryptSeedScreenState createState() => _EncryptSeedScreenState();
 }
 
 class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
-  FocusNode _focusNodeOrigin;
-  FocusNode _focusNodeConfirm;
-  TextEditingController _controllerOrigin;
-  TextEditingController _controllerConfirm;
+  late FocusNode _focusNodeOrigin;
+  late FocusNode _focusNodeConfirm;
+  late TextEditingController _controllerOrigin;
+  late TextEditingController _controllerConfirm;
   bool _showOrigin = false;
   bool _showConfirm = false;
   bool _alertChecked = false;
-  String _mnemonic;
+  late String _mnemonic;
   bool _buttonEnabled = false;
 
   _checkPassword(BuildContext context) {
@@ -107,8 +107,16 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    _mnemonic = ModalRoute.of(context).settings.arguments;
+//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
+    _mnemonic = ModalRoute.of(context)!.settings.arguments as String;
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),

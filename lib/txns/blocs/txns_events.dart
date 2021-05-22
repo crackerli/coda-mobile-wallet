@@ -2,27 +2,27 @@ abstract class TxnsEvents {
   TxnsEvents();
 
   @override
-  List<Object> get props => null;
+  List<Object>? get props => null;
 }
 
 class RefreshPooledTxns extends TxnsEvents {
   final String query;
-  final Map<String, dynamic> variables;
+  final Map<String, dynamic>? variables;
 
   RefreshPooledTxns(this.query, {this.variables}) : super();
 
   @override
-  List<Object> get props => [query, variables];
+  List<Object> get props => [query, variables ?? {}];
 }
 
 class RefreshConfirmedTxns extends TxnsEvents {
   final String query;
-  final Map<String, dynamic> variables;
+  final Map<String, dynamic>? variables;
 
   RefreshConfirmedTxns(this.query, {this.variables}) : super();
 
   @override
-  List<Object> get props => [query, variables];
+  List<Object> get props => [query, variables ?? {}];
 }
 
 class ChangeFilter extends TxnsEvents {

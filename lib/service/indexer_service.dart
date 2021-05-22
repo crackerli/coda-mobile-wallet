@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 class IndexerService {
 
   static final IndexerService _instance = IndexerService._internal();
-  Dio _client;
+  late Dio _client;
 
   factory IndexerService() => _instance;
 

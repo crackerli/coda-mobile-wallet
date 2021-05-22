@@ -37,7 +37,7 @@ _getValidMemo(String providerName) {
 }
 
 class StakeProviderScreen extends StatefulWidget {
-  StakeProviderScreen({Key key}) : super(key: key);
+  StakeProviderScreen({Key? key}) : super(key: key);
 
   @override
   _StakeProviderScreenState createState() => _StakeProviderScreenState();
@@ -45,8 +45,8 @@ class StakeProviderScreen extends StatefulWidget {
 
 class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
-  StakeProvidersBloc _stakeProvidersBloc;
-  int _accountIndex;
+  late var _stakeProvidersBloc;
+  late int _accountIndex;
 
   _getStakeProviders() {
     _stakeProvidersBloc.add(GetStakeProviders());
@@ -67,8 +67,16 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    _accountIndex = ModalRoute.of(context).settings.arguments;
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
+    _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -132,14 +140,14 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
   _buildProviderList(BuildContext context, StakeProvidersStates state) {
     if(state is GetStakeProvidersLoading) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         ProgressDialog.showProgress(context);
       });
       return Container();
     }
 
     if(state is GetStakeProvidersFail) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         ProgressDialog.dismiss(context);
       });
 
@@ -149,7 +157,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
     }
 
     if(state is GetStakeProvidersSuccess) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         ProgressDialog.dismiss(context);
       });
 
@@ -170,8 +178,8 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
             onTap: () {
               SendData delegationData = SendData();
               delegationData.isDelegation = true;
-              delegationData.to = providers[index].providerAddress;
-              delegationData.memo = _getValidMemo(providers[index].providerTitle);
+              delegationData.to = providers[index].providerAddress!;
+              delegationData.memo = _getValidMemo(providers[index].providerTitle!);
               delegationData.from = _accountIndex;
               delegationData.amount = '0';
               _gotoDelegationFee(context, delegationData);

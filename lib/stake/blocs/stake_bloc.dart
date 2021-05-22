@@ -7,8 +7,8 @@ import 'package:coda_wallet/util/safe_map.dart';
 
 class StakeBloc extends Bloc<StakeEvents, StakeStates> {
 
-  CodaService _codaService;
-  bool isStakeLoading;
+  late CodaService _codaService;
+  late bool isStakeLoading;
 
   StakeBloc(StakeStates state) : super(state) {
     _codaService = CodaService();
@@ -31,7 +31,7 @@ class StakeBloc extends Bloc<StakeEvents, StakeStates> {
 
     try {
       isStakeLoading = true;
-      final result = await _codaService.performQuery(query, variables: variables);
+      final result = await _codaService.performQuery(query, variables: variables!);
 
       if(null == result) {
         String error = 'Unknown Error!';
@@ -48,7 +48,7 @@ class StakeBloc extends Bloc<StakeEvents, StakeStates> {
       int epoch = 0;
       int slot = 0;
 
-      List<dynamic> bestChain = result.data['bestChain'] ?? null;
+      List<dynamic> bestChain = result.data!['bestChain'] ?? null;
       if(null != bestChain && bestChain.length > 0) {
         SafeMap safeMap = SafeMap(bestChain[0]);
         epoch = int.tryParse(safeMap['protocolState']['consensusState']['epoch'].value) ?? 0;

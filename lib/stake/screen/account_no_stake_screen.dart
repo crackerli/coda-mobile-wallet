@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AccountNoStakeScreen extends StatefulWidget {
-  AccountNoStakeScreen({Key key}) : super(key: key);
+  AccountNoStakeScreen({Key? key}) : super(key: key);
 
   @override
   _AccountNoStakeScreenState createState() => _AccountNoStakeScreenState();
@@ -14,7 +14,7 @@ class AccountNoStakeScreen extends StatefulWidget {
 
 class _AccountNoStakeScreenState extends State<AccountNoStakeScreen> {
 
-  int _accountIndex;
+  late int _accountIndex;
 
   @override
   void initState() {
@@ -29,8 +29,16 @@ class _AccountNoStakeScreenState extends State<AccountNoStakeScreen> {
   @override
   Widget build(BuildContext context) {
     print('AccountNoStakeScreen build()');
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    _accountIndex = ModalRoute.of(context).settings.arguments;
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
+    _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, leading: true),

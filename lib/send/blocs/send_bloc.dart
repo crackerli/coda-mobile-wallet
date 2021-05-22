@@ -10,31 +10,31 @@ import '../../service/coda_service.dart';
 class SendBloc extends
   Bloc<SendEvents, SendStates> {
 
-  CodaService _service;
+  late CodaService _service;
 
-  String to;
-  String from;
-  String memo;
-  String amount;
-  String fee;
-  bool isDelegation;
-  int account;
-  bool sendEnabled;
-  bool loading;
-  int nonce;
+  late String to;
+  late String from;
+  late String memo;
+  late String amount;
+  late String fee;
+  late bool isDelegation;
+  late int account;
+  late bool sendEnabled;
+  late bool loading;
+  late int nonce;
   // this list should have length 3, and 0 is for fastest, 1 for medium, 2 for slow
-  List<BigInt> bestFees = List<BigInt>();
+  List<BigInt> bestFees = [];
   // selected fee index
-  int feeIndex;
+  int? feeIndex;
   // After fee selection, if the balance is less than user input amount+fee, then we should adjust the send amount
-  BigInt get finalAmount {
+  BigInt? get finalAmount {
     if(null == feeIndex || -1 == feeIndex || null == bestFees || bestFees.isEmpty) {
       return BigInt.tryParse(amount);
     }
 
-    BigInt chosenFee = bestFees[feeIndex];
-    BigInt balance = BigInt.tryParse(globalHDAccounts.accounts[account].balance);
-    BigInt inputAmount = BigInt.tryParse(amount);
+    BigInt chosenFee = bestFees[feeIndex!];
+    BigInt? balance = BigInt.tryParse(globalHDAccounts.accounts[account]!.balance!);
+    BigInt? inputAmount = BigInt.tryParse(amount);
     if(null != balance && null != inputAmount) {
       if(balance < (chosenFee + inputAmount)) {
         // Adjust send amount
@@ -47,7 +47,7 @@ class SendBloc extends
     }
   }
 
-  SendBloc(SendStates state) : super(state) {
+  SendBloc(SendStates? state) : super(state!) {
     _service = CodaService();
 
     bestFees.add(BigInt.from(MINIMAL_FEE_COST));
@@ -136,7 +136,7 @@ class SendBloc extends
     try {
       loading = true;
       yield GetPooledFeeLoading();
-      final result = await _service.performMutation(query, variables: variables);
+      final result = await _service.performMutation(query, variables: variables!);
       loading = false;
 
       if(null == result || result.hasException) {
@@ -145,12 +145,12 @@ class SendBloc extends
         return;
       }
 
-      List<dynamic> feesStr = result.data['pooledUserCommands'] as List<dynamic>;
+      List<dynamic> feesStr = result.data!['pooledUserCommands'] as List<dynamic>;
       if(feesStr == null || feesStr.length == 0) {
         _calcBestFees(null);
       } else {
-        List<BigInt> fees = List.generate(
-            feesStr.length, (index) => BigInt.tryParse(feesStr[index]['fee']) ?? 0);
+        List<BigInt> fees = List<BigInt>.generate(
+          feesStr.length, (index) => BigInt.tryParse(feesStr[index]!['fee']) ?? BigInt.from(0));
         _calcBestFees(fees);
       }
       yield GetPooledFeeSuccess(bestFees);
@@ -162,7 +162,7 @@ class SendBloc extends
     }
   }
 
-  _calcBestFees(List<BigInt> fees) {
+  _calcBestFees(List<BigInt>? fees) {
     if(null == fees || fees.length == 0 || fees.length < 3) {
       bestFees.clear();
       bestFees.add(BigInt.from(MINIMAL_FEE_COST));
@@ -213,7 +213,7 @@ class SendBloc extends
     try {
       loading = true;
       yield SendLoading(null);
-      final result = await _service.performMutation(mutation, variables: variables);
+      final result = await _service.performMutation(mutation, variables: variables!);
       loading = false;
 
       if(null == result || result.hasException) {
@@ -239,7 +239,7 @@ class SendBloc extends
     try {
       loading = true;
       yield GetNonceLoading();
-      final result = await _service.performMutation(mutation, variables: variables);
+      final result = await _service.performMutation(mutation, variables: variables!);
       loading = false;
 
       if(null == result || result.hasException) {
@@ -248,12 +248,12 @@ class SendBloc extends
         return;
       }
 
-      if(null == result.data || null == result.data['account']) {
+      if(null == result.data || null == result.data!['account']) {
         yield GetNonceFail('Get nonce failed!');
         return;
       }
 
-      Map<String, dynamic> account = result.data['account'];
+      Map<String, dynamic> account = result.data!['account'];
       if(null == account['nonce']) {
         nonce = 0;
       } else {

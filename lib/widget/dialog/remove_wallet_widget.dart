@@ -11,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class RemoveWalletWidget extends StatefulWidget {
-  RemoveWalletWidget({Key key}) : super(key: key);
+  RemoveWalletWidget({Key? key}) : super(key: key);
 
   @override
   _RemoveWalletWidgetState createState() => _RemoveWalletWidgetState();
@@ -36,7 +36,15 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('RemoveWalletWidget: build(context: $context)');
     return KeyboardActions(
       tapOutsideToDismiss: false,
@@ -132,10 +140,10 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
                     return;
                   }
                   FocusScope.of(context).unfocus();
-                  String encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+                  String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
                   print('SendFeeScreen: start to decrypt seed');
                   try {
-                    Uint8List seed = decryptSeed(encryptedSeed, _controllerRemoveWallet.text);
+                    Uint8List seed = decryptSeed(encryptedSeed!, _controllerRemoveWallet.text);
                     // Successfully decrypt, remove wallet, reset all global data.
                     globalHDAccounts = MinaHDAccount();
                     globalEncryptedSeed = '';

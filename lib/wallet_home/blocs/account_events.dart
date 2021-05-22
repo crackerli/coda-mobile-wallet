@@ -1,10 +1,8 @@
-import 'package:equatable/equatable.dart';
-
-abstract class AccountEvents/* extends Equatable*/ {
+abstract class AccountEvents {
   AccountEvents();
 
   @override
-  List<Object> get props => null;
+  List<Object>? get props => null;
 }
 
 class GetAccounts extends AccountEvents {
@@ -13,5 +11,5 @@ class GetAccounts extends AccountEvents {
   GetAccounts(this.index) : super();
 
   @override
-  List<Object> get props => null;
+  List<Object>? get props => null;
 }

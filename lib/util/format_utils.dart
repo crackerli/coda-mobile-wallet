@@ -2,27 +2,12 @@ import 'package:common_utils/common_utils.dart';
 
 List<String> months = ['DUMMY', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-// String formatTokenNumber(String src) {
-//   if(null == src || src.isEmpty) {
-//     return '';
-//   }
-//
-//   BigInt tokenNumber = BigInt.parse(src);
-//   double formattedNumber = tokenNumber.toDouble() / 1000000000.0;
-//   return formattedNumber.toString();
-// }
-//
 String formatFeeAsFixed(BigInt number, int fixed) {
   double feeDouble = number.toDouble() / 1000000000.0;
-  return (NumUtil.getNumByValueDouble(feeDouble, fixed)).toStringAsFixed(fixed);
+  return (NumUtil.getNumByValueDouble(feeDouble, fixed))!.toStringAsFixed(fixed);
 }
-//
-// String formatTokenBigInt(BigInt token) {
-//   double feeDouble = token.toDouble() / 1000000000.0;
-//   return feeDouble.toString();
-// }
 
-String formatHashEllipsis(String src) {
+String formatHashEllipsis(String? src) {
   if(null == src || src.isEmpty) {
     return '';
   }
@@ -41,7 +26,7 @@ class FormattedDate {
   FormattedDate(this.year, this.month, this.day, this.hms);
 }
 
-FormattedDate getFormattedDate(String millisSeconds) {
+FormattedDate? getFormattedDate(String? millisSeconds) {
   if(null == millisSeconds || millisSeconds.isEmpty) {
     return null;
   }
@@ -57,7 +42,7 @@ FormattedDate getFormattedDate(String millisSeconds) {
   return FormattedDate('$year', months[month], '$day', '$hour:$minute:$second');
 }
 
-String formatDateTime(String millisSeconds) {
+String formatDateTime(String? millisSeconds) {
   if(null == millisSeconds || millisSeconds.isEmpty) {
     return '';
   }
@@ -73,16 +58,7 @@ String formatDateTime(String millisSeconds) {
   return '$year-$month-$day $hour:$minute:$second';
 }
 
-// int getNanoMina(String src) {
-//   if(null == src || src.isEmpty) {
-//     return 0;
-//   }
-//
-//   double tmp = double.parse(src);
-//   return (tmp * 1000000000).toInt();
-// }
-
-bool checkNumeric(String str) {
+bool checkNumeric(String? str) {
   if(str == null || str.isEmpty) {
     return false;
   }

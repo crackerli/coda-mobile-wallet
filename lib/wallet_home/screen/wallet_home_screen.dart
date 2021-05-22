@@ -29,7 +29,7 @@ _gotoReceiveAccountsScreen(BuildContext context) {
 }
 
 class WalletHomeScreen extends StatefulWidget {
-  WalletHomeScreen({Key key}) : super(key: key);
+  WalletHomeScreen({Key? key}) : super(key: key);
 
   @override
   _WalletHomeScreenState createState() => _WalletHomeScreenState();
@@ -37,7 +37,7 @@ class WalletHomeScreen extends StatefulWidget {
 
 class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, RouteAware {
   bool _stakeEnabled = true;
-  AccountBloc _accountBloc;
+  late var _accountBloc;
   var _eventBusOn;
 
   _updateAccounts({bool newRoute = false}) {
@@ -49,12 +49,12 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     }
 
     if(newUser && newRoute) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         Navigator.pushNamed(context, NoWalletRoute);
       });
     } else {
       if(globalHDAccounts.accounts != null && globalHDAccounts.accounts.isNotEmpty) {
-        _accountBloc.add(GetAccounts(0));
+        _accountBloc!.add(GetAccounts(0));
       }
     }
   }
@@ -63,7 +63,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   void initState() {
     super.initState();
     print('WalletHomeScreen initState');
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     _accountBloc = BlocProvider.of<AccountBloc>(context);
     _updateAccounts(newRoute: true);
     _eventBusOn = eventBus.on<UpdateAccounts>().listen((event) {
@@ -74,7 +74,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   @override
   void dispose() {
     _accountBloc = null;
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     _eventBusOn.cancel();
     _eventBusOn = null;
     super.dispose();
@@ -90,7 +90,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context));
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
@@ -108,19 +108,27 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
 
   @override
   void didPushNext() {
-    final route = ModalRoute.of(context).settings.name;
+    final route = ModalRoute.of(context)!.settings.name;
     print('WalletHomeScreen didPushNext() route: $route');
   }
 
   @override
   void didPop() {
-    final route = ModalRoute.of(context).settings.name;
+    final route = ModalRoute.of(context)!.settings.name;
     print('WalletHomeScreen didPop() route: $route');
   }
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return _buildWalletHomeBody(context);
   }
 

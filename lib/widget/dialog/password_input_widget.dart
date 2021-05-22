@@ -7,7 +7,7 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 
 class PasswordInputWidget extends StatefulWidget {
   String _from;
-  PasswordInputWidget(this._from, {Key key}) : super(key: key);
+  PasswordInputWidget(this._from, {Key? key}) : super(key: key);
 
   @override
   _PasswordInputWidgetState createState() => _PasswordInputWidgetState();
@@ -32,7 +32,15 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('PasswordInputWidget: build(context: $context)');
     return KeyboardActions(
       tapOutsideToDismiss: false,

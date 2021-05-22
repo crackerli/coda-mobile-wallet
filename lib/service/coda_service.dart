@@ -9,7 +9,7 @@ class CodaService {
   static final CodaService _instance = CodaService._internal();
 
   factory CodaService() => _instance;
-  GraphQLClient _client;
+  late GraphQLClient _client;
 
   CodaService._internal() {
     int networkId = getCurrentNetworkId();
@@ -41,7 +41,7 @@ class CodaService {
   }
 
   Future<QueryResult> performQuery(String query,
-      {Map<String, dynamic> variables}) async {
+      {Map<String, dynamic> variables = const {}}) async {
     QueryOptions options = QueryOptions(document: gql(query), variables: variables, fetchPolicy: FetchPolicy.cacheAndNetwork);
 
     final result = await _client.query(options);
@@ -50,7 +50,7 @@ class CodaService {
   }
 
   Future<QueryResult> performMutation(String query,
-      {Map<String, dynamic> variables}) async {
+      {Map<String, dynamic> variables = const {}}) async {
     MutationOptions options =
     MutationOptions(document: gql(query), variables: variables);
 

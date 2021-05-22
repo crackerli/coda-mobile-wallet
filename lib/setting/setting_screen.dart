@@ -10,7 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:package_info/package_info.dart';
 
 class SettingScreen extends StatefulWidget {
-  SettingScreen({Key key}) : super(key: key);
+  SettingScreen({Key? key}) : super(key: key);
 
   @override
   _SettingScreenState createState() => _SettingScreenState();
@@ -26,12 +26,12 @@ class _SettingScreenState extends State<SettingScreen> {
     print('Setting Screen inited');
     _eventBusOn = eventBus.on<SettingChangeEventBus>().listen((event) {
       if(event is RemoveWalletFail) {
-        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Wrong password')));
+        _scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text('Wrong password')));
         return;
       }
 
       if(event is RemoveWalletSucceed) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
           Navigator.of(context).pushNamed(NoWalletRoute);
         });
         return;
@@ -54,7 +54,15 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xfff5f5f5),
@@ -153,7 +161,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   flex: 1,
                   child: Text('App Version', textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp),),
                 ),
-                Text(snapshot.data, textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d)),),
+                Text(snapshot.data!, textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d)),),
               ],
             ),
           );

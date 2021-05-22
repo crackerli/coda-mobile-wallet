@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @dart = 2.8
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -39,30 +37,30 @@ class CustomizedUnderlineTabIndicator extends Decoration {
   final EdgeInsetsGeometry insets;
 
   @override
-  Decoration lerpFrom(Decoration a, double t) {
+  Decoration? lerpFrom(Decoration? a, double t) {
     if (a is CustomizedUnderlineTabIndicator) {
       return CustomizedUnderlineTabIndicator(
         borderSide: BorderSide.lerp(a.borderSide, borderSide, t),
-        insets: EdgeInsetsGeometry.lerp(a.insets, insets, t),
+        insets: EdgeInsetsGeometry.lerp(a.insets, insets, t)!,
       );
     }
     return super.lerpFrom(a, t);
   }
 
   @override
-  Decoration lerpTo(Decoration b, double t) {
+  Decoration? lerpTo(Decoration? b, double t) {
     if (b is CustomizedUnderlineTabIndicator) {
       return CustomizedUnderlineTabIndicator(
         borderSide: BorderSide.lerp(borderSide, b.borderSide, t),
-        insets: EdgeInsetsGeometry.lerp(insets, b.insets, t),
+        insets: EdgeInsetsGeometry.lerp(insets, b.insets, t)!,
       );
     }
     return super.lerpTo(b, t);
   }
 
   @override
-  _UnderlinePainter createBoxPainter([ VoidCallback onChanged ]) {
-    return _UnderlinePainter(this, onChanged);
+  _UnderlinePainter createBoxPainter([ VoidCallback? onChanged ]) {
+    return _UnderlinePainter(this, onChanged!);
   }
 
   Rect _indicatorRectFor(Rect rect, TextDirection textDirection) {
@@ -94,7 +92,7 @@ class _UnderlinePainter extends BoxPainter {
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     assert(configuration != null);
     assert(configuration.size != null);
-    final Rect rect = offset & configuration.size;
+    final Rect rect = offset & configuration.size!;
     final RRect newRect = RRect.fromRectAndRadius(rect, Radius.circular(7.0));
     Gradient gradient = LinearGradient(colors: [Colors.white, Colors.white]);
     canvas.drawRRect(newRect,

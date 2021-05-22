@@ -26,13 +26,21 @@ class _Progress extends StatelessWidget {
   final Widget child;
 
   _Progress({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
   }) : assert(child != null), super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return WillPopScope(
       onWillPop: () {
         print('Progress Dialog dismissed');
@@ -49,16 +57,16 @@ class _PopRoute extends PopupRoute {
   final Duration _duration = Duration(milliseconds: 300);
   Widget child;
 
-  _PopRoute({@required this.child});
+  _PopRoute({required this.child});
 
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
   bool get barrierDismissible => true;
 
   @override
-  String get barrierLabel => null;
+  String get barrierLabel => '';
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,

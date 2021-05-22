@@ -11,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class EditAccountScreen extends StatefulWidget {
-  EditAccountScreen({Key key}) : super(key: key);
+  EditAccountScreen({Key? key}) : super(key: key);
 
   @override
   _EditAccountScreenState createState() => _EditAccountScreenState();
@@ -36,9 +36,17 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('CreateAccountScreen: build(context: $context)');
-    _accountIndex = ModalRoute.of(context).settings.arguments;
+    _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xfff5f5f5),
@@ -117,7 +125,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
             keyboardType: TextInputType.multiline,
             autofocus: false,
             decoration: InputDecoration.collapsed(
-              hintText: globalHDAccounts.accounts[_accountIndex].accountName,
+              hintText: globalHDAccounts.accounts[_accountIndex]!.accountName ?? '',
               hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
           )
         ),
@@ -147,7 +155,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       return;
     }
 
-    AccountBean account = globalHDAccounts.accounts[_accountIndex];
+    AccountBean account = globalHDAccounts.accounts[_accountIndex]!;
     account.accountName = _accountController.text;
     Map accountsJson = globalHDAccounts.toJson();
     globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));

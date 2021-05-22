@@ -2,7 +2,7 @@ abstract class StakeStates {
   StakeStates() : super();
 
   @override
-  List<Object> get props => null;
+  List<Object>? get props => null;
 }
 
 class GetConsensusStateLoading extends StakeStates {

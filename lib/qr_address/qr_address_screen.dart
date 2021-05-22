@@ -33,30 +33,28 @@ class QrAddress extends StatelessWidget {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.only(left: 16, right: 16),
-      child:
-        Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              QrImage(data: _publicKey, size: 200.0, version: QrVersions.auto),
-              Container(height: 10),
-              Text('$_publicKey', maxLines: 2, textAlign: TextAlign.center, style: TextStyle(color: Colors.black54, fontSize: 16.0)),
-              Container(height: 10),
-              Builder(
-                builder: (context) =>
-                  RaisedButton(
-                    padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 60, right: 60),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                    onPressed: () async { await _checkStoragePermission(context); },
-                    color: Colors.blueAccent,
-                    child: Text('Share', style: TextStyle(color: Colors.white),)
-                  )
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            QrImage(data: _publicKey, size: 200.0, version: QrVersions.auto),
+            Container(height: 10),
+            Text('$_publicKey', maxLines: 2, textAlign: TextAlign.center, style: TextStyle(color: Colors.black54, fontSize: 16.0)),
+            Container(height: 10),
+            Builder(builder: (context) =>
+              RaisedButton(
+                padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 60, right: 60),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6.0))),
+                onPressed: () async { await _checkStoragePermission(context); },
+                color: Colors.blueAccent,
+                child: Text('Share', style: TextStyle(color: Colors.white),)
               )
-            ]
-          )
+            )
+          ]
         )
+      )
     );
   }
 
@@ -66,12 +64,12 @@ class QrAddress extends StatelessWidget {
     ].request();
     var status = await Permission.storage.status;
     print(status);
-    if (status.isUndetermined) {
-      openAppSettings();
-    } else {
+    if (status.isGranted) {
       saveImageAsFile(_qrImageKey).then((value) {
-        _shareQrImage(context, value);
+        _shareQrImage(context, value!);
       });
+    } else {
+      openAppSettings();
     }
   }
 

@@ -14,7 +14,7 @@ _gotoSendAmount(BuildContext context, SendData sendData) {
 }
 
 class SendToScreen extends StatefulWidget {
-  SendToScreen({Key key}) : super(key: key);
+  SendToScreen({Key? key}) : super(key: key);
 
   @override
   _SendToScreenState createState() => _SendToScreenState();
@@ -26,7 +26,7 @@ class _SendToScreenState extends State<SendToScreen> {
   final _focusNodeTo       = FocusNode();
   final _focusNodeMemo     = FocusNode();
   bool _validInput = true;
-  SendData _sendData;
+  late SendData _sendData;
 
   _fillQrAddress() async {
     dynamic qrResult = await toQrScanScreen(context);
@@ -86,8 +86,16 @@ class _SendToScreenState extends State<SendToScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    _sendData = ModalRoute.of(context).settings.arguments;
+//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
+    _sendData = ModalRoute.of(context)!.settings.arguments as SendData;
     print('SendToScreen: build(context: $context, _sendData=$_sendData)');
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -134,10 +142,8 @@ class _SendToScreenState extends State<SendToScreen> {
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                     InkWell(
                       onTap: () async {
-                        ClipboardData data = await Clipboard.getData(Clipboard.kTextPlain);
-                        if(null != data) {
-                          _setToAddress(data.text);
-                        }
+                        ClipboardData? data = await Clipboard.getData(Clipboard.kTextPlain);
+                        _setToAddress(data?.text ?? '');
                       },
                       child: Container(
                         padding: EdgeInsets.only(left: 4.w, right: 4.w, top: 4.h, bottom: 4.h),

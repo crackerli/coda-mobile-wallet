@@ -17,18 +17,17 @@ import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/screenutil.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TxnsScreen extends StatefulWidget {
-  TxnsScreen({Key key}) : super(key: key);
+  TxnsScreen({Key? key}) : super(key: key);
 
   @override
   _TxnsScreenState createState() => _TxnsScreenState();
 }
 
 class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, RouteAware {
-  TxnsBloc _txnsBloc;
+  late var _txnsBloc;
   var _eventBusOn;
 
   _refreshTxns() {
@@ -49,7 +48,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   void initState() {
     super.initState();
     print('TxnsScreen initState');
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     _txnsBloc = BlocProvider.of<TxnsBloc>(context);
     _refreshTxns();
     _eventBusOn = eventBus.on<TxnsEventBus>().listen((event) {
@@ -95,7 +94,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     _eventBusOn.cancel();
     _eventBusOn = null;
     _txnsBloc = null;
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -109,7 +108,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context));
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
@@ -127,20 +126,28 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
   @override
   void didPushNext() {
-    final route = ModalRoute.of(context).settings.name;
+    final route = ModalRoute.of(context)!.settings.name;
     print('WalletHomeScreen didPushNext() route: $route');
   }
 
   @override
   void didPop() {
-    final route = ModalRoute.of(context).settings.name;
+    final route = ModalRoute.of(context)!.settings.name;
     print('WalletHomeScreen didPop() route: $route');
   }
 
   @override
   // ignore: must_call_super
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('TxnsScreen build(context=$context)');
     return RefreshIndicator(
       onRefresh: _onRefresh,
@@ -179,7 +186,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                   InkWell(
                     onTap: () => Navigator.pushNamed(context, TxnsChooseAccountRoute),
                     child:
-                    Text(globalHDAccounts.accounts[_txnsBloc.accountIndex].accountName,
+                    Text(globalHDAccounts.accounts[_txnsBloc.accountIndex]!.accountName ?? '',
                       textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)
                     )
                   ),
@@ -216,7 +223,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     if(state is RefreshPooledTxnsLoading) {
       List<dynamic> userCommands = state.data as List<dynamic>;
       if(state.data == null || userCommands.length == 0) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
           ProgressDialog.showProgress(context);
         });
         return Container();
@@ -263,7 +270,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     }
 
     TxnType txnType;
-    if(!userCommand.isDelegation) {
+    if(!userCommand.isDelegation!) {
       if(userCommand.from == _txnsBloc.publicKey) {
         txnType = TxnType.SEND;
       } else {
@@ -274,15 +281,15 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     }
 
     TxnEntity txnEntity = TxnEntity(
-      userCommand.from,
-      userCommand.to,
+      userCommand.from!,
+      userCommand.to!,
       userCommand.dateTime,
-      userCommand.amount,
-      userCommand.fee,
-      userCommand.memo,
-      userCommand.isPooled ? TxnStatus.PENDING : TxnStatus.CONFIRMED,
+      userCommand.amount!,
+      userCommand.fee!,
+      userCommand.memo!,
+      userCommand.isPooled! ? TxnStatus.PENDING : TxnStatus.CONFIRMED,
       txnType,
-      userCommand.isIndexerMemo
+      userCommand.isIndexerMemo!
     );
     Navigator.pushNamed(context, TxnDetailRoute, arguments: txnEntity);
   }
@@ -317,12 +324,12 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   }
 
   _buildTxnItem(MergedUserCommand command) {
-    FormattedDate formattedDate = getFormattedDate(command.dateTime);
+    FormattedDate? formattedDate = getFormattedDate(command.dateTime);
     return Container(
       padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 15.h, bottom: 15.h),
       child: Row(
         children: [
-          command.isPooled ?
+          command.isPooled! ?
           Center(
             child: Image.asset('images/txn_pending.png', width: 23.w, height: 23.w,)
           ) :
@@ -330,10 +337,10 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
             textAlign: TextAlign.center,
             text: TextSpan(children: <TextSpan>[
             TextSpan(
-              text: '${formattedDate.month}\n',
+              text: '${formattedDate?.month}\n',
               style: TextStyle(fontSize: 11.sp, color: Color(0xff9e9e9e))),
             TextSpan(
-              text: '${formattedDate.day}\n',
+              text: '${formattedDate?.day}\n',
               style: TextStyle(
                   color: Color(0xff212121),
                   fontWeight: FontWeight.normal,
@@ -341,7 +348,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
               )
             ),
             TextSpan(
-              text: '${formattedDate.year}',
+              text: '${formattedDate?.year}',
               style: TextStyle(
                 color: Color(0xff9e9e9e),
                 fontWeight: FontWeight.normal,
@@ -357,7 +364,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(getTxnTypeStr(command), textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp)),
-              Text(command.isPooled ? 'Pending' : formattedDate.hms,
+              Text(command.isPooled! ? 'Pending' : formattedDate!.hms,
                 textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575))),
             ],
           ),
@@ -368,8 +375,8 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text('${MinaHelper.getMinaStrByNanoStr(command.amount)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 18.sp)),
-                Text('${MinaHelper.getMinaStrByNanoStr(command.fee)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575)))
+                Text('${MinaHelper.getMinaStrByNanoStr(command.amount!)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 18.sp)),
+                Text('${MinaHelper.getMinaStrByNanoStr(command.fee!)}', textAlign: TextAlign.right, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575)))
               ]
             ),
           )
@@ -379,7 +386,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   }
 
   Widget getTxnTypeIcon(MergedUserCommand command) {
-    if(command.isDelegation) {
+    if(command.isDelegation!) {
       return Image.asset('images/txn_stake.png', height: 40.w, width: 40.w);
     }
 
@@ -395,7 +402,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   }
 
   String getTxnTypeStr(MergedUserCommand command) {
-    if(command.isDelegation) {
+    if(command.isDelegation!) {
       if(command.from == _txnsBloc.publicKey && command.from == command.to) {
         return 'Unstaked';
       }

@@ -10,16 +10,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class ImportRecoveryPhraseScreen extends StatefulWidget {
-  ImportRecoveryPhraseScreen({Key key}) : super(key: key);
+  ImportRecoveryPhraseScreen({Key? key}) : super(key: key);
 
   @override
   _ImportRecoveryPhraseScreenState createState() => _ImportRecoveryPhraseScreenState();
 }
 
 class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen> {
-  FocusNode _focusNode;
-  TextEditingController _editingController;
-  String _mnemonic;
+  late FocusNode _focusNode;
+  late TextEditingController _editingController;
+  late String _mnemonic;
   bool _inputValidated = false;
 
   bool _validateWords() {
@@ -38,12 +38,12 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
   
   List<String> _getInputWords(String input) {
     if(null == input || input.isEmpty) {
-      return null;
+      return [];
     }
 
     List<String> tmp = input.trim().split(' ');
     tmp.remove("");
-    List<String> mnemonicList = List<String>();
+    List<String> mnemonicList = [];
     for(int i = 0; i < tmp.length; i++) {
       if(tmp[i] != '') {
         mnemonicList.add(tmp[i].trim());
@@ -89,7 +89,15 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),

@@ -11,7 +11,7 @@ _gotoReceiveAccountScreen(BuildContext context, int index) {
 }
 
 class ReceiveAccountsScreen extends StatefulWidget {
-  ReceiveAccountsScreen({Key key}) : super(key: key);
+  ReceiveAccountsScreen({Key? key}) : super(key: key);
 
   @override
   _ReceiveAccountsScreenState createState() => _ReceiveAccountsScreenState();
@@ -31,7 +31,15 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, leading: false),

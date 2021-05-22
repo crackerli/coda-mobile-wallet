@@ -14,7 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StakeScreen extends StatefulWidget {
-  StakeScreen({Key key}) : super(key: key);
+  StakeScreen({Key? key}) : super(key: key);
 
   @override
   _StakeScreenState createState() => _StakeScreenState();
@@ -22,7 +22,7 @@ class StakeScreen extends StatefulWidget {
 
 class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClientMixin {
   bool _stakeEnabled = true;
-  StakeBloc _stakeBloc;
+  late var _stakeBloc;
 
   @override
   void initState() {
@@ -40,7 +40,15 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     print('StakeScreen build()');
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+  //  ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return _buildWalletHomeBody();
   }
 
@@ -78,7 +86,7 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
                 int epoch = 0;
                 int slot = 0;
                 if(state is GetConsensusStateFailed) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                  WidgetsBinding.instance!.addPostFrameCallback((_) {
                     ProgressDialog.dismiss(context);
                     String error = state.data;
                     Scaffold.of(context).showSnackBar(SnackBar(content: Text(error)));
@@ -86,13 +94,13 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
                 }
 
                 if(state is GetConsensusStateLoading) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                  WidgetsBinding.instance!.addPostFrameCallback((_) {
                     ProgressDialog.showProgress(context);
                   });
                 }
 
                 if(state is GetConsensusStateSuccess) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                  WidgetsBinding.instance!.addPostFrameCallback((_) {
                     ProgressDialog.dismiss(context);
                   });
                   epoch = state?.epoch ?? 0;
@@ -129,8 +137,8 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
           Expanded(
             child: buildAccountList((index) {
               // Check if this account has been staked.
-              String accountAddress = globalHDAccounts.accounts[index].address;
-              String stakeAddress = globalHDAccounts.accounts[index].stakingAddress;
+              String? accountAddress = globalHDAccounts.accounts[index]!.address;
+              String? stakeAddress = globalHDAccounts.accounts[index]!.stakingAddress;
               if(null == stakeAddress || stakeAddress.isEmpty || (accountAddress == stakeAddress)) {
                 Navigator.of(context).pushNamed(
                   AccountNoStakeRoute, arguments: index);

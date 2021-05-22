@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MyAccountsScreen extends StatefulWidget {
-  MyAccountsScreen({Key key}) : super(key: key);
+  MyAccountsScreen({Key? key}) : super(key: key);
 
   @override
   _MyAccountsScreenState createState() => _MyAccountsScreenState();
@@ -34,7 +34,15 @@ class _MyAccountsScreenState extends State<MyAccountsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('MyAccountsScreen: build(context: $context)');
     return Scaffold(
       resizeToAvoidBottomInset: false,

@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
@@ -17,8 +14,8 @@ import 'package:coda_wallet/util/safe_map.dart';
 class AccountBloc extends
   Bloc<AccountEvents, AccountStates> {
 
-  CodaService _service;
-  IndexerService _indexerService;
+  late CodaService _service;
+  late IndexerService _indexerService;
 
   AccountBloc(AccountStates state) : super(state) {
     _service = CodaService();
@@ -42,7 +39,7 @@ class AccountBloc extends
 
     final query = ACCOUNT_QUERY;
     Map<String, dynamic> variables = Map<String, dynamic>();
-    variables['publicKey'] = globalHDAccounts?.accounts[event?.index]?.address;
+    variables['publicKey'] = globalHDAccounts.accounts[event.index]?.address;
 
     try {
       yield GetAccountsLoading();
@@ -61,11 +58,11 @@ class AccountBloc extends
       }
 
       // Parse data from Json map, convert it to safe map for safe nested access
-      dynamic accounts = result.data['accounts'];
+      dynamic accounts = result.data!['accounts'];
       if((accounts as List).isEmpty) {
-        globalHDAccounts?.accounts[event?.index]?.balance = '0';
-        globalHDAccounts?.accounts[event?.index]?.isActive = false;
-        globalHDAccounts?.accounts[event?.index]?.stakingAddress = '';
+        globalHDAccounts.accounts[event.index]?.balance = '0';
+        globalHDAccounts.accounts[event.index]?.isActive = false;
+        globalHDAccounts.accounts[event.index]?.stakingAddress = '';
       } else {
         // If the account is null, then we can say this account is not active
         // We use only the first account
@@ -76,8 +73,8 @@ class AccountBloc extends
         String stakingAddress = safeAccount['delegateAccount']['publicKey'].value;
         // find it in global accounts
         for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
-          AccountBean account = globalHDAccounts.accounts[i];
-          if(account.address == publicKey) {
+          AccountBean? account = globalHDAccounts.accounts[i];
+          if(account!.address == publicKey) {
             account.balance = balance;
             account.isActive = true;
             account.stakingAddress = stakingAddress;
@@ -111,7 +108,7 @@ class AccountBloc extends
       }
 
       // Convert provider list to map for quick access.
-      ProvidersEntity providersEntity = ProvidersEntity.fromMap(response.data);
+      ProvidersEntity? providersEntity = ProvidersEntity.fromMap(response.data);
       if (null == providersEntity || null == providersEntity.stakingProviders) {
         return;
       }

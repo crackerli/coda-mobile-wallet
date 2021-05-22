@@ -2,7 +2,7 @@ abstract class TxnsStates {
   TxnsStates();
 
   @override
-  List<Object> get props => null;
+  List<Object>? get props => null;
 }
 
 class AccountChanged extends TxnsStates {
@@ -72,29 +72,3 @@ class RefreshConfirmedTxnsFail extends TxnsStates {
   List<Object> get props => error;
 }
 
-// class MoreConfirmedTxnsLoading extends TxnsStates {
-//   final dynamic data;
-//
-//   MoreConfirmedTxnsLoading(this.data) : super();
-//
-//   @override
-//   List<Object> get props => data;
-// }
-//
-// class MoreConfirmedTxnsSuccess extends TxnsStates {
-//   final dynamic data;
-//
-//   MoreConfirmedTxnsSuccess(this.data) : super();
-//
-//   @override
-//   List<Object> get props => data;
-// }
-//
-// class MoreConfirmedTxnsFail extends TxnsStates {
-//   final dynamic error;
-//
-//   MoreConfirmedTxnsFail(this.error) : super();
-//
-//   @override
-//   List<Object> get props => error;
-// }

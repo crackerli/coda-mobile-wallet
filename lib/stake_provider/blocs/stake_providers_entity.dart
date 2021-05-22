@@ -1,14 +1,14 @@
 
 class ProvidersEntity {
-  int providersCount;
-  List<Staking_providersBean> stakingProviders;
+  int? providersCount;
+  List<Staking_providersBean?>? stakingProviders;
 
-  static ProvidersEntity fromMap(Map<String, dynamic> map) {
+  static ProvidersEntity? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;
     ProvidersEntity providersEntityBean = ProvidersEntity();
     providersEntityBean.providersCount = map['providers_count'];
-    providersEntityBean.stakingProviders = List()..addAll(
-      (map['staking_providers'] as List ?? []).map((o) => Staking_providersBean.fromMap(o))
+    providersEntityBean.stakingProviders = []..addAll(
+      (map['staking_providers'] as List).map((o) => Staking_providersBean.fromMap(o))
     );
     return providersEntityBean;
   }
@@ -20,25 +20,25 @@ class ProvidersEntity {
 }
 
 class Staking_providersBean {
-  int addressVerification;
-  int delegatorsNum;
-  String discordGroup;
-  String discordUsername;
-  String email;
-  String github;
-  String payoutTerms;
-  String providerAddress;
-  double providerFee;
-  int providerId;
-  String providerLogo;
-  String providerTitle;
-  double stakePercent;
-  double stakedSum;
-  String telegram;
-  String twitter;
-  String website;
+  int? addressVerification;
+  int? delegatorsNum;
+  String? discordGroup;
+  String? discordUsername;
+  String? email;
+  String? github;
+  String? payoutTerms;
+  String? providerAddress;
+  double? providerFee;
+  int? providerId;
+  String? providerLogo;
+  String? providerTitle;
+  double? stakePercent;
+  double? stakedSum;
+  String? telegram;
+  String? twitter;
+  String? website;
 
-  static Staking_providersBean fromMap(Map<String, dynamic> map) {
+  static Staking_providersBean? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;
     Staking_providersBean staking_providersBean = Staking_providersBean();
     staking_providersBean.addressVerification = map['address_verification'];

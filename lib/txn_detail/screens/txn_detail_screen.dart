@@ -14,14 +14,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TxnDetailScreen extends StatefulWidget {
 
-  TxnDetailScreen({Key key}) : super(key: key);
+  TxnDetailScreen({Key? key}) : super(key: key);
 
   @override
   _TxnDetailScreenState createState() => _TxnDetailScreenState();
 }
 
 class _TxnDetailScreenState extends State<TxnDetailScreen> {
-  TxnEntity _txnEntity;
+  late TxnEntity _txnEntity;
 
   @override
   void initState() {
@@ -35,8 +35,16 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    _txnEntity = ModalRoute.of(context).settings.arguments;
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
+    _txnEntity = ModalRoute.of(context)!.settings.arguments as TxnEntity;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, leading: false),

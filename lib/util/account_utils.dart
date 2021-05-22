@@ -14,7 +14,7 @@ import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 
 Future<List<AccountBean>> deriveDefaultAccount(Uint8List seed) async {
-  List<AccountBean> hdAccounts = List<AccountBean>();
+  List<AccountBean> hdAccounts = [];
 
   for(int i = 0; i < DEFAULT_ACCOUNT_NUMBER; i++) {
     AccountBean account = AccountBean();

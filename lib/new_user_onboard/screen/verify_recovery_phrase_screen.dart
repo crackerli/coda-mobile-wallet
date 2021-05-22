@@ -1,17 +1,7 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:ui';
-
-import 'package:coda_wallet/constant/constants.dart';
-import 'package:coda_wallet/event_bus/event_bus.dart';
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
-import 'package:coda_wallet/types/mina_hd_account_type.dart';
-import 'package:coda_wallet/util/account_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
-import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
-import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -20,8 +10,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 const _inputRecoveryPhrasesTip = ' ';
 
 class MnemonicBody {
-  String word;
-  bool hasFilled;
+  late String word;
+  late bool hasFilled;
   void clickCallback() {
     hasFilled = true;
     print('click on $word');
@@ -29,16 +19,16 @@ class MnemonicBody {
 }
 
 class VerifyRecoveryPhraseScreen extends StatefulWidget {
-  VerifyRecoveryPhraseScreen({Key key}) : super(key: key);
+  VerifyRecoveryPhraseScreen({Key? key}) : super(key: key);
 
   @override
   _VerifyRecoveryPhraseScreenState createState() => _VerifyRecoveryPhraseScreenState();
 }
 
 class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen> {
-  String _mnemonic;
-  List<MnemonicBody> _mnemonicTips = List<MnemonicBody>();
-  List<String> _mnemonicsFilled = List<String>();
+  late String _mnemonic;
+  List<MnemonicBody> _mnemonicTips = [];
+  List<String> _mnemonicsFilled = [];
   bool _buttonEnabled = false;
 
   _verifyWords(BuildContext context) {
@@ -104,8 +94,16 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    _mnemonic = ModalRoute.of(context).settings.arguments;
+//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
+    _mnemonic = ModalRoute.of(context)!.settings.arguments as String;
     _createRandomMnemonics();
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),

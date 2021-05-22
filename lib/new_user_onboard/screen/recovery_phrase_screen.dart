@@ -10,14 +10,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RecoveryPhraseScreen extends StatefulWidget {
-  RecoveryPhraseScreen({Key key}) : super(key: key);
+  RecoveryPhraseScreen({Key? key}) : super(key: key);
 
   @override
   _RecoveryPhraseScreenState createState() => _RecoveryPhraseScreenState();
 }
 
 class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
-  String _mnemonic;
+  late String _mnemonic;
 
   @override
   void initState() {
@@ -32,7 +32,15 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),

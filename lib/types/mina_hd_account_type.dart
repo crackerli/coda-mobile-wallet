@@ -10,21 +10,23 @@ String getWalletBalance() {
 
   BigInt walletBalance = BigInt.from(0);
   for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
-    BigInt balance = BigInt.tryParse(globalHDAccounts.accounts[i].balance);
-    walletBalance = balance + walletBalance;
+    BigInt? balance = BigInt.tryParse(globalHDAccounts.accounts[i]!.balance!);
+    if(null != balance) {
+      walletBalance = balance + walletBalance;
+    }
   }
   return MinaHelper.getMinaStrByNanoNum(walletBalance);
 }
 
 String getWalletPrice() {
   if(globalHDAccounts == null
-      || globalHDAccounts.accounts == null
-      || globalHDAccounts.accounts.length == 0) {
+    || globalHDAccounts.accounts == null
+    || globalHDAccounts.accounts.length == 0) {
     return '0';
   }
   double walletBalance = 0.0;
   for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
-    double balance = double.parse(globalHDAccounts.accounts[i].balance);
+    double balance = double.parse(globalHDAccounts.accounts[i]!.balance!);
     walletBalance = balance + walletBalance;
   }
   double tmp = walletBalance / 1000000000;
@@ -32,13 +34,13 @@ String getWalletPrice() {
 }
 
 class MinaHDAccount {
-  List<AccountBean> accounts;
+  late List<AccountBean?> accounts;
 
-  static MinaHDAccount fromMap(Map<String, dynamic> map) {
+  static MinaHDAccount? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;
     MinaHDAccount minaHDAccountBean = MinaHDAccount();
-    minaHDAccountBean.accounts = List()..addAll(
-      (map['accounts'] as List ?? []).map((o) => AccountBean.fromMap(o))
+    minaHDAccountBean.accounts = []..addAll(
+      (map['accounts'] as List).map((o) => AccountBean.fromMap(o))
     );
     return minaHDAccountBean;
   }
@@ -49,19 +51,19 @@ class MinaHDAccount {
 }
 
 class AccountBean {
-  int account;
-  String accountName;
-  String address;
+  int? account;
+  String? accountName;
+  String? address;
   // Deprecated
-  bool isDelegated;
+  bool? isDelegated;
   // Deprecated
-  String pool;
+  String? pool;
   // handle the balance as nano mina
-  String balance;
-  bool isActive;
-  String stakingAddress;
+  String? balance;
+  bool? isActive;
+  String? stakingAddress;
 
-  static AccountBean fromMap(Map<String, dynamic> map) {
+  static AccountBean? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;
     AccountBean accountsBean = AccountBean();
     accountsBean.account = map['account'];

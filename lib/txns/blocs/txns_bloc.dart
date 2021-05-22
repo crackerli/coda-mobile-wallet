@@ -12,17 +12,17 @@ import 'indexer_txns_entity.dart';
 import 'txns_entity.dart';
 
 class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
-  CodaService _service;
-  IndexerService _indexerService;
+  late CodaService _service;
+  late IndexerService _indexerService;
   bool isTxnsLoading = false;
   // User commands merged from both pool and archive
-  List<MergedUserCommand> mergedUserCommands;
+  late List<MergedUserCommand> mergedUserCommands;
   int accountIndex = 0;
   int currentFilter = 0;
   List<String> txnFilters = ['ALL', 'SENT', 'RECEIVED', 'STAKED', 'CANCEL'];
 
   get filteredUserCommands {
-    List<MergedUserCommand> commands = List<MergedUserCommand>();
+    List<MergedUserCommand> commands = [];
     if(mergedUserCommands == null || mergedUserCommands.length == 0) {
       return commands;
     }
@@ -30,7 +30,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     // Get sent filtered list
     if(currentFilter == 1) {
       for(int i = 0; i < mergedUserCommands.length; i++) {
-        if(!mergedUserCommands[i].isDelegation && mergedUserCommands[i].from == publicKey) {
+        if(!mergedUserCommands[i].isDelegation! && mergedUserCommands[i].from == publicKey) {
           commands.add(mergedUserCommands[i]);
         }
       }
@@ -40,7 +40,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     // Get received filtered list
     if(currentFilter == 2) {
       for(int i = 0; i < mergedUserCommands.length; i++) {
-        if(!mergedUserCommands[i].isDelegation && mergedUserCommands[i].to == publicKey) {
+        if(!mergedUserCommands[i].isDelegation! && mergedUserCommands[i].to == publicKey) {
           commands.add(mergedUserCommands[i]);
         }
       }
@@ -50,7 +50,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     // Get staked filtered list
     if(currentFilter == 3) {
       for(int i = 0; i < mergedUserCommands.length; i++) {
-        if(mergedUserCommands[i].isDelegation) {
+        if(mergedUserCommands[i].isDelegation!) {
           commands.add(mergedUserCommands[i]);
         }
       }
@@ -61,13 +61,13 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     return mergedUserCommands;
   }
 
-  get publicKey => globalHDAccounts.accounts[accountIndex].address;
+  get publicKey => globalHDAccounts.accounts[accountIndex]!.address;
 
   TxnsBloc(TxnsStates state) : super(state) {
     _service = CodaService();
     _indexerService = IndexerService();
     isTxnsLoading = false;
-    mergedUserCommands = List<MergedUserCommand>();
+    mergedUserCommands = [];
   }
 
   TxnsStates get initState => RefreshPooledTxnsLoading(null);
@@ -122,18 +122,18 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       }
 
       if(result.statusCode != 200) {
-        String error = result.statusMessage;
+        String? error = result.statusMessage;
         yield RefreshConfirmedTxnsFail(error);
         return;
       }
 
-      List<dynamic> data = result.data;
+      List<dynamic>? data = result.data;
 
-      List<IndexerTxnEntity> transactions = List<IndexerTxnEntity>();
+      List<IndexerTxnEntity> transactions = [];
 
       if(null != data && data.length > 0) {
         data.forEach((element) {
-          transactions.add(IndexerTxnEntity.fromMap(element));
+          transactions.add(IndexerTxnEntity.fromMap(element)!);
         });
       }
       _mergeUserCommandsFromArchiveNode(transactions);
@@ -164,7 +164,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     try {
       isTxnsLoading = true;
       yield RefreshPooledTxnsLoading(mergedUserCommands);
-      final result = await _service.performQuery(query, variables: variables);
+      final result = await _service.performQuery(query, variables: variables!);
 
       if(null == result || result.hasException) {
         String error = exceptionHandle(result);
@@ -178,11 +178,11 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       }
 
       mergedUserCommands.clear();
-      List<dynamic> pooledUserCommands = result.data['pooledUserCommands'] as List<dynamic>;
+      List<dynamic> pooledUserCommands = result.data!['pooledUserCommands'] as List<dynamic>;
       _mergeUserCommandsFromPool(pooledUserCommands);
       // Figment's indexer server is one or more blocks height behind the latest,
       // so we need to read the latest block from best chain.
-      List<dynamic> bestChain = result.data['bestChain'];
+      List<dynamic> bestChain = result.data!['bestChain'];
       if(null != bestChain && bestChain.length > 1) {
         // We get only the latest two blocks.
         _parseUserCommandsFromBestChain(bestChain[1]);
@@ -284,7 +284,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       mergedUserCommand.isDelegation      = (transaction?.type) == 'delegation';
       mergedUserCommand.isPooled          = false;
       mergedUserCommand.isIndexerMemo     = true;
-      DateTime dateTime                   = DateTime.tryParse(transaction?.time);
+      DateTime? dateTime                   = DateTime.tryParse(transaction.time!);
       mergedUserCommand.dateTime          = (dateTime == null ? '' : dateTime.millisecondsSinceEpoch.toString());
       mergedUserCommands.add(mergedUserCommand);
     });

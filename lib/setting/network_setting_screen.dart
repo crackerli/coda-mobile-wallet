@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NetworkSettingScreen extends StatefulWidget {
-  NetworkSettingScreen({Key key}) : super(key: key);
+  NetworkSettingScreen({Key? key}) : super(key: key);
 
   @override
   _NetworkSettingScreenState createState() => _NetworkSettingScreenState();
@@ -38,7 +38,15 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -54,7 +62,7 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
   }
 
   _buildNetworkItems(BuildContext context) {
-    List<DropdownMenuItem<int>> items = List<DropdownMenuItem<int>>();
+    List<DropdownMenuItem<int>> items = [];
     DropdownMenuItem<int> item0 = DropdownMenuItem(child: Text(NETWORK_LIST[0]), value: 0);
     DropdownMenuItem<int> item1 = DropdownMenuItem(child: Text(NETWORK_LIST[1]), value: 1);
     items.add(item0);
@@ -74,7 +82,7 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
           value: getCurrentNetworkId(),
           onChanged: (index) {
             setState(() {
-              setCurrentNetworkId(index);
+              setCurrentNetworkId(index as int);
               // Coda service use singleton, so need to set the new client.
               CodaService().setClient(index);
               eventBus.fire(NetworkChange());

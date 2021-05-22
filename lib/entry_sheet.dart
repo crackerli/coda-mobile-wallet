@@ -1,7 +1,6 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/setting/setting_screen.dart';
 import 'package:coda_wallet/stake/blocs/stake_bloc.dart';
-import 'package:coda_wallet/stake/blocs/stake_events.dart';
 import 'package:coda_wallet/stake/blocs/stake_states.dart';
 import 'package:coda_wallet/stake/screen/stake_screen.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
@@ -26,7 +25,7 @@ class EntrySheet extends StatefulWidget {
 class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateMixin {
 
   int _currentIndex = 0;
-  List<BottomNavigationBarItem> _bottomBarItems;
+  late List<BottomNavigationBarItem> _bottomBarItems;
   final List<Widget> _entryTabs = [
     BlocProvider<AccountBloc>(
       create: (BuildContext context) {
@@ -140,7 +139,15 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     print('EntrySheet build');
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+  //  ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     _initBottomBarItems();
     return Scaffold(
       backgroundColor: Colors.white,

@@ -19,14 +19,14 @@ void main() {
 class CodaWallet extends StatelessWidget {
   Future<SharedPreferences> _initStoredData() async {
     globalPreferences = await SharedPreferences.getInstance();
-    int currentNetworkId = globalPreferences.getInt(CURRENT_NETWORK_ID);
+    int? currentNetworkId = globalPreferences.getInt(CURRENT_NETWORK_ID);
     print('Current network id: $currentNetworkId');
-    String accountsStr = globalPreferences.getString(GLOBAL_ACCOUNTS_KEY);
+    String? accountsStr = globalPreferences.getString(GLOBAL_ACCOUNTS_KEY);
     if(null != accountsStr && accountsStr.isNotEmpty) {
-      Map accountsJson = json.decode(accountsStr);
-      globalHDAccounts = MinaHDAccount.fromMap(accountsJson);
+      Map<String, dynamic> accountsJson = json.decode(accountsStr);
+      globalHDAccounts = MinaHDAccount.fromMap(accountsJson)!;
     }
-    globalEncryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+    globalEncryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY)!;
     return globalPreferences;
   }
 

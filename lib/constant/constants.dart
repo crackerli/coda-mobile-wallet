@@ -3,7 +3,7 @@ const APPBAR_TITLE_FONT_SIZE = 68;
 const BOTTOM_BAR_ITEM_SIZE = 22;
 
 // add your own figment api key here
-const FIGMENT_API_KEY = '';
+const FIGMENT_API_KEY = '08dcd6e9f625e979be50834e8919ef4a';
 const FIGMENT_MAINNET_RPC_SERVER = 'https://mina-mainnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
 const FIGMENT_MAINNET_INDEXER_SERVER = 'https://mina--mainnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
 const FIGMENT_DEVNET_RPC_SERVER = 'https://mina-devnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';

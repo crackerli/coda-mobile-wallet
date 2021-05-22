@@ -13,7 +13,7 @@ _gotoSendFee(BuildContext context, SendData sendData) {
 }
 
 class SendAmountScreen extends StatefulWidget {
-  SendAmountScreen({Key key}) : super(key: key);
+  SendAmountScreen({Key? key}) : super(key: key);
 
   @override
   _SendAmountScreenState createState() => _SendAmountScreenState();
@@ -21,14 +21,14 @@ class SendAmountScreen extends StatefulWidget {
 
 class _SendAmountScreenState extends State<SendAmountScreen> {
   List<String> _keyString = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '< Clear'];
-  List<Widget> _keys;
-  List<String> _inputAmount;
-  StringBuffer _amountBuffer;
-  String _amountStr;
+  late List<Widget> _keys;
+  late List<String> _inputAmount;
+  late StringBuffer _amountBuffer;
+  late String _amountStr;
   String _fiatPrice = '\$0.00';
-  SendData _sendData;
+  late SendData _sendData;
   bool _validInput = false;
-  BigInt _balance = BigInt.from(0);
+  BigInt? _balance = BigInt.from(0);
 
   String _formatFiatPrice() {
     return '\$$_amountBuffer';
@@ -37,8 +37,8 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   @override
   void initState() {
     super.initState();
-    _keys = List<Widget>();
-    _inputAmount = List<String>();
+    _keys = [];
+    _inputAmount = [];
     _inputAmount.add('0');
     _amountBuffer = StringBuffer();
     _amountBuffer.writeAll(_inputAmount);
@@ -53,9 +53,17 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
-    _sendData = ModalRoute.of(context).settings.arguments;
-    _balance = BigInt.tryParse(globalHDAccounts.accounts[_sendData.from].balance);
+  //  ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
+    _sendData = ModalRoute.of(context)!.settings.arguments as SendData;
+    _balance = BigInt.tryParse(globalHDAccounts.accounts[_sendData.from]!.balance!);
     _keys = List.generate(_keyString.length, (index) => _buildKey(index));
     return Scaffold(
       backgroundColor: Colors.white,
@@ -86,7 +94,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 textAlign: TextAlign.right,
                 text: TextSpan(children: <TextSpan>[
                   TextSpan(
-                    text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts[_sendData.from].balance)} ',
+                    text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts[_sendData.from]!.balance ?? '')} ',
                       style: TextStyle(fontSize: 16.sp, color: Colors.black)
                   ),
                   TextSpan(
@@ -115,8 +123,8 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
             bottom: 60.h,
             child: InkWell(
               onTap: _validInput ? () {
-                BigInt nanoAmount = MinaHelper.getNanoNumByMinaStr(_amountStr);
-                if(nanoAmount > _balance) {
+                BigInt? nanoAmount = MinaHelper.getNanoNumByMinaStr(_amountStr);
+                if(nanoAmount! > _balance!) {
                   Scaffold.of(context).showSnackBar(SnackBar(content: Text('Not enough balance')));
                 } else {
                   _sendData.amount = MinaHelper.getNanoStrByMinaStr(_amountStr);
@@ -148,7 +156,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
 
   _checkInputAmount(String amountString) {
     // First, use double to confirm if the input is a valid number
-    double sendAmount = double.tryParse(amountString);
+    double? sendAmount = double.tryParse(amountString);
     if(null == sendAmount) {
       // Invalid user input
       _validInput = false;

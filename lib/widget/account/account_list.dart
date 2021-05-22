@@ -13,7 +13,7 @@ import 'dart:ui' as ui;
 
 typedef AccountClickCb = void Function(int index);
 
-String _getStakingProvider(String stakingAddress, Map<String, dynamic> providerMap) {
+String? _getStakingProvider(String? stakingAddress, Map<String, dynamic>? providerMap) {
   if(null == stakingAddress || stakingAddress.isEmpty) {
     return '';
   }
@@ -22,28 +22,29 @@ String _getStakingProvider(String stakingAddress, Map<String, dynamic> providerM
     return formatHashEllipsis(stakingAddress);
   }
 
-  Staking_providersBean provider = Staking_providersBean.fromMap(providerMap[stakingAddress]);
-  return provider.providerTitle;
+  Staking_providersBean? provider = Staking_providersBean.fromMap(providerMap[stakingAddress]);
+  return provider!.providerTitle;
 }
 
 buildAccountList(AccountClickCb accountClickCb) {
-  String providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
+  String? providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
   Map<String, dynamic> providerMap;
   if(null != providerString && providerString.isNotEmpty) {
     providerMap = json.decode(providerString);
+    return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: globalHDAccounts.accounts.length,
+      itemBuilder: (context, index) {
+        return _buildAccountItem(accountClickCb, globalHDAccounts.accounts, index, providerMap);
+      },
+      separatorBuilder: (context, index) { return Container(height: 20.h); }
+    );
+  } else {
+    return Container();
   }
-
-  return ListView.separated(
-    physics: const AlwaysScrollableScrollPhysics(),
-    itemCount: globalHDAccounts.accounts.length,
-    itemBuilder: (context, index) {
-      return _buildAccountItem(accountClickCb, globalHDAccounts.accounts, index, providerMap);
-    },
-    separatorBuilder: (context, index) { return Container(height: 20.h); }
-  );
 }
 
-_buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index, Map<String, dynamic> providerMap) {
+_buildAccountItem(Function accountClickCb, List<AccountBean?> accounts, int index, Map<String, dynamic> providerMap) {
   return InkWell(
     onTap: () => accountClickCb(index),
     child:
@@ -70,14 +71,14 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
                       alignment: ui.PlaceholderAlignment.middle,
                       child: Image.asset('images/account_header.png', width: 8.w, height: 8.w,),
                     ),
-                    TextSpan(text: '  ${accounts[index].accountName}', style: TextStyle(fontSize: 16.sp, color: Color(0xff2d2d2d))),
+                    TextSpan(text: '  ${accounts[index]!.accountName}', style: TextStyle(fontSize: 16.sp, color: Color(0xff2d2d2d))),
                   ],
                 ),
               ),
               Container(width: 20.w,),
-              (accounts[index].stakingAddress != null &&
-                accounts[index].stakingAddress.isNotEmpty &&
-                (accounts[index].stakingAddress != accounts[index].address)) ?
+              (accounts[index]!.stakingAddress != null &&
+                accounts[index]!.stakingAddress!.isNotEmpty &&
+                (accounts[index]!.stakingAddress != accounts[index]!.address)) ?
               RichText(
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
@@ -92,7 +93,7 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
                     )
                   ),
                   TextSpan(
-                    text: ' ${_getStakingProvider(accounts[index].stakingAddress, providerMap)}',
+                    text: ' ${_getStakingProvider(accounts[index]!.stakingAddress, providerMap)}',
                     style: TextStyle(
                       color: Color(0xff616161),
                       fontWeight: FontWeight.normal,
@@ -107,19 +108,19 @@ _buildAccountItem(Function accountClickCb, List<AccountBean> accounts, int index
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(formatHashEllipsis(accounts[index].address),
+                Text(formatHashEllipsis(accounts[index]!.address),
                   textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, color: Color(0xff9e9e9e))),
                 Container(width: 20.w,),
                 Expanded(
                   flex: 1,
-                  child: (accounts[index].isActive ?? false) ?
+                  child: (accounts[index]!.isActive ?? false) ?
                     RichText(
                       textAlign: TextAlign.right,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       text: TextSpan(children: <TextSpan>[
                         TextSpan(
-                          text: '${MinaHelper.getMinaStrByNanoStr(accounts[index].balance)} ',
+                          text: '${MinaHelper.getMinaStrByNanoStr(accounts[index]!.balance ?? '')} ',
                           style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w600, color: Color(0xff616161))),
                         TextSpan(
                           text: 'MINA',

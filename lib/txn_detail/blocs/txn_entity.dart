@@ -5,7 +5,7 @@ import 'package:ffi_mina_signer/util/mina_helper.dart';
 class TxnEntity {
   String from;
   String to;
-  String timestamp;
+  String? timestamp;
   String amount;
   String fee;
   String memo;
@@ -14,10 +14,15 @@ class TxnEntity {
   TxnType txnType;
 
   get total {
-    BigInt amountB = BigInt.tryParse(amount);
-    BigInt feeB = BigInt.tryParse(fee);
-    BigInt totalB = amountB + feeB;
-    return totalB.toString();
+    BigInt? amountB = BigInt.tryParse(amount);
+    BigInt? feeB = BigInt.tryParse(fee);
+
+    if(null != amountB && null != feeB) {
+      BigInt totalB = amountB + feeB;
+      return totalB.toString();
+    } else {
+      return '';
+    }
   }
 
   TxnEntity(this.from, this.to, this.timestamp, this.amount, this.fee, this.memo, this.txnStatus, this.txnType, this.isIndexerMemo);

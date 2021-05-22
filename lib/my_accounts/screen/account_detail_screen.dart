@@ -11,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AccountDetailScreen extends StatefulWidget {
 
-  AccountDetailScreen({Key key}) : super(key: key);
+  AccountDetailScreen({Key? key}) : super(key: key);
 
   @override
   _AccountDetailScreenState createState() => _AccountDetailScreenState();
@@ -39,9 +39,17 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    //ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('AccountDetailScreen: build(context: $context)');
-    _accountIndex = ModalRoute.of(context).settings.arguments;
+    _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),
@@ -79,7 +87,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
         Container(height: 30.h,),
         Padding(
           padding: EdgeInsets.only(left: 30.w, right: 30.w),
-          child: Text(globalHDAccounts.accounts[_accountIndex].accountName,
+          child: Text(globalHDAccounts.accounts[_accountIndex]!.accountName ?? '',
             textAlign: TextAlign.left, style: TextStyle(fontSize: 28.sp, color: Color(0xff2d2d2d)))
         ),
         Container(height: 17.h,),
@@ -101,13 +109,13 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                 children: [
                   Text('BALANCE', textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff616161))),
-                  (globalHDAccounts.accounts[_accountIndex].isActive ?? false) ?
+                  (globalHDAccounts.accounts[_accountIndex]!.isActive ?? false) ?
                   RichText(
                     textAlign: TextAlign.left,
                     text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(
-                          text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts[_accountIndex].balance)} ',
+                          text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts[_accountIndex]!.balance ?? '')} ',
                             style: TextStyle(fontSize: 24.sp, color: Color(0xff2d2d2d))),
                         TextSpan(
                           text: 'MINA',
@@ -136,14 +144,14 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                           InkWell(
                             child: Image.asset('images/copy_gray.png', width: 22.w, height: 27.h),
                             onTap: () {
-                              Clipboard.setData(ClipboardData(text: globalHDAccounts.accounts[_accountIndex].address));
+                              Clipboard.setData(ClipboardData(text: globalHDAccounts.accounts[_accountIndex]!.address));
                               Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
                             },
                           )
                         ),
                         Container(width: 6.w,),
                         Flexible(child:
-                          Text(globalHDAccounts.accounts[_accountIndex].address, maxLines: 3, overflow: TextOverflow.visible,
+                          Text(globalHDAccounts.accounts[_accountIndex]!.address ?? '', maxLines: 3, overflow: TextOverflow.visible,
                             textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, color: Color(0xff616161)))),
                       ],
                     )

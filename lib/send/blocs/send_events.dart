@@ -1,10 +1,8 @@
-import 'package:equatable/equatable.dart';
-
-abstract class SendEvents/* extends Equatable*/ {
+abstract class SendEvents {
   SendEvents();
 
   @override
-  List<Object> get props => null;
+  List<Object>? get props => null;
 }
 
 class FeeValidate extends SendEvents {
@@ -13,32 +11,32 @@ class FeeValidate extends SendEvents {
 
 class Send extends SendEvents {
   final String mutation;
-  final Map<String, dynamic> variables;
+  final Map<String, dynamic>? variables;
 
   Send(this.mutation, {this.variables}) : super();
 
   @override
-  List<Object> get props => [mutation, variables];
+  List<Object> get props => [mutation, variables ?? {}];
 }
 
 class GetNonce extends SendEvents {
   final String query;
-  final Map<String, dynamic> variables;
+  final Map<String, dynamic>? variables;
 
   GetNonce(this.query, {this.variables}) : super();
 
   @override
-  List<Object> get props => [query, variables];
+  List<Object> get props => [query, variables ?? {}];
 }
 
 class GetPooledFee extends SendEvents {
   final String query;
-  final Map<String, dynamic> variables;
+  final Map<String, dynamic>? variables;
 
   GetPooledFee(this.query, {this.variables}) : super();
 
   @override
-  List<Object> get props => [query, variables];
+  List<Object> get props => [query, variables ?? {}];
 }
 
 class ChooseFee extends SendEvents {

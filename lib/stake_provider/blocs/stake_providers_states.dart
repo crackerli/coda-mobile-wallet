@@ -2,7 +2,7 @@ abstract class StakeProvidersStates {
   StakeProvidersStates();
 
   @override
-  List<Object> get props => null;
+  List<Object>? get props => null;
 }
 
 class GetStakeProvidersLoading extends StakeProvidersStates {

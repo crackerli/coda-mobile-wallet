@@ -16,28 +16,28 @@
 /// secondary_sequence_number : null
 
 class IndexerTxnsEntity {
-  List<IndexerTxnEntity> indexerTxnsEntity;
+  List<IndexerTxnEntity>? indexerTxnsEntity;
 }
 
 class IndexerTxnEntity {
-  int id;
-  String hash;
-  String type;
-  String blockHash;
-  int blockHeight;
-  String time;
-  String sender;
-  String receiver;
-  String amount;
-  String fee;
-  int nonce;
-  String memo;
-  String status;
-  dynamic failureReason;
-  int sequenceNumber;
-  dynamic secondarySequenceNumber;
+  int? id;
+  String? hash;
+  String? type;
+  String? blockHash;
+  int? blockHeight;
+  String? time;
+  String? sender;
+  String? receiver;
+  String? amount;
+  String? fee;
+  int? nonce;
+  String? memo;
+  String? status;
+  dynamic? failureReason;
+  int? sequenceNumber;
+  dynamic? secondarySequenceNumber;
 
-  static IndexerTxnEntity fromMap(Map<String, dynamic> map) {
+  static IndexerTxnEntity? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;
     IndexerTxnEntity indexerTxnEntityBean = IndexerTxnEntity();
     indexerTxnEntityBean.id = map['id'];

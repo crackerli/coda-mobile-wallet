@@ -1,8 +1,4 @@
-import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
-import 'package:coda_wallet/constant/constants.dart';
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_events.dart';
@@ -12,10 +8,10 @@ import 'package:dio/dio.dart';
 
 class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates> {
 
-  bool isProvidersLoading;
-  IndexerService _indexerService;
+  late bool isProvidersLoading;
+  late IndexerService _indexerService;
 
-  StakeProvidersBloc(StakeProvidersStates state) : super(state) {
+  StakeProvidersBloc(StakeProvidersStates? state) : super(state!) {
     _indexerService = IndexerService();
     isProvidersLoading = false;
   }
@@ -43,13 +39,13 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
       }
 
       if (response.statusCode != 200) {
-        String error = response.statusMessage;
+        String? error = response.statusMessage;
         yield GetStakeProvidersFail(error);
         return;
       }
 
       // Convert provider list to map for quick access.
-      ProvidersEntity providersEntity = ProvidersEntity.fromMap(response.data);
+      ProvidersEntity? providersEntity = ProvidersEntity.fromMap(response.data);
       if (null == providersEntity || null == providersEntity.stakingProviders) {
         return;
       }

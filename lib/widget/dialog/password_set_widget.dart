@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class PasswordSetWidget extends StatefulWidget {
-  PasswordSetWidget({Key key}) : super(key: key);
+  PasswordSetWidget({Key? key}) : super(key: key);
 
   @override
   _PasswordSetWidgetState createState() => _PasswordSetWidgetState();
@@ -29,7 +29,15 @@ class _PasswordSetWidgetState extends State<PasswordSetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('PasswordInputWidget: build(context: $context)');
     return KeyboardActions(
       tapOutsideToDismiss: false,

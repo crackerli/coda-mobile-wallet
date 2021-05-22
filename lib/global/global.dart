@@ -6,9 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Global variables
-SharedPreferences globalPreferences;
+late SharedPreferences globalPreferences;
 
-RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 const primaryBackgroundColor = Color(0xfff5f8fd);
 const globalHPadding = 20;
 
@@ -18,7 +18,7 @@ double gUnitFiatPrice = 2.317;
 // global derived hd accounts from bip44 seed
 MinaHDAccount globalHDAccounts = MinaHDAccount();
 
-String globalEncryptedSeed;
+late String globalEncryptedSeed;
 
 String getTokenFiatPrice(String tokenNumber) {
   double token = double.parse(tokenNumber);
@@ -36,14 +36,14 @@ String exceptionHandle<T>(QueryResult result) {
 
   if(result.hasException) {
     if(result.exception == null ||
-      result.exception.graphqlErrors == null ||
-      result.exception.graphqlErrors.length == 0) {
+      result.exception!.graphqlErrors == null ||
+      result.exception!.graphqlErrors.length == 0) {
       String error = 'Network Error, Please Check Network Connectivity And Try Again';
       print(error);
       return error;
     }
   }
-  GraphQLError error = result.exception?.graphqlErrors[0];
+  GraphQLError error = result.exception!.graphqlErrors[0];
   return error.message;
 }
 
@@ -56,7 +56,7 @@ openUrl(String url) async {
 }
 
 int getCurrentNetworkId() {
-  int currentNetworkId = globalPreferences.getInt(CURRENT_NETWORK_ID);
+  int? currentNetworkId = globalPreferences.getInt(CURRENT_NETWORK_ID);
 
   if(null == currentNetworkId) {
     globalPreferences.setInt(CURRENT_NETWORK_ID, MAIN_NET_ID);
@@ -67,7 +67,7 @@ int getCurrentNetworkId() {
 }
 
 setCurrentNetworkId(int networkId) {
-  int currentNetworkId = globalPreferences.getInt(CURRENT_NETWORK_ID);
+  int? currentNetworkId = globalPreferences.getInt(CURRENT_NETWORK_ID);
   if(currentNetworkId == networkId) {
     return;
   }

@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SendErrorWidget extends StatefulWidget {
   SendErrorType _errorType;
   String _error;
-  SendErrorWidget(this._errorType, this._error, {Key key}) : super(key: key);
+  SendErrorWidget(this._errorType, this._error, {Key? key}) : super(key: key);
 
   @override
   _SendErrorWidgetState createState() => _SendErrorWidgetState();
@@ -28,7 +28,15 @@ class _SendErrorWidgetState extends State<SendErrorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+  //  ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('SendErrorWidget: build(context: $context)');
     return Padding(
       padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 20.h, bottom: 20.h),

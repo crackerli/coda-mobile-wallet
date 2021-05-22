@@ -17,7 +17,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class CreateAccountScreen extends StatefulWidget {
-  CreateAccountScreen({Key key}) : super(key: key);
+  CreateAccountScreen({Key? key}) : super(key: key);
 
   @override
   _CreateAccountScreenState createState() => _CreateAccountScreenState();
@@ -48,7 +48,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('CreateAccountScreen: build(context: $context)');
     return Scaffold(
       key: _scaffoldKey,
@@ -155,7 +163,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       seed = decryptSeed(globalEncryptedSeed, password);
     } catch(error) {
       print('password not right');
-      _scaffoldKey.currentState.showSnackBar(new SnackBar(content: Text('Wrong password')));
+      _scaffoldKey.currentState!.showSnackBar(new SnackBar(content: Text('Wrong password')));
       return;
     }
     ProgressDialog.showProgress(context);

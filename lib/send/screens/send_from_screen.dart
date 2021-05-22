@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SendFromScreen extends StatefulWidget {
-  SendFromScreen({Key key}) : super(key: key);
+  SendFromScreen({Key? key}) : super(key: key);
 
   @override
   _SendFromScreenState createState() => _SendFromScreenState();
@@ -27,9 +27,17 @@ class _SendFromScreenState extends State<SendFromScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     print('SendFromScreen: build(context: $context)');
-    SendData sendData = ModalRoute.of(context).settings.arguments;
+    SendData sendData = ModalRoute.of(context)!.settings.arguments as SendData;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,

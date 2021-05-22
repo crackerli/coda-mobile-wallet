@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TxnsChooseAccountScreen extends StatefulWidget {
-  TxnsChooseAccountScreen({Key key}) : super(key: key);
+  TxnsChooseAccountScreen({Key? key}) : super(key: key);
 
   @override
   _TxnsChooseAccountScreenState createState() => _TxnsChooseAccountScreenState();
@@ -27,7 +27,7 @@ class _TxnsChooseAccountScreenState extends State<TxnsChooseAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+ //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     print('TxnsChooseAccountScreen: build(context: $context)');
     return Scaffold(
       resizeToAvoidBottomInset: false,

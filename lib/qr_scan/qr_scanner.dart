@@ -1,12 +1,13 @@
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QrScanScreen extends StatefulWidget {
   const QrScanScreen({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -14,12 +15,12 @@ class QrScanScreen extends StatefulWidget {
 }
 
 class _QrScanScreenState extends State<QrScanScreen> {
-  QRViewController _qrViewController;
+  late QRViewController _qrViewController;
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
   bool _hasPopped = false;
   bool _isFlashOn = false;
 
-  Widget _buildQrScannerAppBar() {
+  PreferredSize _buildQrScannerAppBar() {
     return PreferredSize(
       child: AppBar(
         title: Text('Qr Scan',
@@ -54,7 +55,15 @@ class _QrScanScreenState extends State<QrScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+  //  ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
+    ScreenUtil.init(
+      BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width,
+        maxHeight: MediaQuery.of(context).size.height,
+      ),
+      designSize: Size(375, 812),
+      orientation: Orientation.portrait
+    );
     return WillPopScope(
       child: Scaffold(
         appBar: _buildQrScannerAppBar(),
@@ -77,13 +86,26 @@ class _QrScanScreenState extends State<QrScanScreen> {
     );
   }
 
+  // void _onQRViewCreated(QRViewController controller) {
+  //   this._qrViewController = controller;
+  //   controller.scannedDataStream.listen((scanData) {
+  //     if(null != scanData && scanData.length > 1 && !_hasPopped) {
+  //       _hasPopped = true;
+  //       Navigator.pop(context, scanData);
+  //     }
+  //   });
+  // }
+
   void _onQRViewCreated(QRViewController controller) {
     this._qrViewController = controller;
     controller.scannedDataStream.listen((scanData) {
-      if(null != scanData && scanData.length > 1 && !_hasPopped) {
+      if(!_hasPopped) {
         _hasPopped = true;
         Navigator.pop(context, scanData);
       }
+      // setState(() {
+      //   result = scanData;
+      // });
     });
   }
 
