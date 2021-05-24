@@ -98,10 +98,10 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
 
   @override
   void dispose() {
-    _focusNodeOrigin?.dispose();
-    _focusNodeConfirm?.dispose();
-    _controllerOrigin?.dispose();
-    _controllerConfirm?.dispose();
+    _focusNodeOrigin.dispose();
+    _focusNodeConfirm.dispose();
+    _controllerOrigin.dispose();
+    _controllerConfirm.dispose();
     super.dispose();
   }
 

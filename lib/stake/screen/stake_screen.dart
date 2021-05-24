@@ -103,8 +103,8 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
                   WidgetsBinding.instance!.addPostFrameCallback((_) {
                     ProgressDialog.dismiss(context);
                   });
-                  epoch = state?.epoch ?? 0;
-                  slot = state?.slot ?? 0;
+                  epoch = state.epoch ?? 0;
+                  slot = state.slot ?? 0;
                 }
 
                 return Row(

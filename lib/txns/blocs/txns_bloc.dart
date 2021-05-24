@@ -166,7 +166,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       yield RefreshPooledTxnsLoading(mergedUserCommands);
       final result = await _service.performQuery(query, variables: variables!);
 
-      if(null == result || result.hasException) {
+      if(result.hasException) {
         String error = exceptionHandle(result);
         yield RefreshPooledTxnsFail(error);
         return;
@@ -182,7 +182,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       _mergeUserCommandsFromPool(pooledUserCommands);
       // Figment's indexer server is one or more blocks height behind the latest,
       // so we need to read the latest block from best chain.
-      List<dynamic> bestChain = result.data!['bestChain'];
+      List<dynamic>? bestChain = result.data!['bestChain'];
       if(null != bestChain && bestChain.length > 1) {
         // We get only the latest two blocks.
         _parseUserCommandsFromBestChain(bestChain[1]);
@@ -204,13 +204,13 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   }
 
   // Parse user commands from best chain, with the latest block height
-  _parseUserCommandsFromBestChain(Map<String, dynamic> block) {
+  _parseUserCommandsFromBestChain(Map<String, dynamic>? block) {
     if(null == block) {
       return;
     }
 
     SafeMap safeBlock = SafeMap(block);
-    List<dynamic> userCommands = safeBlock['transactions']['userCommands'].value;
+    List<dynamic>? userCommands = safeBlock['transactions']['userCommands'].value;
     if(null == userCommands || userCommands.length == 0) return;
 
     userCommands.forEach((userCommand) {
@@ -238,7 +238,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     });
   }
 
-  _mergeUserCommandsFromPool(List<dynamic> pooledUserCommands) {
+  _mergeUserCommandsFromPool(List<dynamic>? pooledUserCommands) {
     if(null == pooledUserCommands || 0 == pooledUserCommands.length) {
       return;
     }
@@ -266,7 +266,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     });
   }
 
-  _mergeUserCommandsFromArchiveNode(List<IndexerTxnEntity> userCommands) {
+  _mergeUserCommandsFromArchiveNode(List<IndexerTxnEntity?>? userCommands) {
     if(null == userCommands || 0 == userCommands.length) {
       return;
     }
@@ -284,7 +284,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       mergedUserCommand.isDelegation      = (transaction?.type) == 'delegation';
       mergedUserCommand.isPooled          = false;
       mergedUserCommand.isIndexerMemo     = true;
-      DateTime? dateTime                   = DateTime.tryParse(transaction.time!);
+      DateTime? dateTime                   = DateTime.tryParse(transaction?.time ?? '');
       mergedUserCommand.dateTime          = (dateTime == null ? '' : dateTime.millisecondsSinceEpoch.toString());
       mergedUserCommands.add(mergedUserCommand);
     });

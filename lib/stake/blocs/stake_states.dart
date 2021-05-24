@@ -24,11 +24,11 @@ class GetConsensusStateFailed extends StakeStates {
 }
 
 class GetConsensusStateSuccess extends StakeStates {
-  final int epoch;
-  final int slot;
+  final int? epoch;
+  final int? slot;
 
   GetConsensusStateSuccess(this.epoch, this.slot) : super();
 
   @override
-  List<Object> get props => [epoch, slot];
+  List<Object> get props => [epoch!, slot!];
 }

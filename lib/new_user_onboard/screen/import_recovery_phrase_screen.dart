@@ -82,8 +82,8 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
 
   @override
   void dispose() {
-    _focusNode?.dispose();
-    _editingController?.dispose();
+    _focusNode.dispose();
+    _editingController.dispose();
     super.dispose();
   }
 

@@ -77,10 +77,10 @@ class _SendToScreenState extends State<SendToScreen> {
 
   @override
   void dispose() {
-    _memoController?.dispose();
-    _toController?.dispose();
-    _focusNodeMemo?.dispose();
-    _focusNodeTo?.dispose();
+    _memoController.dispose();
+    _toController.dispose();
+    _focusNodeMemo.dispose();
+    _focusNodeTo.dispose();
     super.dispose();
   }
 

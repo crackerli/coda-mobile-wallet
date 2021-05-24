@@ -25,8 +25,8 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
 
   @override
   void dispose() {
-    _focusNodePassword?.dispose();
-    _editingControllerPassword?.dispose();
+    _focusNodePassword.dispose();
+    _editingControllerPassword.dispose();
     super.dispose();
   }
 

@@ -41,8 +41,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   void dispose() {
     _eventBusOn.cancel();
     _eventBusOn = null;
-    _focusNodeAccount?.dispose();
-    _accountController?.dispose();
+    _focusNodeAccount.dispose();
+    _accountController.dispose();
     super.dispose();
   }
 

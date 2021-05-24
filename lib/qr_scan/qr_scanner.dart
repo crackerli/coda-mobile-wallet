@@ -86,32 +86,19 @@ class _QrScanScreenState extends State<QrScanScreen> {
     );
   }
 
-  // void _onQRViewCreated(QRViewController controller) {
-  //   this._qrViewController = controller;
-  //   controller.scannedDataStream.listen((scanData) {
-  //     if(null != scanData && scanData.length > 1 && !_hasPopped) {
-  //       _hasPopped = true;
-  //       Navigator.pop(context, scanData);
-  //     }
-  //   });
-  // }
-
   void _onQRViewCreated(QRViewController controller) {
     this._qrViewController = controller;
     controller.scannedDataStream.listen((scanData) {
       if(!_hasPopped) {
         _hasPopped = true;
-        Navigator.pop(context, scanData?.code ?? 'Invalid Bar Code');
+        Navigator.pop(context, scanData.code);
       }
-      // setState(() {
-      //   result = scanData;
-      // });
     });
   }
 
   @override
   void dispose() {
-    _qrViewController?.dispose();
+    _qrViewController.dispose();
     super.dispose();
   }
 }

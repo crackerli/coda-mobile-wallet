@@ -29,8 +29,8 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
 
   @override
   void dispose() {
-    _focusNodeRemoveWallet?.dispose();
-    _controllerRemoveWallet?.dispose();
+    _focusNodeRemoveWallet.dispose();
+    _controllerRemoveWallet.dispose();
     super.dispose();
   }
 

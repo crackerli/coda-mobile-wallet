@@ -29,8 +29,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
   @override
   void dispose() {
-    _focusNodeAccount?.dispose();
-    _accountController?.dispose();
+    _focusNodeAccount.dispose();
+    _accountController.dispose();
     super.dispose();
   }
 

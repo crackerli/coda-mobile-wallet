@@ -161,7 +161,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         ProgressDialog.dismiss(context);
       });
 
-      List<Staking_providersBean?> providers = state.data as List<Staking_providersBean?>;
+      List<Staking_providersBean?>? providers = state.data as List<Staking_providersBean?>?;
       if(null == providers || providers.length == 0) {
         String error = 'No providers found, Please contact StakeTab and try again';
         return _buildErrorScreen(context, error);
@@ -170,11 +170,11 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       return ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: null == providers ? 0 : providers.length,
+        itemCount: providers.length,
         itemBuilder: (context, index) {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
-            child: _buildProviderItem(context, providers![index]!),
+            child: _buildProviderItem(context, providers[index]!),
             onTap: () {
               SendData delegationData = SendData();
               delegationData.isDelegation = true;
@@ -202,7 +202,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
     return Container();
   }
 
-  _buildProviderItem(BuildContext context, Staking_providersBean provider) {
+  _buildProviderItem(BuildContext context, Staking_providersBean? provider) {
     return Padding(
       padding: EdgeInsets.only(top: 20.h, bottom: 20.h),
       child: Row(
@@ -252,7 +252,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                 Text('${provider?.stakedSum?.floor()?.toString() ?? ''}', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),),
                 Container(height: 3.h,),
-                Text('${provider.stakePercent.toString()}%', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
+                Text('${provider?.stakePercent.toString()}%', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),),
               ],
             ),
