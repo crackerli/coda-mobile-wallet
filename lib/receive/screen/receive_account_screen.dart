@@ -131,14 +131,14 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
     print(status);
     if (status.isGranted) {
       saveImageAsFile(_qrImageKey).then((value) {
-        _saveQRImage(context, value!);
+        _notifyImageSaved(context, value);
       });
     } else {
       openAppSettings();
     }
   }
 
-  _saveQRImage(BuildContext context, String path) {
+  _notifyImageSaved(BuildContext context, String? path) {
     String text = Platform.isAndroid ?
     'Image saved: $path' :
     'Image saved to gallery';
