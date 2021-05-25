@@ -136,7 +136,7 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
               Builder(builder: (BuildContext context) =>
               InkWell(
                 onTap: () {
-                  if(null == _controllerRemoveWallet.text || _controllerRemoveWallet.text.isEmpty) {
+                  if(_controllerRemoveWallet.text.isEmpty) {
                     return;
                   }
                   FocusScope.of(context).unfocus();

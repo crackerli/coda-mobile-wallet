@@ -1,4 +1,3 @@
-import 'package:coda_wallet/receive/screen/receive_account_screen.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
@@ -31,7 +30,6 @@ class _ReceiveAccountsScreenState extends State<ReceiveAccountsScreen> {
 
   @override
   Widget build(BuildContext context) {
-//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,

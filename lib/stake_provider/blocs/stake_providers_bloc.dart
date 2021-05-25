@@ -32,12 +32,6 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
     try {
       Response response = await _indexerService.getProviders();
 
-      if (null == response) {
-        String error = 'Unknown Error!';
-        yield GetStakeProvidersFail(error);
-        return;
-      }
-
       if (response.statusCode != 200) {
         String? error = response.statusMessage;
         yield GetStakeProvidersFail(error);

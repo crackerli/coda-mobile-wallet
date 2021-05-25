@@ -27,8 +27,8 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
 
   @override
   void dispose() {
-    _focusNodeChangePassword?.dispose();
-    _controllerChangePassword?.dispose();
+    _focusNodeChangePassword.dispose();
+    _controllerChangePassword.dispose();
     super.dispose();
   }
 
@@ -134,7 +134,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                 Builder(builder: (BuildContext context) =>
                   InkWell(
                     onTap: () {
-                      if(null == _controllerChangePassword.text || _controllerChangePassword.text.isEmpty) {
+                      if(_controllerChangePassword.text.isEmpty) {
                         return;
                       }
                       FocusScope.of(context).unfocus();

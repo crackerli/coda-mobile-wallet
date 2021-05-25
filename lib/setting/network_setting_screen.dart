@@ -17,7 +17,7 @@ class NetworkSettingScreen extends StatefulWidget {
 
 class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
 
-  _getServerDomain(String url) {
+  _getServerDomain(String? url) {
     if(null == url || url.isEmpty) {
       return '';
     }
@@ -38,7 +38,6 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
- //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,

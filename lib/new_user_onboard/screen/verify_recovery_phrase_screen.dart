@@ -94,7 +94,6 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
 
   @override
   Widget build(BuildContext context) {
-//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,

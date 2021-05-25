@@ -36,7 +36,6 @@ String exceptionHandle<T>(QueryResult? result) {
 
   if(result.hasException) {
     if(result.exception == null ||
-      result.exception!.graphqlErrors == null ||
       result.exception!.graphqlErrors.length == 0) {
       String error = 'Network Error, Please Check Network Connectivity And Try Again';
       print(error);

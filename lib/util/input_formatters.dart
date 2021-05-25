@@ -5,7 +5,7 @@ class SendAmountInputFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    if(null != newValue.text && newValue.text.isNotEmpty) {
+    if(newValue.text.isNotEmpty) {
       if(RegExp(_regExp).firstMatch(newValue.text) == null) {
         return oldValue;
       }
@@ -32,7 +32,7 @@ class SendAmountInputFormatter extends TextInputFormatter {
   }
 }
 
-bool checkSendAmountValidation(String src) {
+bool checkSendAmountValidation(String? src) {
   if(null == src || src.isEmpty) {
     return false;
   }
@@ -67,7 +67,7 @@ bool checkSendAmountValidation(String src) {
   return true;
 }
 
-bool checkFeeValidation(String src) {
+bool checkFeeValidation(String? src) {
   if(null == src || src.isEmpty) {
     return false;
   }

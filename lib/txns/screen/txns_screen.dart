@@ -139,7 +139,6 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   @override
   // ignore: must_call_super
   Widget build(BuildContext context) {
- //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,
@@ -264,7 +263,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     return _buildTxnList(context, _txnsBloc.mergedUserCommands);
   }
 
-  _gotoTxnDetail(BuildContext context, MergedUserCommand userCommand) {
+  _gotoTxnDetail(BuildContext context, MergedUserCommand? userCommand) {
     if(userCommand == null) {
       return;
     }
@@ -294,14 +293,14 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     Navigator.pushNamed(context, TxnDetailRoute, arguments: txnEntity);
   }
   
-  _buildTxnList(BuildContext context, List<MergedUserCommand> commands) {
+  _buildTxnList(BuildContext context, List<MergedUserCommand>? commands) {
     if(null == commands || commands.length == 0) {
       return Container();
     }
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: null == commands ? 0 : commands.length,
+      itemCount: commands.length,
       itemBuilder: (context, index) {
         return GestureDetector(
           behavior: HitTestBehavior.translucent,

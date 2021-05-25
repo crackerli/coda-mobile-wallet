@@ -76,7 +76,7 @@ _buildAccountItem(Function accountClickCb, List<AccountBean?>? accounts, int ind
                 ),
               ),
               Container(width: 20.w,),
-              (accounts![index]!.stakingAddress != null &&
+              (accounts[index]!.stakingAddress != null &&
                 accounts[index]!.stakingAddress!.isNotEmpty &&
                 (accounts[index]!.stakingAddress != accounts[index]!.address)) ?
               RichText(

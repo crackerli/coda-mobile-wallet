@@ -1,7 +1,7 @@
 import 'package:coda_wallet/global/global.dart';
 
 String getStakePercent() {
-  if(null == globalHDAccounts || null == globalHDAccounts.accounts) {
+  if(null == globalHDAccounts.accounts) {
     return '0.0';
   }
 
@@ -27,7 +27,7 @@ String getStakePercent() {
 }
 
 bool walletStaking() {
-  if(null == globalHDAccounts || null == globalHDAccounts.accounts) {
+  if(null == globalHDAccounts.accounts) {
     return false;
   }
 
@@ -35,7 +35,7 @@ bool walletStaking() {
   globalHDAccounts.accounts!.forEach((account) {
     if(null != account && account.isActive!) {
       if(null != account.stakingAddress && account.stakingAddress!.isNotEmpty && account.stakingAddress != account.address) {
-        isStaking = true;;
+        isStaking = true;
       }
     }
   });

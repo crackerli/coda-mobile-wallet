@@ -33,14 +33,14 @@ class _SendToScreenState extends State<SendToScreen> {
     _setToAddress('$qrResult');
   }
 
-  _setToAddress(String address) {
+  _setToAddress(String? address) {
     if(null == address || address.isEmpty) {
       return;
     }
 
     _toController.text = address;
     _sendData.to = _toController.text;
-    if(null != _toController.text && _toController.text.isNotEmpty) {
+    if(_toController.text.isNotEmpty) {
       _validInput = true;
     } else {
       _validInput = false;
@@ -62,7 +62,7 @@ class _SendToScreenState extends State<SendToScreen> {
         _validInput = false;
       });
     } else {
-      if(_memoController.text == null || _memoController.text.isEmpty) {
+      if(_memoController.text.isEmpty) {
         _sendData.memo = '';
       }
 
@@ -86,7 +86,6 @@ class _SendToScreenState extends State<SendToScreen> {
 
   @override
   Widget build(BuildContext context) {
-//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,
@@ -218,7 +217,7 @@ class _SendToScreenState extends State<SendToScreen> {
             focusNode: _focusNodeTo,
             controller: _toController,
             onChanged: (text) {
-              if(null != text && text.isNotEmpty) {
+              if(text.isNotEmpty) {
                 _validInput = true;
               } else {
                 _validInput = false;

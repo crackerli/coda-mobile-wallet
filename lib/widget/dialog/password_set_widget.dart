@@ -22,8 +22,8 @@ class _PasswordSetWidgetState extends State<PasswordSetWidget> {
 
   @override
   void dispose() {
-    _focusNodeNewPassword?.dispose();
-    _controllerNewPassword?.dispose();
+    _focusNodeNewPassword.dispose();
+    _controllerNewPassword.dispose();
     super.dispose();
   }
 
@@ -133,7 +133,7 @@ class _PasswordSetWidgetState extends State<PasswordSetWidget> {
             Container(height: 32.h,),
             InkWell(
               onTap: () {
-                if(null == _controllerNewPassword.text || _controllerNewPassword.text.isEmpty) {
+                if(_controllerNewPassword.text.isEmpty) {
                   return;
                 }
                 FocusScope.of(context).unfocus();

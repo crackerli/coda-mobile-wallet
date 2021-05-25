@@ -139,7 +139,7 @@ class SendBloc extends
       final result = await _service.performMutation(query, variables: variables!);
       loading = false;
 
-      if(null == result || result.hasException) {
+      if(result.hasException) {
         String error = exceptionHandle(result);
         yield GetPooledFeeFail(error);
         return;
@@ -216,7 +216,7 @@ class SendBloc extends
       final result = await _service.performMutation(mutation, variables: variables!);
       loading = false;
 
-      if(null == result || result.hasException) {
+      if(result.hasException) {
         String error = exceptionHandle(result);
         yield SendFail(error);
         return;
@@ -242,7 +242,7 @@ class SendBloc extends
       final result = await _service.performMutation(mutation, variables: variables!);
       loading = false;
 
-      if(null == result || result.hasException) {
+      if(result.hasException) {
         String error = exceptionHandle(result);
         yield GetNonceFail(error);
         return;

@@ -29,7 +29,6 @@ class _AccountNoStakeScreenState extends State<AccountNoStakeScreen> {
   @override
   Widget build(BuildContext context) {
     print('AccountNoStakeScreen build()');
- //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,

@@ -33,9 +33,9 @@ class IndexerTxnEntity {
   int? nonce;
   String? memo;
   String? status;
-  dynamic? failureReason;
+  dynamic failureReason;
   int? sequenceNumber;
-  dynamic? secondarySequenceNumber;
+  dynamic secondarySequenceNumber;
 
   static IndexerTxnEntity? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;

@@ -32,7 +32,6 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,
@@ -126,7 +125,7 @@ class _PasswordInputWidgetState extends State<PasswordInputWidget> {
           Container(height: 32.h,),
           InkWell(
             onTap: () {
-              if(null == _editingControllerPassword.text || _editingControllerPassword.text.isEmpty) {
+              if(_editingControllerPassword.text.isEmpty) {
                 return;
               }
               FocusScope.of(context).unfocus();

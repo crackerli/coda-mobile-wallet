@@ -2,8 +2,7 @@ import 'package:coda_wallet/global/global.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 
 String getWalletBalance() {
-  if(globalHDAccounts == null
-    || globalHDAccounts.accounts == null
+  if(globalHDAccounts.accounts == null
     || globalHDAccounts.accounts!.length == 0) {
     return '0';
   }
@@ -19,8 +18,7 @@ String getWalletBalance() {
 }
 
 String getWalletPrice() {
-  if(globalHDAccounts == null
-    || globalHDAccounts.accounts == null
+  if(globalHDAccounts.accounts == null
     || globalHDAccounts.accounts!.length == 0) {
     return '0';
   }

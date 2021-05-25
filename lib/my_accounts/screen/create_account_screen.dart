@@ -48,7 +48,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
- //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,
@@ -168,7 +167,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     }
     ProgressDialog.showProgress(context);
     String accountName = '';
-    if(null == _accountController.text || _accountController.text.isEmpty) {
+    if(_accountController.text.isEmpty) {
       accountName = 'Account #${globalHDAccounts.accounts!.length}';
     } else {
       accountName = _accountController.text;

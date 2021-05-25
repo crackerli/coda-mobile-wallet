@@ -44,7 +44,7 @@ class AccountBloc extends
     try {
       yield GetAccountsLoading();
       final result = await _service.performQuery(query, variables: variables);
-      if(null == result || result.hasException || null == result.data) {
+      if(result.hasException || null == result.data) {
         // If one account fail, we continue to next if not finished
         if(event.index >= globalHDAccounts.accounts!.length - 1) {
           print('1. Get all accounts info finished');
@@ -80,7 +80,7 @@ class AccountBloc extends
             account.stakingAddress = stakingAddress;
             break;
           }
-        };
+        }
       }
       if(event.index >= globalHDAccounts.accounts!.length - 1) {
         print('2. Get all accounts info finished');
@@ -99,11 +99,12 @@ class AccountBloc extends
     }
   }
 
+  // Just store all registered pool in local storage
   getProviders() async {
     try {
       Response response = await _indexerService.getProviders();
 
-      if (null == response || response.statusCode != 200) {
+      if (response.statusCode != 200) {
         return;
       }
 

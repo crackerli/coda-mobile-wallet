@@ -35,12 +35,12 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
   bool _buttonEnabled = false;
 
   _checkPassword(BuildContext context) {
-    if(_controllerOrigin.text == null || _controllerOrigin.text.isEmpty) {
+    if(_controllerOrigin.text.isEmpty) {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid password!')));
       return;
     }
 
-    if(_controllerConfirm.text == null || _controllerConfirm.text.isEmpty) {
+    if(_controllerConfirm.text.isEmpty) {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid password')));
       return;
     }
@@ -55,8 +55,6 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
 
   _checkInput(BuildContext context) {
     if(_alertChecked &&
-      _controllerOrigin.text != null &&
-      _controllerConfirm.text != null &&
       _controllerConfirm.text.isNotEmpty &&
       _controllerOrigin.text.isNotEmpty) {
       _buttonEnabled = true;
@@ -107,7 +105,6 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-//    ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,

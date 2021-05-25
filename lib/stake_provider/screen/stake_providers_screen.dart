@@ -22,7 +22,7 @@ _gotoDelegationFee(BuildContext context, SendData delegationData) {
 
 // Some providers name has non-ascii code, need to remove them
 // And need to limited the length of generated memo to less than 31
-_getValidMemo(String providerName) {
+_getValidMemo(String? providerName) {
   if(null == providerName || providerName.isEmpty) {
     return 'Delegate to unknown';
   }
@@ -67,7 +67,6 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
   @override
   Widget build(BuildContext context) {
- //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,
@@ -249,7 +248,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('${provider?.stakedSum?.floor()?.toString() ?? ''}', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
+                Text('${provider?.stakedSum?.floor().toString() ?? ''}', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),),
                 Container(height: 3.h,),
                 Text('${provider?.stakePercent.toString()}%', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,

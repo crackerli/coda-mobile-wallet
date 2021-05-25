@@ -139,7 +139,6 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     print('EntrySheet build');
-  //  ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,

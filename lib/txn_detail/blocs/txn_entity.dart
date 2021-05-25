@@ -1,6 +1,5 @@
 import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
-import 'package:ffi_mina_signer/util/mina_helper.dart';
 
 class TxnEntity {
   String from;

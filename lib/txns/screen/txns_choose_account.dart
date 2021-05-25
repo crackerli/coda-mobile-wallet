@@ -1,5 +1,4 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
-import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_gradient.dart';
@@ -27,7 +26,6 @@ class _TxnsChooseAccountScreenState extends State<TxnsChooseAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
- //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     print('TxnsChooseAccountScreen: build(context: $context)');
     return Scaffold(
       resizeToAvoidBottomInset: false,
