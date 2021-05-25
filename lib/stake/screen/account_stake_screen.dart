@@ -21,7 +21,7 @@ class AccountStakeScreen extends StatefulWidget {
 class _AccountStakeScreenState extends State<AccountStakeScreen> {
   int _accountIndex = -1;
   late Map<String, dynamic> _providerMap;
-  Staking_providersBean? _provider = null;
+  Staking_providersBean? _provider;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       orientation: Orientation.portrait
     );
     _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
-    String? stakingAddress = globalHDAccounts.accounts[_accountIndex]!.stakingAddress;
+    String? stakingAddress = globalHDAccounts.accounts![_accountIndex]!.stakingAddress;
     _provider = Staking_providersBean.fromMap(_providerMap[stakingAddress])!;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -187,7 +187,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
           Container(width: 8.w,),
           Expanded(
             flex: 2,
-            child: Text('${_provider?.stakedSum?.floor()?.toString() ?? ''}', maxLines: 3,
+            child: Text('${_provider?.stakedSum?.floor().toString() ?? ''}', maxLines: 3,
               textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
           )
         ],

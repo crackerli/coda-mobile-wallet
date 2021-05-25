@@ -125,7 +125,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
             keyboardType: TextInputType.multiline,
             autofocus: false,
             decoration: InputDecoration.collapsed(
-              hintText: globalHDAccounts.accounts[_accountIndex]!.accountName ?? '',
+              hintText: globalHDAccounts.accounts![_accountIndex]!.accountName ?? '',
               hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
           )
         ),
@@ -147,15 +147,15 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
   }
 
   _saveNewAccount(BuildContext context) {
-    if(null == globalHDAccounts || null == globalHDAccounts.accounts || 0 == globalHDAccounts.accounts.length) {
+    if(null == globalHDAccounts.accounts || 0 == globalHDAccounts.accounts!.length) {
       return;
     }
 
-    if(null == _accountController.text || _accountController.text.isEmpty) {
+    if(_accountController.text.isEmpty) {
       return;
     }
 
-    AccountBean account = globalHDAccounts.accounts[_accountIndex]!;
+    AccountBean account = globalHDAccounts.accounts![_accountIndex]!;
     account.accountName = _accountController.text;
     Map accountsJson = globalHDAccounts.toJson();
     globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));

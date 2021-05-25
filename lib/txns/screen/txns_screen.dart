@@ -186,7 +186,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                   InkWell(
                     onTap: () => Navigator.pushNamed(context, TxnsChooseAccountRoute),
                     child:
-                    Text(globalHDAccounts.accounts[_txnsBloc.accountIndex]!.accountName ?? '',
+                    Text(globalHDAccounts.accounts![_txnsBloc.accountIndex]!.accountName ?? '',
                       textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500)
                     )
                   ),

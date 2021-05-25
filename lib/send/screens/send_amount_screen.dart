@@ -63,7 +63,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
       orientation: Orientation.portrait
     );
     _sendData = ModalRoute.of(context)!.settings.arguments as SendData;
-    _balance = BigInt.tryParse(globalHDAccounts.accounts[_sendData.from]!.balance!);
+    _balance = BigInt.tryParse(globalHDAccounts.accounts![_sendData.from]!.balance!);
     _keys = List.generate(_keyString.length, (index) => _buildKey(index));
     return Scaffold(
       backgroundColor: Colors.white,
@@ -94,7 +94,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 textAlign: TextAlign.right,
                 text: TextSpan(children: <TextSpan>[
                   TextSpan(
-                    text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts[_sendData.from]!.balance ?? '')} ',
+                    text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts![_sendData.from]!.balance ?? '')} ',
                       style: TextStyle(fontSize: 16.sp, color: Colors.black)
                   ),
                   TextSpan(

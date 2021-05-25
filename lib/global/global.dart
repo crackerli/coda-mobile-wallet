@@ -18,7 +18,7 @@ double gUnitFiatPrice = 2.317;
 // global derived hd accounts from bip44 seed
 MinaHDAccount globalHDAccounts = MinaHDAccount();
 
-late String globalEncryptedSeed;
+String? globalEncryptedSeed;
 
 String getTokenFiatPrice(String tokenNumber) {
   double token = double.parse(tokenNumber);
@@ -27,7 +27,7 @@ String getTokenFiatPrice(String tokenNumber) {
 }
 
 // Global functions
-String exceptionHandle<T>(QueryResult result) {
+String exceptionHandle<T>(QueryResult? result) {
   if(null == result) {
     String error = 'Unknown Error';
     print(error);

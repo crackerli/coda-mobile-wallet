@@ -33,7 +33,7 @@ class SendBloc extends
     }
 
     BigInt chosenFee = bestFees[feeIndex!];
-    BigInt? balance = BigInt.tryParse(globalHDAccounts.accounts[account]!.balance!);
+    BigInt? balance = BigInt.tryParse(globalHDAccounts.accounts![account]!.balance!);
     BigInt? inputAmount = BigInt.tryParse(amount);
     if(null != balance && null != inputAmount) {
       if(balance < (chosenFee + inputAmount)) {

@@ -33,7 +33,7 @@ buildAccountList(AccountClickCb accountClickCb) {
     providerMap = json.decode(providerString);
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: globalHDAccounts.accounts.length,
+      itemCount: globalHDAccounts.accounts!.length,
       itemBuilder: (context, index) {
         return _buildAccountItem(accountClickCb, globalHDAccounts.accounts, index, providerMap);
       },
@@ -44,7 +44,7 @@ buildAccountList(AccountClickCb accountClickCb) {
   }
 }
 
-_buildAccountItem(Function accountClickCb, List<AccountBean?> accounts, int index, Map<String, dynamic> providerMap) {
+_buildAccountItem(Function accountClickCb, List<AccountBean?>? accounts, int index, Map<String, dynamic> providerMap) {
   return InkWell(
     onTap: () => accountClickCb(index),
     child:
@@ -71,12 +71,12 @@ _buildAccountItem(Function accountClickCb, List<AccountBean?> accounts, int inde
                       alignment: ui.PlaceholderAlignment.middle,
                       child: Image.asset('images/account_header.png', width: 8.w, height: 8.w,),
                     ),
-                    TextSpan(text: '  ${accounts[index]!.accountName}', style: TextStyle(fontSize: 16.sp, color: Color(0xff2d2d2d))),
+                    TextSpan(text: '  ${accounts![index]!.accountName ?? ''}', style: TextStyle(fontSize: 16.sp, color: Color(0xff2d2d2d))),
                   ],
                 ),
               ),
               Container(width: 20.w,),
-              (accounts[index]!.stakingAddress != null &&
+              (accounts![index]!.stakingAddress != null &&
                 accounts[index]!.stakingAddress!.isNotEmpty &&
                 (accounts[index]!.stakingAddress != accounts[index]!.address)) ?
               RichText(

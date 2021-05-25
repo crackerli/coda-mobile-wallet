@@ -137,8 +137,8 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
           Expanded(
             child: buildAccountList((index) {
               // Check if this account has been staked.
-              String? accountAddress = globalHDAccounts.accounts[index]!.address;
-              String? stakeAddress = globalHDAccounts.accounts[index]!.stakingAddress;
+              String? accountAddress = globalHDAccounts.accounts![index]!.address;
+              String? stakeAddress = globalHDAccounts.accounts![index]!.stakingAddress;
               if(null == stakeAddress || stakeAddress.isEmpty || (accountAddress == stakeAddress)) {
                 Navigator.of(context).pushNamed(
                   AccountNoStakeRoute, arguments: index);

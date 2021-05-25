@@ -136,7 +136,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             keyboardType: TextInputType.multiline,
             autofocus: false,
             decoration: InputDecoration.collapsed(
-              hintText: 'Account #${globalHDAccounts.accounts.length}',
+              hintText: 'Account #${globalHDAccounts.accounts!.length}',
               hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
             )
           ),
@@ -160,7 +160,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   _deriveNewAccount(String password) async {
     Uint8List seed;
     try {
-      seed = decryptSeed(globalEncryptedSeed, password);
+      seed = decryptSeed(globalEncryptedSeed!, password);
     } catch(error) {
       print('password not right');
       _scaffoldKey.currentState!.showSnackBar(new SnackBar(content: Text('Wrong password')));
@@ -169,12 +169,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     ProgressDialog.showProgress(context);
     String accountName = '';
     if(null == _accountController.text || _accountController.text.isEmpty) {
-      accountName = 'Account #${globalHDAccounts.accounts.length}';
+      accountName = 'Account #${globalHDAccounts.accounts!.length}';
     } else {
       accountName = _accountController.text;
     }
-    AccountBean account = await deriveNewAccount(seed, globalHDAccounts.accounts.length, accountName);
-    globalHDAccounts.accounts.add(account);
+    AccountBean account = await deriveNewAccount(seed, globalHDAccounts.accounts!.length, accountName);
+    globalHDAccounts.accounts!.add(account);
     Map accountsJson = globalHDAccounts.toJson();
     globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
     ProgressDialog.dismiss(context);

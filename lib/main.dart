@@ -26,7 +26,7 @@ class CodaWallet extends StatelessWidget {
       Map<String, dynamic> accountsJson = json.decode(accountsStr);
       globalHDAccounts = MinaHDAccount.fromMap(accountsJson)!;
     }
-    globalEncryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY)!;
+    globalEncryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
     return globalPreferences;
   }
 

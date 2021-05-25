@@ -60,8 +60,8 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
   }
 
   _buildReceiveAccountBody(BuildContext context, int index) {
-    String? address = globalHDAccounts.accounts[index]!.address;
-    String? accountName = globalHDAccounts.accounts[index]!.accountName;
+    String? address = globalHDAccounts.accounts![index]!.address;
+    String? accountName = globalHDAccounts.accounts![index]!.accountName;
     return Container(
       decoration: BoxDecoration(
         gradient: backgroundGradient

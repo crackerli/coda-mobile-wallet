@@ -42,7 +42,12 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
 
   _updateAccounts({bool newRoute = false}) {
     bool newUser;
-    if(null == globalEncryptedSeed || globalEncryptedSeed.isEmpty) {
+    // If either or accounts are null, we force user to re-generate them
+    if(null == globalEncryptedSeed
+       || globalEncryptedSeed!.isEmpty
+       || globalHDAccounts.accounts == null
+       || globalHDAccounts.accounts!.length == 0
+    ) {
       newUser = true;
     } else {
       newUser = false;
@@ -53,7 +58,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         Navigator.pushNamed(context, NoWalletRoute);
       });
     } else {
-      if(globalHDAccounts.accounts != null && globalHDAccounts.accounts.isNotEmpty) {
+      if(globalHDAccounts.accounts != null && globalHDAccounts.accounts!.isNotEmpty) {
         _accountBloc!.add(GetAccounts(0));
       }
     }

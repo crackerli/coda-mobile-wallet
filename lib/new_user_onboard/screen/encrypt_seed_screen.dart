@@ -75,7 +75,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
     print('[import wallet]: start to encrypted seed');
     globalEncryptedSeed = encryptSeed(seed, _controllerConfirm.text);
     print('[import wallet]: save seed String');
-    globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed);
+    globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed!);
 
     print('[import wallet]: start to derive account');
     List<AccountBean> accounts = await deriveDefaultAccount(seed);

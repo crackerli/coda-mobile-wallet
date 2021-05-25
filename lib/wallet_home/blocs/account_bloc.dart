@@ -39,14 +39,14 @@ class AccountBloc extends
 
     final query = ACCOUNT_QUERY;
     Map<String, dynamic> variables = Map<String, dynamic>();
-    variables['publicKey'] = globalHDAccounts.accounts[event.index]?.address;
+    variables['publicKey'] = globalHDAccounts.accounts![event.index]?.address;
 
     try {
       yield GetAccountsLoading();
       final result = await _service.performQuery(query, variables: variables);
       if(null == result || result.hasException || null == result.data) {
         // If one account fail, we continue to next if not finished
-        if(event.index >= globalHDAccounts.accounts.length - 1) {
+        if(event.index >= globalHDAccounts.accounts!.length - 1) {
           print('1. Get all accounts info finished');
           yield GetAccountsFinished();
           getProviders();
@@ -60,9 +60,9 @@ class AccountBloc extends
       // Parse data from Json map, convert it to safe map for safe nested access
       dynamic accounts = result.data!['accounts'];
       if((accounts as List).isEmpty) {
-        globalHDAccounts.accounts[event.index]?.balance = '0';
-        globalHDAccounts.accounts[event.index]?.isActive = false;
-        globalHDAccounts.accounts[event.index]?.stakingAddress = '';
+        globalHDAccounts.accounts![event.index]?.balance = '0';
+        globalHDAccounts.accounts![event.index]?.isActive = false;
+        globalHDAccounts.accounts![event.index]?.stakingAddress = '';
       } else {
         // If the account is null, then we can say this account is not active
         // We use only the first account
@@ -72,8 +72,8 @@ class AccountBloc extends
         String publicKey = safeAccount['publicKey'].value;
         String stakingAddress = safeAccount['delegateAccount']['publicKey'].value;
         // find it in global accounts
-        for(int i = 0; i < globalHDAccounts.accounts.length; i++) {
-          AccountBean? account = globalHDAccounts.accounts[i];
+        for(int i = 0; i < globalHDAccounts.accounts!.length; i++) {
+          AccountBean? account = globalHDAccounts.accounts![i];
           if(account!.address == publicKey) {
             account.balance = balance;
             account.isActive = true;
@@ -82,7 +82,7 @@ class AccountBloc extends
           }
         };
       }
-      if(event.index >= globalHDAccounts.accounts.length - 1) {
+      if(event.index >= globalHDAccounts.accounts!.length - 1) {
         print('2. Get all accounts info finished');
         yield GetAccountsFinished();
         getProviders();

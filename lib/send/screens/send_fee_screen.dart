@@ -33,7 +33,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 _gotoTxnDetail(BuildContext context, SendData sendData) {
-  TxnEntity txnEntity = TxnEntity(globalHDAccounts.accounts[sendData.from]!.address!,
+  TxnEntity txnEntity = TxnEntity(globalHDAccounts.accounts![sendData.from]!.address!,
     sendData.to, null, sendData.amount, sendData.fee!, sendData.memo, TxnStatus.PENDING, TxnType.SEND, true);
   Navigator.pushReplacementNamed(context, TxnDetailRoute, arguments: txnEntity);
 }
@@ -53,12 +53,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   late Uint8List _accountPrivateKey;
 
   Future<Signature> _signPayment() async {
-    if(null == _sendData.memo || _sendData.memo.isEmpty) {
+    if(null == _sendData.memo || _sendData.memo!.isEmpty) {
       _sendData.memo = '';
     }
-    String memo = _sendData.memo;
-    String? feePayerAddress = globalHDAccounts.accounts[_sendData.from]!.address;
-    String? senderAddress = globalHDAccounts.accounts[_sendData.from]!.address;
+    String memo = _sendData.memo!;
+    String? feePayerAddress = globalHDAccounts.accounts![_sendData.from]!.address;
+    String? senderAddress = globalHDAccounts.accounts![_sendData.from]!.address;
     String receiverAddress = _sendData.to;
     BigInt fee = _sendBloc.bestFees[_sendBloc.feeIndex];
     BigInt feeToken = BigInt.from(1);
@@ -76,12 +76,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   }
 
   Future<Signature> _signDelegation() async {
-    if(null == _sendData.memo || _sendData.memo.isEmpty) {
+    if(null == _sendData.memo || _sendData.memo!.isEmpty) {
       _sendData.memo = '';
     }
-    String memo = _sendData.memo;
-    String? feePayerAddress = globalHDAccounts.accounts[_sendData.from]!.address;
-    String? senderAddress = globalHDAccounts.accounts[_sendData.from]!.address;
+    String memo = _sendData.memo!;
+    String? feePayerAddress = globalHDAccounts.accounts![_sendData.from]!.address;
+    String? senderAddress = globalHDAccounts.accounts![_sendData.from]!.address;
     String receiverAddress = _sendData.to;
     BigInt fee = _sendBloc.bestFees[_sendBloc.feeIndex];
     BigInt feeToken = BigInt.from(1);
@@ -211,7 +211,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     print('SendFeeScreen: build(context: $context)');
     _sendData = ModalRoute.of(context)!.settings.arguments as SendData;
 
-    _sendBloc.from = globalHDAccounts.accounts[_sendData.from]!.address;
+    _sendBloc.from = globalHDAccounts.accounts![_sendData.from]!.address;
     _sendBloc.amount = _sendData.amount;
     _sendBloc.memo = _sendData.memo;
     _sendBloc.fee = _sendData.fee;
@@ -413,7 +413,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                   Container(height: 10.h),
                   Text('FROM', textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
-                  Text(globalHDAccounts.accounts[_sendData.from]!.address ?? '',
+                  Text(globalHDAccounts.accounts![_sendData.from]!.address ?? '',
                       textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
                   Container(height: 10.h),
                   Text('TO',  textAlign: TextAlign.left,

@@ -8,7 +8,7 @@ class TxnEntity {
   String? timestamp;
   String amount;
   String fee;
-  String memo;
+  String? memo;
   bool isIndexerMemo;
   TxnStatus txnStatus;
   TxnType txnType;

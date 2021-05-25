@@ -23,7 +23,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
   get filteredUserCommands {
     List<MergedUserCommand> commands = [];
-    if(mergedUserCommands == null || mergedUserCommands.length == 0) {
+    if(mergedUserCommands.length == 0) {
       return commands;
     }
 
@@ -61,7 +61,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     return mergedUserCommands;
   }
 
-  get publicKey => globalHDAccounts.accounts[accountIndex]!.address;
+  get publicKey => globalHDAccounts.accounts![accountIndex]!.address;
 
   TxnsBloc(TxnsStates state) : super(state) {
     _service = CodaService();
@@ -115,12 +115,6 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       isTxnsLoading = true;
       final result = await _indexerService.getTransactions(publicKey);
 
-      if(null == result) {
-        String error = 'Unknown Error!';
-        yield RefreshConfirmedTxnsFail(error);
-        return;
-      }
-
       if(result.statusCode != 200) {
         String? error = result.statusMessage;
         yield RefreshConfirmedTxnsFail(error);
@@ -140,9 +134,9 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
       // Sometimes we may see the same user commands in both archive node and best chain,
       // So need to remove the duplicated items.
-      if(null != mergedUserCommands && mergedUserCommands.length > 0) {
+      if(mergedUserCommands.length > 0) {
         List<MergedUserCommand> temp = LinkedHashSet<MergedUserCommand>.from(
-            mergedUserCommands).toList();
+          mergedUserCommands).toList();
         mergedUserCommands.clear();
         mergedUserCommands.addAll(temp);
       }

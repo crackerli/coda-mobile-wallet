@@ -7,7 +7,7 @@ String getStakePercent() {
 
   BigInt staked = BigInt.from(0);
   BigInt total = BigInt.from(0);
-  globalHDAccounts.accounts.forEach((account) {
+  globalHDAccounts.accounts!.forEach((account) {
     if(null != account && account.isActive!) {
       BigInt accountBalance = BigInt.tryParse(account.balance!) ?? BigInt.from(0);
       total += accountBalance;
@@ -32,7 +32,7 @@ bool walletStaking() {
   }
 
   bool isStaking = false;
-  globalHDAccounts.accounts.forEach((account) {
+  globalHDAccounts.accounts!.forEach((account) {
     if(null != account && account.isActive!) {
       if(null != account.stakingAddress && account.stakingAddress!.isNotEmpty && account.stakingAddress != account.address) {
         isStaking = true;;
