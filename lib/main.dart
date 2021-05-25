@@ -45,7 +45,7 @@ class CodaWallet extends StatelessWidget {
               brightness: Brightness.light,
               primaryColor: Colors.white,
               accentColor: Colors.white,
-              fontFamily: 'Roboto-Regular'
+              // fontFamily: 'Roboto-Regular'
             ),
             home: EntrySheet(),
             navigatorObservers: [routeObserver]

@@ -73,9 +73,9 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
           ),
           Container(height: 10.h),
           walletStaking() ?
-          Text('You Are Staking!', textAlign: TextAlign.center,
+          Text('You Are Staking', textAlign: TextAlign.center,
             style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)) :
-          Text('You Are Not Staking!', textAlign: TextAlign.center,
+          Text('You Are Not Staking', textAlign: TextAlign.center,
             style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)),
           Container(height: 20.h),
           Padding(

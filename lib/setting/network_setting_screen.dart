@@ -62,8 +62,8 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
 
   _buildNetworkItems(BuildContext context) {
     List<DropdownMenuItem<int>> items = [];
-    DropdownMenuItem<int> item0 = DropdownMenuItem(child: Text(NETWORK_LIST[0]), value: 0);
-    DropdownMenuItem<int> item1 = DropdownMenuItem(child: Text(NETWORK_LIST[1]), value: 1);
+    DropdownMenuItem<int> item0 = DropdownMenuItem(child: Text(NETWORK_LIST[0], style: TextStyle(fontSize: 22.sp),), value: 0);
+    DropdownMenuItem<int> item1 = DropdownMenuItem(child: Text(NETWORK_LIST[1], style: TextStyle(fontSize: 22.sp),), value: 1);
     items.add(item0);
     items.add(item1);
     return items;
@@ -98,7 +98,7 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
             color: Colors.white,
             border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
           ),
-          child: Text(_getServerDomain(RPC_SERVER_LIST[getCurrentNetworkId()])),
+          child: Text(_getServerDomain(RPC_SERVER_LIST[getCurrentNetworkId()]), style: TextStyle(fontSize: 16.sp)),
         ),
         Container(height: 24.h,),
         Text('Mina Archive Node', textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600)),
@@ -110,7 +110,7 @@ class _NetworkSettingScreenState extends State<NetworkSettingScreen> {
             color: Colors.white,
             border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
           ),
-          child: Text(_getServerDomain(RPC_SERVER_LIST[getCurrentNetworkId()])),
+          child: Text(_getServerDomain(RPC_SERVER_LIST[getCurrentNetworkId()]), style: TextStyle(fontSize: 16.sp)),
         ),
       ],
     );
