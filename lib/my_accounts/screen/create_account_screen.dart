@@ -60,8 +60,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xfff5f5f5),
-      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),
+      backgroundColor: Color(0xffffffff),
+      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xffffffff)),
       body: KeyboardActions(
         tapOutsideToDismiss: true,
         autoScroll: true,

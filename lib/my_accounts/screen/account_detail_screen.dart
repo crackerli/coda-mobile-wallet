@@ -20,6 +20,7 @@ class AccountDetailScreen extends StatefulWidget {
 class _AccountDetailScreenState extends State<AccountDetailScreen> {
   int _accountIndex = 0;
   var _eventBusOn;
+  bool _addressCopied = false;
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
   void dispose() {
     _eventBusOn.cancel();
     _eventBusOn = null;
+    _addressCopied = false;
     super.dispose();
   }
 
@@ -50,8 +52,8 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
     print('AccountDetailScreen: build(context: $context)');
     _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(
-      backgroundColor: Color(0xfff5f5f5),
-      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),
+      backgroundColor: Color(0xffffffff),
+      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xffffffff)),
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -99,7 +101,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.w),
                 color: Color(0xfff5f5f5),
-                border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
+                border: Border.all(color: Color(0xffe3e3e3), width: 1.w)
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,8 +133,8 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.w),
-                      color: Color(0xff9e9e9e),
-                      border: Border.all(color: Color(0xff9e9e9e), width: 1.w)
+                      color: _addressCopied ? Color(0xff616161) : Color(0xffbdbdbd),
+                      border: Border.all(color: _addressCopied ? Color(0xff616161) : Color(0xffbdbdbd), width: 1.w)
                     ),
                     padding: EdgeInsets.only(top: 22.h, bottom: 22.h, left: 12.w, right: 12.w),
                     child: Row(
@@ -145,13 +147,16 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                             onTap: () {
                               Clipboard.setData(ClipboardData(text: globalHDAccounts.accounts![_accountIndex]!.address));
                               Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
+                              setState(() {
+                                _addressCopied = true;
+                              });
                             },
                           )
                         ),
                         Container(width: 6.w,),
                         Flexible(child:
                           Text(globalHDAccounts.accounts![_accountIndex]!.address ?? '', maxLines: 3, overflow: TextOverflow.visible,
-                            textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, color: Color(0xff616161)))),
+                            textAlign: TextAlign.left, style: TextStyle(fontSize: 12.sp, color: _addressCopied ? Colors.white : Color(0xff616161)))),
                       ],
                     )
                   )

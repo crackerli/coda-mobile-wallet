@@ -48,8 +48,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xfff5f5f5),
-      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),
+      backgroundColor: Color(0xffffffff),
+      appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xffffffff)),
       body: KeyboardActions(
         tapOutsideToDismiss: true,
         autoScroll: true,

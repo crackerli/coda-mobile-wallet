@@ -392,7 +392,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           alignment: Alignment.topCenter,
           children: [
             Container(
-              margin: EdgeInsets.only(top: 33.w, left: 42.w, right: 42.w),
+              margin: EdgeInsets.only(top: 33.w, left: 54.w, right: 54.w),
               padding: EdgeInsets.only(top: 18.w + 12.h, left: 20.w, right: 20.w, bottom: 12.h),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.w),
@@ -455,7 +455,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
         Container(height: 10.h,),
         Container(
-          margin: EdgeInsets.only(left: 42.w, right: 42.w),
+          margin: EdgeInsets.only(left: 54.w, right: 54.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.w),
             shape: BoxShape.rectangle,
