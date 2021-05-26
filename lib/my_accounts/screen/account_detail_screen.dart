@@ -79,6 +79,41 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
     );
   }
 
+  _buildBalanceArea(BuildContext context) {
+    if(globalHDAccounts.accounts![_accountIndex]!.isActive ?? false) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('BALANCE', textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff616161))),
+          (globalHDAccounts.accounts![_accountIndex]!.isActive ?? false) ?
+          RichText(
+            textAlign: TextAlign.left,
+            text: TextSpan(
+              children: <TextSpan>[
+                TextSpan(
+                  text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts![_accountIndex]!.balance ?? '')} ',
+                    style: TextStyle(fontSize: 24.sp, color: Color(0xff2d2d2d))),
+                TextSpan(
+                  text: 'MINA',
+                    style: TextStyle(color: Color(0xff2d2d2d), fontWeight: FontWeight.normal, fontSize: 14.sp)),
+              ]
+            )
+          ) : Text('Inactive', style: TextStyle(color: Colors.redAccent,
+            fontWeight: FontWeight.normal,
+            fontSize: 18.sp)),
+          // Text('\$1234.56',
+          //   textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, color: Color(0xff616161))),
+        ],
+      );
+    } else {
+      return Text('This account is inactive.\nNeed one MINA to active this account before using.',
+        textAlign: TextAlign.center, style: TextStyle(fontSize: 24.sp, color: Color(0xff9e9e9e)),);
+    }
+  }
+
   _buildAccountDetailBody(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -108,24 +143,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text('BALANCE', textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff616161))),
-                  (globalHDAccounts.accounts![_accountIndex]!.isActive ?? false) ?
-                  RichText(
-                    textAlign: TextAlign.left,
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: '${MinaHelper.getMinaStrByNanoStr(globalHDAccounts.accounts![_accountIndex]!.balance ?? '')} ',
-                            style: TextStyle(fontSize: 24.sp, color: Color(0xff2d2d2d))),
-                        TextSpan(
-                          text: 'MINA',
-                            style: TextStyle(color: Color(0xff2d2d2d), fontWeight: FontWeight.normal, fontSize: 14.sp)),
-                      ]
-                    )
-                  ) : Text('Inactive', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.normal, fontSize: 18.sp)),
-                  // Text('\$1234.56',
-                  //   textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, color: Color(0xff616161))),
+                  _buildBalanceArea(context),
                   Container(height: 19.h,),
                   Text('ADDRESS', textAlign: TextAlign.left,
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff616161))),
