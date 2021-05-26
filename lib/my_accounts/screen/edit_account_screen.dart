@@ -58,13 +58,13 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
           nextFocus: false,
           actions: [ KeyboardActionsItem(focusNode: _focusNodeAccount) ]),
           child: SingleChildScrollView(
-            child: _buildCreateAccountBody(context),
+            child: _buildEditAccountBody(context),
           )
         )
     );
   }
 
-  _buildCreateAccountBody(BuildContext context) {
+  _buildEditAccountBody(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -110,10 +110,15 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
         borderRadius: BorderRadius.all(Radius.circular(0.w)),
         border: Border.all(color: Color(0xff757575), width: 1.w)
       ),
-      child: Row(children: [
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
         Expanded(
           flex: 1,
           child: TextField(
+            textAlignVertical: TextAlignVertical.center,
             enableInteractiveSelection: true,
             focusNode: _focusNodeAccount,
             controller: _accountController,

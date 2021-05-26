@@ -121,10 +121,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         borderRadius: BorderRadius.all(Radius.circular(0.w)),
         border: Border.all(color: Color(0xff757575), width: 1.w)
       ),
-      child: Row(children: [
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
         Expanded(
           flex: 1,
           child: TextField(
+            textAlignVertical: TextAlignVertical.center,
             enableInteractiveSelection: true,
             focusNode: _focusNodeAccount,
             controller: _accountController,
