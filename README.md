@@ -10,14 +10,21 @@ This is a community tool developed under the policy of Mina Project Grants, not 
 3. Check the transaction lists.
 4. Check the transaction detail.
 5. Calculate the best fees.
+6. Check staking service pool information.
+7. Easy staking with service providers
+8. Easy change staking pool.
+9. Switch between testnet and mainnet.
 
 # How to build
 1. Clone https://github.com/crackerli/ffi_mina_signer.git
 2. Clone https://github.com/crackerli/coda-mobile-wallet.git
-3. Edit the path in pubspec.yaml to make sure coda-mobile-wallet project can access ffi_mina_signer project.
-4. Config the build settings in pubspec.yaml for build version and build code.
-5. Config the build settings in lib/global/build_config.dart, following the comments of the build config variables.
-6. Run "flutter build apk" or "flutter build ios" to build android release apk or ios release ipa package.
+3. Clone https://github.com/crackerli/bitcoin_bip32.git
+4. Edit the path in pubsepc.yaml of project ffi_mina_signer to make sure it can access bitcoin_bip32 project as local plugin
+5. Edit the path in pubspec.yaml to make sure coda-mobile-wallet project can access ffi_mina_signer project as local plugin.
+6. In lib/constant/constants.dart, replace the default FIGMENT_API_KEY value with your own Figment api key.
+7. Config the build settings in pubspec.yaml for build version and build code.
+8. Config the build settings in lib/global/build_config.dart, following the comments of the build config variables.
+9. Run "flutter build apk" or "flutter build ios" to build android release apk or ios release ipa package.
 
 # Android Permissions
 
@@ -48,9 +55,11 @@ This is a community tool developed under the policy of Mina Project Grants, not 
     <string>StakingPower wallet want to access you photo library to save qr image</string>. 
     
 # Install on iOS
+    If you are Chinese mainland, please following below to install StakingPower wallet.
     1. Install TestFlight
     2. Scan the QR code image below and follow the instructions.  
 <img src="https://github.com/crackerli/coda-mobile-wallet/blob/milestone2/assets/StakingPower_Wallet_TestFlight_QR_Image.png" >
+    If you are non-Chinese mainland, please search "StakingPower" in appstore and install it.
 
 # Install on Android
     Search "StakingPower Wallet" on Google Play and install it.
