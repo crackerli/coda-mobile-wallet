@@ -98,7 +98,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           padding: EdgeInsets.only(left: 29.w, right: 29.w),
           child: _buildAccountField(context),
         ),
-        Container(height: 19.h,),
+        Container(height: 23.h,),
         Center(
           child: InkWell(
           onTap: () => showDecryptSeedDialog(context, CreateAccountRoute),//_deriveNewAccount(context),
@@ -115,7 +115,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   _buildAccountField(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 15.w, right: 10.w, top: 8.h, bottom: 8.h),
+      padding: EdgeInsets.only(left: 15.w, right: 10.w, top: 14.h, bottom: 14.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(0.w)),

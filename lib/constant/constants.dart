@@ -1,6 +1,6 @@
 const APPBAR_HEIGHT = 52;
 const APPBAR_TITLE_FONT_SIZE = 68;
-const BOTTOM_BAR_ITEM_SIZE = 22;
+const BOTTOM_BAR_ITEM_SIZE = 23;
 
 // add your own figment api key here
 const FIGMENT_API_KEY = 'Put your own figment api key here';

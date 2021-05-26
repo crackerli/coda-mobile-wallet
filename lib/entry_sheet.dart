@@ -73,12 +73,12 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         icon: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
           child: Image.asset("images/wallet_tab_unselected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h),
         ),
         activeIcon: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
           child: Image.asset("images/wallet_tab_selected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h),
         ),
         label: 'Wallet',
       ),
@@ -86,24 +86,24 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         icon: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
           child: Image.asset("images/stake_tab_unselected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h),
         ),
         activeIcon: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
           child: Image.asset("images/stake_tab_selected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w)),
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h)),
         label:'Stake'
       ),
       BottomNavigationBarItem(
         icon: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
           child: Image.asset("images/txns_tab_unselected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h),
         ),
         activeIcon: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
           child: Image.asset("images/txns_tab_selected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h),
         ),
         label:'Transactions'
       ),
@@ -111,12 +111,12 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         icon: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
           child: Image.asset("images/settings_tab_unselected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h),
         ),
         activeIcon: Padding(
           padding: EdgeInsets.only(bottom: 6.h),
           child: Image.asset("images/settings_tab_selected.png",
-            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.w),
+            fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h),
         ),
         label:'Settings'
       ),

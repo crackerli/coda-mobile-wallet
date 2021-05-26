@@ -97,8 +97,8 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
               margin: EdgeInsets.only(top: 33.w, left: 30.w, right: 30.w),
               padding: EdgeInsets.only(top: 30.w + 12.h, left: 20.w, right: 20.w, bottom: 20.h),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.w),
-                color: Colors.white,
+                borderRadius: BorderRadius.circular(5.w),
+                color: Color(0xfff5f5f5),
                 border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
               ),
               child: Column(
@@ -130,8 +130,8 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                   Container(height: 3.h,),
                   Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4.w),
-                      color: Color(0xffe0e0e0),
+                      borderRadius: BorderRadius.circular(5.w),
+                      color: Color(0xff9e9e9e),
                       border: Border.all(color: Color(0xff9e9e9e), width: 1.w)
                     ),
                     padding: EdgeInsets.only(top: 22.h, bottom: 22.h, left: 12.w, right: 12.w),
