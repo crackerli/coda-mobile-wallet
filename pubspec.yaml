@@ -63,7 +63,8 @@ flutter:
   uses-material-design: true
 
   assets:
-    - copy_gray.png
+    - images/copy_gray.png
+    - images/copy_white.png
     - images/wallet_tab_unselected.png
     - images/wallet_tab_selected.png
     - images/txns_tab_selected.png

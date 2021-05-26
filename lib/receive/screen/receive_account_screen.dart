@@ -89,7 +89,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
             children: [
               Builder(builder: (context) =>
                 InkWell(
-                  child: Image.asset('images/copy_gray.png', width: 18.w, height: 18.w),
+                  child: Image.asset(_addressCopied ? 'images/copy_white.png' : 'images/copy_gray.png', width: 22.w, height: 27.h),
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: address));
                     setState(() {
