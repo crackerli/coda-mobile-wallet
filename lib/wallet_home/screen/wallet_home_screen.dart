@@ -328,6 +328,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       radius: 82.w,
       lineWidth: 5.0,
       percent: stakePercent,
+      backgroundColor: Color(0xff9e9e9e),
       center: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(children: <TextSpan>[
@@ -340,7 +341,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           ]
         )
       ),
-      progressColor: Colors.red,
+      progressColor: Color(0xffbfb556),
     );
   }
 

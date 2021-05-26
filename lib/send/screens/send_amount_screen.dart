@@ -107,7 +107,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                 height: 54.h,
                 child: Center(
                   child: Text(_amountBuffer.toString(), textAlign: TextAlign.left, maxLines: 2, overflow: TextOverflow.visible,
-                    style: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.normal, color: Colors.black))
+                    style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.normal, color: Colors.black))
                 )
               ),
               // Container(height: 6.h,),
@@ -249,7 +249,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   _buildDecimalKeyboard() {
     return Flexible(child: GridView.count(
       shrinkWrap: true,
-      childAspectRatio: 1.3,
+      childAspectRatio: 1,
       physics: NeverScrollableScrollPhysics(),
       crossAxisCount: 3,
       padding: EdgeInsets.symmetric(vertical: 0),

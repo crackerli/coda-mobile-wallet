@@ -286,14 +286,14 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
   _feeItemBorderRadius(int index) {
     if(0 == index) {
-      return BorderRadius.only(topLeft: Radius.circular(10.w), bottomLeft: Radius.circular(10.w));
+      return BorderRadius.only(topLeft: Radius.circular(5.w), bottomLeft: Radius.circular(5.w));
     }
 
     if(1 == index) {
       return BorderRadius.all(Radius.zero);
     }
 
-    return BorderRadius.only(topRight: Radius.circular(10.w), bottomRight: Radius.circular(10.w));
+    return BorderRadius.only(topRight: Radius.circular(5.w), bottomRight: Radius.circular(5.w));
   }
   
   _buildFeeItem(int index, bool selected, String speed, String feeToken, String feeFiat) {
@@ -302,7 +302,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
       decoration: BoxDecoration(
         borderRadius: _feeItemBorderRadius(index),
         color: selected ? Color(0xffbfb556) : Colors.white,
-        border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
+        border: Border.all(color: Color(0xff2d2d2d), width: 0.5.w)
       ),
       padding: EdgeInsets.only(left: 6.w, right: 6.w, top: 6.w, bottom: 6.w),
       child: Stack(
@@ -341,8 +341,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
             child: selected ? Image.asset('images/fee_selected.png', width: 10.w, height: 10.w,) : Container()
           )
         ]
-      )
-    ),
+      )),
       onTap: () => _sendBloc.add(ChooseFee(index)),
     );
   }
@@ -396,7 +395,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
               margin: EdgeInsets.only(top: 33.w, left: 42.w, right: 42.w),
               padding: EdgeInsets.only(top: 18.w + 12.h, left: 20.w, right: 20.w, bottom: 12.h),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.w),
+                borderRadius: BorderRadius.circular(5.w),
                 color: Colors.white,
                 border: Border.all(color: Color(0xff2d2d2d), width: 1.w)
               ),
@@ -456,23 +455,32 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
         Container(height: 10.h,),
         Container(
-          margin: EdgeInsets.only(left: 20.w, right: 20.w),
+          margin: EdgeInsets.only(left: 42.w, right: 42.w),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.w),
+            borderRadius: BorderRadius.circular(5.w),
             shape: BoxShape.rectangle,
-            border: Border.all(width: 1.0.w, color: Colors.black),
+            border: Border.all(width: 0.5.w, color: Colors.black),
           ),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildFeeItem(0, 0 == feeIndex, 'MODERATE',
-                formatFeeAsFixed(bestFees[0], 3), '\$0.05'),
-              _buildFeeItem(1, 1 == feeIndex, 'FAST',
-                formatFeeAsFixed(bestFees[1], 3), '\$0.07'),
-              _buildFeeItem(2, 2 == feeIndex, 'VERY FAST',
-                formatFeeAsFixed(bestFees[2], 3), '\$0.07')
+              Expanded(
+                child: _buildFeeItem(0, 0 == feeIndex, 'MODERATE',
+                  formatFeeAsFixed(bestFees[0], 3), '\$0.05'),
+                flex: 1,
+              ),
+              Expanded(
+                child: _buildFeeItem(1, 1 == feeIndex, 'FAST',
+                  formatFeeAsFixed(bestFees[1], 3), '\$0.07'),
+                flex: 1,
+              ),
+              Expanded(
+                child: _buildFeeItem(2, 2 == feeIndex, 'VERY FAST',
+                  formatFeeAsFixed(bestFees[2], 3), '\$0.07'),
+                flex: 1,
+              )
             ],
           )
         )
