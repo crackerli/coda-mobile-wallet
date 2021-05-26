@@ -254,7 +254,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             ],
           ),
           Container(height: 16.h,),
-          Row(
+          (_txnEntity.memo != null && _txnEntity.memo!.isNotEmpty) ? Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -270,7 +270,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                   style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],
-          ),
+          ) : Container(),
           Container(height: 28.h),
           Container(
             width: double.infinity,
