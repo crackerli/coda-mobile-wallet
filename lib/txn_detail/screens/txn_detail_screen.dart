@@ -22,6 +22,8 @@ class TxnDetailScreen extends StatefulWidget {
 
 class _TxnDetailScreenState extends State<TxnDetailScreen> {
   late TxnEntity _txnEntity;
+  late String _decodedMemo;
+  late bool _showMemo;
 
   @override
   void initState() {
@@ -44,6 +46,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
       orientation: Orientation.portrait
     );
     _txnEntity = ModalRoute.of(context)!.settings.arguments as TxnEntity;
+    _getReadableMemo();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, leading: false),
@@ -253,8 +256,8 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               )
             ],
           ),
-          Container(height: 16.h,),
-          (_txnEntity.memo != null && _txnEntity.memo!.isNotEmpty) ? Row(
+          _showMemo ? Container(height: 16.h,) : Container(),
+          _showMemo ? Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -266,7 +269,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               Container(width: 8.w,),
               Expanded(
                 flex: 2,
-                child: Text('${_txnEntity.isIndexerMemo ? _txnEntity.memo : decodeBase58Check(_txnEntity.memo ?? '')}', textAlign: TextAlign.left, maxLines: 2,
+                child: Text('$_decodedMemo', textAlign: TextAlign.left, maxLines: 2,
                   style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],
@@ -284,5 +287,28 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
         ]
       )
     );
+  }
+
+  _getReadableMemo() {
+    if(null == _txnEntity.memo || _txnEntity.memo!.trim().isEmpty) {
+      _decodedMemo = '';
+      _showMemo = false;
+      return;
+    }
+
+    if(_txnEntity.isIndexerMemo) {
+      // Memo get from figment service, the string has been decoded.
+      _decodedMemo = _txnEntity.memo ?? '';
+    } else {
+      // Memo get from Mina node, need to decoded the human readable string.
+      _decodedMemo = decodeBase58Check(_txnEntity.memo ?? '');
+    }
+
+    if(_decodedMemo.trim().isEmpty) {
+      _showMemo = false;
+      return;
+    }
+
+    _showMemo = true;
   }
 }

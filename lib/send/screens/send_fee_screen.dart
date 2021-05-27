@@ -325,7 +325,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                       ),
                       TextSpan(
                         text: 'MINA',
-                        style: TextStyle(color: Color(0xff979797), fontWeight: FontWeight.normal, fontSize: 9.sp)
+                        style: TextStyle(color: Color(0xff979797), fontWeight: FontWeight.normal, fontSize: 8.sp)
                       ),
                     ]),
                   ),
@@ -392,7 +392,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           alignment: Alignment.topCenter,
           children: [
             Container(
-              margin: EdgeInsets.only(top: 33.w, left: 54.w, right: 54.w),
+              margin: EdgeInsets.only(top: 33.w, left: 48.w, right: 48.w),
               padding: EdgeInsets.only(top: 18.w + 12.h, left: 20.w, right: 20.w, bottom: 12.h),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.w),
@@ -437,11 +437,11 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                     )
                   ) : Container(),
                   // Text('(\$353.62)', textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp, color: Color(0xff616161)),),
-                  (_sendData.memo != null && _sendData.memo!.isNotEmpty) ? Container(height: 10.h,) : Container(),
-                  (_sendData.memo != null && _sendData.memo!.isNotEmpty) ? Text('MEMO',
+                  (_sendData.memo != null && _sendData.memo!.trim().isNotEmpty) ? Container(height: 10.h,) : Container(),
+                  (_sendData.memo != null && _sendData.memo!.trim().isNotEmpty) ? Text('MEMO',
                     textAlign: TextAlign.left,
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))) : Container(),
-                  (_sendData.memo != null && _sendData.memo!.isNotEmpty) ? Text('${_sendData.memo}',
+                  (_sendData.memo != null && _sendData.memo!.trim().isNotEmpty) ? Text('${_sendData.memo}',
                     textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))) : Container(),
                 ],
               ),
@@ -457,7 +457,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
           textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
         Container(height: 10.h,),
         Container(
-          margin: EdgeInsets.only(left: 54.w, right: 54.w),
+          margin: EdgeInsets.only(left: 48.w, right: 48.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.w),
             shape: BoxShape.rectangle,
