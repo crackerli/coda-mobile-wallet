@@ -72,7 +72,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
         Container(height: 14.h),
         QrImage(data: address ?? '', size: 200.w, version: QrVersions.auto),
         Container(height: 33.h),
-        Text(accountName ?? '', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Color(0xff212121), fontWeight: FontWeight.w500)),
+        Text(accountName ?? '', textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp, color: Color(0xff212121), fontWeight: FontWeight.w500)),
         Container(height: 8),
         Container(
           decoration: BoxDecoration(
@@ -115,7 +115,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
               decoration: getMinaButtonDecoration(topColor: Colors.white),
-              child: Text('SAVE IMAGE', style: TextStyle(color: Color(0xff2d2d2d), fontSize: 12.sp, fontWeight: FontWeight.w600),),
+              child: Text('SHARE', style: TextStyle(color: Color(0xff2d2d2d), fontSize: 12.sp, fontWeight: FontWeight.w600),),
             ),
           )
         )
