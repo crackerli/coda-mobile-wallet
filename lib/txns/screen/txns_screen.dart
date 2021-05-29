@@ -207,7 +207,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                   Image.asset('images/txn_filter.png', width: 12.w, height: 8.h,),
                   Container(width: 5.w,),
                   Text(_txnsBloc.txnFilters[_txnsBloc.currentFilter], textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 13.sp, color: Color(0xff212121), fontWeight: FontWeight.w500))
+                    style: TextStyle(fontSize: 14.sp, color: Color(0xff212121), fontWeight: FontWeight.w500))
                 ],
               )
             )
