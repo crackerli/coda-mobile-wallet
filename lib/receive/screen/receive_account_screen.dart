@@ -129,25 +129,30 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
     ));
   }
 
-  Future _checkStoragePermission(BuildContext context) async {
+  _checkStoragePermission(BuildContext context) async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
     ].request();
     var status = await Permission.storage.status;
     print(status);
-    if (status.isGranted) {
+    if(status.isGranted) {
       const url = 'weixin://';
 
-      ProgressDialog.showProgress(context);
-      String? path = await saveImageAsFile(_qrImageKey);
-      Map? installedApp = await SocialShare.checkInstalledAppsForShare();
+      try {
+        ProgressDialog.showProgress(context);
+        String? path = await saveImageAsFile(_qrImageKey);
+        Map? installedApp = await SocialShare.checkInstalledAppsForShare();
 
-      bool wechatInstalled = await canLaunch(url);
-      ProgressDialog.dismiss(context);
-      if(null != installedApp) {
-        installedApp['wechat'] = wechatInstalled;
+        bool wechatInstalled = await canLaunch(url);
+        ProgressDialog.dismiss(context);
+        if(null != installedApp) {
+          installedApp['wechat'] = wechatInstalled;
+        }
+        _notifyImageSaved(context, path, installedApp);
+      } catch(e) {
+        ProgressDialog.dismiss(context);
+        return;
       }
-      _notifyImageSaved(context, path, installedApp);
     } else {
       openAppSettings();
     }
@@ -159,6 +164,8 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
       if (null != path && path.isNotEmpty && path.length > 8 && path.startsWith('file://')) {
         showSocialShareSheet(context, address, path.substring(7), installedApp);
       }
+    } else {
+      showSocialShareSheet(context, address, path, installedApp);
     }
   }
 }

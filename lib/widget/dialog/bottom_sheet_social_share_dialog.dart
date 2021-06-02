@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:social_share/social_share.dart';
+import 'package:image_picker/image_picker.dart';
 
 List<String> _shareNames = ['Facebook', 'Twitter', 'Wechat', 'Instagram', 'Telegram', 'SMS', 'Whatsapp'];
 List<String> _shareIcons = [
@@ -17,11 +18,17 @@ List<String> _shareIcons = [
 ];
 
 List<Function> _shareMethods = [
-  (String address, String path) async {
+  (String address, String? path) async {
     //facebook appId is mandatory for andorid or else share won't work
-    Platform.isAndroid?
-      SocialShare.shareFacebookStory(path, "#ffffff", "#000000", '', appId: "1231431000696020")
-    : SocialShare.shareFacebookStory(path, "#ffffff", "#000000", '');
+    if(Platform.isAndroid) {
+      SocialShare.shareFacebookStory(path!, "#ffffff", "#000000", '', appId: "1231431000696020");
+    } else {
+      PickedFile? file = await ImagePicker().getImage(source: ImageSource.gallery);
+      if(null != file) {
+        SocialShare.shareFacebookStory(
+          '${file?.path ?? ''}', "#ffffff", "#000000", '');
+      }
+    }
   },
   (String address, String path) async {
     SocialShare.shareTwitter('My mina address: $address', url: '', trailingText: '');

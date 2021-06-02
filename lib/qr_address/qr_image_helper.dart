@@ -15,7 +15,7 @@ Future<String?> saveImageAsFile(GlobalKey qrImageKey) async {
       await image.toByteData(format: ui.ImageByteFormat.png);
     final result =
       await ImageGallerySaver.saveImage(byteData!.buffer.asUint8List(),
-      quality: 100, name: 'mina-account-${getCurrentTimeString()}', isReturnImagePathOfIOS: true);
+      quality: 100, name: 'mina-account-${getCurrentTimeString()}', isReturnImagePathOfIOS: false);
     print(result);
     return result['filePath'];
   } catch (e) {

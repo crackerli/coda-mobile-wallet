@@ -48,6 +48,7 @@ dependencies:
   collection: ^1.15.0
   social_share: ^2.1.1
   fluttertoast: ^8.0.7
+  image_picker: ^0.8.0
   ffi_mina_signer:
     path: ../ffi_mina_signer/
 
