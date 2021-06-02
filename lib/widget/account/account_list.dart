@@ -29,19 +29,19 @@ String? _getStakingProvider(String? stakingAddress, Map<String, dynamic>? provid
 buildAccountList(AccountClickCb accountClickCb) {
   String? providerString = globalPreferences.getString(STAKETAB_PROVIDER_KEY);
   Map<String, dynamic> providerMap;
-  if(null != providerString && providerString.isNotEmpty) {
-    providerMap = json.decode(providerString);
-    return ListView.separated(
-      physics: const AlwaysScrollableScrollPhysics(),
-      itemCount: globalHDAccounts.accounts!.length,
-      itemBuilder: (context, index) {
-        return _buildAccountItem(accountClickCb, globalHDAccounts.accounts, index, providerMap);
-      },
-      separatorBuilder: (context, index) { return Container(height: 20.h); }
-    );
-  } else {
-    return Container();
+  try {
+    providerMap = json.decode(providerString ?? '');
+  } catch(e) {
+    providerMap = Map<String, dynamic>();
   }
+  return ListView.separated(
+    physics: const AlwaysScrollableScrollPhysics(),
+    itemCount: globalHDAccounts.accounts!.length,
+    itemBuilder: (context, index) {
+      return _buildAccountItem(accountClickCb, globalHDAccounts.accounts, index, providerMap);
+    },
+    separatorBuilder: (context, index) { return Container(height: 20.h); }
+  );
 }
 
 _buildAccountItem(Function accountClickCb, List<AccountBean?>? accounts, int index, Map<String, dynamic> providerMap) {
