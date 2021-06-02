@@ -46,6 +46,8 @@ dependencies:
   dio: ^4.0.0
   cached_network_image: ^3.0.0
   collection: ^1.15.0
+  social_share: ^2.1.1
+  fluttertoast: ^8.0.7
   ffi_mina_signer:
     path: ../ffi_mina_signer/
 

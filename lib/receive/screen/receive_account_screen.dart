@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/qr_address/qr_image_helper.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/dialog/bottom_sheet_social_share_dialog.dart';
+import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:social_share/social_share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ReceiveAccountScreen extends StatefulWidget {
   ReceiveAccountScreen({Key? key}) : super(key: key);
@@ -21,6 +25,7 @@ class ReceiveAccountScreen extends StatefulWidget {
 class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
   final GlobalKey _qrImageKey = GlobalKey();
   bool _addressCopied = false;
+  late int _accountIndex;
 
   @override
   void initState() {
@@ -45,6 +50,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
       orientation: Orientation.portrait
     );
     int index = ModalRoute.of(context)!.settings.arguments as int;
+    _accountIndex = index;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
@@ -130,19 +136,30 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
     var status = await Permission.storage.status;
     print(status);
     if (status.isGranted) {
-      saveImageAsFile(_qrImageKey).then((value) {
-        _notifyImageSaved(context, value);
-      });
+      const url = 'weixin://';
+
+      ProgressDialog.showProgress(context);
+      String? path = await saveImageAsFile(_qrImageKey);
+      Map? installedApp = await SocialShare.checkInstalledAppsForShare();
+
+      bool wechatInstalled = await canLaunch(url);
+      ProgressDialog.dismiss(context);
+      if(null != installedApp) {
+        installedApp['wechat'] = wechatInstalled;
+      }
+      _notifyImageSaved(context, path, installedApp);
     } else {
       openAppSettings();
     }
   }
 
-  _notifyImageSaved(BuildContext context, String? path) {
-    String text = Platform.isAndroid ?
-    'Image saved: $path' :
-    'Image saved to gallery';
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
+  _notifyImageSaved(BuildContext context, String? path, Map? installedApp) {
+    String? address = globalHDAccounts.accounts![_accountIndex]!.address;
+    if(Platform.isAndroid) {
+      if (null != path && path.isNotEmpty && path.length > 8 && path.startsWith('file://')) {
+        showSocialShareSheet(context, address, path.substring(7), installedApp);
+      }
+    }
   }
 }
 
