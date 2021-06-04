@@ -25,14 +25,9 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
   late List<String> _inputAmount;
   late StringBuffer _amountBuffer;
   late String _amountStr;
-  String _fiatPrice = '\$0.00';
   late SendData _sendData;
   bool _validInput = false;
   BigInt? _balance = BigInt.from(0);
-
-  String _formatFiatPrice() {
-    return '\$$_amountBuffer';
-  }
 
   @override
   void initState() {
@@ -49,6 +44,20 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
     _amountBuffer.clear();
     _inputAmount.clear();
     super.dispose();
+  }
+
+  String _getInputFiatPrice() {
+    if(_amountBuffer.isEmpty) {
+      return '0.0';
+    }
+
+    // Confirm this is a valid double
+    double? temp = double.tryParse(_amountBuffer.toString());
+    if(null == temp) {
+      return '0.0';
+    }
+    String nanoMinaStr = MinaHelper.getNanoStrByMinaStr(_amountBuffer.toString());
+    return getTokenFiatPrice(nanoMinaStr);
   }
 
   @override
@@ -110,9 +119,9 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
                     style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.normal, color: Colors.black))
                 )
               ),
-              // Container(height: 6.h,),
-              // Text(_fiatPrice, textAlign: TextAlign.left, maxLines: 1,
-              //   style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.normal, color: Color(0xff979797))),
+              Container(height: 6.h,),
+              Text('\$${_getInputFiatPrice()}', textAlign: TextAlign.left, maxLines: 1,
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.normal, color: Color(0xff979797))),
               Container(height: 20.h),
               _buildDecimalKeyboard(),
             ],)
@@ -183,14 +192,12 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
     _inputAmount.clear();
     _inputAmount.add(MinaHelper.getMinaStrByNanoNum(_balance));
     _amountBuffer.writeAll(_inputAmount);
-    _fiatPrice = _formatFiatPrice();
     _checkInputAmount(_amountBuffer.toString());
   }
 
   _fillInput() {
     _amountBuffer.clear();
     _amountBuffer.writeAll(_inputAmount);
-    _fiatPrice = _formatFiatPrice();
     _checkInputAmount(_amountBuffer.toString());
   }
 
