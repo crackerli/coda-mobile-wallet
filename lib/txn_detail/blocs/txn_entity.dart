@@ -11,6 +11,7 @@ class TxnEntity {
   bool isIndexerMemo;
   TxnStatus txnStatus;
   TxnType txnType;
+  dynamic failureReason;
 
   get total {
     BigInt? amountB = BigInt.tryParse(amount);
@@ -24,5 +25,5 @@ class TxnEntity {
     }
   }
 
-  TxnEntity(this.from, this.to, this.timestamp, this.amount, this.fee, this.memo, this.txnStatus, this.txnType, this.isIndexerMemo);
+  TxnEntity(this.from, this.to, this.timestamp, this.amount, this.fee, this.memo, this.txnStatus, this.txnType, this.isIndexerMemo, this.failureReason);
 }

@@ -12,6 +12,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+const FLEX_LEFT_LABEL = 2;
+const FLEX_RIGHT_CONTENT = 5;
+
 class TxnDetailScreen extends StatefulWidget {
 
   TxnDetailScreen({Key? key}) : super(key: key);
@@ -21,6 +24,7 @@ class TxnDetailScreen extends StatefulWidget {
 }
 
 class _TxnDetailScreenState extends State<TxnDetailScreen> {
+
   late TxnEntity _txnEntity;
   late String _decodedMemo;
   late bool _showMemo;
@@ -151,13 +155,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: FLEX_LEFT_LABEL,
                 child: Text('FROM', textAlign: TextAlign.right, maxLines: 2,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))),
               ),
               Container(width: 8.w,),
               Expanded(
-                flex: 2,
+                flex: FLEX_RIGHT_CONTENT,
                 child: Text(_txnEntity.from,
                   textAlign: TextAlign.left, maxLines: 3,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161))),
@@ -170,13 +174,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: FLEX_LEFT_LABEL,
                 child: Text('TO', textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))),
               ),
               Container(width: 8.w,),
               Expanded(
-                flex: 2,
+                flex: FLEX_RIGHT_CONTENT,
                 child: Text(_txnEntity.to,
                   textAlign: TextAlign.left, maxLines: 3,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161))),
@@ -190,13 +194,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: FLEX_LEFT_LABEL,
                 child: Text('TIMESTAMP', textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
               ),
               Container(width: 8.w,),
               Expanded(
-                flex: 2,
+                flex: FLEX_RIGHT_CONTENT,
                 child: Text(formatDateTime(_txnEntity.timestamp),
                   textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)),),
               )
@@ -208,13 +212,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: FLEX_LEFT_LABEL,
                 child: Text('AMOUNT', textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))),
               ),
               Container(width: 8.w,),
               Expanded(
-                flex: 2,
+                flex: FLEX_RIGHT_CONTENT,
                 child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)} MINA', maxLines: 3,
                   textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
               )
@@ -226,13 +230,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: FLEX_LEFT_LABEL,
                 child: Text('FEE', textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
               ),
               Container(width: 8.w,),
               Expanded(
-                flex: 2,
+                flex: FLEX_RIGHT_CONTENT,
                 child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.fee)} MINA', textAlign: TextAlign.left, maxLines: 2,
                   style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
@@ -244,13 +248,13 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: FLEX_LEFT_LABEL,
                 child: Text('TOTAL', textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
               ),
               Container(width: 8.w,),
               Expanded(
-                flex: 2,
+                flex: FLEX_RIGHT_CONTENT,
                 child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.total)} MINA', textAlign: TextAlign.left, maxLines: 2,
                     style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
@@ -259,17 +263,35 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
           _showMemo ? Container(height: 16.h,) : Container(),
           _showMemo ? Row(
             mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 1,
+                flex: FLEX_LEFT_LABEL,
                 child: Text('MEMO', textAlign: TextAlign.right,
                   style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
               ),
               Container(width: 8.w,),
               Expanded(
-                flex: 2,
+                flex: FLEX_RIGHT_CONTENT,
                 child: Text('$_decodedMemo', textAlign: TextAlign.left, maxLines: 2,
+                  style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
+              )
+            ],
+          ) : Container(),
+          null != _txnEntity.failureReason ? Container(height: 16.h,) : Container(),
+          null != _txnEntity.failureReason ? Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: FLEX_LEFT_LABEL,
+                child: Text('FAILED', textAlign: TextAlign.right,
+                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
+              ),
+              Container(width: 8.w,),
+              Expanded(
+                flex: FLEX_RIGHT_CONTENT,
+                child: Text('${_txnEntity.failureReason.toString()}', textAlign: TextAlign.left, maxLines: 2,
                   style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
               )
             ],

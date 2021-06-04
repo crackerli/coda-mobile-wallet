@@ -288,7 +288,8 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
       userCommand.memo!,
       userCommand.isPooled! ? TxnStatus.PENDING : TxnStatus.CONFIRMED,
       txnType,
-      userCommand.isIndexerMemo!
+      userCommand.isIndexerMemo!,
+      userCommand.failureReason
     );
     Navigator.pushNamed(context, TxnDetailRoute, arguments: txnEntity);
   }
