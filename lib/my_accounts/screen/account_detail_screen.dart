@@ -1,6 +1,7 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
@@ -104,8 +105,8 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
           ) : Text('Inactive', style: TextStyle(color: Colors.redAccent,
             fontWeight: FontWeight.normal,
             fontSize: 18.sp)),
-          // Text('\$1234.56',
-          //   textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, color: Color(0xff616161))),
+          Text('\$${getAccountFiatPrice(_accountIndex)}',
+            textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp, color: Color(0xff616161))),
         ],
       );
     } else {
