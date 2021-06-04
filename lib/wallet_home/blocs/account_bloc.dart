@@ -1,8 +1,10 @@
+import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/providers_utils.dart';
+import 'package:coda_wallet/wallet_home/blocs/exchange_info_entity.dart';
 import 'package:coda_wallet/wallet_home/query/account_query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +34,38 @@ class AccountBloc extends
       yield* _mapGetAccountsToStates(event);
       return;
     }
+
+    if(event is GetExchangeInfo) {
+      yield* _mapGetExchangeInfoToStates(event);
+      return;
+    }
+  }
+
+  Stream<AccountStates>
+    _mapGetExchangeInfoToStates(GetExchangeInfo event) async* {
+    try {
+      Response response = await _indexerService.getExchangeInfo();
+
+      if(response.statusCode != 200) {
+        return;
+      }
+
+      List<dynamic> data = response.data as List;
+      if(data.length > 0) {
+        Map<String, dynamic> map = data[0];
+        ExchangeInfoEntity? exchangeInfoEntity = ExchangeInfoEntity.fromMap(map);
+        if(null != exchangeInfoEntity && null != exchangeInfoEntity.price && exchangeInfoEntity.price!.isNotEmpty) {
+          // Save last price and emit state
+          globalPreferences.setString(NOMICS_PRICE_KEY, exchangeInfoEntity.price!);
+          yield GetExchangeInfoSuccess(exchangeInfoEntity.price);
+        }
+        print('Get exchange info done!!');
+      } else {
+        print('Get exchange info error!!');
+      }
+    } catch (e) {
+      print('Error happen when get providers: ${e.toString()}');
+    } finally {}
   }
 
   Stream<AccountStates>
@@ -49,7 +83,8 @@ class AccountBloc extends
         if(event.index >= globalHDAccounts.accounts!.length - 1) {
           print('1. Get all accounts info finished');
           yield GetAccountsFinished();
-          getProviders();
+          add(GetExchangeInfo());
+          _getProviders();
         } else {
           print('1. To get account ${event.index + 1}');
           add(GetAccounts(event.index + 1));
@@ -83,9 +118,10 @@ class AccountBloc extends
         }
       }
       if(event.index >= globalHDAccounts.accounts!.length - 1) {
-        print('2. Get all accounts info finished');
+        print('2. Get all accounts info finished: ${event.index}');
         yield GetAccountsFinished();
-        getProviders();
+        add(GetExchangeInfo());
+        _getProviders();
         return;
       }
 
@@ -100,7 +136,7 @@ class AccountBloc extends
   }
 
   // Just store all registered pool in local storage
-  getProviders() async {
+  _getProviders() async {
     try {
       Response response = await _indexerService.getProviders();
 
@@ -120,5 +156,4 @@ class AccountBloc extends
       print('Error happen when get providers: ${e.toString()}');
     } finally {}
   }
-
 }

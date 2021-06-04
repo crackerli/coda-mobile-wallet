@@ -13,3 +13,11 @@ class GetAccounts extends AccountEvents {
   @override
   List<Object>? get props => null;
 }
+
+class GetExchangeInfo extends AccountEvents {
+
+  GetExchangeInfo() : super();
+
+  @override
+  List<Object>? get props => null;
+}

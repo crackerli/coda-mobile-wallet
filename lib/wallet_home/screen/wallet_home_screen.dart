@@ -171,8 +171,8 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildTotalBalance(),
-   //               _buildFiatBalance(),
-                  Container(height: 41.h),
+                  _buildFiatBalance(),
+                  Container(height: 23.h),
                   _buildStakedPercent(),
                 ]
               );
@@ -283,7 +283,8 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   _buildFiatBalance() {
     return Padding(
       padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
-      child: Text('(\$${getWalletPrice()})', textAlign: TextAlign.center, style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: Color(0xff979797)))
+      child: Text('(\$${getWalletFiatPrice()})', textAlign: TextAlign.center, maxLines: 2,
+        style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: Color(0xff757575)))
     );
   }
 

@@ -11,6 +11,14 @@ const FIGMENT_DEVNET_INDEXER_SERVER = 'https://mina--devnet--indexer.datahub.fig
 
 const STAKETAB_PROVIDERS = 'https://api.staketab.com/mina/get_providers';
 
+// add your own nomics key here, to get the real-time mina price
+const NOMICS_API_KEY = 'Put your own nomics api key here';
+const NOMICS_QUERY_URL =
+  'https://api.nomics.com/v1/currencies/ticker?key=$NOMICS_API_KEY&ids=MINA&interval=1h&convert=USD';
+const NOMICS_PRICE_KEY = 'nomics_price_key';
+const PRESET_MINA_PRICE = '1.0';
+const PRESET_MINA_PRICE_DOUBLE = 1.0;
+
 // Local stored provider list
 const STAKETAB_PROVIDER_KEY = 'staketab_provider_key';
 

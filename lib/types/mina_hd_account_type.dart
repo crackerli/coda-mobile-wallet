@@ -1,10 +1,10 @@
 import 'package:coda_wallet/global/global.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 
-String getWalletBalance() {
+BigInt getWalletNanoBalance() {
   if(globalHDAccounts.accounts == null
     || globalHDAccounts.accounts!.length == 0) {
-    return '0';
+    return BigInt.from(0);
   }
 
   BigInt walletBalance = BigInt.from(0);
@@ -14,21 +14,28 @@ String getWalletBalance() {
       walletBalance = balance + walletBalance;
     }
   }
-  return MinaHelper.getMinaStrByNanoNum(walletBalance);
+  return walletBalance;
 }
 
-String getWalletPrice() {
+String getWalletBalance() {
+  return MinaHelper.getMinaStrByNanoNum(getWalletNanoBalance());
+}
+
+String getWalletFiatPrice() {
   if(globalHDAccounts.accounts == null
     || globalHDAccounts.accounts!.length == 0) {
     return '0';
   }
-  double walletBalance = 0.0;
-  for(int i = 0; i < globalHDAccounts.accounts!.length; i++) {
-    double balance = double.parse(globalHDAccounts.accounts![i]!.balance!);
-    walletBalance = balance + walletBalance;
+  return getTokenFiatPrice(getWalletNanoBalance().toString());
+}
+
+String getAccountFiatPrice(int index) {
+  if(globalHDAccounts.accounts == null
+      || globalHDAccounts.accounts!.length == 0) {
+    return '0';
   }
-  double tmp = walletBalance / 1000000000;
-  return (tmp * gUnitFiatPrice).toString();
+
+  return getTokenFiatPrice(globalHDAccounts.accounts![index]!.balance);
 }
 
 class MinaHDAccount {

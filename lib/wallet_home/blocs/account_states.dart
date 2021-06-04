@@ -31,6 +31,32 @@ class GetAccountsFail extends AccountStates {
   List<Object> get props => data.data;
 }
 
+class GetExchangeInfoLoading extends AccountStates {
+
+  GetExchangeInfoLoading() : super();
+
+  @override
+  List<Object>? get props => null;
+}
+
+class GetExchangeInfoSuccess extends AccountStates {
+  final dynamic data;
+
+  GetExchangeInfoSuccess(this.data) : super();
+
+  @override
+  List<Object> get props => data.data;
+}
+
+class GetExchangeInfoFail extends AccountStates {
+  final dynamic data;
+
+  GetExchangeInfoFail(this.data) : super();
+
+  @override
+  List<Object> get props => data.data;
+}
+
 class GetAccountsFinished extends AccountStates {
   GetAccountsFinished() : super();
 

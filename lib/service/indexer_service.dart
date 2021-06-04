@@ -55,4 +55,9 @@ class IndexerService {
     Response response = await _client!.get(STAKETAB_PROVIDERS);
     return response;
   }
+
+  Future<Response> getExchangeInfo() async {
+    Response response = await _client!.get(NOMICS_QUERY_URL);
+    return response;
+  }
 }

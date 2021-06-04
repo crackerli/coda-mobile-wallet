@@ -12,18 +12,30 @@ RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>(
 const primaryBackgroundColor = Color(0xfff5f8fd);
 const globalHPadding = 20;
 
-// global mina unit price, will be retrieved from some exchanges at startup.
-double gUnitFiatPrice = 2.317;
-
 // global derived hd accounts from bip44 seed
 MinaHDAccount globalHDAccounts = MinaHDAccount();
 
 String? globalEncryptedSeed;
 
-String getTokenFiatPrice(String tokenNumber) {
-  double token = double.parse(tokenNumber);
-  double ret = token * gUnitFiatPrice;
-  return ret.toString();
+// Token number should be nano mina
+// For precision, we convert all double to BigInt
+String getTokenFiatPrice(String? tokenNumber) {
+  if(null == tokenNumber || tokenNumber.isEmpty) {
+    return '0.0';
+  }
+  String unitPriceStr = globalPreferences.getString(NOMICS_PRICE_KEY) ?? PRESET_MINA_PRICE;
+  BigInt? nanoNumber = BigInt.tryParse(tokenNumber);
+  if(null != nanoNumber) {
+    // Only calc balance such as 0.0001
+    BigInt tempTokenNumber = nanoNumber ~/ BigInt.from(100000);
+    // Convert double price to BigInt
+    double unitPrice = double.tryParse(unitPriceStr) ?? PRESET_MINA_PRICE_DOUBLE;
+    BigInt tempUnitPrice = BigInt.from((unitPrice * 10000).toInt());
+    BigInt totalPrice = tempUnitPrice * tempTokenNumber ~/ BigInt.from(10000 * 10);
+    // Convert price in BigInt back to double
+    return (totalPrice.toDouble() / 100.0 / 10.0).toStringAsFixed(2);
+  }
+  return '0.0';
 }
 
 // Global functions
