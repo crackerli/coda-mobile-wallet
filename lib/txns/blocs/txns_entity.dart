@@ -1,11 +1,6 @@
 import 'package:coda_wallet/txns/blocs/pooled_txns_entity.dart';
 import 'confirmed_txns_entity.dart';
 
-class TxnsEntity {
-  ConfirmedTxnsEntity? confirmedTxnsEntity;
-  PooledTxnsEntity? pooledTxnsEntity;
-}
-
 class MergedUserCommand {
   String? to;
   String? from;
@@ -20,6 +15,7 @@ class MergedUserCommand {
   bool? isPooled;
   String? dateTime;
   int? blockHeight;
+  dynamic failureReason;
 
   @override
   int get hashCode {

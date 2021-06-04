@@ -149,6 +149,7 @@ class UserCommandsBean {
   String? memo;
   String? to;
   int? nonce;
+  dynamic failureReason;
 
   static UserCommandsBean? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;

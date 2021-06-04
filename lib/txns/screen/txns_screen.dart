@@ -363,8 +363,20 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(getTxnTypeStr(command), textAlign: TextAlign.left, style: TextStyle(fontSize: 18.sp)),
-              Text(command.isPooled! ? 'Pending' : formattedDate!.hms,
-                textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575))),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(command.isPooled! ? 'Pending' : formattedDate!.hms,
+                    textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575))),
+                  Container(width: 2.w,),
+                  null == command.failureReason ?
+                    Container() :
+                    Text('(failed)',
+                      textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, color: Colors.red, fontWeight: FontWeight.w500)),
+                ]
+              )
             ],
           ),
           Container(width: 20.w),

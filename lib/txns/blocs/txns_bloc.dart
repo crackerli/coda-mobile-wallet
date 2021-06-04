@@ -227,6 +227,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
         mergedUserCommand.to                = receiver;
         mergedUserCommand.isPooled          = false;
         mergedUserCommand.isIndexerMemo     = false;
+        mergedUserCommand.failureReason     = safeUserCommand['failureReason'].value;
         mergedUserCommands.add(mergedUserCommand);
       }
     });
@@ -255,6 +256,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
         mergedUserCommand.dateTime          = '';
         mergedUserCommand.blockHeight       = 0;
         mergedUserCommand.isIndexerMemo     = false;
+        mergedUserCommand.failureReason     = safeUserCommand['failureReason'].value;
         mergedUserCommands.add(mergedUserCommand);
       }
     });
@@ -278,8 +280,9 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       mergedUserCommand.isDelegation      = (transaction?.type) == 'delegation';
       mergedUserCommand.isPooled          = false;
       mergedUserCommand.isIndexerMemo     = true;
-      DateTime? dateTime                   = DateTime.tryParse(transaction?.time ?? '');
+      DateTime? dateTime                  = DateTime.tryParse(transaction?.time ?? '');
       mergedUserCommand.dateTime          = (dateTime == null ? '' : dateTime.millisecondsSinceEpoch.toString());
+      mergedUserCommand.failureReason     = transaction?.failureReason;
       mergedUserCommands.add(mergedUserCommand);
     });
   }

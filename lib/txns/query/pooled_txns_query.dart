@@ -12,6 +12,7 @@ const POOLED_TXNS_QUERY = r'''
           memo
           to
           nonce
+          failureReason
         }
       }
       protocolState {
@@ -32,6 +33,7 @@ const POOLED_TXNS_QUERY = r'''
       isDelegation
       hash
       nonce
+      failureReason
     }
   }
 ''';

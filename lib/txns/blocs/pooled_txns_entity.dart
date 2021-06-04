@@ -41,6 +41,7 @@ class PooledUserCommandBean {
   String? token;
   String? id;
   String? kind;
+  dynamic failureReason;
 
   static PooledUserCommandBean? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;
