@@ -329,8 +329,8 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                       ),
                     ]),
                   ),
-                  // Container(height: 4.h,),
-                  // Text('(\$$feeFiat)', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, color: Color(0xff2d2d2d))),
+                  Container(height: 1.h,),
+                  Text('(\$$feeFiat)', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, color: Color(0xff2d2d2d))),
                 ],
               ),
             ),
@@ -436,7 +436,9 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
                       )]
                     )
                   ) : Container(),
-                  // Text('(\$353.62)', textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp, color: Color(0xff616161)),),
+                  !_sendBloc.isDelegation ?
+                  Text('(\$${getTokenFiatPrice(_sendBloc.finalAmount.toString())})',
+                    textAlign: TextAlign.left, style: TextStyle(fontSize: 16.sp, color: Color(0xff616161))) : Container(),
                   (_sendData.memo != null && _sendData.memo!.trim().isNotEmpty) ? Container(height: 10.h,) : Container(),
                   (_sendData.memo != null && _sendData.memo!.trim().isNotEmpty) ? Text('MEMO',
                     textAlign: TextAlign.left,
@@ -470,17 +472,17 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
             children: [
               Expanded(
                 child: _buildFeeItem(0, 0 == feeIndex, 'MODERATE',
-                  formatFeeAsFixed(bestFees[0], 3), '\$0.05'),
+                  formatFeeAsFixed(bestFees[0], 3), getTokenFiatPrice(bestFees[0].toString())),
                 flex: 1,
               ),
               Expanded(
                 child: _buildFeeItem(1, 1 == feeIndex, 'FAST',
-                  formatFeeAsFixed(bestFees[1], 3), '\$0.07'),
+                  formatFeeAsFixed(bestFees[1], 3), getTokenFiatPrice(bestFees[1].toString())),
                 flex: 1,
               ),
               Expanded(
                 child: _buildFeeItem(2, 2 == feeIndex, 'VERY FAST',
-                  formatFeeAsFixed(bestFees[2], 3), '\$0.07'),
+                  formatFeeAsFixed(bestFees[2], 3), getTokenFiatPrice(bestFees[2].toString())),
                 flex: 1,
               )
             ],
