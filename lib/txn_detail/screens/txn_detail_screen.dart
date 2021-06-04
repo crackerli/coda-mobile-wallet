@@ -224,6 +224,22 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               )
             ],
           ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: FLEX_LEFT_LABEL,
+                child: Container(width: 1,),
+              ),
+              Container(width: 8.w,),
+              Expanded(
+                flex: FLEX_RIGHT_CONTENT,
+                child: Text('(\$${getTokenFiatPrice(_txnEntity.amount)})', maxLines: 3,
+                  textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
+              )
+            ],
+          ),
           Container(height: 16.h,),
           Row(
             mainAxisSize: MainAxisSize.max,
@@ -242,6 +258,22 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
               )
             ],
           ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: FLEX_LEFT_LABEL,
+                child: Container(width: 1,),
+              ),
+              Container(width: 8.w,),
+              Expanded(
+                flex: FLEX_RIGHT_CONTENT,
+                child: Text('(\$${getTokenFiatPrice(_txnEntity.fee)})', maxLines: 3,
+                  textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
+              )
+            ],
+          ),
           Container(height: 16.h,),
           Row(
             mainAxisSize: MainAxisSize.max,
@@ -257,6 +289,22 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                 flex: FLEX_RIGHT_CONTENT,
                 child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.total)} MINA', textAlign: TextAlign.left, maxLines: 2,
                     style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
+              )
+            ],
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: FLEX_LEFT_LABEL,
+                child: Container(width: 1,),
+              ),
+              Container(width: 8.w,),
+              Expanded(
+                flex: FLEX_RIGHT_CONTENT,
+                child: Text('(\$${getTokenFiatPrice(_txnEntity.total)})', maxLines: 3,
+                  textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
               )
             ],
           ),
