@@ -1,6 +1,3 @@
-import 'package:coda_wallet/txns/blocs/pooled_txns_entity.dart';
-import 'confirmed_txns_entity.dart';
-
 class MergedUserCommand {
   String? to;
   String? from;

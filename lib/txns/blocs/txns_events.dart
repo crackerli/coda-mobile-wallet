@@ -33,12 +33,3 @@ class ChangeAccount extends TxnsEvents {
   ChangeAccount();
 }
 
-// class MoreConfirmedTxns extends TxnsEvents {
-//   final String query;
-//   final Map<String, dynamic> variables;
-//
-//   MoreConfirmedTxns(this.query, {this.variables}) : super();
-//
-//   @override
-//   List<Object> get props => [query, variables];
-// }

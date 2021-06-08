@@ -4,7 +4,6 @@ import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
-import 'package:coda_wallet/txns/query/confirmed_txns_query.dart';
 import 'package:coda_wallet/util/safe_map.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../service/coda_service.dart';
@@ -187,7 +186,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
         Map<String, dynamic> variables = Map<String, dynamic>();
         variables['from'] = publicKey;
         variables['to'] = publicKey;
-        add(RefreshConfirmedTxns(CONFIRMED_TXNS_QUERY, variables: variables));
+        add(RefreshConfirmedTxns('', variables: variables));
       }
       isTxnsLoading = true;
     } catch (e) {
