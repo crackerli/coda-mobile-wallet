@@ -6,15 +6,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:social_share/social_share.dart';
 import 'package:image_picker/image_picker.dart';
 
-List<String> _shareNames = ['Facebook', 'Twitter', 'Wechat', 'Instagram', 'Telegram', 'SMS', 'Whatsapp'];
+List<String> _shareNames = ['Facebook', /*'Twitter',*/ /*'Wechat',*/ 'Instagram', 'Telegram', /*'SMS',*/ /*'Whatsapp'*/];
 List<String> _shareIcons = [
   'images/facebook_share.png',
-  'images/twitter_share.png',
-  'images/wechat_share.png',
+//  'images/twitter_share.png',
+//  'images/wechat_share.png',
   'images/instagram_share.png',
   'images/telegram_share.png',
-  'images/sms_share.png',
-  'images/whatsapp_share.png',
+//  'images/sms_share.png',
+//  'images/whatsapp_share.png',
 ];
 
 List<Function> _shareMethods = [
@@ -30,25 +30,32 @@ List<Function> _shareMethods = [
       }
     }
   },
-  (String address, String path) async {
-    SocialShare.shareTwitter('My mina address: $address', url: '', trailingText: '');
+  // (String address, String? path) async {
+  //   SocialShare.shareTwitter('My mina address: $address', url: 'https://www.staking-power.com', trailingText: '');
+  // },
+  // (String address, String? path) async {
+  //   SocialShare.shareTwitter('My mina address: $address');
+  // },
+  (String address, String? path) async {
+    if(Platform.isAndroid) {
+      SocialShare.shareInstagramStory(path!);
+    } else {
+      PickedFile? file = await ImagePicker().getImage(source: ImageSource.gallery);
+      if(null != file) {
+        SocialShare.shareInstagramStory('${file?.path ?? ''}', backgroundTopColor: '#ffffff',
+          backgroundBottomColor: '#000000', attributionURL: 'https://www.staking-power.com', backgroundImagePath: '');
+      }
+    }
   },
-  (String address, String path) async {
-    SocialShare.shareTwitter('My mina address: $address');
-  },
-  (String address, String path) async {
-    SocialShare.shareInstagramStory(path);
-  },
-  (String address, String path) async {
+  (String address, String? path) async {
     SocialShare.shareTelegram('My mina address: $address');
   },
-  (String address, String path) async {
-    SocialShare.shareSms('My mina address: $address', url: '', trailingText: '');
-  },
-  (String address, String path) async {
-    SocialShare.shareWhatsapp('My mina address: $address');
-  },
-
+  // (String address, String? path) async {
+  //   SocialShare.shareSms('My mina address: $address', url: '', trailingText: '');
+  // },
+  // (String address, String? path) async {
+  //   SocialShare.shareWhatsapp('My mina address: $address');
+  // },
 ];
 
 showSocialShareSheet(BuildContext context, String? address, String? snapShotPath, Map? installedApp) {
