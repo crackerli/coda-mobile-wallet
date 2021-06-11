@@ -55,10 +55,10 @@ This is a community tool developed under the policy of Mina Project Grants, not 
     <string>StakingPower wallet want to access you photo library to save qr image</string>. 
     
 # Install on iOS  
-####    (Recommended) If you are non-Chinese mainland user, please search "StakingPower" in appstore and install it.
+####    (Recommended) If you are non-Chinese mainland user, please search "StakingPower" in appstore and install it. Or else you need to create a non-Chinese apple id.
 
 
-####    (Deprecated) If you are Chinese mainland user, please following below to install StakingPower wallet.
+####    (Deprecated) Also you can install a publish testing version, please following below to install StakingPower wallet.
 ```diff
 -    This method is deprecated, use a non-Chinese mainland apple id to download is the right way.
 ```
