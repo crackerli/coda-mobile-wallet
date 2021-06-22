@@ -1,3 +1,11 @@
+// The transaction list composed by three parts.
+// 1. Historic transactions get from figment archive node.
+// 2. Pooled user commands get from figment graphql endpoint.
+// 3. Because figment archive node is always one block behind the highest block height,
+//   so we must get the recently included transaction from the best chain, which means we must
+//   also call the graphql endpoint to find the recently one block to find if users' transaction is there.
+
+
 import 'dart:collection';
 
 import 'package:coda_wallet/global/global.dart';

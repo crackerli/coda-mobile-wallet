@@ -56,6 +56,7 @@ class SendBloc extends
     feeIndex = -1;
   }
 
+
   bool checkFeeValid() {
     if(null == fee || fee!.isEmpty) {
       sendEnabled = false;
@@ -129,6 +130,8 @@ class SendBloc extends
     yield FeeChosen(index);
   }
 
+  // Get all fees from the network command pool, and rearrange all the fees with topK method.
+  // Then we can estimate which fee can included in the coming blocks.
   Stream<SendStates>
     _mapGetPooledFeeToStates(GetPooledFee event) async* {
     final query = event.query;

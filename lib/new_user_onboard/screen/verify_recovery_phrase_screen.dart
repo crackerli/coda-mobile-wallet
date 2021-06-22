@@ -54,6 +54,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
     return;
   }
 
+  // Disorder the mnemonic words.
   _createRandomMnemonics() {
     if(null != _mnemonicTips && _mnemonicTips.length > 0) {
       return;
@@ -68,6 +69,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
     }
   }
 
+  // If user have wrong inputs, then he can clear his input and try again.
   _clearInputWords() {
     for(int i = 0; i < _mnemonicTips.length; i++) {
       MnemonicBody body = _mnemonicTips[i];

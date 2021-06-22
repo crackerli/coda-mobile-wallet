@@ -5,7 +5,8 @@ import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// Global variables
+// Global variables, used to manage the local saved data.
+// For example, encrypted seed string, user derived accounts from seed, node as service provider list, etc.
 late SharedPreferences globalPreferences;
 
 RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
@@ -15,6 +16,7 @@ const globalHPadding = 20;
 // global derived hd accounts from bip44 seed
 MinaHDAccount globalHDAccounts = MinaHDAccount();
 
+// Encrypted seed read from local saved data or generated from recovery words
 String? globalEncryptedSeed;
 
 // Token number should be nano mina

@@ -20,6 +20,7 @@ class EditAccountScreen extends StatefulWidget {
 class _EditAccountScreenState extends State<EditAccountScreen> {
   FocusNode _focusNodeAccount = FocusNode();
   TextEditingController _accountController = TextEditingController();
+  // Index point to which account should be edited
   int _accountIndex = 0;
 
   @override

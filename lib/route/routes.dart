@@ -28,6 +28,8 @@ import 'package:coda_wallet/txns/screen/txns_choose_account.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// Global routes that indicate the navigation between different screens.
+
 const SendFromRoute = '/SendFromScreen';
 const SendToRoute = '/SendToScreen';
 const SendAmountRoute = '/SendAmountScreen';

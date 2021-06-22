@@ -244,6 +244,9 @@ class _SendToScreenState extends State<SendToScreen> {
     );
   }
 
+  // The memo field of mina is designed to input some hash values, for example, sha256.
+  // If user want to input some non-ascii characters, they can only input 4 characters with utf8 encoding.
+  // So we disallow user input non-ascii characters, then they can input 31 ascii words.
   _buildMemoField() {
     return Container(
       padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 13.h, bottom: 13.h),
@@ -257,7 +260,7 @@ class _SendToScreenState extends State<SendToScreen> {
         focusNode: _focusNodeMemo,
         controller: _memoController,
         inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp('[\u0020-\u007F]')),
+          FilteringTextInputFormatter.allow(RegExp('[\u0020-\u007F]')), // Non-ascii characters input disallowed.
         ],
         onChanged: (text) {
           _sendData.memo = text;

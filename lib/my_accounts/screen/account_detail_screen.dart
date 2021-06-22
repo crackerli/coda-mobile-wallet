@@ -19,6 +19,7 @@ class AccountDetailScreen extends StatefulWidget {
 }
 
 class _AccountDetailScreenState extends State<AccountDetailScreen> {
+  // Index point to which account detail should be show
   int _accountIndex = 0;
   var _eventBusOn;
   bool _addressCopied = false;

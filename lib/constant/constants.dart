@@ -3,7 +3,7 @@ const APPBAR_TITLE_FONT_SIZE = 68;
 const BOTTOM_BAR_ITEM_SIZE = 23;
 
 // add your own figment api key here
-const FIGMENT_API_KEY = 'Put your own figment api key here';
+const FIGMENT_API_KEY = '08dcd6e9f625e979be50834e8919ef4a';
 const FIGMENT_MAINNET_RPC_SERVER = 'https://mina-mainnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
 const FIGMENT_MAINNET_INDEXER_SERVER = 'https://mina--mainnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
 const FIGMENT_DEVNET_RPC_SERVER = 'https://mina-devnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
@@ -12,7 +12,7 @@ const FIGMENT_DEVNET_INDEXER_SERVER = 'https://mina--devnet--indexer.datahub.fig
 const STAKETAB_PROVIDERS = 'https://api.staketab.com/mina/get_providers';
 
 // add your own nomics key here, to get the real-time mina price
-const NOMICS_API_KEY = 'Put your own nomics api key here';
+const NOMICS_API_KEY = 'dedfc03226d44523e5064063177cd5a52f2b6ffc';
 const NOMICS_QUERY_URL =
   'https://api.nomics.com/v1/currencies/ticker?key=$NOMICS_API_KEY&ids=MINA&interval=1h&convert=USD';
 const NOMICS_PRICE_KEY = 'nomics_price_key';
@@ -30,6 +30,7 @@ const DEFAULT_ACCOUNT_NUMBER = 1;
 
 const GLOBAL_ACCOUNTS_KEY = 'global_accounts_key';
 
+// This is the minimal fee that can be accepted by network.
 const MINIMAL_FEE_COST = 1000000;
 const FEE_COHORT_LENGTH = 80;
 

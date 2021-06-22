@@ -135,7 +135,7 @@ class AccountBloc extends
     }
   }
 
-  // Just store all registered pool in local storage
+  // Just store all registered pool in local storage for future usage.
   _getProviders() async {
     try {
       Response response = await _indexerService.getProviders();

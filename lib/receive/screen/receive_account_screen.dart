@@ -23,6 +23,8 @@ class ReceiveAccountScreen extends StatefulWidget {
 }
 
 class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
+  // Global key to the painted widgets, include the qr code image, public key text.
+  // Then we can save them into a image for social share purpose.
   final GlobalKey _qrImageKey = GlobalKey();
   bool _addressCopied = false;
   late int _accountIndex;
