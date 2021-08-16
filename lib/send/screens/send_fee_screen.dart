@@ -63,7 +63,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     BigInt fee = _sendBloc.bestFees[_sendBloc.feeIndex];
     BigInt feeToken = BigInt.from(1);
     int nonce = _sendBloc.nonce;
-    int validUntil = 65535;
+    int validUntil = 4294967295;
     BigInt tokenId = BigInt.from(1);
     BigInt amount = _sendBloc.finalAmount;
     int tokenLocked = 0;
@@ -86,7 +86,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     BigInt fee = _sendBloc.bestFees[_sendBloc.feeIndex];
     BigInt feeToken = BigInt.from(1);
     int nonce = _sendBloc.nonce;
-    int validUntil = 65535;
+    int validUntil = 4294967295;
     BigInt tokenId = BigInt.from(1);
     int tokenLocked = 0;
 
@@ -107,7 +107,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     variables['memo'] = _sendBloc.memo;
     variables['fee'] = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
     variables['nonce'] = _sendBloc.nonce;
-    variables['validUntil'] = 65535;
+    variables['validUntil'] = 4294967295;
     ProgressDialog.showProgress(context);
     if(_sendBloc.isDelegation) {
       Signature signature = await _signDelegation();
