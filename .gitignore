@@ -14,6 +14,9 @@
 .history
 .svn/
 
+flutter_android_release.sh
+flutter_ios_release.sh
+
 # IntelliJ related
 *.iml
 *.ipr

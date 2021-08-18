@@ -2,8 +2,8 @@ const APPBAR_HEIGHT = 52;
 const APPBAR_TITLE_FONT_SIZE = 68;
 const BOTTOM_BAR_ITEM_SIZE = 23;
 
-// add your own figment api key here
-const FIGMENT_API_KEY = 'Put your own figment api key here';
+// add your own figment api key here, or read from environment with --dart-define tag
+const FIGMENT_API_KEY = String.fromEnvironment('FIGMENT_API_KEY');
 const FIGMENT_MAINNET_RPC_SERVER = 'https://mina-mainnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
 const FIGMENT_MAINNET_INDEXER_SERVER = 'https://mina--mainnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
 const FIGMENT_DEVNET_RPC_SERVER = 'https://mina-devnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
@@ -11,8 +11,8 @@ const FIGMENT_DEVNET_INDEXER_SERVER = 'https://mina--devnet--indexer.datahub.fig
 
 const STAKETAB_PROVIDERS = 'https://api.staketab.com/mina/get_providers';
 
-// add your own nomics key here, to get the real-time mina price
-const NOMICS_API_KEY = 'Put your own nomics api key here';
+// add your own nomics key here, or read from environment with --dart-define tag
+const NOMICS_API_KEY = String.fromEnvironment('NOMICS_API_KEY');
 const NOMICS_QUERY_URL =
   'https://api.nomics.com/v1/currencies/ticker?key=$NOMICS_API_KEY&ids=MINA&interval=1h&convert=USD';
 const NOMICS_PRICE_KEY = 'nomics_price_key';
