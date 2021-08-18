@@ -31,7 +31,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
   bool _showOrigin = false;
   bool _showConfirm = false;
   bool _alertChecked = false;
-  late String _mnemonic;
+  late Uint8List _seed;
   bool _buttonEnabled = false;
 
   _checkPassword(BuildContext context) {
@@ -69,14 +69,13 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
   _processMnemonicWords(BuildContext context) async {
     print('[import wallet]: start convert mnemonic words to seed');
     ProgressDialog.showProgress(context);
-    Uint8List seed = await mnemonicToSeed(_mnemonic);
     print('[import wallet]: start to encrypted seed');
-    globalEncryptedSeed = encryptSeed(seed, _controllerConfirm.text);
+    globalEncryptedSeed = await encryptSeed(_seed, _controllerConfirm.text, sodium: true);
     print('[import wallet]: save seed String');
     globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed!);
 
     print('[import wallet]: start to derive account');
-    List<AccountBean> accounts = await deriveDefaultAccount(seed);
+    List<AccountBean> accounts = await deriveDefaultAccount(_seed);
     globalHDAccounts.accounts = accounts;
     Map accountsJson = globalHDAccounts.toJson();
     globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
@@ -113,7 +112,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
       designSize: Size(375, 812),
       orientation: Orientation.portrait
     );
-    _mnemonic = ModalRoute.of(context)!.settings.arguments as String;
+    _seed = ModalRoute.of(context)!.settings.arguments as Uint8List;
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),

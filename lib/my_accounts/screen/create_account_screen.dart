@@ -163,14 +163,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   _deriveNewAccount(String password) async {
     Uint8List seed;
+    ProgressDialog.showProgress(context);
     try {
-      seed = decryptSeed(globalEncryptedSeed!, password);
+      seed = await decryptSeed(globalEncryptedSeed!, password);
     } catch(error) {
       print('password not right');
+      ProgressDialog.dismiss(context);
       _scaffoldKey.currentState!.showSnackBar(new SnackBar(content: Text('Wrong password')));
       return;
-    }
-    ProgressDialog.showProgress(context);
+    } finally { }
     String accountName = '';
     if(_accountController.text.isEmpty) {
       accountName = 'Account #${globalHDAccounts.accounts!.length}';

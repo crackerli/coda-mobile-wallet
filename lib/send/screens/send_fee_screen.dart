@@ -156,16 +156,19 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   void initState() {
     super.initState();
     _sendBloc = BlocProvider.of<SendBloc>(context);
-    _eventBusOn = eventBus.on<SendEventBus>().listen((event) {
+    _eventBusOn = eventBus.on<SendEventBus>().listen((event) async {
       if(event is SendPasswordInput) {
         String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
         print('SendFeeScreen: start to decrypt seed');
+        ProgressDialog.showProgress(context);
         try {
-          Uint8List seed = decryptSeed(encryptedSeed!, event.password);
+          Uint8List seed = await decryptSeed(encryptedSeed!, event.password);
           _accountPrivateKey = generatePrivateKey(seed, _sendData.from);
+          ProgressDialog.dismiss(context);
           _getNonce();
         } catch (error) {
           print('password not right');
+          ProgressDialog.dismiss(context);
           _sendBloc.add(InputWrongPassword());
         }
         return;

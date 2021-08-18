@@ -1,7 +1,10 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
+import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -141,7 +144,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
           bottom: 84.h,
           child: Builder(builder: (context) =>
             InkWell(
-              onTap: () => Navigator.pushNamed(context, EncryptSeedRoute, arguments: _mnemonic),
+              onTap: () => _generateSeed(context),
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
                 decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
@@ -219,4 +222,11 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
     );
   }
 
+  _generateSeed(BuildContext context) async {
+    print('[create wallet]: start convert mnemonic words to seed');
+    ProgressDialog.showProgress(context);
+    Uint8List seed = await mnemonicToSeed(_mnemonic);
+    ProgressDialog.dismiss(context);
+    Navigator.pushNamed(context, EncryptSeedRoute, arguments: seed);
+  }
 }

@@ -1,6 +1,8 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,8 +76,16 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Can not find any accounts under this seed!!')));
       return;
     } else {
-      Navigator.pushNamed(context, EncryptSeedRoute, arguments: _mnemonic);
+      _generateSeed(context);
     }
+  }
+
+  _generateSeed(BuildContext context) async {
+    print('[import wallet]: start convert mnemonic words to seed');
+    ProgressDialog.showProgress(context);
+    Uint8List seed = await mnemonicToSeed(_mnemonic);
+    ProgressDialog.dismiss(context);
+    Navigator.pushNamed(context, EncryptSeedRoute, arguments: seed);
   }
 
   @override

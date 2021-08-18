@@ -133,7 +133,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                 Container(height: 32.h,),
                 Builder(builder: (BuildContext context) =>
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
                       if(_controllerChangePassword.text.isEmpty) {
                         return;
                       }
@@ -141,7 +141,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                       String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
                       print('SendFeeScreen: start to decrypt seed');
                       try {
-                        Uint8List seed = decryptSeed(encryptedSeed!, _controllerChangePassword.text);
+                        Uint8List seed = await decryptSeed(encryptedSeed!, _controllerChangePassword.text);
                         // Pop encrypt seed dialog
                         Navigator.of(context).pop();
                       } catch (error) {
