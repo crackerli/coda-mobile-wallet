@@ -146,9 +146,9 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                       ProgressDialog.showProgress(context);
                       try {
                         Uint8List seed = await decryptSeed(encryptedSeed!, _controllerChangePassword.text);
-                        // Successfully decrypt, reset local stored encrypted seed.
-                        globalEncryptedSeed = '';
-                        globalPreferences.setString(ENCRYPTED_SEED_KEY, '');
+                        // Successfully decrypt, push seed to encryption page.
+                        // globalEncryptedSeed = '';
+                        // globalPreferences.setString(ENCRYPTED_SEED_KEY, '');
                         eventBus.fire(ChangePasswordSucceed(seed));
                         Navigator.of(context).pop();
                       } catch (error) {

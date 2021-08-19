@@ -15,6 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:password_strength/password_strength.dart';
+
+enum PasswordStrength {
+  WEAK,
+  MEDIUM,
+  STRONG
+}
 
 class EncryptSeedScreen extends StatefulWidget {
   EncryptSeedScreen({Key? key}) : super(key: key);
@@ -34,6 +41,22 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
   late Uint8List _seed;
   late bool _initData;
   bool _buttonEnabled = false;
+  PasswordStrength _passwordStrength = PasswordStrength.WEAK;
+
+  _checkPasswordStrength(String password) {
+    if(password.isEmpty) {
+      _passwordStrength = PasswordStrength.WEAK;
+    }
+
+    double strength = estimatePasswordStrength(password);
+    if(strength < 0.3) {
+      _passwordStrength = PasswordStrength.WEAK;
+    } else if(strength < 0.7) {
+      _passwordStrength = PasswordStrength.MEDIUM;
+    } else {
+      _passwordStrength = PasswordStrength.STRONG;
+    }
+  }
 
   _checkPassword(BuildContext context) {
     if(_controllerOrigin.text.isEmpty) {
@@ -62,6 +85,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
     } else {
       _buttonEnabled = false;
     }
+    _checkPasswordStrength(_controllerOrigin.text);
     setState(() {
 
     });
@@ -197,6 +221,45 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
             border: Border.all(width: 1.w, color: Color(0xff757575))
           )
         ),
+        Container(height: 12.h,),
+        Row(children: [
+          Container(
+            padding: EdgeInsets.only(top: 2.h, bottom: 2.h),
+            child: Center(
+              child: Text('Weak', maxLines: 1, style: TextStyle(fontSize: 16.sp),)
+            ),
+            width: 80.w,
+            decoration: BoxDecoration(
+              color: _passwordStrength == PasswordStrength.WEAK ? Colors.red : Color(0xfff5f5f5),
+              borderRadius: BorderRadius.all(Radius.circular(0.w)),
+              border: Border.all(width: 1.w, color: Color(0xff757575))
+            )
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 2.h, bottom: 2.h),
+            child: Center(
+              child: Text('Medium', maxLines: 1, style: TextStyle(fontSize: 16.sp),)
+            ),
+            width: 80.w,
+            decoration: BoxDecoration(
+              color: _passwordStrength == PasswordStrength.MEDIUM ? Colors.yellow : Color(0xfff5f5f5),
+              borderRadius: BorderRadius.all(Radius.circular(0.w)),
+              border: Border.all(width: 1.w, color: Color(0xff757575))
+            )
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 2.h, bottom: 2.h),
+            child: Center(
+              child: Text('Strong', maxLines: 1, style: TextStyle(fontSize: 16.sp),)
+            ),
+            width: 80.w,
+            decoration: BoxDecoration(
+              color: _passwordStrength == PasswordStrength.STRONG ? Colors.green : Color(0xfff5f5f5),
+              borderRadius: BorderRadius.all(Radius.circular(0.w)),
+              border: Border.all(width: 1.w, color: Color(0xff757575))
+            )
+          )
+        ],),
         Container(height: 12.h,),
         Container(
           padding: EdgeInsets.only(left: 8.w, right: 8.w, top: 15.h, bottom: 15.h),
