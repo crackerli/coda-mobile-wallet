@@ -85,7 +85,7 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
     ProgressDialog.showProgress(context);
     Uint8List seed = await mnemonicToSeed(_mnemonic);
     ProgressDialog.dismiss(context);
-    Navigator.pushNamed(context, EncryptSeedRoute, arguments: seed);
+    Navigator.pushNamed(context, EncryptSeedRoute, arguments: {'seed': seed, 'init_data': true });
   }
 
   @override

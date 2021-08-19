@@ -32,6 +32,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
   bool _showConfirm = false;
   bool _alertChecked = false;
   late Uint8List _seed;
+  late bool _initData;
   bool _buttonEnabled = false;
 
   _checkPassword(BuildContext context) {
@@ -50,7 +51,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
       return;
     }
 
-    _processMnemonicWords(context);
+    _generateAccounts(context);
   }
 
   _checkInput(BuildContext context) {
@@ -66,7 +67,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
     });
   }
 
-  _processMnemonicWords(BuildContext context) async {
+  _generateAccounts(BuildContext context) async {
     print('[import wallet]: start convert mnemonic words to seed');
     ProgressDialog.showProgress(context);
     print('[import wallet]: start to encrypted seed');
@@ -74,14 +75,22 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
     print('[import wallet]: save seed String');
     globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed!);
 
-    print('[import wallet]: start to derive account');
-    List<AccountBean> accounts = await deriveDefaultAccount(_seed);
-    globalHDAccounts.accounts = accounts;
-    Map accountsJson = globalHDAccounts.toJson();
-    globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+    if(_initData) {
+      print('[import wallet]: start to derive account');
+      List<AccountBean> accounts = await deriveDefaultAccount(_seed);
+      globalHDAccounts.accounts = accounts;
+      Map accountsJson = globalHDAccounts.toJson();
+      globalPreferences.setString(
+        GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+      eventBus.fire(UpdateAccounts());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Password changed!'),
+      ));
+    }
+
     ProgressDialog.dismiss(context);
     Navigator.popUntil(context, (route) => route.isFirst);
-    eventBus.fire(UpdateAccounts());
   }
 
   @override
@@ -112,7 +121,11 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
       designSize: Size(375, 812),
       orientation: Orientation.portrait
     );
-    _seed = ModalRoute.of(context)!.settings.arguments as Uint8List;
+
+    Map<String, dynamic> arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    _seed = arguments['seed'];
+    _initData = arguments['init_data'];
+
     return Scaffold(
       backgroundColor: Color(0xfff5f5f5),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xfff5f5f5)),

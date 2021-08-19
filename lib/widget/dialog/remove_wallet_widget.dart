@@ -142,7 +142,7 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
                   }
                   FocusScope.of(context).unfocus();
                   String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
-                  print('SendFeeScreen: start to decrypt seed');
+                  print('Remove wallet: start to decrypt seed');
                   ProgressDialog.showProgress(context);
                   try {
                     Uint8List seed = await decryptSeed(encryptedSeed!, _controllerRemoveWallet.text);

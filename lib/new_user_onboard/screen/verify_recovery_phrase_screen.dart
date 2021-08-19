@@ -227,6 +227,6 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
     ProgressDialog.showProgress(context);
     Uint8List seed = await mnemonicToSeed(_mnemonic);
     ProgressDialog.dismiss(context);
-    Navigator.pushNamed(context, EncryptSeedRoute, arguments: seed);
+    Navigator.pushNamed(context, EncryptSeedRoute, arguments: {'seed': seed, 'init_data': true });
   }
 }

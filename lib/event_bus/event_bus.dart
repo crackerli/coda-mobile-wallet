@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:event_bus/event_bus.dart';
 
 EventBus eventBus = EventBus();
@@ -51,3 +53,10 @@ class RemoveWalletSucceed extends SettingChangeEventBus {}
 class RemoveWalletFail extends SettingChangeEventBus {}
 
 class NetworkChange extends SettingChangeEventBus {}
+
+class ChangePasswordFail extends SettingChangeEventBus {}
+
+class ChangePasswordSucceed extends SettingChangeEventBus {
+  Uint8List seed;
+  ChangePasswordSucceed(this.seed);
+}

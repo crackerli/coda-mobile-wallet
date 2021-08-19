@@ -2,6 +2,7 @@ import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/widget/dialog/change_password_dialog.dart';
 import 'package:coda_wallet/widget/dialog/remove_wallet_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,16 @@ class _SettingScreenState extends State<SettingScreen> {
 
       if(event is NetworkChange) {
         setState(() { });
+        return;
+      }
+
+      if(event is ChangePasswordFail) {
+        _scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text('Wrong password')));
+        return;
+      }
+
+      if(event is ChangePasswordSucceed) {
+        Navigator.pushNamed(context, EncryptSeedRoute, arguments: {'seed': event.seed, 'init_data': false });
         return;
       }
     });
@@ -94,23 +105,23 @@ class _SettingScreenState extends State<SettingScreen> {
           child: _buildSettingItem(context, 'My Accounts')
         ),
         _buildOuterBorder(),
-        // Container(height: 42.h),
-        // Padding(
-        //   padding: EdgeInsets.only(left: 14.w),
-        //   child: Text('SECURITY', textAlign: TextAlign.left,
-        //     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
-        // ),
-        // Container(height: 10.h),
-        // _buildOuterBorder(),
-        // // _buildSettingItem(context, 'Recovery Phrase'),
-        // // _buildInnerBorder(),
-        // // _buildSettingItem(context, 'App Lock'),
-        // // _buildInnerBorder(),
-        // InkWell(
-        //   onTap: () => showChangePasswordDialog(context),
-        //   child: _buildSettingItem(context, 'Change Password'),
-        // ),
-        // _buildOuterBorder(),
+        Container(height: 42.h),
+        Padding(
+          padding: EdgeInsets.only(left: 14.w),
+          child: Text('SECURITY', textAlign: TextAlign.left,
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color.fromARGB(153, 60, 60, 67))),
+        ),
+        Container(height: 10.h),
+        _buildOuterBorder(),
+        // _buildSettingItem(context, 'Recovery Phrase'),
+        // _buildInnerBorder(),
+        // _buildSettingItem(context, 'App Lock'),
+        // _buildInnerBorder(),
+        InkWell(
+          onTap: () => showChangePasswordDialog(context),
+          child: _buildSettingItem(context, 'Change Password'),
+        ),
+        _buildOuterBorder(),
         Container(height: 49.h),
         Padding(
           padding: EdgeInsets.only(left: 14.w),

@@ -1,10 +1,10 @@
+import 'package:coda_wallet/widget/dialog/remove_wallet_widget.dart';
+import 'package:coda_wallet/widget/dialog/upgrade_cipher_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'change_password_widget.dart';
-
-void showChangePasswordDialog(BuildContext context) {
+void showUpgradeCihperDialog(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -13,7 +13,7 @@ void showChangePasswordDialog(BuildContext context) {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5.w))
         ),
-        child: ChangePasswordWidget()
+        child: UpgradeCipherWidget()
       );
     }
   );

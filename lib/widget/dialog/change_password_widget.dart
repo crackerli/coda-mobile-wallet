@@ -1,12 +1,15 @@
 import 'dart:typed_data';
 
 import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+
+import 'loading_dialog.dart';
 
 class ChangePasswordWidget extends StatefulWidget {
   ChangePasswordWidget({Key? key}) : super(key: key);
@@ -75,15 +78,15 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                   ),
                   InkWell(
                     onTap: () => Navigator.of(context).pop(),
-                    child: Image.asset('images/close.png', width: 40.w, height: 40.w,),
+                    child: Image.asset('images/close.png', width: 18.w, height: 18.w,),
                   )
                 ],
               ),
-              Image.asset('images/send_error_alert.png', width: 60.w, height: 51.h,),
+              Image.asset('images/password_unlock_logo.png', width: 60.w, height: 51.h,),
               Container(height: 12.h,),
               Padding(
                 padding: EdgeInsets.only(left: 8.w, right: 8.w),
-                child: Text('Alert! Once removed, wallet can be only restored from recovery words, be sure you backed them up.',
+                child: Text('Please input the password you set to encrypt seed',
                   maxLines: 4, textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 16.sp),),
               ),
               Container(height: 16.h,),
@@ -139,20 +142,27 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                       }
                       FocusScope.of(context).unfocus();
                       String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
-                      print('SendFeeScreen: start to decrypt seed');
+                      print('Change password: start to decrypt seed');
+                      ProgressDialog.showProgress(context);
                       try {
                         Uint8List seed = await decryptSeed(encryptedSeed!, _controllerChangePassword.text);
-                        // Pop encrypt seed dialog
+                        // Successfully decrypt, reset local stored encrypted seed.
+                        globalEncryptedSeed = '';
+                        globalPreferences.setString(ENCRYPTED_SEED_KEY, '');
+                        eventBus.fire(ChangePasswordSucceed(seed));
                         Navigator.of(context).pop();
                       } catch (error) {
                         print('password not right');
+                        eventBus.fire(ChangePasswordFail());
                         Navigator.of(context).pop();
+                      } finally {
+                        ProgressDialog.dismiss(context);
                       }
                     },
                     child: Container(
                       padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 50.w, right: 50.w),
                       decoration: getMinaButtonDecoration(topColor: Color(0xfff5f5f5)),
-                        child: Text('REMOVE',
+                        child: Text('CONFIRM',
                           textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                         ),
                       )
