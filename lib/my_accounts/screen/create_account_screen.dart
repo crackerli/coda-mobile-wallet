@@ -181,7 +181,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     AccountBean account = await deriveNewAccount(seed, globalHDAccounts.accounts!.length, accountName);
     globalHDAccounts.accounts!.add(account);
     Map accountsJson = globalHDAccounts.toJson();
-    globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+//    globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+    await globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
     ProgressDialog.dismiss(context);
     Navigator.of(context).pop();
     eventBus.fire(UpdateMyAccounts());

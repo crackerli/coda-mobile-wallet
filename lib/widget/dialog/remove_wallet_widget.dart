@@ -141,7 +141,8 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
                     return;
                   }
                   FocusScope.of(context).unfocus();
-                  String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+                  //String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+                  String? encryptedSeed = await globalSecureStorage.read(key: ENCRYPTED_SEED_KEY);
                   print('Remove wallet: start to decrypt seed');
                   ProgressDialog.showProgress(context);
                   try {
@@ -150,6 +151,9 @@ class _RemoveWalletWidgetState extends State<RemoveWalletWidget> {
                     globalHDAccounts = MinaHDAccount();
                     globalEncryptedSeed = '';
                     globalPreferences.setString(ENCRYPTED_SEED_KEY, '');
+                    globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, '');
+                    await globalSecureStorage.write(key: ENCRYPTED_SEED_KEY, value: '');
+                    await globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: '');
                     eventBus.fire(RemoveWalletSucceed());
                     Navigator.of(context).pop();
                   } catch (error) {

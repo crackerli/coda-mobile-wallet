@@ -158,7 +158,8 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     _sendBloc = BlocProvider.of<SendBloc>(context);
     _eventBusOn = eventBus.on<SendEventBus>().listen((event) async {
       if(event is SendPasswordInput) {
-        String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+        //String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
+        String? encryptedSeed = await globalSecureStorage.read(key: ENCRYPTED_SEED_KEY);
         print('SendFeeScreen: start to decrypt seed');
         ProgressDialog.showProgress(context);
         try {

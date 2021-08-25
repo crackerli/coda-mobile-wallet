@@ -151,7 +151,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     );
   }
 
-  _saveNewAccount(BuildContext context) {
+  _saveNewAccount(BuildContext context) async {
     if(null == globalHDAccounts.accounts || 0 == globalHDAccounts.accounts!.length) {
       return;
     }
@@ -163,7 +163,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     AccountBean account = globalHDAccounts.accounts![_accountIndex]!;
     account.accountName = _accountController.text;
     Map accountsJson = globalHDAccounts.toJson();
-    globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+ //   globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+    await globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
     Navigator.of(context).pop();
     eventBus.fire(UpdateMyAccounts());
   }

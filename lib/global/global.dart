@@ -1,6 +1,7 @@
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -8,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Global variables, used to manage the local saved data.
 // For example, encrypted seed string, user derived accounts from seed, node as service provider list, etc.
 late SharedPreferences globalPreferences;
+late FlutterSecureStorage globalSecureStorage;
 
 RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 const primaryBackgroundColor = Color(0xfff5f8fd);

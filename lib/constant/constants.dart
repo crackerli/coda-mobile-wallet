@@ -24,6 +24,7 @@ const STAKETAB_PROVIDER_KEY = 'staketab_provider_key';
 
 // Encrypted seed
 const ENCRYPTED_SEED_KEY = 'encrypted_seed_key';
+const METADATA_MIGRATED_KEY = 'metadata_migrated_key';
 
 // Default derived accounts number, only one if app published
 const DEFAULT_ACCOUNT_NUMBER = 1;

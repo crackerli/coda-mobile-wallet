@@ -97,15 +97,17 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
     print('[import wallet]: start to encrypted seed');
     globalEncryptedSeed = await encryptSeed(_seed, _controllerConfirm.text, sodium: true);
     print('[import wallet]: save seed String');
-    globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed!);
+    //globalPreferences.setString(ENCRYPTED_SEED_KEY, globalEncryptedSeed!);
+    await globalSecureStorage.write(key: ENCRYPTED_SEED_KEY, value: globalEncryptedSeed);
 
     if(_initData) {
       print('[import wallet]: start to derive account');
       List<AccountBean> accounts = await deriveDefaultAccount(_seed);
       globalHDAccounts.accounts = accounts;
       Map accountsJson = globalHDAccounts.toJson();
-      globalPreferences.setString(
-        GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+      // globalPreferences.setString(
+      //   GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+      await globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
       eventBus.fire(UpdateAccounts());
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

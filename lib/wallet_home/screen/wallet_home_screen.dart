@@ -11,7 +11,6 @@ import 'package:coda_wallet/util/stake_utils.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_events.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_states.dart';
-import 'package:coda_wallet/widget/dialog/remove_wallet_dialog.dart';
 import 'package:coda_wallet/widget/dialog/upgrade_cipher_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:coda_wallet/widget/ui/custom_gradient.dart';
@@ -43,6 +42,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   bool _stakeEnabled = true;
   late var _accountBloc;
   var _eventBusOn;
+  bool _hasUpgradePopped = false;
 
   _updateAccounts({bool newRoute = false}) {
     bool newUser;
@@ -66,13 +66,17 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       // If yes, recommend user to re-encrypt seed with new cipher algorithm.
       // This code is ugly, it expose the details of ffi_mina_signer, but however,
       // It is a temporary solution, it can be removed once all users
-      Uint8List encryptedSeed = MinaHelper.hexToBytes(globalEncryptedSeed!);
-      // Get prefix tag to determine how to choose decrypt method.
-      Uint8List prefix = encryptedSeed.sublist(0, 8);
-      if(MinaHelper.bytesToUtf8String(prefix) == 'Salted__') {
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          showUpgradeCihperDialog(context);
-        });
+      if(null != globalEncryptedSeed && globalEncryptedSeed!.isNotEmpty) {
+        Uint8List encryptedSeed = MinaHelper.hexToBytes(globalEncryptedSeed!);
+        // Get prefix tag to determine how to choose decrypt method.
+        Uint8List prefix = encryptedSeed.sublist(0, 8);
+        if (MinaHelper.bytesToUtf8String(prefix) == 'Salted__' &&
+            !_hasUpgradePopped) {
+          WidgetsBinding.instance!.addPostFrameCallback((_) {
+            showUpgradeCihperDialog(context);
+            _hasUpgradePopped = true;
+          });
+        }
       }
 
       if(globalHDAccounts.accounts != null && globalHDAccounts.accounts!.isNotEmpty) {
@@ -180,9 +184,10 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           BlocBuilder<AccountBloc, AccountStates>(
             builder: (BuildContext context, AccountStates state) {
               if(state is GetAccountsFinished) {
-                // Save global accounts info
-                Map accountsJson = globalHDAccounts.toJson();
-                globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+                // // Save global accounts info
+                // Map accountsJson = globalHDAccounts.toJson();
+                // //globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+                // globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
               }
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/indexer_service.dart';
@@ -83,6 +85,10 @@ class AccountBloc extends
         if(event.index >= globalHDAccounts.accounts!.length - 1) {
           print('1. Get all accounts info finished');
           yield GetAccountsFinished();
+          // Save global accounts info
+          Map accountsJson = globalHDAccounts.toJson();
+          //globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+          await globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
           add(GetExchangeInfo());
           _getProviders();
         } else {
@@ -120,6 +126,10 @@ class AccountBloc extends
       if(event.index >= globalHDAccounts.accounts!.length - 1) {
         print('2. Get all accounts info finished: ${event.index}');
         yield GetAccountsFinished();
+        // Save global accounts info
+        Map accountsJson = globalHDAccounts.toJson();
+        //globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
+        await globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
         add(GetExchangeInfo());
         _getProviders();
         return;
