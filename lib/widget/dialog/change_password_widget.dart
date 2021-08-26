@@ -37,7 +37,6 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
 
   @override
   Widget build(BuildContext context) {
- //   ScreenUtil.init(context, designSize: Size(375, 812), allowFontScaling: false);
     ScreenUtil.init(
       BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width,
@@ -46,7 +45,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
       designSize: Size(375, 812),
       orientation: Orientation.portrait
     );
-    print('RemoveWalletWidget: build(context: $context)');
+    print('ChangePasswordWidget: build(context: $context)');
     return KeyboardActions(
       tapOutsideToDismiss: false,
       autoScroll: false,
@@ -148,8 +147,6 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                       try {
                         Uint8List seed = await decryptSeed(encryptedSeed!, _controllerChangePassword.text);
                         // Successfully decrypt, push seed to encryption page.
-                        // globalEncryptedSeed = '';
-                        // globalPreferences.setString(ENCRYPTED_SEED_KEY, '');
                         eventBus.fire(ChangePasswordSucceed(seed));
                         Navigator.of(context).pop();
                       } catch (error) {

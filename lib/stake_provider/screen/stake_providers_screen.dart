@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_bloc.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
@@ -9,6 +8,7 @@ import 'package:coda_wallet/types/send_data.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/dialog/url_open_warning_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -230,7 +230,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
                 onTap: () {
-                  openUrl(provider?.website ?? '');
+                  showUrlWarningDialog(context, provider?.website ?? '');
                 },
               ),
               Container(height: 3.h,),
