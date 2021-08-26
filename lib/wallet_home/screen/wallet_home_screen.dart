@@ -1,7 +1,4 @@
-import 'dart:convert';
 import 'dart:typed_data';
-
-import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
@@ -11,13 +8,16 @@ import 'package:coda_wallet/util/stake_utils.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_events.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_states.dart';
+import 'package:coda_wallet/widget/dialog/unsafe_device_alert_dialog.dart';
 import 'package:coda_wallet/widget/dialog/upgrade_cipher_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -85,6 +85,22 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     }
   }
 
+  _unsafeDeviceDetect() async {
+    late bool jailbroken;
+
+    try {
+      jailbroken = await FlutterJailbreakDetection.jailbroken;
+    } on PlatformException {
+      jailbroken = false;
+    }
+
+    if(jailbroken) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        showUnsafeDeviceAlertDialog(context);
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -95,6 +111,8 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     _eventBusOn = eventBus.on<UpdateAccounts>().listen((event) {
       _updateAccounts();
     });
+    // Warn user if this device is rooted or jailbroken
+    _unsafeDeviceDetect();
   }
 
   @override
