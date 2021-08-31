@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
@@ -21,12 +22,14 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
 
   @override
   void initState() {
+    addSecureFlag();
     _mnemonic = generateMnemonic();
     super.initState();
   }
 
   @override
   void dispose() {
+    clearSecureFlag();
     super.dispose();
   }
 

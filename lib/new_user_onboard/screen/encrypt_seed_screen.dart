@@ -122,6 +122,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
   @override
   void initState() {
     super.initState();
+    addSecureFlag();
     _focusNodeOrigin = FocusNode();
     _focusNodeConfirm = FocusNode();
     _controllerOrigin = TextEditingController();
@@ -130,6 +131,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
 
   @override
   void dispose() {
+    clearSecureFlag();
     _focusNodeOrigin.dispose();
     _focusNodeConfirm.dispose();
     _controllerOrigin.dispose();

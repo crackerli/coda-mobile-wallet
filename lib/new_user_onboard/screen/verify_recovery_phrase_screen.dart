@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'dart:ui';
+import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
@@ -89,11 +90,13 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   @override
   void initState() {
     super.initState();
+    addSecureFlag();
     _mnemonicsFilled.add(_inputRecoveryPhrasesTip);
   }
 
   @override
   void dispose() {
+    clearSecureFlag();
     super.dispose();
   }
 
