@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/screen_record_detector/screen_record_detector.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/dialog/clipboard_security_alert_dialog.dart';
 import 'package:coda_wallet/widget/dialog/screen_record_detect_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
@@ -87,9 +88,12 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> with Screen
                 Builder(builder: (context) =>
                   InkWell(
                     child: Image.asset('images/copy_gray.png', width: 22.w, height: 27.h),
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: _mnemonic));
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Recovery phrase copied into clipboard!!')));
+                    onTap: () async {
+                      bool? copyRet = await showClipboardAlertDialog(context);
+                      if(null != copyRet && copyRet) {
+                        Clipboard.setData(ClipboardData(text: _mnemonic));
+                        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Recovery phrase copied into clipboard!!')));
+                      }
                     },
                   )
                 ),
