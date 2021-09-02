@@ -4,10 +4,12 @@ import 'dart:ui';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
+import 'package:coda_wallet/screen_record_detector/screen_record_detector.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/account_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/dialog/screen_record_detect_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,7 +32,7 @@ class EncryptSeedScreen extends StatefulWidget {
   _EncryptSeedScreenState createState() => _EncryptSeedScreenState();
 }
 
-class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
+class _EncryptSeedScreenState extends State<EncryptSeedScreen> with ScreenRecordDetector {
   late FocusNode _focusNodeOrigin;
   late FocusNode _focusNodeConfirm;
   late TextEditingController _controllerOrigin;
@@ -122,7 +124,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
   @override
   void initState() {
     super.initState();
-    addSecureFlag();
+    super.initDetector();
     _focusNodeOrigin = FocusNode();
     _focusNodeConfirm = FocusNode();
     _controllerOrigin = TextEditingController();
@@ -131,11 +133,11 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
 
   @override
   void dispose() {
-    clearSecureFlag();
     _focusNodeOrigin.dispose();
     _focusNodeConfirm.dispose();
     _controllerOrigin.dispose();
     _controllerConfirm.dispose();
+    super.dismissDetector();
     super.dispose();
   }
 
@@ -343,5 +345,10 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> {
         )
       ],
     );
+  }
+
+  @override
+  void showWarningAlert() {
+    showScreenRecordDectectedDialog(context);
   }
 }

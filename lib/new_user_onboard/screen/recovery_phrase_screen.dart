@@ -1,7 +1,8 @@
 import 'dart:ui';
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/screen_record_detector/screen_record_detector.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
+import 'package:coda_wallet/widget/dialog/screen_record_detect_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,19 +18,19 @@ class RecoveryPhraseScreen extends StatefulWidget {
   _RecoveryPhraseScreenState createState() => _RecoveryPhraseScreenState();
 }
 
-class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
+class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> with ScreenRecordDetector {
   late String _mnemonic;
 
   @override
   void initState() {
-    addSecureFlag();
-    _mnemonic = generateMnemonic();
     super.initState();
+    super.initDetector();
+    _mnemonic = generateMnemonic();
   }
 
   @override
   void dispose() {
-    clearSecureFlag();
+    super.dismissDetector();
     super.dispose();
   }
 
@@ -147,5 +148,10 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> {
         )
       )
     );
+  }
+
+  @override
+  void showWarningAlert() {
+    showScreenRecordDectectedDialog(context);
   }
 }

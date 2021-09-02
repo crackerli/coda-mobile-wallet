@@ -1,9 +1,10 @@
 import 'dart:typed_data';
 import 'dart:ui';
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/screen_record_detector/screen_record_detector.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/dialog/screen_record_detect_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,7 +30,7 @@ class VerifyRecoveryPhraseScreen extends StatefulWidget {
   _VerifyRecoveryPhraseScreenState createState() => _VerifyRecoveryPhraseScreenState();
 }
 
-class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen> {
+class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen> with ScreenRecordDetector {
   late String _mnemonic;
   List<MnemonicBody> _mnemonicTips = [];
   List<String> _mnemonicsFilled = [];
@@ -90,13 +91,13 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   @override
   void initState() {
     super.initState();
-    addSecureFlag();
+    super.initDetector();
     _mnemonicsFilled.add(_inputRecoveryPhrasesTip);
   }
 
   @override
   void dispose() {
-    clearSecureFlag();
+    super.dismissDetector();
     super.dispose();
   }
 
@@ -231,5 +232,10 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
     Uint8List seed = await mnemonicToSeed(_mnemonic);
     ProgressDialog.dismiss(context);
     Navigator.pushNamed(context, EncryptSeedRoute, arguments: {'seed': seed, 'init_data': true });
+  }
+
+  @override
+  void showWarningAlert() {
+    showScreenRecordDectectedDialog(context);
   }
 }

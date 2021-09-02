@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:graphql/client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -89,16 +87,4 @@ setCurrentNetworkId(int networkId) {
     return;
   }
   globalPreferences.setInt(CURRENT_NETWORK_ID, networkId);
-}
-
-void addSecureFlag() async {
-  if(Platform.isAndroid) {
-    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
-  }
-}
-
-void clearSecureFlag() async {
-  if(Platform.isAndroid) {
-    await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
-  }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'common_alert_widget.dart';
 
-void showUnsafeDeviceAlertDialog(BuildContext context) {
+void showScreenRecordDectectedDialog(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -13,11 +13,10 @@ void showUnsafeDeviceAlertDialog(BuildContext context) {
           borderRadius: BorderRadius.all(Radius.circular(5.w))
         ),
         child: CommonAlertWidget(
-          'StakingPower wallet detected this device may been rooted or jailbroken, it is an unsafe device.\n' +
-          'All operations on this device is not recommended.\n' +
-          'Please be sure what you are doing with this device if you want to continue.\n' +
-          'Or you\'d better switch to another safe device to use StakingPower wallet.',
-          'UNDERSTAND', null)
+          'StakingPower wallet detected a screen recording or screenshot while you are staying on the security sensitive page.\n' +
+          'If this action is not initiated by yourself, your seed may has been revealed.\n' +
+          'Please create another safe wallet on safe device, and move all your tokens to that safe new account',
+          'GOT IT', null),
       );
     }
   );

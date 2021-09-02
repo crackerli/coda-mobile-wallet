@@ -1,16 +1,16 @@
 import 'dart:typed_data';
 import 'dart:ui';
-import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
+import 'package:coda_wallet/screen_record_detector/screen_record_detector.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/dialog/screen_record_detect_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 class ImportRecoveryPhraseScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class ImportRecoveryPhraseScreen extends StatefulWidget {
   _ImportRecoveryPhraseScreenState createState() => _ImportRecoveryPhraseScreenState();
 }
 
-class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen> {
+class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen> with ScreenRecordDetector {
   late FocusNode _focusNode;
   late TextEditingController _editingController;
   late String _mnemonic;
@@ -93,7 +93,7 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
   @override
   void initState() {
     super.initState();
-    addSecureFlag();
+    super.initDetector();
     _focusNode = FocusNode();
     _editingController = TextEditingController();
   }
@@ -102,7 +102,7 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
   void dispose() {
     _focusNode.dispose();
     _editingController.dispose();
-    clearSecureFlag();
+    super.dismissDetector();
     super.dispose();
   }
 
@@ -195,5 +195,10 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
         ))
       ],
     );
+  }
+
+  @override
+  void showWarningAlert() {
+    showScreenRecordDectectedDialog(context);
   }
 }
