@@ -80,27 +80,27 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> with Screen
               border: Border.all(color: Color(0xffeeeeee), width: 1.w)
             ),
             padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 42.w, right: 42.w),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Builder(builder: (context) =>
-                  InkWell(
-                    child: Image.asset('images/copy_gray.png', width: 22.w, height: 27.h),
-                    onTap: () async {
-                      bool? copyRet = await showClipboardAlertDialog(context);
-                      if(null != copyRet && copyRet) {
-                        Clipboard.setData(ClipboardData(text: _mnemonic));
-                        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Recovery phrase copied into clipboard!!')));
-                      }
-                    },
-                  )
-                ),
-                Container(width: 6.w,),
-                Text('COPY TO CLIPBOARD', textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
-              ],
+            child: Builder(builder: (context) =>
+              InkWell(
+                onTap: () async {
+                  bool? copyRet = await showClipboardAlertDialog(context);
+                  if(null != copyRet && copyRet) {
+                    Clipboard.setData(ClipboardData(text: _mnemonic));
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Recovery phrase copied into clipboard!!')));
+                  }
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('images/copy_gray.png', width: 22.w, height: 27.h),
+                    Container(width: 6.w,),
+                    Text('COPY TO CLIPBOARD', textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                  ],
+                )
+              )
             )
           )
         ]),
