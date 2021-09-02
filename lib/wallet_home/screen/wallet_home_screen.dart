@@ -201,12 +201,6 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           Container(height: 1.h,),
           BlocBuilder<AccountBloc, AccountStates>(
             builder: (BuildContext context, AccountStates state) {
-              if(state is GetAccountsFinished) {
-                // // Save global accounts info
-                // Map accountsJson = globalHDAccounts.toJson();
-                // //globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
-                // globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
-              }
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -284,7 +278,13 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           width: 44.w,
           height: 44.w,
           child: InkWell(
-            onTap: () => _gotoReceiveAccountsScreen(context),
+            onTap: () {
+              if(globalHDAccounts?.accounts?.length == 1) {
+                Navigator.of(context).pushNamed(ReceiveAccountRoute, arguments: 0);
+              } else {
+                _gotoReceiveAccountsScreen(context);
+              }
+            },
             child: Image.asset('images/qr_code_icon.png')
           )
         ),
@@ -340,7 +340,16 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
                 padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 6.h, bottom: 6.h),
                 child: Text('SEND', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
               ),
-              onTap: () => _gotoSendFromScreen(context),
+              onTap: () {
+                if(globalHDAccounts?.accounts?.length == 1) {
+                  SendData sendData = SendData();
+                  sendData.isDelegation = false;
+                  sendData.from = 0;
+                  Navigator.of(context).pushNamed(SendToRoute, arguments: sendData);
+                } else {
+                  _gotoSendFromScreen(context);
+                }
+              }
             )
           ),
           Container(height: 32.67.h, width: 1.w, color: Color(0xffd3d3d3)),
@@ -351,7 +360,13 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
                 padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 6.h, bottom: 6.h),
                 child: Text('RECEIVE', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
               ),
-              onTap: () => _gotoReceiveAccountsScreen(context)
+              onTap: () {
+                if(globalHDAccounts?.accounts?.length == 1) {
+                  Navigator.of(context).pushNamed(ReceiveAccountRoute, arguments: 0);
+                } else {
+                  _gotoReceiveAccountsScreen(context);
+                }
+              }
             )
           ),
         ],
