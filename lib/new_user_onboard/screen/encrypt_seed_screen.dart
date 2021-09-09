@@ -43,6 +43,7 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> with ScreenRecord
   late Uint8List _seed;
   late bool _initData;
   bool _buttonEnabled = false;
+  bool _clearSecureFlag = false;
   PasswordStrength _passwordStrength = PasswordStrength.WEAK;
 
   _checkPasswordStrength(String password) {
@@ -137,7 +138,9 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> with ScreenRecord
     _focusNodeConfirm.dispose();
     _controllerOrigin.dispose();
     _controllerConfirm.dispose();
-    super.dismissDetector();
+    if(_clearSecureFlag) {
+      super.dismissDetector();
+    }
     super.dispose();
   }
 
@@ -332,7 +335,10 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> with ScreenRecord
         Builder(builder: (context) =>
           Center(child:
             InkWell(
-              onTap: _buttonEnabled ? () => _checkPassword(context) : null,
+              onTap: _buttonEnabled ? () {
+                _clearSecureFlag = true;
+                _checkPassword(context);
+              } : null,
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
                 decoration: getMinaButtonDecoration(topColor: Color(_buttonEnabled ? 0xffe0e0e0 : 0x4deeeeee)),

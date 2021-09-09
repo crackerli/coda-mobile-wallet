@@ -1,4 +1,5 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
+import 'package:coda_wallet/screen_record_detector/screen_record_detector.dart';
 import 'package:coda_wallet/setting/setting_screen.dart';
 import 'package:coda_wallet/stake/blocs/stake_bloc.dart';
 import 'package:coda_wallet/stake/blocs/stake_states.dart';
@@ -22,7 +23,7 @@ class EntrySheet extends StatefulWidget {
   _EntrySheetState createState() => _EntrySheetState();
 }
 
-class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateMixin {
+class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateMixin, ScreenRecordDetector {
 
   int _currentIndex = 0;
   late List<BottomNavigationBarItem> _bottomBarItems;
@@ -126,6 +127,8 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    // Default, this app can take screenshots, except key sensitive pages
+    super.dismissDetector();
     print('EntrySheet initState');
   }
 

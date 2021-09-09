@@ -121,6 +121,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     WidgetsBinding.instance!.removeObserver(this);
     _eventBusOn.cancel();
     _eventBusOn = null;
+    routeObserver.unsubscribe(this);
     super.dispose();
   }
 

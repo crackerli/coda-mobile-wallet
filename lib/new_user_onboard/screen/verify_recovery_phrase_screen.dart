@@ -35,6 +35,7 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
   List<MnemonicBody> _mnemonicTips = [];
   List<String> _mnemonicsFilled = [];
   bool _buttonEnabled = false;
+  bool _clearSecureFlag = false;
 
   _verifyWords(BuildContext context) {
     if(_mnemonicsFilled == null || _mnemonicsFilled.isEmpty || _mnemonicsFilled.length < 12) {
@@ -97,7 +98,9 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
 
   @override
   void dispose() {
-    super.dismissDetector();
+    if(_clearSecureFlag) {
+      super.dismissDetector();
+    }
     super.dispose();
   }
 
@@ -148,7 +151,10 @@ class _VerifyRecoveryPhraseScreenState extends State<VerifyRecoveryPhraseScreen>
           bottom: 84.h,
           child: Builder(builder: (context) =>
             InkWell(
-              onTap: () => _generateSeed(context),
+              onTap: () {
+                _clearSecureFlag = true;
+                _generateSeed(context);
+              },
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
                 decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
