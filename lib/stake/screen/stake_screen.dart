@@ -8,10 +8,15 @@ import 'package:coda_wallet/stake/query/get_consensus_state.dart';
 import 'package:coda_wallet/util/stake_utils.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
+import 'package:coda_wallet/widget/ui/countdown_timer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_countdown_timer/countdown.dart';
+import 'package:flutter_countdown_timer/countdown_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+const SECONDS_PER_EPOCH = SLOT_PER_EPOCH * 3 * 60;
 
 class StakeScreen extends StatefulWidget {
   StakeScreen({Key? key}) : super(key: key);
@@ -23,17 +28,32 @@ class StakeScreen extends StatefulWidget {
 class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClientMixin {
   bool _stakeEnabled = true;
   late var _stakeBloc;
+  late CountdownController _countdownController;
+
+  // Callback when counting down to new epoch
+  void _onCountdownEnd() {
+    _countdownController.value = Duration(seconds: SECONDS_PER_EPOCH).inMilliseconds;
+    _countdownController.start();
+  }
 
   @override
   void initState() {
     super.initState();
+    print('StakeScreen initState()');
     _stakeBloc = BlocProvider.of<StakeBloc>(context);
     _stakeBloc.add(GetConsensusState(CONSENSUS_STATE_QUERY));
+
+    _countdownController =
+      CountdownController(duration: Duration(), onEnd: _onCountdownEnd);
   }
 
   @override
   void dispose() {
+    print('StakeScreen dispose()');
     _stakeBloc = null;
+    if(_countdownController.isRunning) {
+      _countdownController.dispose();
+    }
     super.dispose();
   }
 
@@ -104,6 +124,15 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
                   });
                   epoch = state.epoch ?? 0;
                   slot = state.slot ?? 0;
+                  int secondsInSlot = (SLOT_PER_EPOCH - slot) * 3 * 60;
+                  // Also, get delta time from local timestamp
+                  DateTime now = DateTime.now();
+                  int seconds = now.second;
+                  int minutes = now.minute;
+                  int deltaMinute = minutes % 3;
+                  int deltaSeconds = deltaMinute * 60 + seconds;
+                  _countdownController.value = Duration(seconds: secondsInSlot + deltaSeconds).inMilliseconds;
+                  _countdownController.start();
                 }
 
                 return Row(
@@ -116,15 +145,15 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('Progress: ', textAlign: TextAlign.right,
+                        Text('Time Remain: ', textAlign: TextAlign.right,
                           style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Colors.black),),
                         Container(width: 4.w,),
-                        SizedBox(width: 120.w, height: 20.h,
-                          child: LinearProgressIndicator(
-                            value: slot / SLOT_PER_EPOCH,
-                            backgroundColor: Colors.grey[200],
-                            valueColor: AlwaysStoppedAnimation(Colors.redAccent),),
-                        )
+                        Countdown(
+                          countdownController: _countdownController,
+                          builder: (_, Duration time) {
+                            return getTimerWidget(time);
+                          }
+                        ),
                       ],
                     )
                   ],
