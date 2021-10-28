@@ -8,12 +8,10 @@ import 'package:dio/dio.dart';
 
 class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates> {
 
-  late bool isProvidersLoading;
   late IndexerService _indexerService;
 
   StakeProvidersBloc(StakeProvidersStates? state) : super(state!) {
     _indexerService = IndexerService();
-    isProvidersLoading = false;
   }
 
   StakeProvidersStates get initState => GetStakeProvidersLoading(null);
@@ -28,7 +26,6 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
   Stream<StakeProvidersStates>
     _mapGetStakeProviders(GetStakeProviders event) async* {
     yield GetStakeProvidersLoading('Providers Loading...');
-    isProvidersLoading = true;
     try {
       Response response = await _indexerService.getProviders();
 
@@ -41,12 +38,12 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
       // Convert provider list to map for quick access.
       ProvidersEntity? providersEntity = ProvidersEntity.fromMap(response.data);
       if (null == providersEntity || null == providersEntity.stakingProviders) {
+        yield GetStakeProvidersFail('Server Error');
         return;
       }
 
       storeProvidersMap(providersEntity.stakingProviders);
       yield GetStakeProvidersSuccess(providersEntity.stakingProviders);
-      isProvidersLoading = true;
     } catch (e) {
       print('${e.toString()}');
       yield GetStakeProvidersFail('Network Error, Please check and try again!');

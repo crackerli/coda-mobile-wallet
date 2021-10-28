@@ -20,7 +20,6 @@ class SendBloc extends
   late bool isDelegation;
   late int account;
   late bool sendEnabled;
-  late bool loading;
   late int nonce;
   // this list should have length 3, and 0 is for fastest, 1 for medium, 2 for slow
   List<BigInt> bestFees = [];
@@ -137,10 +136,8 @@ class SendBloc extends
     final query = event.query;
     final variables = event.variables ?? null;
     try {
-      loading = true;
       yield GetPooledFeeLoading();
       final result = await _service.performMutation(query, variables: variables!);
-      loading = false;
 
       if(result.hasException) {
         String error = exceptionHandle(result);
@@ -214,10 +211,8 @@ class SendBloc extends
     final variables = event.variables ?? null;
 
     try {
-      loading = true;
       yield SendLoading(null);
       final result = await _service.performMutation(mutation, variables: variables!);
-      loading = false;
 
       if(result.hasException) {
         String error = exceptionHandle(result);
@@ -240,10 +235,8 @@ class SendBloc extends
     final variables = event.variables ?? null;
 
     try {
-      loading = true;
       yield GetNonceLoading();
       final result = await _service.performMutation(mutation, variables: variables!);
-      loading = false;
 
       if(result.hasException) {
         String error = exceptionHandle(result);
