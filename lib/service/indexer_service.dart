@@ -8,6 +8,12 @@ import 'package:dio/dio.dart';
 
 class IndexerService {
 
+  static _getIndexerUrl() {
+    int networkId = getCurrentNetworkId();
+    String indexerServer = INDEXER_SERVER_LIST[networkId];
+    return indexerServer;
+  }
+
   static final IndexerService _instance = IndexerService._internal();
   Dio? _client;
 
@@ -38,9 +44,7 @@ class IndexerService {
   }
 
   Future<Response> getTransactions(String account) async {
-    int networkId = getCurrentNetworkId();
-    String indexerServer = INDEXER_SERVER_LIST[networkId];
-    String requestUrl = "$indexerServer/transactions";
+    String requestUrl = '${_getIndexerUrl()}/transactions';
     print('Current indexer server using: $requestUrl');
 
     Map<String, dynamic> map = Map<String, dynamic>();
