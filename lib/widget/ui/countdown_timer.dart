@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +11,9 @@ _getRounded(String text) {
       color: Color(0xfff5f5f5),
       border: Border.all(color: Colors.black, width: 1.w)
     ),
-    child: Text(text, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Colors.black)),
+    child: Text(text, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Colors.black, fontFeatures: [
+      FontFeature.tabularFigures()
+    ],)),
   );
 }
 
