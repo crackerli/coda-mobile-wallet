@@ -14,7 +14,7 @@ class AccountNoStakeScreen extends StatefulWidget {
 
 class _AccountNoStakeScreenState extends State<AccountNoStakeScreen> {
 
-  late int _accountIndex;
+  late Map<String, dynamic> _params;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _AccountNoStakeScreenState extends State<AccountNoStakeScreen> {
       designSize: Size(375, 812),
       orientation: Orientation.portrait
     );
-    _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
+    _params = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, leading: true),
@@ -65,8 +65,7 @@ class _AccountNoStakeScreenState extends State<AccountNoStakeScreen> {
             Container(height: 188.h,),
             InkWell(
               onTap: () {
-                Navigator.of(context).pushReplacementNamed(
-                  StakeProviderRoute, arguments: _accountIndex);
+                Navigator.of(context).pushReplacementNamed(StakeProviderRoute, arguments: _params);
               },
             child: Container(
               padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 60.w, right: 60.w),

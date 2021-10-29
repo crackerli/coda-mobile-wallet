@@ -29,6 +29,7 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
   bool _stakeEnabled = true;
   late var _stakeBloc;
   late CountdownController _countdownController;
+  int? _currentEpoch;
 
   // Callback when counting down to new epoch
   void _onCountdownEnd() {
@@ -93,10 +94,10 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
           ),
           Container(height: 10.h),
           walletStaking() ?
-          Text('You Are Staking', textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)) :
-          Text('You Are Not Staking', textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)),
+            Text('You Are Staking', textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)) :
+            Text('You Are Not Staking', textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.normal, color: Colors.black)),
           Container(height: 20.h),
           Padding(
             padding: EdgeInsets.only(left: 13.w, right: 13.w),
@@ -123,6 +124,7 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
                     ProgressDialog.dismiss(context);
                   });
                   epoch = state.epoch ?? 0;
+                  _currentEpoch = epoch;
                   slot = state.slot ?? 0;
                   int secondsInSlot = (SLOT_PER_EPOCH - slot) * 3 * 60;
                   // Also, get delta time from local timestamp
@@ -165,14 +167,18 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
           Expanded(
             child: buildAccountList((index) {
               // Check if this account has been staked.
+              if(null == _currentEpoch) {
+                return;
+              }
               String? accountAddress = globalHDAccounts.accounts![index]!.address;
               String? stakeAddress = globalHDAccounts.accounts![index]!.stakingAddress;
+              Map<String, dynamic> params = Map<String, dynamic>();
+              params['accountIndex'] = index;
+              params['epoch'] = _currentEpoch;
               if(null == stakeAddress || stakeAddress.isEmpty || (accountAddress == stakeAddress)) {
-                Navigator.of(context).pushNamed(
-                  AccountNoStakeRoute, arguments: index);
+                Navigator.of(context).pushNamed(AccountNoStakeRoute, arguments: params);
               } else {
-                Navigator.of(context).pushNamed(
-                  AccountStakeRoute, arguments: index);
+                Navigator.of(context).pushNamed(AccountStakeRoute, arguments: params);
               }
             })
           )

@@ -47,6 +47,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
   late var _stakeProvidersBloc;
   late int _accountIndex;
+  late Map<String, dynamic> _params;
 
   _getStakeProviders() {
     _stakeProvidersBloc.add(GetStakeProviders());
@@ -75,12 +76,13 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       designSize: Size(375, 812),
       orientation: Orientation.portrait
     );
-    _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
+    _params = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    _accountIndex = _params['accountIndex'];
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context, actions: false),
-        body: Container(
+      body: Container(
         padding: EdgeInsets.only(left: 16.w, right: 16.w),
         child: _buildProviderBody(context),
         decoration: BoxDecoration(
@@ -182,6 +184,12 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
               delegationData.from = _accountIndex;
               delegationData.amount = '0';
               _gotoDelegationFee(context, delegationData);
+              // Map<String, dynamic> newParams = Map<String, dynamic>();
+              // newParams['accountIndex'] = _params['accountIndex'];
+              // newParams['epoch'] = _params['epoch'];
+              // newParams['validatorAddress'] = providers[index]!.providerAddress!;
+              // newParams['validatorName'] = providers[index]!.providerTitle;
+              // Navigator.of(context).pushNamed(StakePoolRankRoute, arguments: newParams);
             });
         },
         separatorBuilder: (context, index) {
@@ -209,13 +217,33 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
-        CachedNetworkImage(
-          maxHeightDiskCache: 200,
-          imageUrl: provider?.providerLogo ?? '',
-          width: 40.w,
-          height: 40.h,
-          placeholder: (context, url) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.h,),
-          errorWidget: (context, url, error) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.h,),
+        Stack(
+          children: [
+            CachedNetworkImage(
+              maxHeightDiskCache: 200,
+              imageUrl: provider?.providerLogo ?? '',
+              imageBuilder: (context, imageProvider) => Container(
+                height: 40.w,
+                width: 40.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(40.w)),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              placeholder: (context, url) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.w,),
+              errorWidget: (context, url, error) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.w,),
+            ),
+            Positioned(
+              top: 1.h,
+              right: 2.w,
+              child: (provider?.addressVerification == null || provider?.addressVerification! == 0) ?
+                Container() :
+                Image.asset('images/validator_verified.png', width: 12.w, height: 12.w,)
+            )
+          ],
         ),
         Container(width: 10.w,),
         Expanded(

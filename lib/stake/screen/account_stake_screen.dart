@@ -20,6 +20,7 @@ class AccountStakeScreen extends StatefulWidget {
 
 class _AccountStakeScreenState extends State<AccountStakeScreen> {
   int _accountIndex = -1;
+  late Map<String, dynamic> _params;
   late Map<String, dynamic> _providerMap;
   Staking_providersBean? _provider;
 
@@ -48,7 +49,8 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
       designSize: Size(375, 812),
       orientation: Orientation.portrait
     );
-    _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
+    _params = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    _accountIndex = _params['accountIndex'];
     String? stakingAddress = globalHDAccounts.accounts![_accountIndex]!.stakingAddress;
     _provider = Staking_providersBean.fromMap(_providerMap[stakingAddress])!;
     return Scaffold(
@@ -88,8 +90,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
               Container(height: 40.h,),
               InkWell(
                 onTap: () {
-                  Navigator.of(context).pushReplacementNamed(
-                    StakeProviderRoute, arguments: _accountIndex);
+                  Navigator.of(context).pushReplacementNamed(StakeProviderRoute, arguments: _params);
                 },
                 child: Container(
                   padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 60.w, right: 60.w),
