@@ -240,12 +240,14 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
     if(state is RefreshConfirmedTxnsFail) {
       ProgressDialog.dismiss(context);
-      return _buildErrorScreen(context, state.error.toString());
+      //return _buildErrorScreen(context, state.error.toString());
+      return _buildNoDataScreen(context, 'No transactions found!!!\n Be happy to send or receive Mina');
     }
 
     if(state is RefreshPooledTxnsFail) {
       ProgressDialog.dismiss(context);
-      return _buildErrorScreen(context, state.error.toString());
+      //return _buildErrorScreen(context, state.error.toString());
+      return _buildNoDataScreen(context, 'No transactions found!!!\n Be happy to send or receive Mina');
     }
 
     if(state is AccountChanged) {

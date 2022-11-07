@@ -4,7 +4,8 @@ const BOTTOM_BAR_ITEM_SIZE = 23;
 
 // add your own figment api key here, or read from environment with --dart-define tag
 const FIGMENT_API_KEY = String.fromEnvironment('FIGMENT_API_KEY');
-const FIGMENT_MAINNET_RPC_SERVER = 'https://mina-mainnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
+//const FIGMENT_MAINNET_RPC_SERVER = 'https://mina-mainnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
+const FIGMENT_MAINNET_RPC_SERVER = 'https://proxy.minaexplorer.com/';
 const FIGMENT_MAINNET_INDEXER_SERVER = 'https://mina--mainnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
 const FIGMENT_DEVNET_RPC_SERVER = 'https://mina-devnet--graphql.datahub.figment.io/apikey/$FIGMENT_API_KEY/graphql';
 const FIGMENT_DEVNET_INDEXER_SERVER = 'https://mina--devnet--indexer.datahub.figment.io/apikey/$FIGMENT_API_KEY/';
