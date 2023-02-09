@@ -268,7 +268,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
                   InkWell(
                     onTap: () {
                       Clipboard.setData(ClipboardData(text: _provider?.discordUsername ?? ''));
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Discord user name copied into clipboard!!')));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Discord user name copied into clipboard!!')));
                     },
                     child: Image.asset('images/discord.png', height: 26.h, width: 26.w,)
                   )
@@ -278,7 +278,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
                   InkWell(
                     onTap: () {
                       Clipboard.setData(ClipboardData(text: _provider?.telegram ?? ''));
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Telegram handle copied into clipboard!!')));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Telegram handle copied into clipboard!!')));
                     },
                     child: Image.asset('images/telegram.png', height: 26.h, width: 26.w,)
                   )
@@ -288,7 +288,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
                   InkWell(
                     onTap: () {
                       Clipboard.setData(ClipboardData(text: _provider?.twitter ?? ''));
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Twitter account copied into clipboard!!')));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Twitter account copied into clipboard!!')));
                     },
                     child: Image.asset('images/twitter.png', height: 26.h, width: 26.w,)
                   )
@@ -298,7 +298,7 @@ class _AccountStakeScreenState extends State<AccountStakeScreen> {
                   InkWell(
                     onTap: () {
                       Clipboard.setData(ClipboardData(text: _provider?.email ?? ''));
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Email copied into clipboard!!')));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Email copied into clipboard!!')));
                     },
                     child: Image.asset('images/mail.png', height: 26.h, width: 26.w,)
                   )

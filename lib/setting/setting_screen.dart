@@ -19,7 +19,6 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   var _eventBusOn;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -27,7 +26,7 @@ class _SettingScreenState extends State<SettingScreen> {
     print('Setting Screen inited');
     _eventBusOn = eventBus.on<SettingChangeEventBus>().listen((event) {
       if(event is RemoveWalletFail) {
-        _scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text('Wrong password')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Wrong password')));
         return;
       }
 
@@ -44,7 +43,7 @@ class _SettingScreenState extends State<SettingScreen> {
       }
 
       if(event is ChangePasswordFail) {
-        _scaffoldKey.currentState!.showSnackBar(SnackBar(content: Text('Wrong password')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Wrong password')));
         return;
       }
 
@@ -74,7 +73,6 @@ class _SettingScreenState extends State<SettingScreen> {
       orientation: Orientation.portrait
     );
     return Scaffold(
-      key: _scaffoldKey,
       backgroundColor: Color(0xfff5f5f5),
       appBar: null,
       body: SafeArea(

@@ -63,17 +63,17 @@ class _EncryptSeedScreenState extends State<EncryptSeedScreen> with ScreenRecord
 
   _checkPassword(BuildContext context) {
     if(_controllerOrigin.text.isEmpty) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid password!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid password!')));
       return;
     }
 
     if(_controllerConfirm.text.isEmpty) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid password')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid password')));
       return;
     }
 
     if(_controllerConfirm.text != _controllerOrigin.text) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Passwords are inconsistent!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Passwords are inconsistent!')));
       return;
     }
 

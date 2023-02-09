@@ -88,7 +88,7 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
                   WidgetsBinding.instance!.addPostFrameCallback((_) {
                     ProgressDialog.dismiss(context);
                     String error = state.data;
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text(error)));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
                   });
                 }
 

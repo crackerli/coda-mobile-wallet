@@ -166,7 +166,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                             child: Image.asset(_addressCopied ? 'images/copy_white.png' : 'images/copy_gray.png', width: 22.w, height: 27.h),
                             onTap: () {
                               Clipboard.setData(ClipboardData(text: globalHDAccounts.accounts![_accountIndex]!.address));
-                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
                               setState(() {
                                 _addressCopied = true;
                               });

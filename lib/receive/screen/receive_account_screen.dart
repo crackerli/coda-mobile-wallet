@@ -104,7 +104,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
                       _addressCopied = true;
                     });
                     WidgetsBinding.instance!.addPostFrameCallback((_) {
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Your address copied into clipboard!!')));
                     });
                   },
                 )

@@ -27,7 +27,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   FocusNode _focusNodeAccount = FocusNode();
   TextEditingController _accountController = TextEditingController();
   var _eventBusOn;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -58,7 +57,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     );
     print('CreateAccountScreen: build(context: $context)');
     return Scaffold(
-      key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xffffffff),
       appBar: buildNoTitleAppBar(context, actions: false, backgroundColor: Color(0xffffffff)),
@@ -169,7 +167,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     } catch(error) {
       print('password not right');
       ProgressDialog.dismiss(context);
-      _scaffoldKey.currentState!.showSnackBar(new SnackBar(content: Text('Wrong password')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Wrong password')));
       return;
     } finally { }
     String accountName = '';

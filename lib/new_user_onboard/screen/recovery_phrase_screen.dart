@@ -86,7 +86,7 @@ class _RecoveryPhraseScreenState extends State<RecoveryPhraseScreen> with Screen
                   bool? copyRet = await showClipboardAlertDialog(context);
                   if(null != copyRet && copyRet) {
                     Clipboard.setData(ClipboardData(text: _mnemonic));
-                    Scaffold.of(context).showSnackBar(SnackBar(content: Text('Recovery phrase copied into clipboard!!')));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Recovery phrase copied into clipboard!!')));
                   }
                 },
                 child: Row(

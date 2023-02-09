@@ -64,18 +64,18 @@ class _ImportRecoveryPhraseScreenState extends State<ImportRecoveryPhraseScreen>
 
   _checkMnemonic(BuildContext context) {
     if(_editingController.text.isEmpty) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid recovery phrase!!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid recovery phrase!!')));
     }
     List<String> wordsList = _getInputWords(_editingController.text);
     if(null == wordsList || wordsList.length < 12) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid recovery phrase!!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid recovery phrase!!')));
     }
 
     _mnemonic = wordsList.join(' ');
     //   _mnemonic = 'course grief vintage slim tell hospital car maze model style elegant kitchen state purpose matrix gas grid enable frown road goddess glove canyon key';
     bool validateRet = validateMnemonic(_mnemonic);
     if(!validateRet) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Can not find any accounts under this seed!!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Can not find any accounts under this seed!!')));
       return;
     } else {
       _generateSeed(context);

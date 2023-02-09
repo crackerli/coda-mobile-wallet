@@ -140,7 +140,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
   _checkFeeChosen(BuildContext context) {
     if(_sendBloc.feeIndex == -1) {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Please choose fee!!')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please choose fee!!')));
     } else {
       showDecryptSeedDialog(context, SendFeeRoute);
     }
@@ -353,7 +353,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   _buildSendFeeBody(BuildContext context, state) {
     if(state is SeedPasswordWrong) {
       WidgetsBinding.instance!.addPostFrameCallback((_) {
-        Scaffold.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Wrong password!!')));
       });
       _sendBloc.add(ClearWrongPassword());

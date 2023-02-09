@@ -133,13 +133,13 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
               onTap: _validInput ? () {
                 BigInt? nanoAmount = MinaHelper.getNanoNumByMinaStr(_amountStr);
                 if(nanoAmount! > _balance!) {
-                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Not enough balance')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Not enough balance')));
                 } else {
                   _sendData.amount = MinaHelper.getNanoStrByMinaStr(_amountStr);
                   _gotoSendFee(context, _sendData);
                 }
               } : () {
-                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Invalid input amount!!')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid input amount!!')));
               },
               child: Container(
                 padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),

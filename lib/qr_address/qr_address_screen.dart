@@ -77,6 +77,6 @@ class QrAddress extends StatelessWidget {
     String text = Platform.isAndroid ?
       'Image saved: $path' :
       'Image saved to gallery';
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 }
