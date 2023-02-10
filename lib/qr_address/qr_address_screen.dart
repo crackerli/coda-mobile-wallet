@@ -14,6 +14,7 @@ class QrAddress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, designSize: const Size(375, 812), minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('Qr Address'),
@@ -37,7 +38,7 @@ class QrAddress extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            QrImage(data: _publicKey, size: 200.0, version: QrVersions.auto),
+            QrImage(data: _publicKey, size: 200.h, version: QrVersions.auto),
             Container(height: 10),
             Text('$_publicKey', maxLines: 2, textAlign: TextAlign.center, style: TextStyle(color: Colors.black54, fontSize: 16.0)),
             Container(height: 10),

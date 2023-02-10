@@ -62,14 +62,7 @@ class _SendAmountScreenState extends State<SendAmountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(
-      BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width,
-        maxHeight: MediaQuery.of(context).size.height,
-      ),
-      designSize: Size(375, 812),
-      orientation: Orientation.portrait
-    );
+    ScreenUtil.init(context, designSize: const Size(375, 812), minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
     _sendData = ModalRoute.of(context)!.settings.arguments as SendData;
     _balance = BigInt.tryParse(globalHDAccounts.accounts![_sendData.from]!.balance!);
     _keys = List.generate(_keyString.length, (index) => _buildKey(index));

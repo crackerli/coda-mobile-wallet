@@ -27,6 +27,7 @@ class _TxnsChooseAccountScreenState extends State<TxnsChooseAccountScreen> {
   @override
   Widget build(BuildContext context) {
     print('TxnsChooseAccountScreen: build(context: $context)');
+    ScreenUtil.init(context, designSize: const Size(375, 812), minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,

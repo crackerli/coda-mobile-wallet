@@ -23,14 +23,7 @@ class _ClipboardSecurityAlertWidgetState extends State<ClipboardSecurityAlertWid
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(
-      BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width,
-        maxHeight: MediaQuery.of(context).size.height,
-      ),
-      designSize: Size(375, 812),
-      orientation: Orientation.portrait
-    );
+    ScreenUtil.init(context, designSize: const Size(375, 812), minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
 
     print('ClipboardSecurityAlertWidget: build(context: $context)');
     return Padding(

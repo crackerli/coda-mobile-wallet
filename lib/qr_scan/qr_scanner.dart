@@ -1,6 +1,4 @@
 import 'package:coda_wallet/constant/constants.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,14 +53,7 @@ class _QrScanScreenState extends State<QrScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(
-      BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width,
-        maxHeight: MediaQuery.of(context).size.height,
-      ),
-      designSize: Size(375, 812),
-      orientation: Orientation.portrait
-    );
+    ScreenUtil.init(context, designSize: const Size(375, 812), minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
     return WillPopScope(
       child: Scaffold(
         appBar: _buildQrScannerAppBar(),

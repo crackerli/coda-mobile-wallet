@@ -5,7 +5,6 @@ import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,14 +42,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(
-      BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width,
-        maxHeight: MediaQuery.of(context).size.height,
-      ),
-      designSize: Size(375, 812),
-      orientation: Orientation.portrait
-    );
+    ScreenUtil.init(context, designSize: const Size(375, 812), minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
     print('AccountDetailScreen: build(context: $context)');
     _accountIndex = ModalRoute.of(context)!.settings.arguments as int;
     return Scaffold(

@@ -40,14 +40,7 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
   @override
   Widget build(BuildContext context) {
     print('StakeScreen build()');
-    ScreenUtil.init(
-      BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width,
-        maxHeight: MediaQuery.of(context).size.height,
-      ),
-      designSize: Size(375, 812),
-      orientation: Orientation.portrait
-    );
+    ScreenUtil.init(context, designSize: const Size(375, 812), minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
     return _buildWalletHomeBody();
   }
 
