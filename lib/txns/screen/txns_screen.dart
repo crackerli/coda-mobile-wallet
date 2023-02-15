@@ -6,6 +6,7 @@ import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_entity.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
+import 'package:coda_wallet/txns/constant/txns_filter_constant.dart';
 import 'package:coda_wallet/txns/query/pooled_txns_query.dart';
 import 'package:coda_wallet/types/transaction_type.dart';
 import 'package:coda_wallet/types/txn_status_type.dart';
@@ -32,7 +33,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
   _refreshTxns() {
     // Restore current filter to ALL if refresh the list
-    _txnsBloc.currentFilter = 0;
+    _txnsBloc.currentFilter = TxnFilter.ALL;
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = _txnsBloc.publicKey;
     _txnsBloc.add(RefreshPooledTxns(POOLED_TXNS_QUERY, variables: variables));
@@ -64,25 +65,25 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
       }
 
       if(event is FilterTxnsAll) {
-        _txnsBloc.currentFilter = 0;
+        _txnsBloc.currentFilter = TxnFilter.ALL;
         _txnsBloc.add(ChangeFilter());
         return;
       }
 
       if(event is FilterTxnsSent) {
-        _txnsBloc.currentFilter = 1;
+        _txnsBloc.currentFilter = TxnFilter.SENT;
         _txnsBloc.add(ChangeFilter());
         return;
       }
 
       if(event is FilterTxnsReceived) {
-        _txnsBloc.currentFilter = 2;
+        _txnsBloc.currentFilter = TxnFilter.RECEIVED;
         _txnsBloc.add(ChangeFilter());
         return;
       }
 
       if(event is FilterTxnsStaked) {
-        _txnsBloc.currentFilter = 3;
+        _txnsBloc.currentFilter = TxnFilter.STAKED;
         _txnsBloc.add(ChangeFilter());
         return;
       }
@@ -199,7 +200,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                 children: [
                   Image.asset('images/txn_filter.png', width: 12.w, height: 8.h,),
                   Container(width: 5.w,),
-                  Text(_txnsBloc.txnFilters[_txnsBloc.currentFilter], textAlign: TextAlign.center,
+                  Text(_txnsBloc.txnFilters[_txnsBloc.currentFilter.index], textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14.sp, color: Color(0xff212121), fontWeight: FontWeight.w500))
                 ],
               )
@@ -233,14 +234,12 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
 
     if(state is RefreshConfirmedTxnsFail) {
       ProgressDialog.dismiss(context);
-      //return _buildErrorScreen(context, state.error.toString());
-      return _buildNoDataScreen(context, 'No transactions found!!!\n Be happy to send or receive Mina');
+      return _buildErrorScreen(context, state.error.toString());
     }
 
     if(state is RefreshPooledTxnsFail) {
       ProgressDialog.dismiss(context);
-      //return _buildErrorScreen(context, state.error.toString());
-      return _buildNoDataScreen(context, 'No transactions found!!!\n Be happy to send or receive Mina');
+      return _buildErrorScreen(context, state.error.toString());
     }
 
     if(state is AccountChanged) {

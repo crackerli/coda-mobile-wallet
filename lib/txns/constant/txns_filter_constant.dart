@@ -1,0 +1,1 @@
+enum TxnFilter { ALL, SENT, RECEIVED, STAKED }

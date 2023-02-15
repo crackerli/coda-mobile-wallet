@@ -1,78 +1,62 @@
 // The transaction list composed by three parts.
 // 1. Historic transactions get from figment archive node.
 // 2. Pooled user commands get from figment graphql endpoint.
-// 3. Because figment archive node is always one block behind the highest block height,
+// 3. Because archive node is always one block behind the highest block height,
 //   so we must get the recently included transaction from the best chain, which means we must
 //   also call the graphql endpoint to find the recently one block to find if users' transaction is there.
-
 
 import 'dart:collection';
 
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
 import 'package:coda_wallet/util/safe_map.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../service/archive_service.dart';
 import '../../service/coda_service.dart';
-import 'indexer_txns_entity.dart';
+import '../constant/txns_filter_constant.dart';
+import '../query/archived_txns_query.dart';
 import 'txns_entity.dart';
 
 class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
+
   late CodaService _service;
-  late IndexerService _indexerService;
+  late ArchiveService _archiveService;
   bool isTxnsLoading = false;
   // User commands merged from both pool and archive
   late List<MergedUserCommand> mergedUserCommands;
   int accountIndex = 0;
-  int currentFilter = 0;
+  TxnFilter currentFilter = TxnFilter.ALL;
   List<String> txnFilters = ['ALL', 'SENT', 'RECEIVED', 'STAKED', 'CANCEL'];
 
   get filteredUserCommands {
-    List<MergedUserCommand> commands = [];
     if(mergedUserCommands.length == 0) {
-      return commands;
+      return [];
     }
 
-    // Get sent filtered list
-    if(currentFilter == 1) {
-      for(int i = 0; i < mergedUserCommands.length; i++) {
-        if(!mergedUserCommands[i].isDelegation! && mergedUserCommands[i].from == publicKey) {
-          commands.add(mergedUserCommands[i]);
-        }
-      }
-      return commands;
+    switch(currentFilter) {
+      case TxnFilter.SENT:
+        return mergedUserCommands.where((command) {
+          return !command.isDelegation! && command.from == publicKey;
+        }).toList();
+      case TxnFilter.RECEIVED:
+        return mergedUserCommands.where((command) {
+          return !command.isDelegation! && command.to == publicKey;
+        }).toList();
+      case TxnFilter.STAKED:
+        return mergedUserCommands.where((command) {
+          return command.isDelegation!;
+        }).toList();
+      default:
+        return mergedUserCommands;
     }
-
-    // Get received filtered list
-    if(currentFilter == 2) {
-      for(int i = 0; i < mergedUserCommands.length; i++) {
-        if(!mergedUserCommands[i].isDelegation! && mergedUserCommands[i].to == publicKey) {
-          commands.add(mergedUserCommands[i]);
-        }
-      }
-      return commands;
-    }
-
-    // Get staked filtered list
-    if(currentFilter == 3) {
-      for(int i = 0; i < mergedUserCommands.length; i++) {
-        if(mergedUserCommands[i].isDelegation!) {
-          commands.add(mergedUserCommands[i]);
-        }
-      }
-      return commands;
-    }
-
-    // Default return all list
-    return mergedUserCommands;
   }
 
   get publicKey => globalHDAccounts.accounts![accountIndex]!.address;
 
   TxnsBloc(TxnsStates state) : super(state) {
     _service = CodaService();
-    _indexerService = IndexerService();
+    _archiveService = ArchiveService();
     isTxnsLoading = false;
     mergedUserCommands = [];
   }
@@ -120,24 +104,24 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
     try {
       isTxnsLoading = true;
-      final result = await _indexerService.getTransactions(publicKey);
+      final query = event.query;
+      final variables = event.variables ?? null;
+      final result = await _archiveService.performQuery(query, variables: variables!);
 
-      if(result.statusCode != 200) {
-        String? error = result.statusMessage;
-        yield RefreshConfirmedTxnsFail(error);
+      if(result.hasException) {
+        String error = exceptionHandle(result);
+        yield RefreshPooledTxnsFail(error);
         return;
       }
 
-      List<dynamic>? data = result.data;
-
-      List<IndexerTxnEntity> transactions = [];
-
-      if(null != data && data.length > 0) {
-        data.forEach((element) {
-          transactions.add(IndexerTxnEntity.fromMap(element)!);
-        });
+      if(null == result.data) {
+        yield RefreshPooledTxnsFail('No data found!');
+        return;
       }
-      _mergeUserCommandsFromArchiveNode(transactions);
+
+      List<dynamic>? data = result.data?['transactions'];
+
+      _mergeUserCommandsFromArchiveNode(data);
 
       // Sometimes we may see the same user commands in both archive node and best chain,
       // So need to remove the duplicated items.
@@ -181,7 +165,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       mergedUserCommands.clear();
       List<dynamic> pooledUserCommands = result.data!['pooledUserCommands'] as List<dynamic>;
       _mergeUserCommandsFromPool(pooledUserCommands);
-      // Figment's indexer server is one or more blocks height behind the latest,
+      // Archive node server may one or more blocks height behind the latest,
       // so we need to read the latest block from best chain.
       List<dynamic>? bestChain = result.data!['bestChain'];
       if(null != bestChain && bestChain.length > 1) {
@@ -194,7 +178,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
         Map<String, dynamic> variables = Map<String, dynamic>();
         variables['from'] = publicKey;
         variables['to'] = publicKey;
-        add(RefreshConfirmedTxns('', variables: variables));
+        add(RefreshConfirmedTxns(ARCHIVED_TXNS_QUERY, variables: variables));
       }
       isTxnsLoading = true;
     } catch (e) {
@@ -247,8 +231,8 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
     pooledUserCommands.forEach((pooledUserCommand) {
       SafeMap safeUserCommand = SafeMap(pooledUserCommand);
-      // TODO: Here maybe a bug in graphql server,
-      // the filter will return some item not related to the publicKey, need to confirm with Mina Team
+      /// TODO: Here maybe a bug in graphql server,
+      /// the filter will return some item not related to the publicKey, need to confirm with Mina Team
       if(pooledUserCommand['to'] == publicKey || pooledUserCommand['from'] == publicKey) {
         MergedUserCommand mergedUserCommand = MergedUserCommand();
         mergedUserCommand.to                = safeUserCommand['to'].value           ?? '';
@@ -269,27 +253,28 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     });
   }
 
-  _mergeUserCommandsFromArchiveNode(List<IndexerTxnEntity?>? userCommands) {
-    if(null == userCommands || 0 == userCommands.length) {
+  _mergeUserCommandsFromArchiveNode(List<dynamic>? transactions) {
+    if(null == transactions || 0 == transactions.length) {
       return;
     }
 
-    userCommands.forEach((transaction) {
+    transactions.forEach((transaction) {
       MergedUserCommand mergedUserCommand = MergedUserCommand();
-      mergedUserCommand.to                = transaction?.receiver    ?? '';
-      mergedUserCommand.nonce             = transaction?.nonce       ?? 0;
-      mergedUserCommand.amount            = transaction?.amount      ?? '';
-      mergedUserCommand.fee               = transaction?.fee         ?? '';
-      mergedUserCommand.from              = transaction?.sender      ?? '';
-      mergedUserCommand.hash              = transaction?.hash        ?? '';
-      mergedUserCommand.memo              = transaction?.memo        ?? '';
-      mergedUserCommand.blockHeight       = transaction?.blockHeight ?? 0;
-      mergedUserCommand.isDelegation      = (transaction?.type) == 'delegation';
-      mergedUserCommand.isPooled          = false;
-      mergedUserCommand.isIndexerMemo     = true;
-      DateTime? dateTime                  = DateTime.tryParse(transaction?.time ?? '');
-      mergedUserCommand.dateTime          = (dateTime == null ? '' : dateTime.millisecondsSinceEpoch.toString());
-      mergedUserCommand.failureReason     = transaction?.failureReason;
+      mergedUserCommand.to           = transaction['to'];
+      mergedUserCommand.isDelegation = transaction['isDelegation'];
+      mergedUserCommand.nonce        = transaction['nonce'];
+      /// TODO: Graphql deduced amount and fee's type to be int, this is not safe to
+      /// handle a bigint, need to confirmed with graphql community to fix this.
+      mergedUserCommand.amount       = transaction['amount'].toString();
+      mergedUserCommand.fee          = transaction['fee'].toString();
+      mergedUserCommand.from         = transaction['from'];
+      mergedUserCommand.hash         = transaction['hash'];
+      mergedUserCommand.memo         = transaction['memo'];
+      mergedUserCommand.isPooled     = false;
+      mergedUserCommand.isIndexerMemo= false;
+      mergedUserCommand.failureReason= transaction['failureReason'];
+      mergedUserCommand.dateTime     =
+          DateTime.parse(transaction['dateTime']).millisecondsSinceEpoch.toString();
       mergedUserCommands.add(mergedUserCommand);
     });
   }

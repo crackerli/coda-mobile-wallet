@@ -139,7 +139,7 @@ class SendBloc extends
     try {
       loading = true;
       yield GetPooledFeeLoading();
-      final result = await _service.performMutation(query, variables: variables!);
+      final result = await _service.performQuery(query, variables: variables!);
       loading = false;
 
       if(result.hasException) {
@@ -242,7 +242,7 @@ class SendBloc extends
     try {
       loading = true;
       yield GetNonceLoading();
-      final result = await _service.performMutation(mutation, variables: variables!);
+      final result = await _service.performQuery(mutation, variables: variables!);
       loading = false;
 
       if(result.hasException) {
