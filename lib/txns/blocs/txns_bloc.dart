@@ -5,8 +5,6 @@
 //   so we must get the recently included transaction from the best chain, which means we must
 //   also call the graphql endpoint to find the recently one block to find if users' transaction is there.
 
-import 'dart:collection';
-
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/txns/blocs/txns_events.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
@@ -30,8 +28,8 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   List<String> txnFilters = ['ALL', 'SENT', 'RECEIVED', 'STAKED', 'CANCEL'];
 
   get filteredUserCommands {
-    if(mergedUserCommands.length == 0) {
-      return [];
+    if(mergedUserCommands.isEmpty) {
+      return mergedUserCommands;
     }
 
     switch(currentFilter) {
@@ -125,11 +123,9 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
       // Sometimes we may see the same user commands in both archive node and best chain,
       // So need to remove the duplicated items.
-      if(mergedUserCommands.length > 0) {
-        List<MergedUserCommand> temp = LinkedHashSet<MergedUserCommand>.from(
-          mergedUserCommands).toList();
-        mergedUserCommands.clear();
-        mergedUserCommands.addAll(temp);
+      if(mergedUserCommands.isNotEmpty) {
+        final tempSet = Set();
+        mergedUserCommands.retainWhere((command) => tempSet.add(command.hash));
       }
       yield RefreshConfirmedTxnsSuccess(mergedUserCommands);
       isTxnsLoading = false;
@@ -254,7 +250,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   }
 
   _mergeUserCommandsFromArchiveNode(List<dynamic>? transactions) {
-    if(null == transactions || 0 == transactions.length) {
+    if(null == transactions || transactions.isEmpty) {
       return;
     }
 
@@ -270,11 +266,12 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       mergedUserCommand.from         = transaction['from'];
       mergedUserCommand.hash         = transaction['hash'];
       mergedUserCommand.memo         = transaction['memo'];
+      mergedUserCommand.blockHeight  = transaction['blockHeight'];
       mergedUserCommand.isPooled     = false;
       mergedUserCommand.isIndexerMemo= false;
       mergedUserCommand.failureReason= transaction['failureReason'];
       mergedUserCommand.dateTime     =
-          DateTime.parse(transaction['dateTime']).millisecondsSinceEpoch.toString();
+          DateTime.tryParse(transaction['dateTime'])?.millisecondsSinceEpoch.toString();
       mergedUserCommands.add(mergedUserCommand);
     });
   }
