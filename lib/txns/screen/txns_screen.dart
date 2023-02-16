@@ -36,7 +36,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
     _txnsBloc.currentFilter = TxnFilter.ALL;
     Map<String, dynamic> variables = Map<String, dynamic>();
     variables['publicKey'] = _txnsBloc.publicKey;
-    _txnsBloc.add(RefreshPooledTxns(POOLED_TXNS_QUERY, variables: variables));
+    _txnsBloc.add(RefreshTxns(POOLED_TXNS_QUERY, variables: variables));
   }
 
   Future<void> _onRefresh() async {
@@ -213,7 +213,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   }
 
   _buildTxnBody(BuildContext context, TxnsStates state) {
-    if(state is RefreshPooledTxnsLoading) {
+    if(state is RefreshTxnsLoading) {
       List<dynamic> userCommands = (state.data ?? []) as List<dynamic>;
       if(userCommands.length == 0) {
         WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -223,7 +223,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
       }
     }
 
-    if(state is RefreshConfirmedTxnsSuccess) {
+    if(state is RefreshTxnsSuccess) {
       ProgressDialog.dismiss(context);
       List<dynamic> userCommands = state.data as List<dynamic>;
       if(userCommands == null || userCommands.length == 0) {
@@ -232,12 +232,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
       return _buildTxnList(context, state.data);
     }
 
-    if(state is RefreshConfirmedTxnsFail) {
-      ProgressDialog.dismiss(context);
-      return _buildErrorScreen(context, state.error.toString());
-    }
-
-    if(state is RefreshPooledTxnsFail) {
+    if(state is RefreshTxnsFail) {
       ProgressDialog.dismiss(context);
       return _buildErrorScreen(context, state.error.toString());
     }

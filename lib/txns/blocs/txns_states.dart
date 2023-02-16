@@ -18,57 +18,31 @@ class FilterChanged extends TxnsStates {
   List<Object> get props => data.data;
 }
 
-class RefreshPooledTxnsLoading extends TxnsStates {
+class RefreshTxnsLoading extends TxnsStates {
   final dynamic data;
 
-  RefreshPooledTxnsLoading(this.data) : super();
+  RefreshTxnsLoading(this.data) : super();
 
   @override
   List<Object> get props => data.data;
 }
 
-class RefreshPooledTxnsSuccess extends TxnsStates {
+class RefreshTxnsSuccess extends TxnsStates {
   final dynamic data;
 
-  RefreshPooledTxnsSuccess(this.data) : super();
+  RefreshTxnsSuccess(this.data) : super();
 
   @override
   List<Object> get props => data;
 }
 
-class RefreshPooledTxnsFail extends TxnsStates {
+class RefreshTxnsFail extends TxnsStates {
   final dynamic error;
 
-  RefreshPooledTxnsFail(this.error) : super();
+  RefreshTxnsFail(this.error) : super();
 
   @override
   List<Object> get props => error;
 }
 
-class RefreshConfirmedTxnsLoading extends TxnsStates {
-  final dynamic data;
-
-  RefreshConfirmedTxnsLoading(this.data) : super();
-
-  @override
-  List<Object> get props => data.data;
-}
-
-class RefreshConfirmedTxnsSuccess extends TxnsStates {
-  final dynamic data;
-
-  RefreshConfirmedTxnsSuccess(this.data) : super();
-
-  @override
-  List<Object> get props => data;
-}
-
-class RefreshConfirmedTxnsFail extends TxnsStates {
-  final dynamic error;
-
-  RefreshConfirmedTxnsFail(this.error) : super();
-
-  @override
-  List<Object> get props => error;
-}
 

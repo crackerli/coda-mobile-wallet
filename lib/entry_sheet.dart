@@ -42,7 +42,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
     ),
     BlocProvider<TxnsBloc>(
       create: (BuildContext context) {
-        return TxnsBloc(RefreshPooledTxnsLoading(null));
+        return TxnsBloc(RefreshTxnsLoading(null));
       },
       child: TxnsScreen()
     ),

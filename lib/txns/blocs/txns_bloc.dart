@@ -59,17 +59,13 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     mergedUserCommands = [];
   }
 
-  TxnsStates get initState => RefreshPooledTxnsLoading(null);
+  TxnsStates get initState => RefreshTxnsLoading(null);
 
   @override
   Stream<TxnsStates> mapEventToState(TxnsEvents event) async* {
-    if(event is RefreshConfirmedTxns) {
-      yield* _mapRefreshConfirmedTxnsToStates(event);
-      return;
-    }
 
-    if(event is RefreshPooledTxns) {
-      yield* _mapRefreshPooledTxnsToStates(event);
+    if(event is RefreshTxns) {
+      yield* _mapRefreshTxnsToStates(event);
       return;
     }
 
@@ -98,66 +94,24 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   }
 
   Stream<TxnsStates>
-    _mapRefreshConfirmedTxnsToStates(RefreshConfirmedTxns event) async* {
-
-    try {
-      isTxnsLoading = true;
-      final query = event.query;
-      final variables = event.variables ?? null;
-      final result = await _archiveService.performQuery(query, variables: variables!);
-
-      if(result.hasException) {
-        String error = exceptionHandle(result);
-        yield RefreshPooledTxnsFail(error);
-        return;
-      }
-
-      if(null == result.data) {
-        yield RefreshPooledTxnsFail('No data found!');
-        return;
-      }
-
-      List<dynamic>? data = result.data?['transactions'];
-
-      _mergeUserCommandsFromArchiveNode(data);
-
-      // Sometimes we may see the same user commands in both archive node and best chain,
-      // So need to remove the duplicated items.
-      if(mergedUserCommands.isNotEmpty) {
-        final tempSet = Set();
-        mergedUserCommands.retainWhere((command) => tempSet.add(command.hash));
-      }
-      yield RefreshConfirmedTxnsSuccess(mergedUserCommands);
-      isTxnsLoading = false;
-    } catch (e) {
-      print(e);
-      yield RefreshConfirmedTxnsFail(e.toString());
-      isTxnsLoading = false;
-    }
-  }
-
-  Stream<TxnsStates>
-    _mapRefreshPooledTxnsToStates(RefreshPooledTxns event) async* {
+    _mapRefreshTxnsToStates(RefreshTxns event) async* {
 
     final query = event.query;
     final variables = event.variables ?? null;
+    print('Start to get transactions history');
 
     try {
       isTxnsLoading = true;
-      yield RefreshPooledTxnsLoading(mergedUserCommands);
+      yield RefreshTxnsLoading(mergedUserCommands);
       final result = await _service.performQuery(query, variables: variables!);
 
       if(result.hasException) {
         String error = exceptionHandle(result);
-        yield RefreshPooledTxnsFail(error);
+        yield RefreshTxnsFail(error);
         return;
       }
 
-      if(null == result.data) {
-        yield RefreshPooledTxnsFail('No data found!');
-        return;
-      }
-
+      print('get pooled transactions done');
       mergedUserCommands.clear();
       List<dynamic> pooledUserCommands = result.data!['pooledUserCommands'] as List<dynamic>;
       _mergeUserCommandsFromPool(pooledUserCommands);
@@ -174,12 +128,30 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
         Map<String, dynamic> variables = Map<String, dynamic>();
         variables['from'] = publicKey;
         variables['to'] = publicKey;
-        add(RefreshConfirmedTxns(ARCHIVED_TXNS_QUERY, variables: variables));
+        final result = await _archiveService.performQuery(ARCHIVED_TXNS_QUERY, variables: variables!);
+
+        if(result.hasException) {
+          String error = exceptionHandle(result);
+          yield RefreshTxnsFail(error);
+          return;
+        }
+        print('get archived transactions done');
+        List<dynamic>? data = result.data?['transactions'];
+
+        _mergeUserCommandsFromArchiveNode(data);
+
+        // Sometimes we may see the same user commands in both archive node and best chain,
+        // So need to remove the duplicated items.
+        if(mergedUserCommands.isNotEmpty) {
+          final tempSet = Set();
+          mergedUserCommands.retainWhere((command) => tempSet.add(command.hash));
+        }
+        yield RefreshTxnsSuccess(mergedUserCommands);
       }
-      isTxnsLoading = true;
+      isTxnsLoading = false;
     } catch (e) {
       print(e);
-      yield RefreshPooledTxnsFail(e.toString());
+      yield RefreshTxnsFail(e.toString());
       isTxnsLoading = false;
     }
   }
