@@ -14,8 +14,7 @@ const STAKETAB_PROVIDERS = 'https://api.staketab.com/mina/get_providers';
 
 // add your own nomics key here, or read from environment with --dart-define tag
 const NOMICS_API_KEY = String.fromEnvironment('NOMICS_API_KEY');
-const NOMICS_QUERY_URL =
-  'https://api.nomics.com/v1/currencies/ticker?key=$NOMICS_API_KEY&ids=MINA&interval=1h&convert=USD';
+const NOMICS_QUERY_URL = 'https://data.binance.com/api/v3/ticker/price?symbol=MINAUSDT';
 const NOMICS_PRICE_KEY = 'nomics_price_key';
 const PRESET_MINA_PRICE = '1.0';
 const PRESET_MINA_PRICE_DOUBLE = 1.0;

@@ -6,9 +6,8 @@ abstract class AccountEvents {
 }
 
 class GetAccounts extends AccountEvents {
-  int index;
 
-  GetAccounts(this.index) : super();
+  GetAccounts() : super();
 
   @override
   List<Object>? get props => null;

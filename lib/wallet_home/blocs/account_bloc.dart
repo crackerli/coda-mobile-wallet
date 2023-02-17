@@ -6,7 +6,6 @@ import 'package:coda_wallet/service/indexer_service.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/providers_utils.dart';
-import 'package:coda_wallet/wallet_home/blocs/exchange_info_entity.dart';
 import 'package:coda_wallet/wallet_home/query/account_query.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,109 +36,69 @@ class AccountBloc extends
       return;
     }
 
-    if(event is GetExchangeInfo) {
-      yield* _mapGetExchangeInfoToStates(event);
-      return;
-    }
-  }
-
-  Stream<AccountStates>
-    _mapGetExchangeInfoToStates(GetExchangeInfo event) async* {
-    try {
-      Response response = await _indexerService.getExchangeInfo();
-
-      if(response.statusCode != 200) {
-        return;
-      }
-
-      List<dynamic> data = response.data as List;
-      if(data.length > 0) {
-        Map<String, dynamic> map = data[0];
-        ExchangeInfoEntity? exchangeInfoEntity = ExchangeInfoEntity.fromMap(map);
-        if(null != exchangeInfoEntity && null != exchangeInfoEntity.price && exchangeInfoEntity.price!.isNotEmpty) {
-          // Save last price and emit state
-          globalPreferences.setString(NOMICS_PRICE_KEY, exchangeInfoEntity.price!);
-          yield GetExchangeInfoSuccess(exchangeInfoEntity.price);
-        }
-        print('Get exchange info done!!');
-      } else {
-        print('Get exchange info error!!');
-      }
-    } catch (e) {
-      print('Error happen when get providers: ${e.toString()}');
-    } finally {}
   }
 
   Stream<AccountStates>
     _mapGetAccountsToStates(GetAccounts event) async* {
 
-    final query = ACCOUNT_QUERY;
-    Map<String, dynamic> variables = Map<String, dynamic>();
-    variables['publicKey'] = globalHDAccounts.accounts![event.index]?.address;
+    if(globalHDAccounts.accounts!.isEmpty) {
+      return;
+    }
 
     try {
-      yield GetAccountsLoading();
-      final result = await _service.performQuery(query, variables: variables);
-      if(result.hasException || null == result.data) {
-        // If one account fail, we continue to next if not finished
-        if(event.index >= globalHDAccounts.accounts!.length - 1) {
-          print('1. Get all accounts info finished');
-          yield GetAccountsFinished();
-          // Save global accounts info
-          Map accountsJson = globalHDAccounts.toJson();
-          //globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
-          await globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
-          add(GetExchangeInfo());
-          _getProviders();
-        } else {
-          print('1. To get account ${event.index + 1}');
-          add(GetAccounts(event.index + 1));
-        }
-        return;
-      }
+      for(AccountBean? account in globalHDAccounts.accounts!) {
+        Map<String, dynamic> variables = Map<String, dynamic>();
+        variables['publicKey'] = account!.address;
+        final result = await _service.performQuery(ACCOUNT_QUERY, variables: variables);
 
-      // Parse data from Json map, convert it to safe map for safe nested access
-      dynamic accounts = result.data!['accounts'];
-      if((accounts as List).isEmpty) {
-        globalHDAccounts.accounts![event.index]?.balance = '0';
-        globalHDAccounts.accounts![event.index]?.isActive = false;
-        globalHDAccounts.accounts![event.index]?.stakingAddress = '';
-      } else {
+        if(result.hasException || null == result.data) {
+          throw Exception('One of Mina accounts syncing failed');
+        }
+
+        print('Get account ${account!.address} successfully');
+        dynamic accounts = result.data!['accounts'];
         // If the account is null, then we can say this account is not active
-        // We use only the first account
-        Map<String, dynamic> account = accounts[0] as Map<String, dynamic>;
-        SafeMap safeAccount = SafeMap(account);
-        String balance = safeAccount['balance']['total'].value;
-        String publicKey = safeAccount['publicKey'].value;
-        String stakingAddress = safeAccount['delegateAccount']['publicKey'].value;
-        // find it in global accounts
-        for(int i = 0; i < globalHDAccounts.accounts!.length; i++) {
-          AccountBean? account = globalHDAccounts.accounts![i];
+        if((accounts as List).isEmpty) {
+          account!.balance = '0';
+          account!.isActive = false;
+          account!.stakingAddress = '';
+        } else { // We use only the first account
+          Map<String, dynamic> tempAccount = accounts[0] as Map<String, dynamic>;
+          SafeMap safeAccount = SafeMap(tempAccount);
+          String balance = safeAccount['balance']['total'].value;
+          String publicKey = safeAccount['publicKey'].value;
+          String stakingAddress = safeAccount['delegateAccount']['publicKey'].value;
+
           if(account!.address == publicKey) {
             account.balance = balance;
             account.isActive = true;
             account.stakingAddress = stakingAddress;
-            break;
+          } else {
+            print('Account got not match it saved on disk!!!');
           }
         }
       }
-      if(event.index >= globalHDAccounts.accounts!.length - 1) {
-        print('2. Get all accounts info finished: ${event.index}');
-        yield GetAccountsFinished();
-        // Save global accounts info
-        Map accountsJson = globalHDAccounts.toJson();
-        //globalPreferences.setString(GLOBAL_ACCOUNTS_KEY, json.encode(accountsJson));
-        await globalSecureStorage.write(key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
-        add(GetExchangeInfo());
-        _getProviders();
-        return;
+
+      print('All accounts synced!!!');
+      // Save global accounts info
+      Map accountsJson = globalHDAccounts.toJson();
+      await globalSecureStorage.write(
+        key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
+
+      print('All accounts written into disk!!!');
+      yield GetAccountsSuccess();
+
+      bool result = await _getExchangeInfo();
+      if(result) {
+        yield GetExchangeInfoSuccess(null);
+      } else {
+        yield GetExchangeInfoFail(null);
       }
 
-      // Continue to get next account info
-      print('2. To get account ${event.index + 1}');
-      add(GetAccounts(event.index + 1));
+      await _getProviders();
     } catch (e) {
-      print(e);
+      yield GetAccountsFail();
+      print('Wallet home exception: ${e.toString()}');
     } finally {
 
     }
@@ -164,6 +123,30 @@ class AccountBloc extends
       print('Get providers done!!');
     } catch (e) {
       print('Error happen when get providers: ${e.toString()}');
+    } finally {}
+  }
+
+  Future<bool> _getExchangeInfo() async {
+    try {
+      Response response = await _indexerService.getExchangeInfo();
+
+      if(response.statusCode != 200) {
+        return false;
+      }
+
+      Map<String, dynamic> data = response.data as Map<String, dynamic>;
+      if(null != data['price'] && data['price']!.isNotEmpty) {
+        globalPreferences.setString(NOMICS_PRICE_KEY, data['price']!);
+        print('Get exchange info done!!');
+      } else {
+        print('Get exchange info error!!');
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      print('Error happen when get exchange info: ${e.toString()}');
+      return false;
     } finally {}
   }
 }

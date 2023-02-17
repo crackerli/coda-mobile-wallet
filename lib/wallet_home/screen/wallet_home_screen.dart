@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
@@ -13,7 +12,6 @@ import 'package:coda_wallet/widget/dialog/upgrade_cipher_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,7 +56,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     }
 
     if(newUser && newRoute) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushNamed(context, NoWalletRoute);
       });
     } else {
@@ -72,7 +70,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         Uint8List prefix = encryptedSeed.sublist(0, 8);
         if (MinaHelper.bytesToUtf8String(prefix) == 'Salted__' &&
             !_hasUpgradePopped) {
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             showUpgradeCihperDialog(context);
             _hasUpgradePopped = true;
           });
@@ -80,7 +78,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       }
 
       if(globalHDAccounts.accounts != null && globalHDAccounts.accounts!.isNotEmpty) {
-        _accountBloc!.add(GetAccounts(0));
+        _accountBloc!.add(GetAccounts());
       }
     }
   }
@@ -95,7 +93,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     }
 
     if(jailbroken) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         showUnsafeDeviceAlertDialog(context);
       });
     }
@@ -105,7 +103,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   void initState() {
     super.initState();
     print('WalletHomeScreen initState');
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     _accountBloc = BlocProvider.of<AccountBloc>(context);
     _updateAccounts(newRoute: true);
     _eventBusOn = eventBus.on<UpdateAccounts>().listen((event) {
@@ -118,7 +116,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   @override
   void dispose() {
     _accountBloc = null;
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _eventBusOn.cancel();
     _eventBusOn = null;
     routeObserver.unsubscribe(this);
