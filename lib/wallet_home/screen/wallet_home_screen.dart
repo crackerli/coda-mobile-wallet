@@ -18,6 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 _gotoSendFromScreen(BuildContext context) {
   SendData sendData = SendData();
@@ -173,7 +174,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       return _buildStakedHome(context);
     }
 
-    return _buildNoStakeHome();
+    return _buildNoStakeHome(context);
   }
 
   _buildStakedHome(BuildContext context) {
@@ -186,7 +187,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(height: 8.h),
-          _buildQRTipIcon(),
+          _buildQRTipIcon(context),
           Container(height: 35.h),
           _buildMinaLogo(),
           Container(height: 36.h),
@@ -208,16 +209,50 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           Container(height: 43.h),
           _buildActionButton(context)
         ]
-      ),
+      )
     );
   }
 
-  _buildNoStakeHome() {
+  _buildWalletSync(BuildContext context, AccountStates state) {
+    if(state is GetAccountsLoading) {
+      return LoadingAnimationWidget.flickr(
+        leftDotColor: Colors.purple,
+        rightDotColor: Colors.blueAccent,
+        size: 26.w);
+    }
+
+    if(state is GetAccountsFail) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sync accounts failed!')));
+      });
+      return ElevatedButton(
+        onPressed: () {
+          _accountBloc.add(GetAccounts());
+        },
+        child: Text('RESYNC',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.redAccent)),
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: Color(0xdddddd),
+          foregroundColor: Colors.redAccent,
+          side: BorderSide(width: 0.5.h, color: Colors.redAccent,),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600),
+          padding: EdgeInsets.fromLTRB(6.w, 0.h, 6.w, 0.h)
+        ),
+      );
+    }
+
+    return Container();
+  }
+
+  _buildNoStakeHome(BuildContext context) {
     return Column(children: [
       Expanded(child: Column(
         children: [
           Container(height: 8.h),
-          _buildQRTipIcon(),
+          _buildQRTipIcon(context),
           Container(height: 2.h),
           _buildMinaLogo(),
           Container(height: 10.h),
@@ -262,9 +297,16 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     );
   }
 
-  _buildQRTipIcon() {
+  _buildQRTipIcon(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Container(width: 24.w,),
+        BlocBuilder<AccountBloc, AccountStates>(
+          builder: (BuildContext context, AccountStates state) {
+            return _buildWalletSync(context, state);
+          }
+        ),
         Expanded(child: Container(), flex: 1),
         Container(
           padding: EdgeInsets.all(10.w),
@@ -278,7 +320,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
                 _gotoReceiveAccountsScreen(context);
               }
             },
-            child: Image.asset('images/qr_code_icon.png')
+            child: Image.asset('images/qr_code_icon.png', width: 34.2, height: 34.w,)
           )
         ),
         Container(width: 28.w)

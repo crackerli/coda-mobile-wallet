@@ -53,6 +53,7 @@ dependencies:
   flutter_jailbreak_detection: ^1.10.0
   flutter_windowmanager: ^0.2.0
   flutter_secure_screen: ^0.0.1
+  loading_animation_widget: ^1.2.0+4
   ffi_mina_signer:
     path: ../ffi_mina_signer/
 

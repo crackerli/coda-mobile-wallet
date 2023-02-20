@@ -46,6 +46,7 @@ class AccountBloc extends
     }
 
     try {
+      yield GetAccountsLoading();
       for(AccountBean? account in globalHDAccounts.accounts!) {
         Map<String, dynamic> variables = Map<String, dynamic>();
         variables['publicKey'] = account!.address;
