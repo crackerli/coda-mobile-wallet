@@ -157,14 +157,14 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
   _buildProviderList(BuildContext context, StakeProvidersStates state) {
     if(state is GetStakeProvidersLoading) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         ProgressDialog.showProgress(context);
       });
       return Container();
     }
 
     if(state is GetStakeProvidersFail) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         ProgressDialog.dismiss(context);
       });
 
@@ -177,7 +177,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       List<Staking_providersBean?>? providers;
 
       if(state is GetStakeProvidersSuccess) {
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           ProgressDialog.dismiss(context);
         });
         providers = state.data as List<Staking_providersBean?>?;
@@ -204,7 +204,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
               SendData delegationData = SendData();
               delegationData.isDelegation = true;
               delegationData.to = providers![index]!.providerAddress!;
-              delegationData.memo = _getValidMemo(providers![index]!.providerTitle!);
+              delegationData.memo = _getValidMemo(providers[index]!.providerTitle!);
               delegationData.from = _accountIndex;
               delegationData.amount = '0';
               _gotoDelegationFee(context, delegationData);
@@ -299,7 +299,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                   Text('Percent', textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.grey),),
                   Container(height: 10.h,),
-                  Text('${provider?.stakePercent}%', textAlign: TextAlign.start,
+                  Text('${provider.stakePercent}%', textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Colors.black54),),
                 ],
               ),
@@ -309,7 +309,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                   Text('Fee', textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.grey),),
                   Container(height: 10.h,),
-                  Text('${provider?.providerFee}%', textAlign: TextAlign.start,
+                  Text('${provider.providerFee}%', textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Colors.black54),),
                 ],
               ),
@@ -319,42 +319,69 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                   Text('Delegators', textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.grey),),
                   Container(height: 10.h,),
-                  Text(formatKMBNumber(provider!.delegatorsNum!.toDouble()), textAlign: TextAlign.start,
+                  Text(formatKMBNumber(provider.delegatorsNum!.toDouble()), textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Colors.black54),),
                 ],
               ),
             ],
           ),
           Container(height: 12.h,),
+          _buildPayoutTerms(context, provider.payoutTerms),
+          (provider.payoutTerms == null
+              || provider.payoutTerms!.isEmpty
+              || provider.payoutTerms!.trim().isEmpty) ?
+          Container() : Container(height: 8.h),
+          (null == provider.website || provider.website!.isEmpty) ? Container() :
           Row(
             children: [
-              Text('Website:', textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
-              Container(width: 2.w,),
+              Text('Pool Site:', textAlign: TextAlign.start,
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),
+              Container(width: 3.w,),
               Expanded(
                 child:
-                Text(provider?.website ?? '', textAlign: TextAlign.start, maxLines: 1,
+                Text(provider.website ?? '', textAlign: TextAlign.start, maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.blue),),
                 ),
-              Text('open')
-            ],
-          ),
-          Container(height: 8.h,),
-          Row(
-            children: [
-              Text('Payout terms'),
-              Text('1/week'),
-            ],
-          ),
-          Container(height: 8.h,),
-          Row(
-            children: [
-              Text('Contacts:'),
             ],
           ),
         ],
       )
+    );
+  }
+
+  _buildPayoutTerms(BuildContext context, String? termSrc) {
+    if(null == termSrc || termSrc.isEmpty || termSrc.trim().isEmpty) {
+      return Container();
+    }
+
+    List<String> terms = termSrc.split(',');
+    List<Widget> termWidgets = [];
+    termWidgets.add(
+      Text('Payout terms:', textAlign: TextAlign.start,
+        style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+    );
+    termWidgets.add(Container(width: 3.w,));
+
+    terms.forEach((element) {
+      termWidgets.add(Container(
+        padding: EdgeInsets.all(2.w),
+        decoration: BoxDecoration(
+          border: Border.all(color: Color(0xffd0d0d0), width: 0.5.w),
+          borderRadius: BorderRadius.all(Radius.circular(2.w)),
+          color: Colors.white24,
+        ),
+        child: Text(element.trim(), textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.normal, color: Color(0xff2d2d2d)),),
+      ));
+      termWidgets.add(Container(width: 3.w,));
+    });
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: termWidgets,
     );
   }
 
