@@ -138,11 +138,11 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
           icon: Image.asset('images/down_expand.png', width: 14.w, height: 14.w),
           elevation: 6,
           style: const TextStyle(color: Color(0xff2d2d2d)),
-          onChanged: (SortProvidersManner? value) {
+          onChanged: _stakeProvidersBloc.dropDownMenuEnabled ? (SortProvidersManner? value) {
             if(_stakeProvidersBloc.currentSortManner != value) {
               _stakeProvidersBloc.add(SortProvidersEvents(value!));
             }
-          },
+          } : null,
           underline: Container(),
           items: _stakeProvidersBloc.sortManners.map<DropdownMenuItem<SortProvidersManner>>((SortProvidersManner value) {
             return DropdownMenuItem<SortProvidersManner>(

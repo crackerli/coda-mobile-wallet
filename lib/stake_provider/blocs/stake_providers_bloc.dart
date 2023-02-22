@@ -18,6 +18,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
   SortProvidersManner currentSortManner = SortProvidersManner.SortByDefault;
   List<Staking_providersBean?> _stakingProviders = [];
   Staking_providersBean? _everStake;
+  bool dropDownMenuEnabled = false;
 
   StakeProvidersBloc(StakeProvidersStates? state) : super(state!) {
     _indexerService = IndexerService();
@@ -26,7 +27,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
 
   StakeProvidersStates get initState => GetStakeProvidersLoading(null);
   List<Staking_providersBean?>? get stakingProviders {
-    if(null != _everStake && _stakingProviders.isEmpty) {
+    if(null != _everStake && _stakingProviders.isNotEmpty) {
       return [_everStake, ..._stakingProviders];
     }
     return [];
@@ -50,7 +51,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
     currentSortManner = event.manner;
     if(_stakingProviders.isEmpty) {
       print('Staking Providers list is empty!!');
-      yield SortedProvidersStates(SortProvidersManner.SortByDefault, [_everStake, ..._stakingProviders]);
+      yield SortedProvidersStates(SortProvidersManner.SortByDefault, <Staking_providersBean?>[]);
       return;
     }
 
@@ -100,6 +101,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
       if (response.statusCode != 200) {
         String? error = response.statusMessage;
         isProvidersLoading = false;
+        dropDownMenuEnabled = false;
         yield GetStakeProvidersFail(error);
         return;
       }
@@ -108,6 +110,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
       ProvidersEntity? providersEntity = ProvidersEntity.fromMap(response.data);
       if (null == providersEntity || null == providersEntity.stakingProviders) {
         isProvidersLoading = false;
+        dropDownMenuEnabled = false;
         yield GetStakeProvidersFail('Server Error, Please check and try again!');
         return;
       }
@@ -123,8 +126,8 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
         return false;
       });
       storeProvidersMap(providersEntity.stakingProviders);
-      isProvidersLoading = false;
       _stakingProviders = providersEntity.stakingProviders!;
+      // Retrieve element of EverStake
       _everStake = _stakingProviders.singleWhere((element) {
         if(element!.providerId == 230
           && element.providerTitle == 'Everstake'
@@ -142,10 +145,13 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
         return false;
       });
 
+      isProvidersLoading = false;
+      dropDownMenuEnabled = true;
       yield GetStakeProvidersSuccess([_everStake, ..._stakingProviders]);
     } catch (e) {
       print('${e.toString()}');
       isProvidersLoading = false;
+      dropDownMenuEnabled = false;
       yield GetStakeProvidersFail('Network Error, Please check and try again!');
     } finally {
 
