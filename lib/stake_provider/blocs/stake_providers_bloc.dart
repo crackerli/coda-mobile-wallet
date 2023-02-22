@@ -16,7 +16,8 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
   late bool isProvidersLoading;
   late IndexerService _indexerService;
   SortProvidersManner currentSortManner = SortProvidersManner.SortByDefault;
-  List<Staking_providersBean?>? _stakingProviders;
+  List<Staking_providersBean?> _stakingProviders = [];
+  Staking_providersBean? _everStake;
 
   StakeProvidersBloc(StakeProvidersStates? state) : super(state!) {
     _indexerService = IndexerService();
@@ -24,7 +25,12 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
   }
 
   StakeProvidersStates get initState => GetStakeProvidersLoading(null);
-  List<Staking_providersBean?>? get stakingProviders => _stakingProviders;
+  List<Staking_providersBean?>? get stakingProviders {
+    if(null != _everStake && _stakingProviders.isEmpty) {
+      return [_everStake, ..._stakingProviders];
+    }
+    return [];
+  }
 
   @override
   Stream<StakeProvidersStates> mapEventToState(StakeProvidersEvents event) async* {
@@ -42,44 +48,44 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
   Stream<StakeProvidersStates>
     _mapSortProviders(SortProvidersEvents event) async* {
     currentSortManner = event.manner;
-    if(null == _stakingProviders || _stakingProviders!.isEmpty) {
+    if(_stakingProviders.isEmpty) {
       print('Staking Providers list is empty!!');
-      yield SortedProvidersStates(SortProvidersManner.SortByDefault, _stakingProviders);
+      yield SortedProvidersStates(SortProvidersManner.SortByDefault, [_everStake, ..._stakingProviders]);
       return;
     }
 
     switch(event.manner) {
       case SortProvidersManner.SortByPoolSize:
-        _stakingProviders!.sort((element1, element2) {
+        _stakingProviders.sort((element1, element2) {
           double stakedSum1 = element1?.stakedSum ?? 0;
           double stakedSum2 = element2?.stakedSum ?? 0;
           return stakedSum2.compareTo(stakedSum1);
         });
-        yield SortedProvidersStates(SortProvidersManner.SortByPoolSize, _stakingProviders);
+        yield SortedProvidersStates(SortProvidersManner.SortByPoolSize, [_everStake, ..._stakingProviders]);
         break;
       case SortProvidersManner.SortByFee:
-        _stakingProviders!.sort((element1, element2) {
+        _stakingProviders.sort((element1, element2) {
           double fee1 = element1?.providerFee ?? 0;
           double fee2 = element2?.providerFee ?? 0;
           return fee1.compareTo(fee2);
         });
-        yield SortedProvidersStates(SortProvidersManner.SortByFee, _stakingProviders);
+        yield SortedProvidersStates(SortProvidersManner.SortByFee, [_everStake, ..._stakingProviders]);
         break;
       case SortProvidersManner.SortByDelegators:
-        _stakingProviders!.sort((element1, element2) {
+        _stakingProviders.sort((element1, element2) {
           num delegators1 = element1?.delegatorsNum ?? 0;
           num delegators2 = element2?.delegatorsNum ?? 0;
           return delegators2.compareTo(delegators1);
         });
-        yield SortedProvidersStates(SortProvidersManner.SortByDelegators, _stakingProviders);
+        yield SortedProvidersStates(SortProvidersManner.SortByDelegators, [_everStake, ..._stakingProviders]);
         break;
       default:
-        _stakingProviders!.sort((element1, element2) {
+        _stakingProviders.sort((element1, element2) {
           num providerId1 = element1?.providerId ?? 0;
           num providerId2 = element2?.providerId ?? 0;
           return providerId1.compareTo(providerId2);
         });
-        yield SortedProvidersStates(SortProvidersManner.SortByDefault, _stakingProviders);
+        yield SortedProvidersStates(SortProvidersManner.SortByDefault, [_everStake, ..._stakingProviders]);
         break;
     }
   }
@@ -118,8 +124,25 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
       });
       storeProvidersMap(providersEntity.stakingProviders);
       isProvidersLoading = false;
-      _stakingProviders = providersEntity.stakingProviders;
-      yield GetStakeProvidersSuccess(_stakingProviders);
+      _stakingProviders = providersEntity.stakingProviders!;
+      _everStake = _stakingProviders.singleWhere((element) {
+        if(element!.providerId == 230
+          && element.providerTitle == 'Everstake'
+          && element.email == 'inbox@everstake.one') {
+          return true;
+        }
+        return false;
+      })!;
+      _stakingProviders.removeWhere((element) {
+        if (element!.providerId == 230
+            && element.providerTitle == 'Everstake'
+            && element.email == 'inbox@everstake.one') {
+          return true;
+        }
+        return false;
+      });
+
+      yield GetStakeProvidersSuccess([_everStake, ..._stakingProviders]);
     } catch (e) {
       print('${e.toString()}');
       isProvidersLoading = false;
