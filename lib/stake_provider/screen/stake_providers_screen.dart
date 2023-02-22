@@ -10,11 +10,11 @@ import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/dialog/url_open_warning_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../blocs/stake_provider_type.dart';
 
 _gotoDelegationFee(BuildContext context, SendData delegationData) {
   Navigator.pushReplacementNamed(context, SendFeeRoute, arguments: delegationData);
@@ -72,7 +72,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      appBar: buildNoTitleAppBar(context, actions: false),
+      appBar: buildTitleAppBar(context, 'Staking Providers', actions: false),
         body: Container(
         padding: EdgeInsets.only(left: 16.w, right: 16.w),
         child: _buildProviderBody(context),
@@ -85,12 +85,31 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
 
   _buildProviderBody(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text('Select A Staking Provider', textAlign: TextAlign.center, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),),
-        Container(height: 22.h,),
-        _buildProviderTab(context),
-        Container(height: 14.h),
-        Container(height: 0.5.h, color: Color(0xff757575),),
+        Container(height: 12.h,),
+        Row(
+          children: [
+            Container(width: 6.w,),
+            Text('Sort by:', textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d)),),
+            Expanded(child: Container(), flex: 1,)
+          ],
+        ),
+        Container(height: 6.h,),
+        BlocBuilder<StakeProvidersBloc, StakeProvidersStates>(
+          builder: (BuildContext context, StakeProvidersStates state) {
+            if(state is SortedProvidersStates) {
+              return _buildSortWidget(context, state);
+            }
+            else {
+              return _buildSortWidget(context,
+                SortedProvidersStates(_stakeProvidersBloc.currentSortManner, _stakeProvidersBloc.stakingProviders));
+            }
+          }
+        ),
+        Container(height: 14.h,),
         Expanded(
           child: BlocBuilder<StakeProvidersBloc, StakeProvidersStates>(
             builder: (BuildContext context, StakeProvidersStates state) {
@@ -102,31 +121,37 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
     );
   }
 
-  _buildProviderTab(BuildContext context) {
-    return Row(
-      children: [
-        Container(width: 40.w,),
-        Container(width: 10.w,),
-        Expanded(
-          flex: 5,
-          child: Text('Validator', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),),
-        ),
-        Container(width: 2.w,),
-        Expanded(
-          flex: 3,
-          child: Text('Stake', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),),
-        ),
-        Container(width: 2.w,),
-        Expanded(
-          flex: 2,
-          child: Text('Fee', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),),
-        ),
-        Container(width: 1.w,),
-        Expanded(
-          flex: 3,
-          child: Text('Terms', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),),
-        ),
-      ],
+  _buildSortWidget(BuildContext context, SortedProvidersStates state) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(6.w, 0, 6.w, 0),
+      padding: EdgeInsets.fromLTRB(8.w, 0, 8.w, 0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Color(0xffd0d0d0), width: 0.5.w),
+        borderRadius: BorderRadius.all(Radius.circular(5.w)),
+        color: Color(0xffd0d0d0),
+      ),
+      child:
+        DropdownButton<SortProvidersManner>(
+          isExpanded: true,
+          dropdownColor: Color(0xffd0d0d0),
+          value: state.manner,
+          icon: Image.asset('images/down_expand.png', width: 14.w, height: 14.w),
+          elevation: 6,
+          style: const TextStyle(color: Color(0xff2d2d2d)),
+          onChanged: (SortProvidersManner? value) {
+            if(_stakeProvidersBloc.currentSortManner != value) {
+              _stakeProvidersBloc.add(SortProvidersEvents(value!));
+            }
+          },
+          underline: Container(),
+          items: _stakeProvidersBloc.sortManners.map<DropdownMenuItem<SortProvidersManner>>((SortProvidersManner value) {
+            return DropdownMenuItem<SortProvidersManner>(
+              value: value,
+              child: Text(_stakeProvidersBloc.sortMannerNames[value.index], textAlign: TextAlign.start,
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Color(0xff2d2d2d)),),
+            );
+          }).toList(),
+        )
     );
   }
 
@@ -148,12 +173,20 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       return _buildErrorScreen(context, error);
     }
 
-    if(state is GetStakeProvidersSuccess) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        ProgressDialog.dismiss(context);
-      });
+    if(state is GetStakeProvidersSuccess || state is SortedProvidersStates) {
+      List<Staking_providersBean?>? providers;
 
-      List<Staking_providersBean?>? providers = state.data as List<Staking_providersBean?>?;
+      if(state is GetStakeProvidersSuccess) {
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          ProgressDialog.dismiss(context);
+        });
+        providers = state.data as List<Staking_providersBean?>?;
+      }
+
+      if(state is SortedProvidersStates) {
+        providers = state.data as List<Staking_providersBean?>?;
+      }
+
       if(null == providers || providers.length == 0) {
         String error = 'No providers found, Please contact StakeTab and try again';
         return _buildErrorScreen(context, error);
@@ -166,27 +199,19 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         itemBuilder: (context, index) {
           return GestureDetector(
             behavior: HitTestBehavior.translucent,
-            child: _buildProviderItem(context, providers[index]!),
+            child: _buildProviderItem(context, providers![index]!),
             onTap: () {
               SendData delegationData = SendData();
               delegationData.isDelegation = true;
-              delegationData.to = providers[index]!.providerAddress!;
-              delegationData.memo = _getValidMemo(providers[index]!.providerTitle!);
+              delegationData.to = providers![index]!.providerAddress!;
+              delegationData.memo = _getValidMemo(providers![index]!.providerTitle!);
               delegationData.from = _accountIndex;
               delegationData.amount = '0';
               _gotoDelegationFee(context, delegationData);
             });
         },
         separatorBuilder: (context, index) {
-          return Container(
-            height: 1.h,
-            child: Row(
-              children: [
-                Expanded(flex: 1, child: Container()),
-                Expanded(flex: 6, child: Container(color: Color(0xffc1c1c1)))
-              ],
-            ),
-          );
+          return Container(height: 18.h);
         },
       );
     }
@@ -195,79 +220,142 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
   }
 
   _buildProviderItem(BuildContext context, Staking_providersBean? provider) {
-    return Padding(
-      padding: EdgeInsets.only(top: 20.h, bottom: 20.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
+    return Container(
+      margin: EdgeInsets.all(4.w),
+      padding: EdgeInsets.fromLTRB(12.w, 16.h, 12.w, 16.h),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black12, width: 0.5.w),
+        borderRadius: BorderRadius.all(Radius.circular(5.w)),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.black12, offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
+        ]
+      ),
+      child: Column(
         children: [
-        CachedNetworkImage(
-          maxHeightDiskCache: 200,
-          imageUrl: provider?.providerLogo ?? '',
-          width: 40.w,
-          height: 40.h,
-          placeholder: (context, url) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.h,),
-          errorWidget: (context, url, error) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.h,),
-        ),
-        Container(width: 10.w,),
-        Expanded(
-          flex: 5,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
-              InkWell(
-                child: Text('${provider?.providerTitle ?? ''}', textAlign: TextAlign.left, maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
-                onTap: () {
-                  showUrlWarningDialog(context, provider?.website ?? '');
-                },
+              CachedNetworkImage(
+                maxHeightDiskCache: 200,
+                imageUrl: provider?.providerLogo ?? '',
+                width: 40.w,
+                height: 40.w,
+                placeholder: (context, url) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.w,),
+                errorWidget: (context, url, error) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.w,),
               ),
-              Container(height: 3.h,),
-              Text('${formatHashEllipsis(provider?.providerAddress ?? '')}', textAlign: TextAlign.left, maxLines: 1,
-                  overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500)),
+              Container(width: 6.w,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(provider?.providerTitle ?? '',
+                    textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Colors.blueAccent),),
+                  Container(height: 6.h,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('${formatHashEllipsis(provider?.providerAddress ?? '', short: false)}', textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 14.sp, color: Colors.black54),),
+                      Container(width: 3.w,),
+                      provider?.addressVerification == 1 ?
+                        Image.asset('images/verified.png', width: 12.w, height: 12.w,) : Container()
+                    ],
+                  )
+                ],
+              )
             ],
           ),
-        ),
-        Container(width: 2.w,),
-        Expanded(
-          flex: 3,
-          child:
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text('${provider?.stakedSum?.floor().toString() ?? ''}', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),),
-                Container(height: 3.h,),
-                Text('${provider?.stakePercent.toString()}%', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),),
-              ],
+          Container(height: 12.h,),
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 4.h, 0, 4.h),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black12, width: 0.5.w),
+              borderRadius: BorderRadius.all(Radius.circular(3.w)),
+              color: Colors.white,
             ),
-        ),
-        Container(width: 2.w,),
-        Expanded(
-          flex: 2,
-          child: Container(
-          padding: EdgeInsets.only(left: 3.w),
             child: Center(
-              child: Text('${provider?.providerFee ?? ''}%', textAlign: TextAlign.end, maxLines: 1, overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),),
-            )
-          )
-        ),
-        Container(width: 1.w,),
-        Expanded(
-          flex: 3,
-          child: Text('${provider?.payoutTerms ?? ''}', textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400))
-        ),
-      ],
-    ));
+              child: Text('Stake Pool Details', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+            ),
+          ),
+          Container(height: 12.h,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Pool Size', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.grey),),
+                  Container(height: 10.h,),
+                  Text(formatKMBNumber(provider!.stakedSum!), textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Colors.black54),),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Percent', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.grey),),
+                  Container(height: 10.h,),
+                  Text('${provider?.stakePercent}%', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Colors.black54),),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Fee', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.grey),),
+                  Container(height: 10.h,),
+                  Text('${provider?.providerFee}%', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Colors.black54),),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Delegators', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.grey),),
+                  Container(height: 10.h,),
+                  Text(formatKMBNumber(provider!.delegatorsNum!.toDouble()), textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Colors.black54),),
+                ],
+              ),
+            ],
+          ),
+          Container(height: 12.h,),
+          Row(
+            children: [
+              Text('Website:', textAlign: TextAlign.start,
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+              Container(width: 2.w,),
+              Expanded(
+                child:
+                Text(provider?.website ?? '', textAlign: TextAlign.start, maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Colors.blue),),
+                ),
+              Text('open')
+            ],
+          ),
+          Container(height: 8.h,),
+          Row(
+            children: [
+              Text('Payout terms'),
+              Text('1/week'),
+            ],
+          ),
+          Container(height: 8.h,),
+          Row(
+            children: [
+              Text('Contacts:'),
+            ],
+          ),
+        ],
+      )
+    );
   }
 
   _buildErrorScreen(BuildContext context, String error) {

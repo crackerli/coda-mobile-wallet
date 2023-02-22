@@ -1,9 +1,8 @@
 import 'package:coda_wallet/constant/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-buildNoTitleAppBar(BuildContext context, {bool leading = true, bool actions = true, Color backgroundColor = Colors.white}) {
+buildNoTitleAppBar(BuildContext context, {bool leading = true, bool actions = true, Color backgroundColor = Colors.white, Widget? title}) {
   return PreferredSize(
     child: AppBar(
       actions: [
@@ -25,10 +24,16 @@ buildNoTitleAppBar(BuildContext context, {bool leading = true, bool actions = tr
         ]),
         onTap: () => Navigator.of(context).pop(),
       ) : Container(),
-      title: null,
+      title: title,
       centerTitle: true,
       elevation: 0,
     ),
     preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
   );
+}
+
+buildTitleAppBar(BuildContext context, String title, {bool leading = true, bool actions = true, Color backgroundColor = Colors.white}) {
+  return buildNoTitleAppBar(context,
+      title: Text(title, textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black87),));
 }

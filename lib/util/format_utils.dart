@@ -7,14 +7,20 @@ String formatFeeAsFixed(BigInt number, int fixed) {
   return (NumUtil.getNumByValueDouble(feeDouble, fixed))!.toStringAsFixed(fixed);
 }
 
-String formatHashEllipsis(String? src) {
+String formatHashEllipsis(String? src, {bool short = true}) {
   if(null == src || src.isEmpty) {
     return '';
   }
 
-  String prefix = src.substring(0, 5);
-  String postfix = src.substring(src.length - 5, src.length);
-  return '$prefix...$postfix';
+  if(short) {
+    String prefix = src.substring(0, 5);
+    String postfix = src.substring(src.length - 5, src.length);
+    return '$prefix...$postfix';
+  } else {
+    String prefix = src.substring(0, 8);
+    String postfix = src.substring(src.length - 9, src.length);
+    return '$prefix...$postfix';
+  }
 }
 
 class FormattedDate {
@@ -63,4 +69,17 @@ bool checkNumeric(String? str) {
     return false;
   }
   return double.tryParse(str) != null;
+}
+
+// Format number to millions, kilos, or billions string
+String formatKMBNumber(double number) {
+  if (number > 999 && number < 99999) {
+    return "${(number / 1000).toStringAsFixed(2)}K";
+  } else if (number > 99999 && number < 999999999) {
+    return "${(number / 1000000).toStringAsFixed(2)}M";
+  } else if (number > 999999999) {
+    return "${(number / 1000000000).toStringAsFixed(2)}B";
+  } else {
+    return number.toStringAsFixed(0);
+  }
 }

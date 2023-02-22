@@ -1,3 +1,5 @@
+import 'package:coda_wallet/stake_provider/blocs/stake_provider_type.dart';
+
 abstract class StakeProvidersStates {
   StakeProvidersStates();
 
@@ -30,4 +32,11 @@ class GetStakeProvidersSuccess extends StakeProvidersStates {
 
   @override
   List<Object> get props => data.data;
+}
+
+class SortedProvidersStates extends StakeProvidersStates {
+  SortProvidersManner manner;
+  final dynamic data;
+
+  SortedProvidersStates(this.manner, this.data);
 }
