@@ -173,7 +173,9 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       return _buildErrorScreen(context, error);
     }
 
-    if(state is GetStakeProvidersSuccess || state is SortedProvidersStates) {
+    if(state is GetStakeProvidersSuccess
+        || state is SortedProvidersStates
+        || state is ChosenProviderStates) {
       List<Staking_providersBean?>? providers;
 
       if(state is GetStakeProvidersSuccess) {
@@ -187,6 +189,10 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         providers = state.data as List<Staking_providersBean?>?;
       }
 
+      if(state is ChosenProviderStates) {
+        providers = state.data as List<Staking_providersBean?>?;
+      }
+
       if(null == providers || providers.length == 0) {
         String error = 'No providers found, Please contact StakeTab and try again';
         return _buildErrorScreen(context, error);
@@ -197,17 +203,11 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         shrinkWrap: true,
         itemCount: providers.length,
         itemBuilder: (context, index) {
-          return GestureDetector(
-            behavior: HitTestBehavior.translucent,
+          return InkWell(
             child: _buildProviderItem(context, providers![index]!),
             onTap: () {
-              SendData delegationData = SendData();
-              delegationData.isDelegation = true;
-              delegationData.to = providers![index]!.providerAddress!;
-              delegationData.memo = _getValidMemo(providers[index]!.providerTitle!);
-              delegationData.from = _accountIndex;
-              delegationData.amount = '0';
-              _gotoDelegationFee(context, delegationData);
+              providers![index]!.chosen = true;
+              _stakeProvidersBloc.add(ChooseProviderEvent(index));
             });
         },
         separatorBuilder: (context, index) {
@@ -224,11 +224,12 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       margin: EdgeInsets.all(4.w),
       padding: EdgeInsets.fromLTRB(12.w, 16.h, 12.w, 16.h),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black12, width: 0.5.w),
+        border: Border.all(color: provider?.chosen ?? false ? Colors.blueAccent : Colors.black12, width: 0.5.w),
         borderRadius: BorderRadius.all(Radius.circular(5.w)),
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black12, offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
+          BoxShadow(color: provider?.chosen ?? false ? Colors.blueAccent : Colors.black12,
+            offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
         ]
       ),
       child: Column(
@@ -345,6 +346,42 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                 ),
             ],
           ),
+          provider.chosen ? Container(height: 4.h,) : Container(),
+          provider.chosen ? Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              (null == provider.website || provider.website!.isEmpty) ? Container() :
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white24,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+                  side: BorderSide(width: 1.w, color: Colors.blueAccent)
+                ),
+                onPressed: () => showUrlWarningDialog(context, provider?.website ?? ''),
+                child: Text('OPEN SITE', textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: Colors.blueAccent))),
+              Container(width: 12.w),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white24,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+                    side: BorderSide(width: 1.w, color: Colors.blueAccent)
+                ),
+                onPressed: () {
+                  SendData delegationData = SendData();
+                  delegationData.isDelegation = true;
+                  delegationData.to = provider.providerAddress!;
+                  delegationData.memo = _getValidMemo(provider.providerTitle!);
+                  delegationData.from = _accountIndex;
+                  delegationData.amount = '0';
+                  _gotoDelegationFee(context, delegationData);
+                },
+                child: Text('DELEGATE', textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: Colors.blueAccent),)),
+            ],
+          ) : Container()
         ],
       )
     );

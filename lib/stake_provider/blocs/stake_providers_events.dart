@@ -20,3 +20,9 @@ class SortProvidersEvents extends StakeProvidersEvents {
 
   SortProvidersEvents(this.manner);
 }
+
+class ChooseProviderEvent extends StakeProvidersEvents {
+  int chooseIndex;
+
+  ChooseProviderEvent(this.chooseIndex);
+}

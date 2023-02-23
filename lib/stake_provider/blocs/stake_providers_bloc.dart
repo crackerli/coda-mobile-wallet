@@ -19,6 +19,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
   List<Staking_providersBean?> _stakingProviders = [];
   Staking_providersBean? _everStake;
   bool dropDownMenuEnabled = false;
+  int preChosenIndex = -1;
 
   StakeProvidersBloc(StakeProvidersStates? state) : super(state!) {
     _indexerService = IndexerService();
@@ -26,12 +27,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
   }
 
   StakeProvidersStates get initState => GetStakeProvidersLoading(null);
-  List<Staking_providersBean?>? get stakingProviders {
-    if(null != _everStake && _stakingProviders.isNotEmpty) {
-      return [_everStake, ..._stakingProviders];
-    }
-    return [];
-  }
+  List<Staking_providersBean?>? get stakingProviders => _stakingProviders;
 
   @override
   Stream<StakeProvidersStates> mapEventToState(StakeProvidersEvents event) async* {
@@ -44,6 +40,27 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
       yield* _mapSortProviders(event);
       return;
     }
+
+    if(event is ChooseProviderEvent) {
+      yield* _mapChooseProviders(event);
+      return;
+    }
+  }
+
+  Stream<StakeProvidersStates>
+    _mapChooseProviders(ChooseProviderEvent event) async* {
+    if(-1 == preChosenIndex) { // No chosen before
+      _stakingProviders[event.chooseIndex]!.chosen = true;
+      preChosenIndex = event.chooseIndex;
+    } else if(preChosenIndex == event.chooseIndex) {
+      // Do nothing here
+    } else {
+      _stakingProviders[event.chooseIndex]!.chosen = true;
+      _stakingProviders[preChosenIndex]!.chosen = false;
+      preChosenIndex = event.chooseIndex;
+    }
+
+    yield ChosenProviderStates(_stakingProviders);
   }
 
   Stream<StakeProvidersStates>
@@ -55,6 +72,9 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
       return;
     }
 
+    // Everstake always be the first one.
+    _stakingProviders.remove(_everStake);
+
     switch(event.manner) {
       case SortProvidersManner.SortByPoolSize:
         _stakingProviders.sort((element1, element2) {
@@ -62,7 +82,8 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
           double stakedSum2 = element2?.stakedSum ?? 0;
           return stakedSum2.compareTo(stakedSum1);
         });
-        yield SortedProvidersStates(SortProvidersManner.SortByPoolSize, [_everStake, ..._stakingProviders]);
+        _stakingProviders = [_everStake, ..._stakingProviders];
+        yield SortedProvidersStates(SortProvidersManner.SortByPoolSize, _stakingProviders);
         break;
       case SortProvidersManner.SortByFee:
         _stakingProviders.sort((element1, element2) {
@@ -70,7 +91,8 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
           double fee2 = element2?.providerFee ?? 0;
           return fee1.compareTo(fee2);
         });
-        yield SortedProvidersStates(SortProvidersManner.SortByFee, [_everStake, ..._stakingProviders]);
+        _stakingProviders = [_everStake, ..._stakingProviders];
+        yield SortedProvidersStates(SortProvidersManner.SortByFee, _stakingProviders);
         break;
       case SortProvidersManner.SortByDelegators:
         _stakingProviders.sort((element1, element2) {
@@ -78,7 +100,8 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
           num delegators2 = element2?.delegatorsNum ?? 0;
           return delegators2.compareTo(delegators1);
         });
-        yield SortedProvidersStates(SortProvidersManner.SortByDelegators, [_everStake, ..._stakingProviders]);
+        _stakingProviders = [_everStake, ..._stakingProviders];
+        yield SortedProvidersStates(SortProvidersManner.SortByDelegators, _stakingProviders);
         break;
       default:
         _stakingProviders.sort((element1, element2) {
@@ -86,7 +109,8 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
           num providerId2 = element2?.providerId ?? 0;
           return providerId1.compareTo(providerId2);
         });
-        yield SortedProvidersStates(SortProvidersManner.SortByDefault, [_everStake, ..._stakingProviders]);
+        _stakingProviders = [_everStake, ..._stakingProviders];
+        yield SortedProvidersStates(SortProvidersManner.SortByDefault, _stakingProviders);
         break;
     }
   }
@@ -147,7 +171,8 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
 
       isProvidersLoading = false;
       dropDownMenuEnabled = true;
-      yield GetStakeProvidersSuccess([_everStake, ..._stakingProviders]);
+      _stakingProviders = [_everStake, ..._stakingProviders];
+      yield GetStakeProvidersSuccess(_stakingProviders);
     } catch (e) {
       print('${e.toString()}');
       isProvidersLoading = false;

@@ -37,6 +37,7 @@ class Staking_providersBean {
   String? telegram;
   String? twitter;
   String? website;
+  bool chosen = false;
 
   static Staking_providersBean? fromMap(Map<String, dynamic>? map) {
     if (map == null) return null;

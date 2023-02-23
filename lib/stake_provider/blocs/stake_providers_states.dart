@@ -40,3 +40,9 @@ class SortedProvidersStates extends StakeProvidersStates {
 
   SortedProvidersStates(this.manner, this.data);
 }
+
+class ChosenProviderStates extends StakeProvidersStates {
+  final dynamic data;
+
+  ChosenProviderStates(this.data);
+}

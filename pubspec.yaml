@@ -40,7 +40,7 @@ dependencies:
   event_bus: ^2.0.0
 #  top_k: '^1.0.1'
   common_utils: ^2.0.2
-  url_launcher: ^6.0.4
+  url_launcher: ^6.1.10
   package_info: ^2.0.0
   dio: ^4.0.6
   cached_network_image: ^3.2.3
