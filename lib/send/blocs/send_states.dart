@@ -17,28 +17,17 @@ class FeeInvalidated extends SendStates {
   FeeInvalidated() : super();
 }
 
-class SendLoading extends SendStates {
-  final dynamic data;
-
-  SendLoading(this.data) : super();
-
-  @override
-  List<Object> get props => data;
+class SendActionsLoading extends SendStates {
 }
 
-class SendSuccess extends SendStates {
-  final dynamic data;
+class SendActionsSuccess extends SendStates {
 
-  SendSuccess(this.data) : super();
-
-  @override
-  List<Object> get props => data;
 }
 
-class SendFail extends SendStates {
+class SendActionsFail extends SendStates {
   final dynamic error;
 
-  SendFail(this.error) : super();
+  SendActionsFail(this.error) : super();
 
   @override
   List<Object> get props => error;
@@ -89,10 +78,13 @@ class FeeChosen extends SendStates {
   FeeChosen(this.index) : super();
 }
 
-class SeedPasswordWrong extends SendStates {
-  SeedPasswordWrong() : super();
-}
+class DecryptSeedLoading extends SendStates {}
 
+class DecryptSeedFail extends SendStates {}
+
+class DecryptSeedSuccess extends SendStates {}
+
+// Used for clear the decrypt failed state and forbid snack bar pop out repeatedly
 class SeedPasswordCleared extends SendStates {
   SeedPasswordCleared() : super();
 }

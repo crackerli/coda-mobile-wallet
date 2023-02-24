@@ -1,15 +1,9 @@
-import 'dart:typed_data';
-
-import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/send/blocs/send_bloc.dart';
 import 'package:coda_wallet/send/blocs/send_events.dart';
 import 'package:coda_wallet/send/blocs/send_states.dart';
-import 'package:coda_wallet/send/mutation/delegate_token_mutation.dart';
-import 'package:coda_wallet/send/mutation/send_token_mutation.dart';
-import 'package:coda_wallet/send/query/get_account_nonce.dart';
 import 'package:coda_wallet/send/query/get_pooled_fee.dart';
 import 'package:coda_wallet/txn_detail/blocs/txn_entity.dart';
 import 'package:coda_wallet/types/send_data.dart';
@@ -24,10 +18,7 @@ import 'package:coda_wallet/widget/dialog/send_error_dialog.dart';
 import 'package:coda_wallet/widget/fee/fee_clipper.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:coda_wallet/widget/ui/custom_gradient.dart';
-import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
-import 'package:ffi_mina_signer/types/key_types.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,93 +41,6 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   late SendData _sendData;
   late var _sendBloc;
   var _eventBusOn;
-  late Uint8List _accountPrivateKey;
-
-  Future<Signature> _signPayment() async {
-    if(null == _sendData.memo || _sendData.memo!.isEmpty) {
-      _sendData.memo = '';
-    }
-    String memo = _sendData.memo!;
-    String? feePayerAddress = globalHDAccounts.accounts![_sendData.from]!.address;
-    String? senderAddress = globalHDAccounts.accounts![_sendData.from]!.address;
-    String receiverAddress = _sendData.to;
-    BigInt fee = _sendBloc.bestFees[_sendBloc.feeIndex];
-    BigInt feeToken = BigInt.from(1);
-    int nonce = _sendBloc.nonce;
-    int validUntil = 4294967295;
-    BigInt tokenId = BigInt.from(1);
-    BigInt amount = _sendBloc.finalAmount;
-    int tokenLocked = 0;
-
-    int networkId = getCurrentNetworkId();
-    print('Current network id using to sending: $networkId');
-    Signature signature = await signPayment(MinaHelper.reverse(_accountPrivateKey), memo, feePayerAddress!,
-      senderAddress!, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, amount, tokenLocked, networkId);
-    return signature;
-  }
-
-  Future<Signature> _signDelegation() async {
-    if(null == _sendData.memo || _sendData.memo!.isEmpty) {
-      _sendData.memo = '';
-    }
-    String memo = _sendData.memo!;
-    String? feePayerAddress = globalHDAccounts.accounts![_sendData.from]!.address;
-    String? senderAddress = globalHDAccounts.accounts![_sendData.from]!.address;
-    String receiverAddress = _sendData.to;
-    BigInt fee = _sendBloc.bestFees[_sendBloc.feeIndex];
-    BigInt feeToken = BigInt.from(1);
-    int nonce = _sendBloc.nonce;
-    int validUntil = 4294967295;
-    BigInt tokenId = BigInt.from(1);
-    int tokenLocked = 0;
-
-    int networkId = getCurrentNetworkId();
-    print('Current network id using to sending: $networkId');
-    Signature signature = await signDelegation(MinaHelper.reverse(_accountPrivateKey), memo, feePayerAddress!,
-      senderAddress!, receiverAddress, fee, feeToken, nonce, validUntil, tokenId, tokenLocked, networkId);
-    return signature;
-  }
-
-  _send() async {
-    Map<String, dynamic> variables = Map<String, dynamic>();
-    variables['from'] = _sendBloc.from;
-    variables['to'] = _sendBloc.to;
-    if(!_sendBloc.isDelegation) {
-      variables['amount'] = _sendBloc.finalAmount.toString();
-    }
-    variables['memo'] = _sendBloc.memo;
-    variables['fee'] = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
-    variables['nonce'] = _sendBloc.nonce;
-    variables['validUntil'] = 4294967295;
-    ProgressDialog.showProgress(context);
-    if(_sendBloc.isDelegation) {
-      Signature signature = await _signDelegation();
-      variables['field'] = signature.rx;
-      variables['scalar'] = signature.s;
-    } else {
-      Signature signature = await _signPayment();
-      variables['field'] = signature.rx;
-      variables['scalar'] = signature.s;
-    }
-
-    // Save fee to sendData
-    _sendData.fee = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
-    ProgressDialog.dismiss(context);
-    if(_sendBloc.isDelegation) {
-      _sendBloc.add(
-        Send(SEND_DELEGATION_MUTATION, variables: variables));
-    } else {
-      _sendBloc.add(
-        Send(SEND_PAYMENT_MUTATION, variables: variables));
-    }
-  }
-
-  _getNonce() {
-    Map<String, dynamic> variables = Map<String, dynamic>();
-    variables['publicKey'] = _sendBloc.from;
-    _sendBloc.add(
-      GetNonce(GET_NONCE_QUERY, variables: variables));
-  }
 
   _checkFeeChosen(BuildContext context) {
     if(_sendBloc.feeIndex == -1) {
@@ -148,8 +52,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
   _getPooledFee() {
     Map<String, dynamic> variables = Map<String, dynamic>();
-    _sendBloc.add(
-      GetPooledFee(POOLED_FEE_QUERY, variables: variables));
+    _sendBloc.add(GetPooledFee(POOLED_FEE_QUERY, variables: variables));
   }
 
   @override
@@ -158,31 +61,12 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     _sendBloc = BlocProvider.of<SendBloc>(context);
     _eventBusOn = eventBus.on<SendEventBus>().listen((event) async {
       if(event is SendPasswordInput) {
-        //String? encryptedSeed = globalPreferences.getString(ENCRYPTED_SEED_KEY);
-        String? encryptedSeed = await globalSecureStorage.read(key: ENCRYPTED_SEED_KEY);
-        print('SendFeeScreen: start to decrypt seed');
-        ProgressDialog.showProgress(context);
-        try {
-          Uint8List seed = await decryptSeed(encryptedSeed!, event.password);
-          _accountPrivateKey = generatePrivateKey(seed, _sendData.from);
-          ProgressDialog.dismiss(context);
-          _getNonce();
-        } catch (error) {
-          print('password not right');
-          ProgressDialog.dismiss(context);
-          _sendBloc.add(InputWrongPassword());
-        }
+        _sendBloc.add(DecryptSeed(event.password));
         return;
       }
 
-      if(event is SendPaymentAgain) {
-        _getNonce();
-        return;
-      }
-
-      if(event is GetNonceAgain) {
-        _getNonce();
-        return;
+      if(event is SendActionsAgain) {
+        _sendBloc.add(SendActions());
       }
 
       if(event is GetPooledFeeAgain) {
@@ -207,13 +91,15 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
     print('SendFeeScreen: build(context: $context)');
     _sendData = ModalRoute.of(context)!.settings.arguments as SendData;
 
-    _sendBloc.from = globalHDAccounts.accounts![_sendData.from]!.address;
-    _sendBloc.amount = _sendData.amount;
-    _sendBloc.memo = _sendData.memo;
-    _sendBloc.fee = _sendData.fee;
-    _sendBloc.to = _sendData.to;
-    _sendBloc.account = _sendData.from;
-    _sendBloc.isDelegation = _sendData.isDelegation;
+    _sendBloc.from              = globalHDAccounts.accounts![_sendData.from]!.address;
+    _sendBloc.amount            = _sendData.amount;
+    _sendBloc.memo              = _sendData.memo;
+    _sendBloc.fee               = _sendData.fee;
+    _sendBloc.to                = _sendData.to;
+    _sendBloc.accountIndex      = _sendData.from;
+    _sendBloc.isDelegation      = _sendData.isDelegation;
+    _sendBloc.isEverstake       = _sendData.isEverstake;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: buildNoTitleAppBar(context),
@@ -237,32 +123,24 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   }
   
   _buildActionsButton(BuildContext context, SendStates state) {
-    if(state is GetNonceLoading) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+
+    if(state is SendActionsLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         ProgressDialog.showProgress(context);
       });
     }
 
-    if(state is GetNonceFail || state is SendFail) {
+    if(state is SendActionsFail) {
       ProgressDialog.dismiss(context);
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        if (state is GetNonceFail) {
-          showSendErrorDialog(context, SendErrorType.GET_NONCE, state.error);
-        }
-
-        if (state is SendFail) {
-          showSendErrorDialog(context, SendErrorType.SEND_PAYMENT, state.error);
-        }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showSendErrorDialog(context, SendErrorType.SEND_ACTIONS, state.error);
       });
     }
 
-    if(state is GetNonceSuccess) {
-      _send();
-    }
-
-    if(state is SendSuccess) {
+    if(state is SendActionsSuccess) {
       ProgressDialog.dismiss(context);
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _sendData.fee = _sendBloc.bestFees[_sendBloc.feeIndex].toString();
         _gotoTxnDetail(context, _sendData);
       });
     }
@@ -272,7 +150,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
       child: Builder(builder: (context) => InkWell(
         onTap: () => _checkFeeChosen(context),
         child: Container(
-          padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
+          padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 124.w, right: 124.w),
           decoration: getMinaButtonDecoration(topColor: Colors.white),
           child: Text('SEND',
             textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
@@ -344,16 +222,21 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
   }
 
   _buildSendFeeBody(BuildContext context, state) {
-    if(state is SeedPasswordWrong) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Wrong password!!')));
+    if(state is DecryptSeedFail) {
+      ProgressDialog.dismiss(context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Wrong password!!')));
       });
       _sendBloc.add(ClearWrongPassword());
     }
 
+    if(state is DecryptSeedSuccess) {
+      ProgressDialog.dismiss(context);
+      _sendBloc.add(SendActions());
+    }
+
     if(state is GetPooledFeeLoading) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         ProgressDialog.showProgress(context);
       });
     }
@@ -362,7 +245,7 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
 
     if(state is GetPooledFeeFail) {
       ProgressDialog.dismiss(context);
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         showSendErrorDialog(context, SendErrorType.GET_POOL_FEE, state.error);
       });
     }

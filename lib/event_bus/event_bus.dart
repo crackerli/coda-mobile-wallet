@@ -34,9 +34,7 @@ class SendPasswordInput extends SendEventBus {
   SendPasswordInput(this.password);
 }
 
-class SendPaymentAgain extends SendEventBus {}
-
-class GetNonceAgain extends SendEventBus {}
+class SendActionsAgain extends SendEventBus {}
 
 class GetPooledFeeAgain extends SendEventBus {}
 

@@ -376,6 +376,11 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                   delegationData.memo = _getValidMemo(provider.providerTitle!);
                   delegationData.from = _accountIndex;
                   delegationData.amount = '0';
+                  if(provider.providerId == 230
+                      && provider.providerTitle == 'Everstake'
+                      && provider.email == 'inbox@everstake.one') {
+                    delegationData.isEverstake = true;
+                  }
                   _gotoDelegationFee(context, delegationData);
                 },
                 child: Text('DELEGATE', textAlign: TextAlign.center,

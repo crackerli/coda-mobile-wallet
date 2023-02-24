@@ -62,12 +62,8 @@ class _SendErrorWidgetState extends State<SendErrorWidget> {
                 eventBus.fire(GetPooledFeeAgain());
               }
 
-              if(widget._errorType == SendErrorType.GET_NONCE) {
-                eventBus.fire(GetNonceAgain());
-              }
-
-              if(widget._errorType == SendErrorType.SEND_PAYMENT) {
-                eventBus.fire(SendPaymentAgain());
+              if(widget._errorType == SendErrorType.SEND_ACTIONS) {
+                eventBus.fire(SendActionsAgain());
               }
               Navigator.of(context).pop();
             },

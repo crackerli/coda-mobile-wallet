@@ -5,19 +5,8 @@ abstract class SendEvents {
   List<Object>? get props => null;
 }
 
-class FeeValidate extends SendEvents {
-  FeeValidate() : super();
-}
-
-class Send extends SendEvents {
-  final String mutation;
-  final Map<String, dynamic>? variables;
-
-  Send(this.mutation, {this.variables}) : super();
-
-  @override
-  List<Object> get props => [mutation, variables ?? {}];
-}
+// SendActions event include GetNonce, Send, and report to Everstake if needed
+class SendActions extends SendEvents {}
 
 class GetNonce extends SendEvents {
   final String query;
@@ -44,10 +33,13 @@ class ChooseFee extends SendEvents {
   ChooseFee(this.index) : super();
 }
 
-class InputWrongPassword extends SendEvents {
-  InputWrongPassword() : super();
+class DecryptSeed extends SendEvents {
+  final String password;
+
+  DecryptSeed(this.password);
 }
 
+// Used for clear the decrypt failed state and forbid snack bar pop out repeatedly
 class ClearWrongPassword extends SendEvents {
   ClearWrongPassword() : super();
 }
