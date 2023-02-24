@@ -22,7 +22,14 @@ class SortProvidersEvents extends StakeProvidersEvents {
 }
 
 class ChooseProviderEvent extends StakeProvidersEvents {
-  int chooseIndex;
+  final int chooseIndex;
 
   ChooseProviderEvent(this.chooseIndex);
+}
+
+class ProviderSearchEvent extends StakeProvidersEvents {
+  final bool useSearchResult;
+  final String searchPattern;
+
+  ProviderSearchEvent(this.useSearchResult, this.searchPattern);
 }

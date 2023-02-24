@@ -8,12 +8,8 @@ abstract class StakeProvidersStates {
 }
 
 class GetStakeProvidersLoading extends StakeProvidersStates {
-  final dynamic data;
 
-  GetStakeProvidersLoading(this.data) : super();
-
-  @override
-  List<Object> get props => data.data;
+  GetStakeProvidersLoading() : super();
 }
 
 class GetStakeProvidersFail extends StakeProvidersStates {
@@ -26,23 +22,21 @@ class GetStakeProvidersFail extends StakeProvidersStates {
 }
 
 class GetStakeProvidersSuccess extends StakeProvidersStates {
-  final dynamic data;
 
-  GetStakeProvidersSuccess(this.data) : super();
-
-  @override
-  List<Object> get props => data.data;
+  GetStakeProvidersSuccess() : super();
 }
 
 class SortedProvidersStates extends StakeProvidersStates {
   SortProvidersManner manner;
-  final dynamic data;
 
-  SortedProvidersStates(this.manner, this.data);
+  SortedProvidersStates(this.manner);
 }
 
 class ChosenProviderStates extends StakeProvidersStates {
-  final dynamic data;
 
-  ChosenProviderStates(this.data);
+  ChosenProviderStates();
+}
+
+class ProviderSearchStates extends StakeProvidersStates {
+  ProviderSearchStates();
 }

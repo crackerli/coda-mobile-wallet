@@ -82,7 +82,7 @@ var globalRoutes = {
   '$NetworkSettingRoute': (context) => NetworkSettingScreen(),
   '$StakeProviderRoute': (context) => BlocProvider<StakeProvidersBloc>(
     create: (BuildContext context) {
-      return StakeProvidersBloc(GetStakeProvidersLoading(''));
+      return StakeProvidersBloc(GetStakeProvidersLoading());
     },
     child: StakeProviderScreen()
   ),

@@ -48,6 +48,9 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
   late var _stakeProvidersBloc;
   late int _accountIndex;
 
+  FocusNode _focusNodeProviders = FocusNode();
+  TextEditingController _controllerProviders = TextEditingController();
+
   _getStakeProviders() {
     _stakeProvidersBloc.add(GetStakeProviders());
   }
@@ -62,6 +65,8 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
   @override
   void dispose() {
     _stakeProvidersBloc = null;
+    _focusNodeProviders.dispose();
+    _controllerProviders.dispose();
     super.dispose();
   }
 
@@ -89,6 +94,8 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(height: 12.h,),
+        _buildSearchWidget(context),
+        Container(height: 8.h,),
         Row(
           children: [
             Container(width: 6.w,),
@@ -105,7 +112,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
             }
             else {
               return _buildSortWidget(context,
-                SortedProvidersStates(_stakeProvidersBloc.currentSortManner, _stakeProvidersBloc.stakingProviders));
+                SortedProvidersStates(_stakeProvidersBloc.currentSortManner));
             }
           }
         ),
@@ -121,19 +128,73 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
     );
   }
 
+
+  _buildSearchWidget(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(6.w, 0, 6.w, 0),
+      padding: EdgeInsets.fromLTRB(8.w, 4.h, 0, 4.h),
+      decoration: BoxDecoration(
+      border: Border.all(color: Color(0xfff1f2f4), width: 0.5.w),
+        borderRadius: BorderRadius.all(Radius.circular(5.w)),
+        color: Color(0xfff1f2f4),
+      ),
+      child: Row(
+        children: [
+          Expanded(child:
+            TextField(
+              enableInteractiveSelection: true,
+              focusNode: _focusNodeProviders,
+              controller: _controllerProviders,
+              onChanged: (text) {
+                if(_controllerProviders.text.isEmpty) {
+                  _stakeProvidersBloc.add(ProviderSearchEvent(false, _controllerProviders.text));
+                }
+              },
+              maxLines: 1,
+              obscureText: false,
+              keyboardType: TextInputType.text,
+              autofocus: false,
+              decoration: InputDecoration.collapsed(
+                hintText: 'Search By Name, e.g Everstake',
+                hintStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.normal, color: Color(0xffbdbdbd)))
+              ),
+          ),
+          InkWell(
+            onTap: () {
+              if(_controllerProviders.text.isNotEmpty) {
+                _stakeProvidersBloc.add(ProviderSearchEvent(true, _controllerProviders.text));
+              }
+            },
+            child: Container(
+              padding: EdgeInsets.fromLTRB(12.w, 4.h, 4.w, 4.h),
+              decoration: BoxDecoration(
+                border: Border.all(color: Color(0xfff1f2f4), width: 0.5.w),
+                borderRadius: BorderRadius.all(Radius.circular(5.w)),
+                color: Color(0xfff1f2f4),
+              ),
+              child: Center(
+                child: Image.asset('images/icon_search.png', width: 26.w, height: 26.w,),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   _buildSortWidget(BuildContext context, SortedProvidersStates state) {
     return Container(
       margin: EdgeInsets.fromLTRB(6.w, 0, 6.w, 0),
       padding: EdgeInsets.fromLTRB(8.w, 0, 8.w, 0),
       decoration: BoxDecoration(
-        border: Border.all(color: Color(0xffd0d0d0), width: 0.5.w),
+        border: Border.all(color: Color(0xfff1f2f4), width: 0.5.w),
         borderRadius: BorderRadius.all(Radius.circular(5.w)),
-        color: Color(0xffd0d0d0),
+        color: Color(0xfff1f2f4),
       ),
       child:
         DropdownButton<SortProvidersManner>(
           isExpanded: true,
-          dropdownColor: Color(0xffd0d0d0),
+          dropdownColor: Color(0xfff1f2f4),
           value: state.manner,
           icon: Image.asset('images/down_expand.png', width: 14.w, height: 14.w),
           elevation: 6,
@@ -173,50 +234,45 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       return _buildErrorScreen(context, error);
     }
 
-    if(state is GetStakeProvidersSuccess
-        || state is SortedProvidersStates
-        || state is ChosenProviderStates) {
-      List<Staking_providersBean?>? providers;
+    if(state is GetStakeProvidersSuccess) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ProgressDialog.dismiss(context);
+      });
+    }
 
-      if(state is GetStakeProvidersSuccess) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          ProgressDialog.dismiss(context);
-        });
-        providers = state.data as List<Staking_providersBean?>?;
-      }
+    List<Staking_providersBean?>? providers;
+    if(_stakeProvidersBloc.useSearchResult) {
+      providers = _stakeProvidersBloc.searchProviders;
+    } else {
+      providers = _stakeProvidersBloc.stakingProviders;
+    }
 
-      if(state is SortedProvidersStates) {
-        providers = state.data as List<Staking_providersBean?>?;
-      }
-
-      if(state is ChosenProviderStates) {
-        providers = state.data as List<Staking_providersBean?>?;
-      }
-
-      if(null == providers || providers.length == 0) {
-        String error = 'No providers found, Please contact StakeTab and try again';
-        return _buildErrorScreen(context, error);
-      }
-
-      return ListView.separated(
-        physics: const AlwaysScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: providers.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            child: _buildProviderItem(context, providers![index]!),
-            onTap: () {
-              providers![index]!.chosen = true;
-              _stakeProvidersBloc.add(ChooseProviderEvent(index));
-            });
-        },
-        separatorBuilder: (context, index) {
-          return Container(height: 18.h);
-        },
+    if(null == providers || providers.length == 0) {
+      String error = 'No providers found!';
+      return Container(
+        child: Center(
+          child: Text(error, textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xffd2d2d2)),),
+        ),
       );
     }
 
-    return Container();
+    return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: providers.length,
+      itemBuilder: (context, index) {
+        return InkWell(
+          child: _buildProviderItem(context, providers![index]!),
+          onTap: () {
+            providers![index]!.chosen = true;
+            _stakeProvidersBloc.add(ChooseProviderEvent(index));
+          });
+      },
+      separatorBuilder: (context, index) {
+        return Container(height: 18.h);
+      },
+    );
   }
 
   _buildProviderItem(BuildContext context, Staking_providersBean? provider) {
@@ -359,7 +415,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
                   side: BorderSide(width: 1.w, color: Colors.blueAccent)
                 ),
-                onPressed: () => showUrlWarningDialog(context, provider?.website ?? ''),
+                onPressed: () => showUrlWarningDialog(context, provider.website ?? ''),
                 child: Text('OPEN SITE', textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: Colors.blueAccent))),
               Container(width: 12.w),
