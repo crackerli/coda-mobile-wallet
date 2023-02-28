@@ -94,7 +94,11 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(height: 12.h,),
-        _buildSearchWidget(context),
+        BlocBuilder<StakeProvidersBloc, StakeProvidersStates>(
+          builder: (BuildContext context, StakeProvidersStates state) {
+            return _buildSearchWidget(context);
+          },
+        ),
         Container(height: 8.h,),
         Row(
           children: [
@@ -142,6 +146,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
         children: [
           Expanded(child:
             TextField(
+              enabled: _stakeProvidersBloc.searchBarEnabled,
               enableInteractiveSelection: true,
               focusNode: _focusNodeProviders,
               controller: _controllerProviders,
@@ -160,11 +165,12 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
               ),
           ),
           InkWell(
-            onTap: () {
-              if(_controllerProviders.text.isNotEmpty) {
-                _stakeProvidersBloc.add(ProviderSearchEvent(true, _controllerProviders.text));
-              }
-            },
+            onTap: _stakeProvidersBloc.searchBarEnabled ?
+              () {
+                if(_controllerProviders.text.isNotEmpty) {
+                  _stakeProvidersBloc.add(ProviderSearchEvent(true, _controllerProviders.text));
+                }
+              } : null,
             child: Container(
               padding: EdgeInsets.fromLTRB(12.w, 4.h, 4.w, 4.h),
               decoration: BoxDecoration(

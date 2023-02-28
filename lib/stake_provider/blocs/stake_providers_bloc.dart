@@ -33,6 +33,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
   StakeProvidersStates get initState => GetStakeProvidersLoading();
   List<Staking_providersBean?>? get stakingProviders => _stakingProviders;
   List<Staking_providersBean?>? get searchProviders => _searchProviders;
+  bool get searchBarEnabled => dropDownMenuEnabled;
 
   @override
   Stream<StakeProvidersStates> mapEventToState(StakeProvidersEvents event) async* {
