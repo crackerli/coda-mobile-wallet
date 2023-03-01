@@ -22,7 +22,7 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
   List<Staking_providersBean?> _searchProviders = [];
   Staking_providersBean? _everStake;
   bool dropDownMenuEnabled = false;
-  int preChosenIndex = -1;
+  Staking_providersBean? preChosenProvider;
   bool useSearchResult = false;
 
   StakeProvidersBloc(StakeProvidersStates? state) : super(state!) {
@@ -78,15 +78,26 @@ class StakeProvidersBloc extends Bloc<StakeProvidersEvents, StakeProvidersStates
 
   Stream<StakeProvidersStates>
     _mapChooseProviders(ChooseProviderEvent event) async* {
-    if(-1 == preChosenIndex) { // No chosen before
-      _stakingProviders[event.chooseIndex]!.chosen = true;
-      preChosenIndex = event.chooseIndex;
-    } else if(preChosenIndex == event.chooseIndex) {
-      // Do nothing here
+
+    if(null == preChosenProvider) {
+      if(useSearchResult) {
+        preChosenProvider = _searchProviders[event.chooseIndex];
+      } else {
+        preChosenProvider = _stakingProviders[event.chooseIndex];
+      }
+
+      preChosenProvider!.chosen = true;
     } else {
-      _stakingProviders[event.chooseIndex]!.chosen = true;
-      _stakingProviders[preChosenIndex]!.chosen = false;
-      preChosenIndex = event.chooseIndex;
+      Staking_providersBean? currentProvider;
+      if(useSearchResult) {
+        currentProvider = _searchProviders[event.chooseIndex];
+      } else {
+        currentProvider = _stakingProviders[event.chooseIndex];
+      }
+
+      preChosenProvider!.chosen = false;
+      currentProvider!.chosen = true;
+      preChosenProvider = currentProvider;
     }
 
     yield ChosenProviderStates();
