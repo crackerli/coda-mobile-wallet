@@ -263,20 +263,23 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       );
     }
 
-    return ListView.separated(
+    return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: providers.length,
       itemBuilder: (context, index) {
-        return InkWell(
-          child: _buildProviderItem(context, providers![index]!),
-          onTap: () {
-            providers![index]!.chosen = true;
-            _stakeProvidersBloc.add(ChooseProviderEvent(index));
-          });
-      },
-      separatorBuilder: (context, index) {
-        return Container(height: 18.h);
+        return Column(
+          children: [
+            InkWell(
+              child: _buildProviderItem(context, providers![index]!),
+              onTap: () {
+                providers![index]!.chosen = true;
+                _stakeProvidersBloc.add(ChooseProviderEvent(index));
+              }
+            ),
+            Divider(height: 16.h, color: Colors.white,)
+          ],
+        );
       },
     );
   }
