@@ -1,103 +1,199 @@
 import 'dart:io';
 
+import 'package:appinio_social_share/appinio_social_share.dart';
+import 'package:coda_wallet/qr_address/qr_image_helper.dart';
+import 'package:coda_wallet/widget/dialog/dialogs.dart';
+import 'package:coda_wallet/widget/dialog/dialogs/types.dart';
+import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:social_share/social_share.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 
-List<String> _shareNames = ['Facebook', /*'Twitter',*/ /*'Wechat',*/ 'Instagram', 'Telegram', /*'SMS',*/ /*'Whatsapp'*/];
+List<String> _shareNames = [
+  'Facebook',
+  'Twitter',
+  // 'Wechat',
+  'Instagram',
+  'Telegram',
+  'Whatsapp',
+  'SMS',
+];
 List<String> _shareIcons = [
   'images/facebook_share.png',
-//  'images/twitter_share.png',
+  'images/twitter_share.png',
 //  'images/wechat_share.png',
   'images/instagram_share.png',
   'images/telegram_share.png',
-//  'images/sms_share.png',
-//  'images/whatsapp_share.png',
+  'images/whatsapp_share.png',
+  'images/sms_share.png',
 ];
+
+List<String> _shareDisableIcons = [
+  'images/facebook_share_disable.png',
+  'images/twitter_share_disable.png',
+// 'images/wechat_share.png',
+  'images/instagram_share_disable.png',
+  'images/telegram_share_disable.png',
+  'images/whatsapp_share_disable.png',
+  'images/sms_share_disable.png',
+];
+
+AppinioSocialShare appinioSocialShare = AppinioSocialShare();
 
 List<Function> _shareMethods = [
   (String address, String? path) async {
     //facebook appId is mandatory for andorid or else share won't work
     if(Platform.isAndroid) {
-      SocialShare.shareFacebookStory(path!, "#ffffff", "#000000", '', appId: "1231431000696020");
+      appinioSocialShare.shareToFacebook('My mina address: $address', path!);
     } else {
-      PickedFile? file = await ImagePicker().getImage(source: ImageSource.gallery);
+      XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
-        SocialShare.shareFacebookStory(
-          '${file?.path ?? ''}', "#ffffff", "#000000", '');
+        appinioSocialShare.shareToFacebook(
+            'My mina address: $address', '${file?.path ?? ''}');
       }
     }
   },
+  (String address, String? path) async {
+    appinioSocialShare.shareToTwitter('My mina address: $address',
+        filePath: path!);
+  },
   // (String address, String? path) async {
-  //   SocialShare.shareTwitter('My mina address: $address', url: 'https://www.staking-power.com', trailingText: '');
-  // },
-  // (String address, String? path) async {
-  //   SocialShare.shareTwitter('My mina address: $address');
+  //   appinioSocialShare.shareToWeChat('My mina address: $address',
+  //       filePath: path!);
   // },
   (String address, String? path) async {
     if(Platform.isAndroid) {
-      SocialShare.shareInstagramStory(path!);
+      appinioSocialShare.shareToInstagramStory(stickerImage: path!);
     } else {
-      PickedFile? file = await ImagePicker().getImage(source: ImageSource.gallery);
+      XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
-        SocialShare.shareInstagramStory('${file?.path ?? ''}', backgroundTopColor: '#ffffff',
-          backgroundBottomColor: '#000000', attributionURL: 'https://www.staking-power.com', backgroundImagePath: '');
+        appinioSocialShare.shareToInstagramStory(
+            stickerImage: '${file?.path ?? ''}',
+            backgroundTopColor: '#ffffff',
+            backgroundBottomColor: '#000000',
+            attributionURL: 'https://www.staking-power.com');
       }
     }
   },
   (String address, String? path) async {
-    SocialShare.shareTelegram('My mina address: $address');
+    appinioSocialShare.shareToTelegram('My mina address: $address',
+        filePath: path!);
   },
-  // (String address, String? path) async {
-  //   SocialShare.shareSms('My mina address: $address', url: '', trailingText: '');
-  // },
-  // (String address, String? path) async {
-  //   SocialShare.shareWhatsapp('My mina address: $address');
-  // },
+  (String address, String? path) async {
+    appinioSocialShare.shareToWhatsapp('My mina address: $address',
+        filePath: path!);
+  },
+  (String address, String? path) async {
+    appinioSocialShare.shareToSMS('My mina address: $address', filePath: path!);
+  },
+  (String address, String? path) async {
+    appinioSocialShare.shareToSMS('My mina address: $address', filePath: path!);
+  },
 ];
 
-showSocialShareSheet(BuildContext context, String? address, String? snapShotPath, Map? installedApp) {
-  showModalBottomSheet(
-    enableDrag: false,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(7.0))),
+socialShareIos(BuildContext context, String? address, String? imagePath) async {
+  final box = context.findRenderObject() as RenderBox?;
+
+  if (imagePath != null) {
+    final files = <XFile>[];
+    files.add(XFile(imagePath, name: imagePath));
+    await Share.shareXFiles(files,
+        text: 'My mina address: $address',
+        subject: address,
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+  } else {
+    await Share.share(address!,
+        subject: address,
+        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+  }
+}
+
+showSocialShareSheet(BuildContext context, String? address,
+    String? snapShotPath, Map? installedApp) {
+  Dialogs.bottomMaterialDialog(
+      title: 'Select an application to share',
+      titleStyle: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
     context: context,
-    backgroundColor: Colors.white,
-    isScrollControlled: false,
-    builder: (BuildContext context) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(
-            Radius.circular(7.w),
-          )
-        ),
-        margin: EdgeInsets.all(10),
-        child: _buildShareList(context, address, snapShotPath, installedApp)
-        );
+      customViewPosition: CustomViewPosition.AFTER_ACTION,
+      customView: Container(
+          height: 140.h,
+          child: Column(children: [
+            Container(height: 0.5.h, color:  Color(0xffbdbdbd)),
+            Container(
+                padding: EdgeInsets.only(top: 10.h),
+                height: 120.h,
+                child: ListView(
+                  shrinkWrap: true,
+                  children:
+                      _budildList(context, address, snapShotPath, installedApp),
+                  scrollDirection: Axis.horizontal,
+                ))
+          ])));
+}
+
+String getIconPath(Map? installedApp, int index) {
+  if (installedApp != null) {
+    if (_shareNames[index].toLowerCase() == "sms") {
+      return _shareIcons[index];
+    } else {
+      return installedApp[_shareNames[index].toLowerCase()]
+          ? _shareIcons[index]
+          : _shareDisableIcons[index];
+    }
+  }
+
+  return _shareDisableIcons[index];
+}
+
+List<Widget> _budildList(BuildContext context, String? address,
+    String? snapShotPath, Map? installedApp) {
+  List<Widget> result = <Widget>[];
+  for (int i = 0; i < _shareNames.length; i++) {
+    result.add(_item(context, address, snapShotPath, installedApp, i));
       }
+  return result;
+}
+
+Widget _item(BuildContext context, String? address, String? snapShotPath,
+    Map? installedApp, int index) {
+  return Card(
+    child: InkWell(
+      onTap: () => _onPressShareItem(
+          context, address, snapShotPath, installedApp, index),
+      child: Container(
+        width: 80.w,
+        height: 60.w,
+        child: Center(
+          child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+              Image.asset(getIconPath(installedApp, index),
+                  height: 45.w, width: 45.w),
+              const SizedBox(height: 5),
+              Text(
+                _shareNames[index],
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
   );
 }
 
-Widget _buildShareList(BuildContext context, String? address, String? snapShotPath, Map? installedApp) {
-  return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Container(height: 16.h),
-        Text('Select one app to share', textAlign: TextAlign.start,
-          style: TextStyle(color: Color(0xff2d2d2d), fontSize: 18.sp, fontWeight: FontWeight.w600),),
-        Container(height: 16.h),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, mainAxisSpacing: 1.h, childAspectRatio: 1.1),
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              onTap: () {
-                if(null != installedApp && installedApp[_shareNames[index].toLowerCase()]) {
+_onPressShareItem(BuildContext context, String? address, String? snapShotPath,
+    Map? installedApp, int index) {
+  if (null != installedApp &&
+      (_shareNames[index].toLowerCase() == "sms" ||
+          installedApp[_shareNames[index].toLowerCase()])) {
                   _shareMethods[index](address, snapShotPath);
                   Navigator.of(context).pop();
                 } else {
@@ -108,33 +204,6 @@ Widget _buildShareList(BuildContext context, String? address, String? snapShotPa
                     timeInSecForIosWeb: 1,
                     backgroundColor: Color(0xfff5f5f5),
                     textColor: Color(0xff2d2d2d),
-                    fontSize: 16.sp
-                  );
+        fontSize: 16.sp);
                 }
-              },
-              child: Column(
-                children: <Widget>[
-                  Image.asset(_shareIcons[index], width: 50.w, height: 50.w,),
-                  Text(_shareNames[index], style: TextStyle(fontSize: 16.sp),)
-                ],
-              )
-            );
-          },
-          itemCount: _shareNames.length,
-        ),
-        Container(height: 0.5.h, color: Color(0xff2d2d2d)),
-        Container(height: 8.h,),
-        Center(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: Text('CANCEL', style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d), fontWeight: FontWeight.w500),
-              )
-            ),
-          ),
-        ),
-      ],
-  );
-
 }
