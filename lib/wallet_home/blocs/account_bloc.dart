@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
-import 'package:coda_wallet/service/indexer_service.dart';
+import 'package:coda_wallet/service/common_https_service.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/util/providers_utils.dart';

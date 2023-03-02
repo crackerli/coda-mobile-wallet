@@ -22,7 +22,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   late ArchiveService _archiveService;
   bool isTxnsLoading = false;
   // User commands merged from both pool and archive
-  late List<MergedUserCommand> mergedUserCommands;
+  List<MergedUserCommand> mergedUserCommands = [];
   int accountIndex = 0;
   TxnFilter currentFilter = TxnFilter.ALL;
   List<String> txnFilters = ['ALL', 'SENT', 'RECEIVED', 'STAKED', 'CANCEL'];
@@ -56,10 +56,9 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
     _service = CodaService();
     _archiveService = ArchiveService();
     isTxnsLoading = false;
-    mergedUserCommands = [];
   }
 
-  TxnsStates get initState => RefreshTxnsLoading(null);
+  TxnsStates get initState => RefreshTxnsLoading([]);
 
   @override
   Stream<TxnsStates> mapEventToState(TxnsEvents event) async* {
@@ -73,18 +72,6 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
       yield* _mapChangeFilterToStates(event);
       return;
     }
-
-    if(event is ChangeAccount) {
-      yield* _mapChangeAccountToStates(event);
-      return;
-    }
-  }
-
-  Stream<TxnsStates>
-    _mapChangeAccountToStates(ChangeAccount event) async* {
-    mergedUserCommands.clear();
-    yield AccountChanged();
-    return;
   }
 
   Stream<TxnsStates>
@@ -146,11 +133,12 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
           final tempSet = Set();
           mergedUserCommands.retainWhere((command) => tempSet.add(command.hash));
         }
+
         yield RefreshTxnsSuccess(mergedUserCommands);
       }
       isTxnsLoading = false;
     } catch (e) {
-      print(e);
+      print('Error when get transaction list: $e');
       yield RefreshTxnsFail(e.toString());
       isTxnsLoading = false;
     }

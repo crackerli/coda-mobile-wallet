@@ -34,6 +34,29 @@ buildNoTitleAppBar(BuildContext context, {bool leading = true, bool actions = tr
 
 buildTitleAppBar(BuildContext context, String title, {bool leading = true, bool actions = true, Color backgroundColor = Colors.white}) {
   return buildNoTitleAppBar(context,
-      title: Text(title, textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black87),));
+    title: Text(title, textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black87),));
+}
+
+buildTitleAppBarWithFilter(BuildContext context, Widget title, Function filterCallback) {
+  return PreferredSize(
+    child: AppBar(
+      actions: [
+        InkWell(
+          child: Padding(
+            padding: EdgeInsets.only(right: 14.w),
+            child: Image.asset('images/txn_filter.png', width: 26.w, height: 26.w,),
+          ),
+          onTap: () => filterCallback(),
+        )
+      ],
+      backgroundColor: Colors.white,
+      leadingWidth: 83.w,
+      leading: Container(),
+      title: title,
+      centerTitle: true,
+      elevation: 0,
+    ),
+    preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
+  );
 }
