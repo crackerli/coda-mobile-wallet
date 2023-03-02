@@ -1,19 +1,21 @@
 import 'dart:io';
 
+import 'package:appinio_social_share/appinio_social_share.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/qr_address/qr_image_helper.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
-import 'package:coda_wallet/widget/dialog/bottom_sheet_social_share_dialog.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
 import 'package:coda_wallet/widget/ui/custom_gradient.dart';
+import 'package:coda_wallet/widget/dialog/bottom_sheet_social_share_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lecle_flutter_absolute_path/lecle_flutter_absolute_path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:social_share/social_share.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:screenshot/screenshot.dart';
+
 
 class ReceiveAccountScreen extends StatefulWidget {
   ReceiveAccountScreen({Key? key}) : super(key: key);
@@ -28,6 +30,8 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
   final GlobalKey _qrImageKey = GlobalKey();
   bool _addressCopied = false;
   late int _accountIndex;
+  ScreenshotController _screenshotController = ScreenshotController();
+  AppinioSocialShare _appinioSocialShare = AppinioSocialShare();
 
   @override
   void initState() {
@@ -70,8 +74,20 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
       children: [
         Container(height: 24.h),
         Image.asset('images/mina_logo_black_inner.png', width: 66.w, height: 66.w),
-        Container(height: 14.h),
-        QrImage(data: address ?? '', size: 200.w, version: QrVersions.auto),
+          Container(height: 24.h),
+          Screenshot(
+            controller: _screenshotController,
+              child:
+              QrImage(data: address ?? '',
+                size: 200.w,
+                version: QrVersions.auto,
+                backgroundColor:Colors.white,
+                embeddedImage:AssetImage('images/share_mina_logo.png'),
+                gapless: false,
+                embeddedImageStyle: QrEmbeddedImageStyle(
+                  size: Size(40, 40),
+                ),),
+          ),
         Container(height: 33.h),
         Text(accountName ?? '', textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp, color: Color(0xff212121), fontWeight: FontWeight.w500)),
         Container(height: 8),
@@ -131,36 +147,26 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
     var status = await Permission.storage.status;
     print(status);
     if(status.isGranted) {
-      const url = 'weixin://';
-
       try {
         ProgressDialog.showProgress(context);
-        String? path = await saveImageAsFile(_qrImageKey);
-        Map? installedApp = await SocialShare.checkInstalledAppsForShare();
-
-        bool wechatInstalled = await canLaunch(url);
+        _screenshotController
+            .capture(delay: Duration(milliseconds: 10))
+            .then((capturedImage) async {
+          String? path = await saveImageBytesAsFile(capturedImage!);
+          path = await LecleFlutterAbsolutePath.getAbsolutePath(uri: path!);
+          String? address = globalHDAccounts.accounts![_accountIndex]!.address;
+          Map? installedApp = await _appinioSocialShare.getInstalledApps();
         ProgressDialog.dismiss(context);
-        if(null != installedApp) {
-          installedApp['wechat'] = wechatInstalled;
-        }
-        _notifyImageSaved(context, path, installedApp);
+          showSocialShareSheet(context, address, path, installedApp);
+        }).catchError((onError) {
+          print(onError);
+        });
       } catch(e) {
         ProgressDialog.dismiss(context);
         return;
       }
     } else {
       openAppSettings();
-    }
-  }
-
-  _notifyImageSaved(BuildContext context, String? path, Map? installedApp) {
-    String? address = globalHDAccounts.accounts![_accountIndex]!.address;
-    if(Platform.isAndroid) {
-      if (null != path && path.isNotEmpty && path.length > 8 && path.startsWith('file://')) {
-        showSocialShareSheet(context, address, path.substring(7), installedApp);
-      }
-    } else {
-      showSocialShareSheet(context, address, path, installedApp);
     }
   }
 }

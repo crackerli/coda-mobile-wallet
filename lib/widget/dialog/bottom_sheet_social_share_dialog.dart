@@ -1,140 +1,170 @@
 import 'dart:io';
 
+import 'package:appinio_social_share/appinio_social_share.dart';
+import 'package:coda_wallet/types/dialog_view_position_types.dart';
+import 'package:coda_wallet/widget/dialog/bottom_sheet_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:social_share/social_share.dart';
 import 'package:image_picker/image_picker.dart';
 
-List<String> _shareNames = ['Facebook', /*'Twitter',*/ /*'Wechat',*/ 'Instagram', 'Telegram', /*'SMS',*/ /*'Whatsapp'*/];
+List<String> _shareNames = [
+  'Facebook',
+  'Twitter',
+  // todo
+  // 'Wechat',
+  'Instagram',
+  'Telegram',
+  'Whatsapp',
+  // todo
+  // 'SMS',
+];
 List<String> _shareIcons = [
   'images/facebook_share.png',
-//  'images/twitter_share.png',
-//  'images/wechat_share.png',
+  'images/twitter_share.png',
+  // 'images/wechat_share.png',
   'images/instagram_share.png',
   'images/telegram_share.png',
-//  'images/sms_share.png',
-//  'images/whatsapp_share.png',
+  'images/whatsapp_share.png',
+  // 'images/sms_share.png',
 ];
+
+List<String> _shareDisableIcons = [
+  'images/facebook_share_disable.png',
+  'images/twitter_share_disable.png',
+  // 'images/wechat_share.png',
+  'images/instagram_share_disable.png',
+  'images/telegram_share_disable.png',
+  'images/whatsapp_share_disable.png',
+  // 'images/sms_share_disable.png',
+];
+
+AppinioSocialShare _appinioSocialShare = AppinioSocialShare();
 
 List<Function> _shareMethods = [
   (String address, String? path) async {
     //facebook appId is mandatory for andorid or else share won't work
     if(Platform.isAndroid) {
-      SocialShare.shareFacebookStory(path!, "#ffffff", "#000000", '', appId: "1231431000696020");
+      await _appinioSocialShare.shareToFacebook('My mina address: $address', path!);
     } else {
-      PickedFile? file = await ImagePicker().getImage(source: ImageSource.gallery);
+      XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
-        SocialShare.shareFacebookStory(
-          '${file?.path ?? ''}', "#ffffff", "#000000", '');
+        _appinioSocialShare.shareToFacebook('My mina address: $address', '${file?.path ?? ''}');
       }
     }
   },
+  (String address, String? path) async {
+    _appinioSocialShare.shareToTwitter('My mina address: $address', filePath: path!);
+  },
+  // todo
   // (String address, String? path) async {
-  //   SocialShare.shareTwitter('My mina address: $address', url: 'https://www.staking-power.com', trailingText: '');
-  // },
-  // (String address, String? path) async {
-  //   SocialShare.shareTwitter('My mina address: $address');
+  //   _appinioSocialShare.shareToWeChat('My mina address: $address',
+  //       filePath: path!);
   // },
   (String address, String? path) async {
     if(Platform.isAndroid) {
-      SocialShare.shareInstagramStory(path!);
+      _appinioSocialShare.shareToInstagramStory(stickerImage: path!);
     } else {
-      PickedFile? file = await ImagePicker().getImage(source: ImageSource.gallery);
+      XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
-        SocialShare.shareInstagramStory('${file?.path ?? ''}', backgroundTopColor: '#ffffff',
-          backgroundBottomColor: '#000000', attributionURL: 'https://www.staking-power.com', backgroundImagePath: '');
+        _appinioSocialShare.shareToInstagramStory(
+          stickerImage: '${file?.path ?? ''}',
+          backgroundTopColor: '#ffffff',
+          backgroundBottomColor: '#000000',
+          attributionURL: 'https://www.staking-power.com');
       }
     }
   },
   (String address, String? path) async {
-    SocialShare.shareTelegram('My mina address: $address');
+    _appinioSocialShare.shareToTelegram('My mina address: $address', filePath: path!);
   },
+  (String address, String? path) async {
+    _appinioSocialShare.shareToWhatsapp('My mina address: $address', filePath: path!);
+  },
+  // todo
   // (String address, String? path) async {
-  //   SocialShare.shareSms('My mina address: $address', url: '', trailingText: '');
-  // },
-  // (String address, String? path) async {
-  //   SocialShare.shareWhatsapp('My mina address: $address');
+  //   _appinioSocialShare.shareToSMS('My mina address: $address', filePath: path!);
   // },
 ];
 
-showSocialShareSheet(BuildContext context, String? address, String? snapShotPath, Map? installedApp) {
-  showModalBottomSheet(
-    enableDrag: false,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(7.0))),
+showSocialShareSheet(BuildContext context, String? address, String? snapshotPath, Map? installedApp) {
+  BottomSheetDialog.bottomMaterialDialog(
+    title: 'Select an application to share',
+    titleStyle: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
     context: context,
-    backgroundColor: Colors.white,
-    isScrollControlled: false,
-    builder: (BuildContext context) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(
-            Radius.circular(7.w),
+      customViewPosition: CustomViewPosition.AFTER_ACTION,
+      customView: Container(
+        height: 140.h,
+        child: Column(children: [
+          Container(height: 0.5.h, color:  Color(0xffbdbdbd)),
+          Container(
+            padding: EdgeInsets.only(top: 10.h),
+            height: 120.h,
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: _shareNames.length,
+              itemBuilder: (context, index) {
+                return _item(context, address, snapshotPath, installedApp, index);
+              }
+            )
           )
-        ),
-        margin: EdgeInsets.all(10),
-        child: _buildShareList(context, address, snapShotPath, installedApp)
-        );
-      }
+        ])
+      )
   );
 }
 
-Widget _buildShareList(BuildContext context, String? address, String? snapShotPath, Map? installedApp) {
-  return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Container(height: 16.h),
-        Text('Select one app to share', textAlign: TextAlign.start,
-          style: TextStyle(color: Color(0xff2d2d2d), fontSize: 18.sp, fontWeight: FontWeight.w600),),
-        Container(height: 16.h),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, mainAxisSpacing: 1.h, childAspectRatio: 1.1),
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              onTap: () {
-                if(null != installedApp && installedApp[_shareNames[index].toLowerCase()]) {
-                  _shareMethods[index](address, snapShotPath);
-                  Navigator.of(context).pop();
-                } else {
-                  Fluttertoast.showToast(
-                    msg: '${_shareNames[index]} not installed',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.CENTER,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Color(0xfff5f5f5),
-                    textColor: Color(0xff2d2d2d),
-                    fontSize: 16.sp
-                  );
-                }
-              },
-              child: Column(
-                children: <Widget>[
-                  Image.asset(_shareIcons[index], width: 50.w, height: 50.w,),
-                  Text(_shareNames[index], style: TextStyle(fontSize: 16.sp),)
-                ],
-              )
-            );
-          },
-          itemCount: _shareNames.length,
-        ),
-        Container(height: 0.5.h, color: Color(0xff2d2d2d)),
-        Container(height: 8.h,),
-        Center(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: Text('CANCEL', style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d), fontWeight: FontWeight.w500),
-              )
-            ),
+String _getAppIconFromAssets(Map? installedApp, int index) {
+  if (installedApp != null) {
+    return installedApp[_shareNames[index].toLowerCase()] ? _shareIcons[index] : _shareDisableIcons[index];
+  }
+
+  return _shareDisableIcons[index];
+}
+
+List<Widget> _buildList(BuildContext context, String? address, String? snapshotPath, Map? installedApp) {
+  List<Widget> result = <Widget>[];
+  for (int i = 0; i < _shareNames.length; i++) {
+    result.add(_item(context, address, snapshotPath, installedApp, i));
+  }
+  return result;
+}
+
+Widget _item(BuildContext context, String? address, String? snapshotPath, Map? installedApp, int index) {
+  return InkWell(
+    onTap: () => _onPressShareItem(context, address, snapshotPath, installedApp, index),
+    child: Card(
+      child: Container(
+        width: 80.w,
+        height: 60.w,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Image.asset(_getAppIconFromAssets(installedApp, index), height: 45.w, width: 45.w),
+              Container(height: 5),
+              Text(_shareNames[index], style: TextStyle(fontSize: 14.sp, color: Colors.black)),
+            ],
           ),
         ),
-      ],
+      ),
+    ),
   );
+}
 
+_onPressShareItem(BuildContext context, String? address, String? snapshotPath,
+    Map? installedApp, int index) {
+  if (null != installedApp && (installedApp[_shareNames[index].toLowerCase()])) {
+    _shareMethods[index](address, snapshotPath);
+    Navigator.of(context).pop();
+  } else {
+    Fluttertoast.showToast(
+      msg: '${_shareNames[index]} not installed',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Color(0xfff5f5f5),
+      textColor: Color(0xff2d2d2d),
+      fontSize: 16.sp);
+  }
 }
