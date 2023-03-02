@@ -59,17 +59,30 @@
     <array>
         <string>instagram-stories</string>
         <string>facebook-stories</string>
+        <string>fb-messenger</string>
         <string>facebook</string>
+        <string>fbapi</string>
         <string>instagram</string>
         <string>twitter</string>
         <string>whatsapp</string>
         <string>tg</string>
     </array>
     <key>FacebookAppID</key>
-    <string>1231431000696020</string>
+    <string>149246468008943</string>
+    <key>FacebookClientToken</key>
+    <string>fb0bdab2a7adf773e922a3094a67d0e3</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+              <string>fb149246468008943</string>
+            </array>
+        </dict>
+    </array>
 </dict>
 </plist>
