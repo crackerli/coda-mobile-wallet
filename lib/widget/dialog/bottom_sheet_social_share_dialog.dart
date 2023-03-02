@@ -47,14 +47,12 @@ List<Function> _shareMethods = [
     } else {
       XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
-        _appinioSocialShare.shareToFacebook(
-            'My mina address: $address', '${file?.path ?? ''}');
+        _appinioSocialShare.shareToFacebook('My mina address: $address', '${file?.path ?? ''}');
       }
     }
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToTwitter('My mina address: $address',
-        filePath: path!);
+    _appinioSocialShare.shareToTwitter('My mina address: $address', filePath: path!);
   },
   // (String address, String? path) async {
   //   _appinioSocialShare.shareToWeChat('My mina address: $address',
@@ -67,20 +65,18 @@ List<Function> _shareMethods = [
       XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
         _appinioSocialShare.shareToInstagramStory(
-            stickerImage: '${file?.path ?? ''}',
-            backgroundTopColor: '#ffffff',
-            backgroundBottomColor: '#000000',
-            attributionURL: 'https://www.staking-power.com');
+          stickerImage: '${file?.path ?? ''}',
+          backgroundTopColor: '#ffffff',
+          backgroundBottomColor: '#000000',
+          attributionURL: 'https://www.staking-power.com');
       }
     }
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToTelegram('My mina address: $address',
-        filePath: path!);
+    _appinioSocialShare.shareToTelegram('My mina address: $address', filePath: path!);
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToWhatsapp('My mina address: $address',
-        filePath: path!);
+    _appinioSocialShare.shareToWhatsapp('My mina address: $address', filePath: path!);
   },
   (String address, String? path) async {
     _appinioSocialShare.shareToSMS('My mina address: $address', filePath: path!);
