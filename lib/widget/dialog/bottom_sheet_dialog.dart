@@ -1,33 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
-import 'dialogs/dialog_widget.dart';
-import 'dialogs/types.dart';
+import 'customer_view_dialog_widget.dart';
+import '../../types/dialog_view_position_types.dart';
 
-class Dialogs {
+class BottomSheetDialog {
   ///[titleStyle] can be used to change the dialog title style
-  static const TextStyle titleStyle =
-      const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+  static const TextStyle titleStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
 
   ///[bcgColor] background default value
   static const Color bcgColor = const Color(0xfffefefe);
 
   ///[holder] holder for the custom view
-  static const Widget holder = const SizedBox(
-    height: 0,
-  );
+  static const Widget holder = const SizedBox(height: 0);
 
   /// [dialogShape] dialog outer shape
-  static const ShapeBorder dialogShape = const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(16)));
+  static const ShapeBorder dialogShape = const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16)));
 
   /// [BottomSheetShape] bottom dialog outer shape
-  static const ShapeBorder BottomSheetShape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16), topRight: Radius.circular(16)));
+  static const ShapeBorder BottomSheetShape = RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)));
 
-  static const CustomViewPosition customViewPosition =
-      CustomViewPosition.BEFORE_TITLE;
+  static const CustomViewPosition customViewPosition = CustomViewPosition.BEFORE_TITLE;
 
   /// Displays normal Material dialog above the current contents of the app
   /// [context] your parent widget context
@@ -52,7 +44,6 @@ class Dialogs {
     List<Widget>? actions,
     Widget customView = holder,
     CustomViewPosition customViewPosition = CustomViewPosition.BEFORE_TITLE,
-    LottieBuilder? lottieBuilder,
     bool barrierDismissible = true,
     Color? barrierColor = Colors.black54,
     String? barrierLabel,
@@ -79,12 +70,11 @@ class Dialogs {
         return Dialog(
           backgroundColor: color,
           shape: dialogShape,
-          child: DialogWidget(
+          child: CustomerViewDialogWidget(
             title: title,
             dialogWidth: dialogWidth,
             msg: msg,
             actions: actions,
-            animationBuilder: lottieBuilder,
             customView: customView,
             customViewPosition: customViewPosition,
             titleStyle: titleStyle,
@@ -107,7 +97,6 @@ class Dialogs {
     List<Widget>? actions,
     Widget customView = holder,
     CustomViewPosition customViewPosition = CustomViewPosition.BEFORE_TITLE,
-    LottieBuilder? lottieBuilder,
     bool barrierDismissible = true,
     ShapeBorder dialogShape = BottomSheetShape,
     TextStyle titleStyle = titleStyle,
@@ -130,11 +119,10 @@ class Dialogs {
       enableDrag: enableDrag,
       routeSettings: routeSettings,
       transitionAnimationController: transitionAnimationController,
-      builder: (context) => DialogWidget(
+      builder: (context) => CustomerViewDialogWidget(
         title: title,
         msg: msg,
         actions: actions,
-        animationBuilder: lottieBuilder,
         customView: customView,
         customViewPosition: customViewPosition,
         titleStyle: titleStyle,

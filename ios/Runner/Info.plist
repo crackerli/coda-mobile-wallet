@@ -72,17 +72,11 @@
      <string>fbshareextension</string>
      <string>fbapi</string>
      <string>facebook-reels</string>
-        <string>facebook-stories</string>
      <string>fb-messenger-share-api</string>
      <string>fb-messenger</string>
      <string>tg</string>
      <string>whatsapp</string>
-        <string>twitter</string>
-     <string>wechat</string>
-     <string>weixin</string>
-     <string>line</string>
-     <string>mqq</string>
-     <string>tim</string>
+     <string>twitter</string>
     </array>
     <key>FacebookAppID</key>
     <string>877278410221687</string>

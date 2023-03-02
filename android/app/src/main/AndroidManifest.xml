@@ -5,17 +5,12 @@
 
     <queries>
         <!-- Explicit apps you know in advance about: -->
-
         <package android:name="com.instagram.android" />
-        <package android:name="com.zhiliaoapp.musically" />
         <package android:name="com.facebook.katana" />
         <package android:name="com.facebook.orca" />
         <package android:name="org.telegram.messenger" />
         <package android:name="com.whatsapp" />
         <package android:name="com.twitter.android" />
-        <package android:name="com.tencent.mm" />
-        <package android:name="com.tencent.mobileqq" />
-        <package android:name="jp.naver.line.android" />
     </queries>
 
 
@@ -28,10 +23,8 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android, net.touchcapture.qr.flutterqr"/>
 
     <application
