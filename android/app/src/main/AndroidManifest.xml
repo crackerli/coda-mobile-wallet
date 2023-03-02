@@ -81,7 +81,7 @@
                 <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/filepaths" />
         </provider>
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider877278410221687"
+        <provider android:authorities="com.facebook.app.FacebookContentProvider149246468008943"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
         <meta-data

@@ -2,15 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleURLTypes</key>
-      <array>
-      <dict>
-          <key>CFBundleURLSchemes</key>
-          <array>
-              <string>fb877278410221687</string>
-          </array>
-      </dict>
-      </array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -66,25 +57,31 @@
 	<true/>
 	<key>LSApplicationQueriesSchemes</key>
     <array>
-     <string>instagram</string>
-     <string>fb</string>
-     <string>fbauth2</string>
-     <string>fbshareextension</string>
-     <string>fbapi</string>
-     <string>facebook-reels</string>
-     <string>fb-messenger-share-api</string>
-     <string>fb-messenger</string>
-     <string>tg</string>
-     <string>whatsapp</string>
-     <string>twitter</string>
+        <string>instagram-stories</string>
+        <string>facebook-stories</string>
+        <string>facebook</string>
+        <string>fbapi</string>
+        <string>instagram</string>
+        <string>twitter</string>
+        <string>whatsapp</string>
+        <string>tg</string>
     </array>
     <key>FacebookAppID</key>
-    <string>877278410221687</string>
+    <string>149246468008943</string>
     <key>FacebookClientToken</key>
-    <string>36199054bfbe7d880e2db5108e7d49dd</string>
+    <string>fb0bdab2a7adf773e922a3094a67d0e3</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+              <string>fb149246468008943</string>
+            </array>
+        </dict>
+    </array>
 </dict>
 </plist>
