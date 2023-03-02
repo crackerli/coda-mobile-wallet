@@ -37,7 +37,8 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <meta-data android:name="com.facebook.sdk.ClientToken"
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
             android:value="@string/facebook_client_token"/>
 
         <activity
@@ -80,7 +81,8 @@
                 <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/filepaths" />
         </provider>
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider149246468008943"
+        <provider
+            android:authorities="com.facebook.app.FacebookContentProvider149246468008943"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
         <meta-data
