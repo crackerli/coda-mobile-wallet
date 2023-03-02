@@ -19,7 +19,4 @@ class ChangeFilter extends TxnsEvents {
   ChangeFilter();
 }
 
-class ChangeAccount extends TxnsEvents {
-  ChangeAccount();
-}
 

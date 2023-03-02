@@ -2,9 +2,8 @@ import 'dart:io';
 
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/build_config.dart';
-import 'package:coda_wallet/global/global.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 
 class IndexerService {
 
@@ -16,12 +15,11 @@ class IndexerService {
   IndexerService._internal() {
     if (null == _client) {
       BaseOptions options = BaseOptions();
-//      options.baseUrl = "$DEFAULT_INDEXER_SERVER/transactions";
-      options.receiveTimeout = 1000 * 60;
-      options.connectTimeout = 10000;
+      options.receiveTimeout = Duration(seconds: 60);
+      options.connectTimeout = Duration(seconds: 20);
       _client = Dio(options);
 
-      (_client!.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+      (_client!.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
         (client) {
         client.findProxy = (url) {
           if(debugConfig) {
@@ -35,20 +33,6 @@ class IndexerService {
             (X509Certificate cert, String host, int port) => true;
       };
     }
-  }
-
-  Future<Response> getTransactions(String account) async {
-    int networkId = getCurrentNetworkId();
-    String indexerServer = INDEXER_SERVER_LIST[networkId];
-    String requestUrl = "$indexerServer/transactions";
-    print('Current indexer server using: $requestUrl');
-
-    Map<String, dynamic> map = Map<String, dynamic>();
-    map['account']= account;
-
-    Response response = await _client!.get(requestUrl, queryParameters: map);
-
-    return response;
   }
 
   Future<Response> getProviders() async {

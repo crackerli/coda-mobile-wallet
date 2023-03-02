@@ -56,7 +56,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
       eventBus.fire(UpdateAccounts());
     }
 
-    if(1 == index) {
+    if(2 == index) {
       eventBus.fire(UpdateTxns());
     }
     _pageController.jumpToPage(index);

@@ -5,10 +5,6 @@ abstract class TxnsStates {
   List<Object>? get props => null;
 }
 
-class AccountChanged extends TxnsStates {
-  AccountChanged();
-}
-
 class FilterChanged extends TxnsStates {
   final dynamic data;
 

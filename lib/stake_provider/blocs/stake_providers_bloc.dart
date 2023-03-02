@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:coda_wallet/service/indexer_service.dart';
+import 'package:coda_wallet/service/common_https_service.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_provider_type.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_events.dart';
