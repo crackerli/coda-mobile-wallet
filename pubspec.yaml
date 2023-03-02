@@ -45,7 +45,7 @@ dependencies:
   dio: ^4.0.6
   cached_network_image: ^3.2.3
   collection: ^1.15.0
-  social_share: ^2.1.1
+#  social_share: ^2.1.1
   fluttertoast: ^8.1.3
   image_picker: ^0.8.6+1
   password_strength: ^0.2.0
@@ -56,6 +56,10 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   ffi_mina_signer:
     path: ../ffi_mina_signer/
+  appinio_social_share:
+    path: ../appinio_social_share
+  lecle_flutter_absolute_path: ^0.0.2+1
+  screenshot: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -89,6 +93,7 @@ flutter:
     - images/back.png
     - images/common_bg.png
     - images/mina_logo_black_inner.png
+    - images/share_mina_logo.png
     - images/account_header.png
     - images/pool_header.png
     - images/qr_scanner.png
@@ -127,12 +132,16 @@ flutter:
     - images/telegram.png
     - images/discord_share.png
     - images/facebook_share.png
+    - images/facebook_share_disable.png
     - images/instagram_share.png
+    - images/instagram_share_disable.png
     - images/sms_share.png
     - images/twitter_share.png
-    - images/wechat_share.png
+    - images/twitter_share_disable.png
     - images/whatsapp_share.png
+    - images/whatsapp_share_disable.png
     - images/telegram_share.png
+    - images/telegram_share_disable.png
     - images/verified.png
     - images/icon_search.png
     - images/icon_search_white.png
