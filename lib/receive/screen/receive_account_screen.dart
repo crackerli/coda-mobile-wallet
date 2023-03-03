@@ -156,7 +156,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
           path = await LecleFlutterAbsolutePath.getAbsolutePath(uri: path!);
           String? address = globalHDAccounts.accounts![_accountIndex]!.address;
           Map? installedApp = await _appinioSocialShare.getInstalledApps();
-        ProgressDialog.dismiss(context);
+          ProgressDialog.dismiss(context);
           showSocialShareSheet(context, address, path, installedApp);
         }).catchError((onError) {
           print(onError);
