@@ -78,7 +78,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, TxnFilter current
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Cancel', textAlign: TextAlign.center,
+                child: Text('CANCEL', textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xfffe5962)))
               ))
             ],
