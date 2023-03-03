@@ -52,7 +52,7 @@ List<Function> _shareMethods = [
         _appinioSocialShare.shareToFacebook('My MINA address: $address', '${file?.path ?? ''}');
       }
       else{
-        Fluttertoast.showToast(msg: "Failed to save the file, please try again");
+        Fluttertoast.showToast(msg: "Unable to get QR code image, please try again!");
       }
     }
   },
