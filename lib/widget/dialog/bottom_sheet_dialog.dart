@@ -1,7 +1,7 @@
+import 'package:coda_wallet/types/dialog_view_position_types.dart';
 import 'package:flutter/material.dart';
 
 import 'customer_view_dialog_widget.dart';
-import '../../types/dialog_view_position_types.dart';
 
 class BottomSheetDialog {
   ///[titleStyle] can be used to change the dialog title style
