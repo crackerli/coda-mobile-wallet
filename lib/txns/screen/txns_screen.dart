@@ -412,7 +412,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   }
 
   Color _getDateTimeColor(MergedUserCommand command) {
-    if(command!.isPooled!) {
+    if(command.isPooled!) {
       return Color(0xff098de6);
     } else {
       return Color(0xff2d2d2d);

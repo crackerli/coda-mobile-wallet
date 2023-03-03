@@ -9,26 +9,25 @@ _buildFilterButton(
   TxnFilter matchFilter,
   TxnFilter currentFilter,
   List<String> actions,
-  dynamic event
-  ) {
-  return InkWell(
-    onTap: () {
+  dynamic event) {
+  return SizedBox(
+    width: 266.w,
+    child: OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+        foregroundColor: matchFilter == currentFilter ? Colors.white : Color(0xff098de6),
+        backgroundColor: matchFilter == currentFilter ? Color(0xff098de6) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+        side: BorderSide(width: 1.w, color: Color(0xff098de6))
+    ),
+    onPressed: () {
       eventBus.fire(event);
       Navigator.pop(context);
     },
-    child: Container(
-      width: 266.w,
-      padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
-      decoration: getMinaButtonDecoration(
-        topColor: matchFilter == currentFilter ? Colors.white : Color(0xffeeeeee)
-      ),
-      child: Text(
-        actions[matchFilter.index],
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))
-      ),
-    ),
-  );
+    child: Text(actions[matchFilter.index], textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500,
+      color: matchFilter == currentFilter ? Colors.white : Color(0xff098de6)))
+  ));
 }
 
 showTxnFilterSheet(BuildContext context, List<String> actions, TxnFilter currentFilter) {
@@ -45,7 +44,7 @@ showTxnFilterSheet(BuildContext context, List<String> actions, TxnFilter current
             Radius.circular(7.w),
           )
         ),
-        margin: EdgeInsets.all(10),
+        margin: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 10.h),
         child: Container(
           padding: EdgeInsets.only(top: 8.h, left: 30.w, right: 30.w, bottom: 8.h),
           child: Column(
@@ -53,28 +52,35 @@ showTxnFilterSheet(BuildContext context, List<String> actions, TxnFilter current
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Image.asset('images/filter_logo.png', width: 40.w, height: 40.w,),
+              Image.asset('images/filter_logo_blue.png', width: 44.w, height: 44.w),
               Container(height: 16.h,),
-              Text('Filter Transactions', textAlign: TextAlign.center, style: TextStyle(color: Color(0xff2d2d2d), fontSize: 24.sp),),
+              Text('Transaction Filters', textAlign: TextAlign.center,
+                style: TextStyle(color: Color(0xff2d2d2d), fontSize: 20.sp, fontWeight: FontWeight.w500)),
               Container(height: 16.h,),
               _buildFilterButton(context, TxnFilter.ALL, currentFilter, actions, FilterTxnsAll()),
-              Container(height: 11.h,),
+              Container(height: 1.h,),
               _buildFilterButton(context, TxnFilter.SENT, currentFilter, actions, FilterTxnsSent()),
-              Container(height: 11.h,),
+              Container(height: 1.h,),
               _buildFilterButton(context, TxnFilter.RECEIVED, currentFilter, actions, FilterTxnsReceived()),
-              Container(height: 11.h,),
+              Container(height: 1.h,),
               _buildFilterButton(context, TxnFilter.STAKED, currentFilter, actions, FilterTxnsStaked()),
-              Container(height: 22.h,),
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 94.w, right: 94.w),
-                  child: Text(
-                    actions[4],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600)),
+              Container(height: 12.h,),
+              SizedBox(
+                width: 266.w,
+                child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+                  foregroundColor: Color(0xfffe5962),
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+                  side: BorderSide(width: 1.w, color: Color(0xfffe5962))
                 ),
-              ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Cancel', textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xfffe5962)))
+              ))
             ],
           ),
         )
