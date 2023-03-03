@@ -25,7 +25,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   List<MergedUserCommand> mergedUserCommands = [];
   int accountIndex = 0;
   TxnFilter currentFilter = TxnFilter.ALL;
-  List<String> txnFilters = ['No Filters', ' Sent Filter', ' Received Filter', ' Staked Filter', 'Cancel'];
+  List<String> txnFilters = ['NO FILTERS', 'SENT FILTER', 'RECEIVED FILTER', 'STAKED FILTER', 'CANCEL'];
 
   get filteredUserCommands {
     if(mergedUserCommands.isEmpty) {
