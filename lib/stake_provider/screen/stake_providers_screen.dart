@@ -306,8 +306,8 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                 imageUrl: provider?.providerLogo ?? '',
                 width: 40.w,
                 height: 40.w,
-                placeholder: (context, url) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.w,),
-                errorWidget: (context, url, error) => Image.asset('images/txn_stake.png', width: 40.w, height: 40.w,),
+                placeholder: (context, url) => Image.asset('images/txn_delegation.png', width: 40.w, height: 40.w,),
+                errorWidget: (context, url, error) => Image.asset('images/txn_delegation.png', width: 40.w, height: 40.w,),
               ),
               Container(width: 6.w,),
               Column(

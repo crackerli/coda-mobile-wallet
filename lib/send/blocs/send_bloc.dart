@@ -1,14 +1,17 @@
+import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/send/blocs/send_events.dart';
 import 'package:coda_wallet/send/blocs/send_states.dart';
 import 'package:coda_wallet/tok_k/top_k.dart';
+import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:ffi_mina_signer/types/key_types.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../global/build_config.dart';
 import '../../service/coda_service.dart';
 import '../mutation/delegate_token_mutation.dart';
 import '../mutation/send_token_mutation.dart';
@@ -169,6 +172,7 @@ class SendBloc extends
   // Then we can estimate which fee can included in the coming blocks.
   Stream<SendStates>
     _mapGetPooledFeeToStates(GetPooledFee event) async* {
+
     final query = event.query;
     final variables = event.variables ?? null;
     try {
@@ -230,6 +234,43 @@ class SendBloc extends
     bestFees.add(topFees[FEE_COHORT_LENGTH * 2 - 1] + BigInt.from(MINIMAL_FEE_COST));
     bestFees = bestFees.reversed.toList();
     return;
+  }
+
+  reportEverStake() async {
+    BaseOptions baseOptions = BaseOptions();
+    final everStakeDio = Dio(baseOptions);
+
+    (everStakeDio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
+        (client) {
+      client.findProxy = (url) {
+        if(debugConfig) {
+          return "PROXY 192.168.22.201:9999";
+        } else {
+          return 'DIRECT';
+        }
+      };
+
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+    };
+
+    everStakeDio.options.connectTimeout = Duration(seconds: 20);
+    everStakeDio.options.sendTimeout = Duration(seconds: 30);
+
+    Map<String, String> headers = <String, String>{
+      'Content-Type': 'application/json',
+      'X-API-Key': 'ac765208c95f57bd95b2595bad2c4a80',
+      'Accept': '*/*',
+      'Connection': 'keep-alive',
+      'Accept-Encoding': 'gzip, deflate, br'
+    };
+    everStakeDio.options.headers = headers;
+    Response response = await everStakeDio.post('https://aff-api.everstake.one/staking_power/delegations', data: {
+          'link_id': '598df17506c0eebb7cd7af0a97a214ef',
+          'delegations': ['B62qismRE8v8sPKR8hPSUzdyHLwXu1nCXZuGuWDWsbb6ZDxMLWAAnnk']
+    });
+
+    print('report to Everstake result: ${response}');
   }
 
   Stream<SendStates>
@@ -312,12 +353,24 @@ class SendBloc extends
           return;
         }
 
-        // 3. report to Everstake if needed
         yield SendActionsSuccess();
       } catch (e) {
         print(e);
         yield SendActionsFail(e.toString());
       }
+    }
+
+    // 3. report to Everstake if needed
+    if(isDelegation && isEverstake) {
+      print('Report to Everstake of account: $from');
+      try {
+        await reportEverStake();
+        print('Successfully reported to Everstake of account: $from');
+      } catch (e) {
+        print('Error when report to Everstake: ${e.toString()}');
+      }
+    } else {
+      print('No need to reposrt to Everstake');
     }
   }
 }
