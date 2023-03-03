@@ -97,22 +97,23 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
     context: context,
       customViewPosition: CustomViewPosition.AFTER_ACTION,
       customView: Container(
-        height: 140.h,
-        child: Column(children: [
-          Container(height: 0.5.h, color:  Color(0xffbdbdbd)),
-          Container(
-            padding: EdgeInsets.only(top: 10.h),
-            height: 120.h,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: _shareNames.length,
-              itemBuilder: (context, index) {
-                return _item(context, address, snapshotPath, installedApp, index);
-              }
+        child: Column(
+          children: [
+            Container(height: 0.5.h, color:  Color(0xffbdbdbd)),
+            Container(
+              padding: EdgeInsets.only(top: 10.h),
+              height: 120.h,
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: _shareNames.length,
+                itemBuilder: (context, index) {
+                  return _item(context, address, snapshotPath, installedApp, index);
+                }
+              )
             )
-          )
-        ])
+          ]
+        )
       )
   );
 }
@@ -137,7 +138,7 @@ Widget _item(BuildContext context, String? address, String? snapshotPath, Map? i
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Image.asset(_getAppIconFromAssets(installedApp, index), height: 45.w, width: 45.w),
-              Container(height: 5),
+              Container(height: 5.w),
               Text(_shareNames[index], style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
             ],
           ),
