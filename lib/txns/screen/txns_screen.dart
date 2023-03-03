@@ -19,7 +19,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
 import '../../types/mina_hd_account_type.dart';
 import '../../widget/app_bar/app_bar.dart';
 
@@ -203,10 +202,13 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                 children: [
                   Image.asset('images/mina_logo_black_inner_small.png', width: 21.w, height: 21.w,),
                   Container(width: 2.w,),
-                  Text(value?.accountName ?? 'null', textAlign: TextAlign.start,
+                  Text(value?.accountName ?? 'null', textAlign: TextAlign.start, overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
-                  Text(formatHashEllipsis('(${value?.address ?? 'null'})', short: false), textAlign: TextAlign.start,
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d))),
+                  Expanded(
+                    flex: 1,
+                    child: Text('(${formatHashEllipsis(value!.address!)})', textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d))),
+                  )
                 ],
               )
           );
@@ -346,11 +348,11 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('${_getTxnTypeStr(command)}:',
-                          textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),),
+                        Text('${_getTxnTypeStr(command)}:', textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                         Container(width: 2.w,),
-                        Text(formatHashEllipsis(command.to),
-                          textAlign: TextAlign.start, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300),)
+                        Text(_getTxnRequiredAddress(command), textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d)))
                       ],
                     ),
                     Row(
@@ -371,8 +373,8 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(_getDateTimeStr(command),
-                      textAlign: TextAlign.start, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300)),
+                    Text(_getDateTimeStr(command), textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300, color: _getDateTimeColor(command))),
                     Container(width: 2.w,),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -380,9 +382,10 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                         Text('fee:', textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300)),
                         Container(width: 2.w,),
                         Text('${MinaHelper.getMinaStrByNanoStr(command.fee!)}',
-                          textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300)),
+                          textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d))),
                         Container(width: 2.w,),
-                        Text('MINA', textAlign: TextAlign.start, style: TextStyle(fontSize: 9.sp, fontWeight: FontWeight.w300))
+                        Text('MINA', textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 9.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d)))
                       ],
                     ),
                   ],
@@ -392,6 +395,28 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
             ],
           )
     );
+  }
+
+  String _getTxnRequiredAddress(MergedUserCommand command) {
+    String? requiredAddress;
+
+    if(command.from == _txnsBloc.publicKey) {
+      requiredAddress = command.to;
+    }
+
+    if(command.to == _txnsBloc.publicKey) {
+      requiredAddress = command.from;
+    }
+
+    return formatHashEllipsis(requiredAddress);
+  }
+
+  Color _getDateTimeColor(MergedUserCommand command) {
+    if(command!.isPooled!) {
+      return Color(0xff098de6);
+    } else {
+      return Color(0xff2d2d2d);
+    }
   }
 
   Widget _getTxnTypeIcon(MergedUserCommand command) {
