@@ -15,7 +15,7 @@ Future<String?> saveImageAsFile(GlobalKey qrImageKey) async {
     ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
 
     var isIOS = false;
-    if(Platform.isIOS || Platform.isMacOS){
+    if(Platform.isIOS || Platform.isMacOS) {
       isIOS = true;
     }
 
@@ -33,7 +33,7 @@ Future<String?> saveImageAsFile(GlobalKey qrImageKey) async {
 Future<String?> saveImageBytesAsFile(Uint8List imageBytes) async {
   try {
     var isIOS = false;
-    if(Platform.isIOS || Platform.isMacOS){
+    if(Platform.isIOS || Platform.isMacOS) {
       isIOS = true;
     }
 

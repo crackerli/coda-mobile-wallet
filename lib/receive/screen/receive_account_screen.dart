@@ -85,7 +85,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
                 embeddedImage:AssetImage('images/share_mina_logo.png'),
                 gapless: false,
                 embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: Size(40, 40),
+                  size: Size(40.w, 40.w),
                 ),),
           ),
         Container(height: 33.h),
@@ -156,7 +156,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
           path = await LecleFlutterAbsolutePath.getAbsolutePath(uri: path!);
           String? address = globalHDAccounts.accounts![_accountIndex]!.address;
           Map? installedApp = await _appinioSocialShare.getInstalledApps();
-        ProgressDialog.dismiss(context);
+          ProgressDialog.dismiss(context);
           showSocialShareSheet(context, address, path, installedApp);
         }).catchError((onError) {
           print(onError);
