@@ -85,7 +85,7 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
                 embeddedImage:AssetImage('images/share_mina_logo.png'),
                 gapless: false,
                 embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: Size(40, 40),
+                  size: Size(40.w, 40.w),
                 ),),
           ),
         Container(height: 33.h),

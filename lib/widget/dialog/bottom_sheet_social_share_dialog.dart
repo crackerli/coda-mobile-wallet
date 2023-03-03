@@ -45,20 +45,23 @@ List<Function> _shareMethods = [
   (String address, String? path) async {
     //facebook appId is mandatory for andorid or else share won't work
     if(Platform.isAndroid) {
-      await _appinioSocialShare.shareToFacebook('My mina address: $address', path!);
+      await _appinioSocialShare.shareToFacebook('My MINA address: $address', path!);
     } else {
       XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
-        _appinioSocialShare.shareToFacebook('My mina address: $address', '${file?.path ?? ''}');
+        _appinioSocialShare.shareToFacebook('My MINA address: $address', '${file?.path ?? ''}');
+      }
+      else{
+        Fluttertoast.showToast(msg: "Failed to save the file, please try again");
       }
     }
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToTwitter('My mina address: $address', filePath: path!);
+    _appinioSocialShare.shareToTwitter('My MINA address: $address', filePath: path!);
   },
   // todo
   // (String address, String? path) async {
-  //   _appinioSocialShare.shareToWeChat('My mina address: $address',
+  //   _appinioSocialShare.shareToWeChat('My MINA address: $address',
   //       filePath: path!);
   // },
   (String address, String? path) async {
@@ -76,21 +79,21 @@ List<Function> _shareMethods = [
     }
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToTelegram('My mina address: $address', filePath: path!);
+    _appinioSocialShare.shareToTelegram('My MINA address: $address', filePath: path!);
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToWhatsapp('My mina address: $address', filePath: path!);
+    _appinioSocialShare.shareToWhatsapp('My MINA address: $address', filePath: path!);
   },
   // todo
   // (String address, String? path) async {
-  //   _appinioSocialShare.shareToSMS('My mina address: $address', filePath: path!);
+  //   _appinioSocialShare.shareToSMS('My MINA address: $address', filePath: path!);
   // },
 ];
 
 showSocialShareSheet(BuildContext context, String? address, String? snapshotPath, Map? installedApp) {
   BottomSheetDialog.bottomMaterialDialog(
     title: 'Select an application to share',
-    titleStyle: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
+    titleStyle: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),
     context: context,
       customViewPosition: CustomViewPosition.AFTER_ACTION,
       customView: Container(
@@ -122,14 +125,6 @@ String _getAppIconFromAssets(Map? installedApp, int index) {
   return _shareDisableIcons[index];
 }
 
-List<Widget> _buildList(BuildContext context, String? address, String? snapshotPath, Map? installedApp) {
-  List<Widget> result = <Widget>[];
-  for (int i = 0; i < _shareNames.length; i++) {
-    result.add(_item(context, address, snapshotPath, installedApp, i));
-  }
-  return result;
-}
-
 Widget _item(BuildContext context, String? address, String? snapshotPath, Map? installedApp, int index) {
   return InkWell(
     onTap: () => _onPressShareItem(context, address, snapshotPath, installedApp, index),
@@ -143,7 +138,7 @@ Widget _item(BuildContext context, String? address, String? snapshotPath, Map? i
             children: <Widget>[
               Image.asset(_getAppIconFromAssets(installedApp, index), height: 45.w, width: 45.w),
               Container(height: 5),
-              Text(_shareNames[index], style: TextStyle(fontSize: 14.sp, color: Colors.black)),
+              Text(_shareNames[index], style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
             ],
           ),
         ),
