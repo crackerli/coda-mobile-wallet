@@ -45,7 +45,7 @@ List<Function> _shareMethods = [
   (String address, String? path) async {
     //facebook appId is mandatory for andorid or else share won't work
     if(Platform.isAndroid) {
-      await _appinioSocialShare.shareToFacebook('My MINA address: $address', path!);
+      _appinioSocialShare.shareToFacebook('My MINA address: $address', path!);
     } else {
       XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
