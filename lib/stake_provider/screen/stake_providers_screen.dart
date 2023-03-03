@@ -289,11 +289,11 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
       margin: EdgeInsets.all(4.w),
       padding: EdgeInsets.fromLTRB(12.w, 16.h, 12.w, 16.h),
       decoration: BoxDecoration(
-        border: Border.all(color: provider?.chosen ?? false ? Colors.blueAccent : Colors.black12, width: 0.5.w),
+        border: Border.all(color: provider?.chosen ?? false ? Color(0xff098de6) : Colors.black12, width: 0.5.w),
         borderRadius: BorderRadius.all(Radius.circular(5.w)),
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: provider?.chosen ?? false ? Colors.blueAccent : Colors.black12,
+          BoxShadow(color: provider?.chosen ?? false ? Color(0xff098de6) : Colors.black12,
             offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
         ]
       ),
@@ -315,7 +315,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(provider?.providerTitle ?? '',
-                    textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Colors.blueAccent),),
+                    textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)),),
                   Container(height: 6.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -422,17 +422,17 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white24,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
-                  side: BorderSide(width: 1.w, color: Colors.blueAccent)
+                  side: BorderSide(width: 1.w, color: Color(0xff098de6))
                 ),
                 onPressed: () => showUrlWarningDialog(context, provider.website ?? ''),
                 child: Text('OPEN SITE', textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: Colors.blueAccent))),
+                  style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))),
               Container(width: 12.w),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                     backgroundColor: Colors.white24,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
-                    side: BorderSide(width: 1.w, color: Colors.blueAccent)
+                    side: BorderSide(width: 1.w, color: Color(0xff098de6))
                 ),
                 onPressed: () {
                   SendData delegationData = SendData();
@@ -449,7 +449,7 @@ class _StakeProviderScreenState extends State<StakeProviderScreen> {
                   _gotoDelegationFee(context, delegationData);
                 },
                 child: Text('DELEGATE', textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: Colors.blueAccent),)),
+                  style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)),)),
             ],
           ) : Container()
         ],
