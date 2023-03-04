@@ -146,7 +146,6 @@ flutter:
     - images/verified.png
     - images/icon_search.png
     - images/icon_search_white.png
-    - images/txn_pending.png
     - images/txn_wrong.png
     - images/txn_send_blue.png
     - images/txn_receive_green.png
@@ -154,6 +153,8 @@ flutter:
     - images/txn_list_empty.png
     - images/txn_filter.png
     - images/filter_logo_blue.png
+    - images/txn_success.png
+
 
 
 

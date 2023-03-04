@@ -24,8 +24,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 _gotoTxnDetail(BuildContext context, SendData sendData) {
+  TxnType txnType;
+  if(sendData.isDelegation) {
+    txnType = TxnType.DELEGATION;
+  } else {
+    txnType = TxnType.SEND;
+  }
+
   TxnEntity txnEntity = TxnEntity(globalHDAccounts.accounts![sendData.from]!.address!,
-    sendData.to, null, sendData.amount, sendData.fee!, sendData.memo, TxnStatus.PENDING, TxnType.SEND, true, null);
+    sendData.to, null, sendData.amount, sendData.fee!, sendData.memo, TxnStatus.PENDING, txnType, true, null, null);
   Navigator.pushReplacementNamed(context, TxnDetailRoute, arguments: txnEntity);
 }
 
