@@ -115,9 +115,12 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)} (\$${getTokenFiatPrice(_txnEntity.amount)})',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d))),
+                        Expanded(
+                          child:
+                            Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)} (\$${getTokenFiatPrice(_txnEntity.amount)})',
+                              textAlign: TextAlign.start, maxLines: 2,
+                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d)))
+                        ),
                         Text('MINA', textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d))),
                       ],
