@@ -97,7 +97,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                   Expanded(
                     flex: FLEX_RIGHT_CONTENT,
                     child: Text(_getTxnTypeStr(), textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d)))
+                      style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d)))
                   )
                 ],
               ),
@@ -115,7 +115,8 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)}', textAlign: TextAlign.start,
+                        Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)} (\$${getTokenFiatPrice(_txnEntity.amount)})',
+                          textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d))),
                         Text('MINA', textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d))),
@@ -158,7 +159,8 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.fee)}', textAlign: TextAlign.start,
+                        Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.fee)} (\$${getTokenFiatPrice(_txnEntity.fee)})',
+                          textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d))),
                         Text('MINA', textAlign: TextAlign.start,
                             style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d)))
