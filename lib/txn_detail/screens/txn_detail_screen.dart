@@ -5,14 +5,16 @@ import 'package:coda_wallet/types/txn_status_type.dart';
 import 'package:coda_wallet/util/format_utils.dart';
 import 'package:coda_wallet/widget/app_bar/app_bar.dart';
 import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
-import 'package:coda_wallet/widget/ui/custom_gradient.dart';
 import 'package:ffi_mina_signer/sdk/mina_signer_sdk.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:screenshot/screenshot.dart';
 
-const FLEX_LEFT_LABEL = 2;
-const FLEX_RIGHT_CONTENT = 5;
+const FLEX_LEFT_LABEL = 3;
+const FLEX_RIGHT_CONTENT = 10;
 
 class TxnDetailScreen extends StatefulWidget {
 
@@ -27,6 +29,7 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
   late TxnEntity _txnEntity;
   late String _decodedMemo;
   late bool _showMemo;
+  bool _txHashCopied = false;
 
   @override
   void initState() {
@@ -44,309 +47,372 @@ class _TxnDetailScreenState extends State<TxnDetailScreen> {
     _txnEntity = ModalRoute.of(context)!.settings.arguments as TxnEntity;
     _getReadableMemo();
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: buildNoTitleAppBar(context, leading: false),
+      backgroundColor: Color(0xfff1f1f1),
+      appBar: buildTitleAppBar(context, 'Transaction Details', actions: false),
       body: SafeArea(
         child: Container(
           child: Stack(
             alignment: Alignment.center,
             children: [
-              _buildTxnDetailBody(),
+              _buildTxnDetailBody(context),
               _buildActionsButton(context),
             ]
           ),
+        ),
+      )
+    );
+  }
+
+  _buildTxnDetailBody(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(height: 28.h),
+        _getTxnStatusIcon(),
+        Container(height: 2.h,),
+        _getTxnStatusText(),
+        (_txnEntity.txnStatus == TxnStatus.PENDING) ? Container() :
+        Container(height: 10.h,),
+        _getDateTime(),
+        Container(height: 23.h,),
+        Container(
+          margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
           decoration: BoxDecoration(
-            gradient: backgroundGradient
+            border: Border.all(color: Colors.white, width: 0.5.w),
+            borderRadius: BorderRadius.all(Radius.circular(10.w)),
+            color: Colors.white,
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: FLEX_LEFT_LABEL,
+                    child: Text('Details', textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2)),)
+                  ),
+                  Expanded(
+                    flex: FLEX_RIGHT_CONTENT,
+                    child: Text(_getTxnTypeStr(), textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d)))
+                  )
+                ],
+              ),
+              Container(height: 10.h,),
+              Row(
+                children: [
+                  Expanded(
+                    flex: FLEX_LEFT_LABEL,
+                    child: Container()
+                  ),
+                  Expanded(
+                    flex: FLEX_RIGHT_CONTENT,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)}', textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d))),
+                        Text('MINA', textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d))),
+                      ],
+                    )
+                  )
+                ],
+              ),
+              Container(height: 10.h,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: FLEX_LEFT_LABEL,
+                    child: Container()
+                  ),
+                  Expanded(
+                    flex: FLEX_RIGHT_CONTENT,
+                    child: Container(height: 1.h, color: Color(0xffeeeef0),)
+                  ),
+                ],
+              ),
+              Container(height: 10.h,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: FLEX_LEFT_LABEL,
+                    child: Text('Fee', textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2)))
+                  ),
+                  Expanded(
+                    flex: FLEX_RIGHT_CONTENT,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.fee)}', textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d))),
+                        Text('MINA', textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600, color: Color(0xff1d1d1d)))
+                      ],
+                    )
+                  ),
+                ],
+              ),
+              !_showMemo ? Container() :
+              Container(height: 10.h,),
+              !_showMemo ? Container() :
+              Container(height: 1.h, color: Color(0xffeeeef0),),
+              !_showMemo ? Container() :
+              Container(height: 10.h,),
+              !_showMemo ? Container() :
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: FLEX_LEFT_LABEL,
+                    child: Text('Memo', textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2)))
+                  ),
+                  Expanded(
+                    flex: FLEX_RIGHT_CONTENT,
+                    child: Text(_decodedMemo, textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff1d1d1d)))
+                  ),
+                ],
+              ),
+              (null == _txnEntity.failureReason || (_txnEntity.failureReason as String).isEmpty) ? Container() :
+              Container(height: 10.h,),
+              (null == _txnEntity.failureReason || (_txnEntity.failureReason as String).isEmpty) ? Container() :
+              Container(height: 1.h, color: Color(0xffeeeef0),),
+              (null == _txnEntity.failureReason || (_txnEntity.failureReason as String).isEmpty) ? Container() :
+              Container(height: 10.h,),
+              (null == _txnEntity.failureReason || (_txnEntity.failureReason as String).isEmpty) ? Container() :
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: FLEX_LEFT_LABEL,
+                    child: Text('Failure', textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2)))
+                  ),
+                  Expanded(
+                    flex: FLEX_RIGHT_CONTENT,
+                    child: Text('${_txnEntity.failureReason ?? 'null'}', textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff1d1d1d)))
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      )
-    );
-  }
-
-  _buildActionsButton(BuildContext context) {
-    return Positioned(
-      bottom: 60.h,
-      child: InkWell(
-        onTap: () => openUrl('https://minaexplorer.com/wallet/${_txnEntity.from}'),
-        child: Container(
-          padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 40.w, right: 40.w),
-          decoration: getMinaButtonDecoration(topColor: Color(0xffe0e0e0)),
-          child: Text('VIEW IN BLOCK EXPLORER',
-            textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+        Container(height: 18.h,),
+        Container(
+          margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.white, width: 0.5.w),
+            borderRadius: BorderRadius.all(Radius.circular(10.w)),
+            color: Colors.white,
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    flex: FLEX_LEFT_LABEL,
+                    child: Text('From', textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2)))
+                  ),
+                  Expanded(
+                    flex: FLEX_RIGHT_CONTENT,
+                    child: Text(_txnEntity.from, textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff1d1d1d)))
+                  ),
+                ],
+              ),
+              Container(height: 10.h,),
+              Container(height: 1.h, color: Color(0xffeeeef0),),
+              Container(height: 10.h,),
+              Row(
+                children: [
+                  Expanded(
+                    flex: FLEX_LEFT_LABEL,
+                    child: Text('To', textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2)))
+                  ),
+                  Expanded(
+                    flex: FLEX_RIGHT_CONTENT,
+                    child: Text(_txnEntity.to, textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff1d1d1d)))
+                  ),
+                ],
+              )
+          ],
+        )),
+        Container(height: 18.h,),
+        (null == _txnEntity.txnHash || _txnEntity.txnHash!.isEmpty) ? Container() :
+        Container(
+          margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.white, width: 0.5.w),
+            borderRadius: BorderRadius.all(Radius.circular(10.w)),
+            color: Colors.white,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: FLEX_LEFT_LABEL,
+                child: Text('TxHash', textAlign: TextAlign.start,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2)),)
+              ),
+              Expanded(
+                flex: FLEX_RIGHT_CONTENT,
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(2.w, 2.h, 2.w, 2.h),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 0.5.w),
+                    borderRadius: BorderRadius.all(Radius.circular(3.w)),
+                    color: _txHashCopied ? Colors.grey : Colors.white,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Clipboard.setData(ClipboardData(text: _txnEntity.txnHash ?? 'null'));
+                          setState(() {
+                            _txHashCopied = true;
+                          });
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Transaction hash copied into clipboard!')));
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(right: 4.w),
+                          child: Image.asset(_txHashCopied ? 'images/copy_white.png' : 'images/copy_gray.png', width: 22.w, height: 22.h),
+                        )
+                      ),
+                      Expanded(
+                        child:
+                          Text(_txnEntity.txnHash!, textAlign: TextAlign.start, maxLines: 2,
+                            style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: _txHashCopied ? Colors.white : Color(0xff1d1d1d))))
+                  ],
+                )
+              )),
+            ],
+          ),
         ),
-      )
+      ],
     );
   }
 
-  String getTxnStatusStr() {
+  _getTxnStatusIcon() {
     if(_txnEntity.txnStatus == TxnStatus.PENDING) {
-      return 'Transaction Pending';
-    }
-    if(_txnEntity.txnType == TxnType.RECEIVE) {
-      return 'Transaction received';
+      return Image.asset('images/txn_pending.png', width: 60.w, height: 60.w,);
     }
 
-    if(_txnEntity.txnType == TxnType.SEND) {
-      return 'Transaction sent';
+    if(_txnEntity.txnStatus == TxnStatus.CONFIRMED && null == _txnEntity.failureReason) {
+      return Image.asset('images/txn_success.png', width: 60.w, height: 60.w,);
     }
 
-    if(_txnEntity.txnType == TxnType.DELEGATION) {
-      return 'Transaction Staked';
-    }
-
-    return 'Unknown';
-  }
-
-  getTxnTypeIcon() {
-    if(_txnEntity.txnStatus == TxnStatus.PENDING) {
-      return Image.asset('images/txn_pending.png', width: 52.w, height: 52.w);
-    }
-    if(_txnEntity.txnType == TxnType.RECEIVE) {
-      return Image.asset('images/txn_receive.png', width: 52.w, height: 52.w);
-    }
-
-    if(_txnEntity.txnType == TxnType.SEND) {
-      return Image.asset('images/txn_send.png', width: 52.w, height: 52.w);
-    }
-
-    if(_txnEntity.txnType == TxnType.DELEGATION) {
-      return Image.asset('images/txn_stake.png', width: 52.w, height: 52.w);
+    if(_txnEntity.txnStatus == TxnStatus.CONFIRMED && null != _txnEntity.failureReason) {
+      return Image.asset('images/txn_wrong.png', width: 60.w, height: 60.w,);
     }
 
     return Container();
   }
 
-  _buildTxnDetailBody() {
-    return Container(
-      padding: EdgeInsets.only(left: 50.w, right: 50.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(height: 23.h),
-          Center(child: getTxnTypeIcon()),
-          Container(height: 15.h),
-          Center(
-            child: Text(getTxnStatusStr(), textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.normal, color: Color(0xff2d2d2d))
-            )
+  _getTxnStatusText() {
+    if(_txnEntity.txnStatus == TxnStatus.PENDING) {
+      return Text('Pending...', textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)));
+    }
+
+    if(_txnEntity.txnStatus == TxnStatus.CONFIRMED && null == _txnEntity.failureReason) {
+      return Text('Successful', textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xff6bc7a1)));
+    }
+
+    if(_txnEntity.txnStatus == TxnStatus.CONFIRMED && null != _txnEntity.failureReason) {
+      return Text('Failed', textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xfffe5962)));
+    }
+
+    return Container();
+  }
+
+  _getDateTime() {
+    if(_txnEntity.txnStatus == TxnStatus.PENDING) {
+      return Container();
+    } else {
+      String dateTimeStr =  DateFormat().format(
+          DateTime.fromMillisecondsSinceEpoch(int.tryParse(_txnEntity.timestamp!)!));
+      return Text(dateTimeStr, textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Color(0xffacadb5)),);
+    }
+  }
+
+  String _getTxnTypeStr() {
+    if(_txnEntity.txnType == TxnType.RECEIVE) {
+      return 'Receive';
+    }
+
+    if(_txnEntity.txnType == TxnType.SEND) {
+      return 'Send';
+    }
+
+    if(_txnEntity.txnType == TxnType.DELEGATION) {
+      return 'Stake';
+    }
+
+    return 'Unknown';
+  }
+
+  _buildActionsButton(BuildContext context) {
+    return Positioned(
+      bottom: 30.h,
+      child: SizedBox(
+        width: 300.w,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+            foregroundColor: Color(0xff098de6),
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+            side: BorderSide(width: 1.w, color: Color(0xff098de6))
           ),
-          Container(height: 28.h),
-          Container(
-            width: double.infinity,
-            height: 1.h,
-            color: Color(0xff757575)),
-          Container(height: 2.h,),
-          Container(
-            width: double.infinity,
-            height: 1.h,
-            color: Color(0xff757575)),
-          Container(height: 28.h,),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Text('FROM', textAlign: TextAlign.right, maxLines: 2,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text(_txnEntity.from,
-                  textAlign: TextAlign.left, maxLines: 3,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161))),
-              )
-            ],
-          ),
-          Container(height: 16.h),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Text('TO', textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text(_txnEntity.to,
-                  textAlign: TextAlign.left, maxLines: 3,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161))),
-              )
-            ],
-          ),
-          Container(height: 16.h),
-          _txnEntity.txnStatus != TxnStatus.PENDING ?
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Text('TIMESTAMP', textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text(formatDateTime(_txnEntity.timestamp),
-                  textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)),),
-              )
-            ],
-          ) : Container(),
-          _txnEntity.txnStatus != TxnStatus.PENDING ? Container(height: 16.h) : Container(),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Text('AMOUNT', textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.amount)} MINA', maxLines: 3,
-                  textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
-              )
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Container(width: 1,),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text('(\$${getTokenFiatPrice(_txnEntity.amount)})', maxLines: 3,
-                  textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
-              )
-            ],
-          ),
-          Container(height: 16.h,),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Text('FEE', textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.fee)} MINA', textAlign: TextAlign.left, maxLines: 2,
-                  style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
-              )
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Container(width: 1,),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text('(\$${getTokenFiatPrice(_txnEntity.fee)})', maxLines: 3,
-                  textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
-              )
-            ],
-          ),
-          Container(height: 16.h,),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Text('TOTAL', textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text('${MinaHelper.getMinaStrByNanoStr(_txnEntity.total)} MINA', textAlign: TextAlign.left, maxLines: 2,
-                    style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
-              )
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Container(width: 1,),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text('(\$${getTokenFiatPrice(_txnEntity.total)})', maxLines: 3,
-                  textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161))),
-              )
-            ],
-          ),
-          _showMemo ? Container(height: 16.h,) : Container(),
-          _showMemo ? Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Text('MEMO', textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text('$_decodedMemo', textAlign: TextAlign.left, maxLines: 2,
-                  style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
-              )
-            ],
-          ) : Container(),
-          null != _txnEntity.failureReason ? Container(height: 16.h,) : Container(),
-          null != _txnEntity.failureReason ? Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Text('FAILED', textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)),),
-              ),
-              Container(width: 8.w,),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child: Text('${_txnEntity.failureReason.toString()}', textAlign: TextAlign.left, maxLines: 2,
-                  style: TextStyle(fontSize: 13.sp,  color: Color(0xff616161))),
-              )
-            ],
-          ) : Container(),
-          Container(height: 28.h),
-          Container(
-            width: double.infinity,
-            height: 1.h,
-            color: Color(0xff757575)),
-          Container(height: 2.h,),
-          Container(
-            width: double.infinity,
-            height: 1.h,
-            color: Color(0xff757575)),
-        ]
+          onPressed: () {
+            if(null == _txnEntity.txnHash || _txnEntity.txnHash!.isEmpty) {
+              openUrl('https://minaexplorer.com/wallet/${_txnEntity.from}');
+            } else {
+              openUrl('https://minaexplorer.com/transaction/${_txnEntity.txnHash}');
+            }
+          },
+          child: Text('VIEW IN EXPLORER', textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))
+        )
       )
     );
   }
