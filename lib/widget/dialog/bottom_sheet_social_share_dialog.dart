@@ -102,15 +102,38 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
             Container(height: 0.5.h, color:  Color(0xffbdbdbd)),
             Container(
               padding: EdgeInsets.only(top: 10.h),
-              height: 120.h,
-              child: ListView.builder(
+              child:  GridView.builder(
                 shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: _shareNames.length, mainAxisSpacing: 1.w, childAspectRatio: 1.1),
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                      onTap: () {
+                        if(null != installedApp && installedApp[_shareNames[index].toLowerCase()]) {
+                          _shareMethods[index](address, snapshotPath);
+                          Navigator.of(context).pop();
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: '${_shareNames[index]} not installed',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Color(0xfff5f5f5),
+                              textColor: Color(0xff2d2d2d),
+                              fontSize: 16.sp
+                          );
+                        }
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Image.asset(_shareIcons[index], width: 50.w, height: 50.w,),
+                          Text(_shareNames[index], style: TextStyle(fontSize: 16.sp),)
+                        ],
+                      )
+                  );
+                },
                 itemCount: _shareNames.length,
-                itemBuilder: (context, index) {
-                  return _item(context, address, snapshotPath, installedApp, index);
-                }
-              )
+              ),
             )
           ]
         )
