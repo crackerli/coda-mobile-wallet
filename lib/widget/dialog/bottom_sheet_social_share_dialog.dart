@@ -45,11 +45,11 @@ List<Function> _shareMethods = [
   (String address, String? path) async {
     //facebook appId is mandatory for andorid or else share won't work
     if(Platform.isAndroid) {
-      _appinioSocialShare.shareToFacebook('My MINA address: $address', path!);
+      _appinioSocialShare.shareToFacebook('$address', path!);
     } else {
       XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
-        _appinioSocialShare.shareToFacebook('My MINA address: $address', '${file?.path ?? ''}');
+        _appinioSocialShare.shareToFacebook('$address', '${file?.path ?? ''}');
       }
       else{
         Fluttertoast.showToast(msg: "Unable to get QR code image, please try again!");
@@ -57,11 +57,11 @@ List<Function> _shareMethods = [
     }
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToTwitter('My MINA address: $address', filePath: path!);
+    _appinioSocialShare.shareToTwitter('$address', filePath: path!);
   },
   // todo
   // (String address, String? path) async {
-  //   _appinioSocialShare.shareToWeChat('My MINA address: $address',
+  //   _appinioSocialShare.shareToWeChat('$address',
   //       filePath: path!);
   // },
   (String address, String? path) async {
@@ -79,14 +79,14 @@ List<Function> _shareMethods = [
     }
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToTelegram('My MINA address: $address', filePath: path!);
+    _appinioSocialShare.shareToTelegram('$address', filePath: path!);
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToWhatsapp('My MINA address: $address', filePath: path!);
+    _appinioSocialShare.shareToWhatsapp('$address', filePath: path!);
   },
   // todo
   // (String address, String? path) async {
-  //   _appinioSocialShare.shareToSMS('My MINA address: $address', filePath: path!);
+  //   _appinioSocialShare.shareToSMS('$address', filePath: path!);
   // },
 ];
 
