@@ -105,7 +105,7 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
               child:  GridView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: _shareNames.length, mainAxisSpacing: 1.w, childAspectRatio: 1.1),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, mainAxisSpacing: 1.w, childAspectRatio: 1.1),
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                       onTap: () {
@@ -114,19 +114,19 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
                           Navigator.of(context).pop();
                         } else {
                           Fluttertoast.showToast(
-                              msg: '${_shareNames[index]} not installed',
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Color(0xfff5f5f5),
-                              textColor: Color(0xff2d2d2d),
-                              fontSize: 16.sp
+                            msg: '${_shareNames[index]} not installed',
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Color(0xfff5f5f5),
+                            textColor: Color(0xff2d2d2d),
+                            fontSize: 16.sp
                           );
                         }
                       },
                       child: Column(
                         children: <Widget>[
-                          Image.asset(_shareIcons[index], width: 50.w, height: 50.w,),
+                        Image.asset(_getAppIconFromAssets(installedApp, index), width: 50.w, height: 50.w,),
                           Text(_shareNames[index], style: TextStyle(fontSize: 16.sp),)
                         ],
                       )
@@ -142,48 +142,9 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
 }
 
 String _getAppIconFromAssets(Map? installedApp, int index) {
-  if (installedApp != null) {
+  if (installedApp != null && installedApp.containsKey(_shareNames[index].toLowerCase())) {
     return installedApp[_shareNames[index].toLowerCase()] ? _shareIcons[index] : _shareDisableIcons[index];
   }
 
   return _shareDisableIcons[index];
-}
-
-Widget _item(BuildContext context, String? address, String? snapshotPath, Map? installedApp, int index) {
-  return InkWell(
-    onTap: () => _onPressShareItem(context, address, snapshotPath, installedApp, index),
-    child: Card(
-      child: Container(
-        width: 80.w,
-        height: 60.w,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Image.asset(_getAppIconFromAssets(installedApp, index), height: 45.w, width: 45.w),
-              Container(height: 5.w),
-              Text(_shareNames[index], style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-_onPressShareItem(BuildContext context, String? address, String? snapshotPath,
-    Map? installedApp, int index) {
-  if (null != installedApp && (installedApp[_shareNames[index].toLowerCase()])) {
-    _shareMethods[index](address, snapshotPath);
-    Navigator.of(context).pop();
-  } else {
-    Fluttertoast.showToast(
-      msg: '${_shareNames[index]} not installed',
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Color(0xfff5f5f5),
-      textColor: Color(0xff2d2d2d),
-      fontSize: 16.sp);
-  }
 }
