@@ -45,11 +45,11 @@ List<Function> _shareMethods = [
   (String address, String? path) async {
     //facebook appId is mandatory for andorid or else share won't work
     if(Platform.isAndroid) {
-      _appinioSocialShare.shareToFacebook('My MINA address: $address', path!);
+      _appinioSocialShare.shareToFacebook('$address', path!);
     } else {
       XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
-        _appinioSocialShare.shareToFacebook('My MINA address: $address', '${file?.path ?? ''}');
+        _appinioSocialShare.shareToFacebook('$address', '${file?.path ?? ''}');
       }
       else{
         Fluttertoast.showToast(msg: "Unable to get QR code image, please try again!");
@@ -57,11 +57,11 @@ List<Function> _shareMethods = [
     }
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToTwitter('My MINA address: $address', filePath: path!);
+    _appinioSocialShare.shareToTwitter('$address', filePath: path!);
   },
   // todo
   // (String address, String? path) async {
-  //   _appinioSocialShare.shareToWeChat('My MINA address: $address',
+  //   _appinioSocialShare.shareToWeChat('$address',
   //       filePath: path!);
   // },
   (String address, String? path) async {
@@ -79,14 +79,14 @@ List<Function> _shareMethods = [
     }
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToTelegram('My MINA address: $address', filePath: path!);
+    _appinioSocialShare.shareToTelegram('$address', filePath: path!);
   },
   (String address, String? path) async {
-    _appinioSocialShare.shareToWhatsapp('My MINA address: $address', filePath: path!);
+    _appinioSocialShare.shareToWhatsapp('$address', filePath: path!);
   },
   // todo
   // (String address, String? path) async {
-  //   _appinioSocialShare.shareToSMS('My MINA address: $address', filePath: path!);
+  //   _appinioSocialShare.shareToSMS('$address', filePath: path!);
   // },
 ];
 
@@ -102,15 +102,38 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
             Container(height: 0.5.h, color:  Color(0xffbdbdbd)),
             Container(
               padding: EdgeInsets.only(top: 10.h),
-              height: 120.h,
-              child: ListView.builder(
+              child: GridView.builder(
                 shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, mainAxisSpacing: 1.w, childAspectRatio: 1.1),
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    onTap: () {
+                      if(null != installedApp && installedApp[_shareNames[index].toLowerCase()]) {
+                        _shareMethods[index](address, snapshotPath);
+                        Navigator.of(context).pop();
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: '${_shareNames[index]} not installed',
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Color(0xfff5f5f5),
+                          textColor: Color(0xff2d2d2d),
+                          fontSize: 16.sp
+                        );
+                      }
+                    },
+                    child: Column(
+                      children: <Widget>[
+                        Image.asset(_getAppIconFromAssets(installedApp, index), width: 50.w, height: 50.w,),
+                        Text(_shareNames[index], style: TextStyle(fontSize: 16.sp),)
+                      ],
+                    )
+                  );
+                },
                 itemCount: _shareNames.length,
-                itemBuilder: (context, index) {
-                  return _item(context, address, snapshotPath, installedApp, index);
-                }
-              )
+              ),
             )
           ]
         )
@@ -119,48 +142,48 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
 }
 
 String _getAppIconFromAssets(Map? installedApp, int index) {
-  if (installedApp != null) {
+  if (installedApp != null && installedApp.containsKey(_shareNames[index].toLowerCase())) {
     return installedApp[_shareNames[index].toLowerCase()] ? _shareIcons[index] : _shareDisableIcons[index];
   }
 
   return _shareDisableIcons[index];
 }
 
-Widget _item(BuildContext context, String? address, String? snapshotPath, Map? installedApp, int index) {
-  return InkWell(
-    onTap: () => _onPressShareItem(context, address, snapshotPath, installedApp, index),
-    child: Card(
-      child: Container(
-        width: 80.w,
-        height: 60.w,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Image.asset(_getAppIconFromAssets(installedApp, index), height: 45.w, width: 45.w),
-              Container(height: 5.w),
-              Text(_shareNames[index], style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d))),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
+           
+   
+           
+     
+       
+         
+         
+         
+           
+             
+             
+                   
+               
+                   
+            
+          
+        
+      
+    
+  
 
-_onPressShareItem(BuildContext context, String? address, String? snapshotPath,
-    Map? installedApp, int index) {
-  if (null != installedApp && (installedApp[_shareNames[index].toLowerCase()])) {
-    _shareMethods[index](address, snapshotPath);
-    Navigator.of(context).pop();
-  } else {
-    Fluttertoast.showToast(
-      msg: '${_shareNames[index]} not installed',
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Color(0xfff5f5f5),
-      textColor: Color(0xff2d2d2d),
-      fontSize: 16.sp);
-  }
-}
+
+     
+        
+        
+     
+    
+    
+    
+         
+       
+       
+       
+       
+       
+       
+  
+
