@@ -369,7 +369,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                     ),
                   ],
                 ),
-                Container(height: 4.h,),
+                Container(height: 8.h,),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
