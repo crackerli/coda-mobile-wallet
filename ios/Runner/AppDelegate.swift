@@ -12,6 +12,8 @@ import Flutter
   }
 
   override func applicationWillResignActive(_ application: UIApplication) {
+    window?.rootViewController?.view.endEditing(true);
+    window?.rootViewController?.view.endEditing(true);
     self.window.isHidden = true;
   }
 
