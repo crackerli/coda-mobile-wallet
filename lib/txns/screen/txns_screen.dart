@@ -21,6 +21,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../types/mina_hd_account_type.dart';
 import '../../widget/app_bar/app_bar.dart';
+import 'package:decimal/decimal.dart';
 
 class TxnsScreen extends StatefulWidget {
   TxnsScreen({Key? key}) : super(key: key);
@@ -359,7 +360,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('${MinaHelper.getMinaStrByNanoStr(command.amount!)}',
+                        Text('${_wrapAmountString(MinaHelper.getMinaStrByNanoStr(command.amount!))}',
                           textAlign: TextAlign.end,
                           style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: _getAmountColor(command)),),
                         Container(width: 2.w,),
@@ -382,7 +383,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
                       children: [
                         Text('fee:', textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300)),
                         Container(width: 2.w,),
-                        Text('${MinaHelper.getMinaStrByNanoStr(command.fee!)}',
+                        Text('${_wrapAmountString(MinaHelper.getMinaStrByNanoStr(command.fee!))}',
                           textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d))),
                         Container(width: 2.w,),
                         Text('MINA', textAlign: TextAlign.start,
@@ -396,6 +397,11 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
             ],
           )
     );
+  }
+
+  String _wrapAmountString(String amount) {
+    String truncatedAmount = Decimal.parse(amount).toStringAsFixed(3);
+    return Decimal.parse(truncatedAmount).toString();
   }
 
   String _getTxnRequiredAddress(MergedUserCommand command) {
