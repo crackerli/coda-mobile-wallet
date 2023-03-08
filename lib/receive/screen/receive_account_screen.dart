@@ -55,8 +55,8 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
       appBar: buildNoTitleAppBar(context),
       body: RepaintBoundary(
         key: _qrImageKey,
-        child: Container(child:
-          _buildReceiveAccountBody(context, index),
+        child: Container(
+          child: _buildReceiveAccountBody(context, index),
           color: Colors.white,
         )
       ),
@@ -74,20 +74,25 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
       children: [
         Container(height: 24.h),
         Image.asset('images/mina_logo_black_inner.png', width: 66.w, height: 66.w),
-          Container(height: 24.h),
-          Screenshot(
-            controller: _screenshotController,
-              child:
-              QrImage(data: address ?? '',
-                size: 200.w,
-                version: QrVersions.auto,
-                backgroundColor:Colors.white,
-                embeddedImage:AssetImage('images/share_mina_logo.png'),
-                gapless: false,
-                embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: Size(40.w, 40.w),
-                ),),
-          ),
+        Container(height: 24.h),
+        Screenshot(
+          controller: _screenshotController,
+          child: Container(
+            width: 200.w,
+            height: 200.w,
+            child: QrImage(
+              data: address ?? '',
+              size: 200.w,
+              version: QrVersions.auto,
+              backgroundColor: Colors.white,
+              embeddedImage: AssetImage('images/share_mina_logo.png'),
+              gapless: false,
+              embeddedImageStyle: QrEmbeddedImageStyle(
+                size: Size(40.w, 40.w),
+              )
+            )
+          )
+        ),
         Container(height: 33.h),
         Text(accountName ?? '', textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp, color: Color(0xff212121), fontWeight: FontWeight.w500)),
         Container(height: 8),
