@@ -33,14 +33,31 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     return Column(
       children: [
         buildPureTextTitleAppBar(context, 'Stake Center'),
-        Container(height: 0.h,),
-        _buildAccountSwitcher(context),
-        Container(height: 18.h),
-        _buildEpochStatus(context),
-        Container(height: 20.h,),
-        _buildStakingPager(context),
-        Container(height: 20.h,),
-        _buildRecentStakedPool(context)
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildAccountSwitcher(context),
+                Container(height: 18.h),
+                _buildEpochStatus(context),
+                Container(height: 20.h,),
+                _buildStakingPager(context),
+                Container(height: 20.h,),
+                _buildRecentStakedPool(context),
+                Container(height: 20.h,),
+                Container(
+                  margin: EdgeInsets.only(left: 22.w, right: 22.w),
+                  child: Text('Tips: ' +
+                    'Better delegate one day before current epoch ends, otherwise you need wait three epochs.',
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d), fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ),
+        _buildStakingButton(context),
       ],
     );
   }
@@ -364,7 +381,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           Row(
             children: [
               Expanded(
-                child: Text('Latest staked pool', textAlign: TextAlign.start,
+                child: Text('Staked pool', textAlign: TextAlign.start,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff525252)),),)
             ],
           ),
@@ -373,16 +390,16 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           Container(height: CONTENT_DIVIDER_HEIGHT.h),
           Row(
             children: [
-            Expanded(
-            flex: FLEX_LEFT_LABEL,
-              child: Text('Name', textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
-            ),
+              Expanded(
+                flex: FLEX_LEFT_LABEL,
+                child: Text('Name', textAlign: TextAlign.start,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+              ),
               Expanded(
                 flex: FLEX_RIGHT_CONTENT,
-    child:
-              Text('MinaExplorer', textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),),
+                child: Text('MinaExplorer', textAlign: TextAlign.start,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),
+              ),
             ],
           ),
           Container(height: CONTENT_DIVIDER_HEIGHT.h),
@@ -404,6 +421,33 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           ),
         ],
       ),
+    );
+  }
+
+  _buildStakingButton(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
+      width: MediaQuery.of(context).size.width,
+      color: Color(0xfff9f9f9),
+      child: Center(
+        child: Container(
+          width: 300.w,
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+              foregroundColor: Color(0xff098de6),
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+              side: BorderSide(width: 1.w, color: Color(0xff098de6))
+            ),
+            onPressed: () {
+
+            },
+            child: Text('DELEGATE', textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))
+          )
+        )
+      )
     );
   }
 
