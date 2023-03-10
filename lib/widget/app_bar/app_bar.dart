@@ -60,3 +60,21 @@ buildTitleAppBarWithFilter(BuildContext context, Widget title, Function filterCa
     preferredSize: Size.fromHeight(APPBAR_HEIGHT.h)
   );
 }
+
+buildPureTextTitleAppBar(BuildContext context, String title) {
+  Widget widget = Text(title, textAlign: TextAlign.center,
+    style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Colors.black87),);
+
+  return PreferredSize(
+    child: AppBar(
+      actions: null,
+      backgroundColor: Colors.white,
+      leadingWidth: 83.w,
+      leading: Container(),
+      title: widget,
+      centerTitle: true,
+      elevation: 0,
+    ),
+    preferredSize: Size.fromHeight(60.h)
+  );
+}
