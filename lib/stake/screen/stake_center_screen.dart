@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -381,8 +382,44 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           Row(
             children: [
               Expanded(
-                child: Text('Staked pool', textAlign: TextAlign.start,
+                child: Text('Stake pool delegated', textAlign: TextAlign.start,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff525252)),),)
+            ],
+          ),
+          Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          Container(height: 1.h, color: Color(0xffeeeef0),),
+          Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          Row(
+            children: [
+              CachedNetworkImage(
+                maxHeightDiskCache: 200,
+                imageUrl: '',
+                width: 40.w,
+                height: 40.w,
+                placeholder: (context, url) => Image.asset('images/txn_delegation.png', width: 40.w, height: 40.w,),
+                errorWidget: (context, url, error) => Image.asset('images/txn_delegation.png', width: 40.w, height: 40.w,),
+              ),
+              Container(width: 6.w,),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('StakeTab professional',
+                    textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)),),
+                  Container(height: 6.h,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('${formatHashEllipsis('B62qptmpH9PVe76ZEfS1NWVV27XjZJEJyr8mWZFjfohxppmS11DfKFG', short: false)}', textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 14.sp, color: Colors.black54),),
+                      Container(width: 3.w,),
+                      true ?
+                      Image.asset('images/verified.png', width: 12.w, height: 12.w,) : Container()
+                    ],
+                  )
+                ],
+              )
             ],
           ),
           Container(height: CONTENT_DIVIDER_HEIGHT.h),
@@ -392,12 +429,12 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
             children: [
               Expanded(
                 flex: FLEX_LEFT_LABEL,
-                child: Text('Name', textAlign: TextAlign.start,
+                child: Text('Website', textAlign: TextAlign.start,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
               ),
               Expanded(
                 flex: FLEX_RIGHT_CONTENT,
-                child: Text('MinaExplorer', textAlign: TextAlign.start,
+                child: Text('https://www.minaexplorer.com', textAlign: TextAlign.start,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),
               ),
             ],
@@ -409,7 +446,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
             children: [
               Expanded(
                 flex: FLEX_LEFT_LABEL,
-                child: Text('Address', textAlign: TextAlign.start,
+                child: Text('Payout', textAlign: TextAlign.start,
                   style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
               ),
               Expanded(
@@ -419,6 +456,41 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),),
             ],
           ),
+          Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          Container(height: 1.h, color: Color(0xffeeeef0),),
+          Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          Row(
+            children: [
+              Expanded(
+                flex: FLEX_LEFT_LABEL,
+                child: Text('Contacts', textAlign: TextAlign.start,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+              ),
+              Expanded(
+                flex: FLEX_RIGHT_CONTENT,
+                child:
+                Text('B62qptmpH9...pmS11DfKFG', textAlign: TextAlign.start,
+                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),),
+            ],
+          ),
+          Container(height: CONTENT_DIVIDER_HEIGHT.h,),
+          Container(
+            width: 260.w,
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+                foregroundColor: Color(0xff098de6),
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+                side: BorderSide(width: 1.w, color: Color(0xff098de6))
+              ),
+              onPressed: () {
+
+              },
+              child: Text('MORE INFO', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))
+            )
+          )
         ],
       ),
     );
