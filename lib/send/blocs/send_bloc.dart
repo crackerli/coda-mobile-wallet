@@ -236,12 +236,11 @@ class SendBloc extends
     return;
   }
 
-  reportEverStake() async {
+  reportEverStake(String address) async {
     BaseOptions baseOptions = BaseOptions();
     final everStakeDio = Dio(baseOptions);
 
-    (everStakeDio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-        (client) {
+    (everStakeDio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (client) {
       client.findProxy = (url) {
         if(debugConfig) {
           return "PROXY 192.168.22.201:9999";
@@ -251,7 +250,7 @@ class SendBloc extends
       };
 
       client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+        (X509Certificate cert, String host, int port) => true;
     };
 
     everStakeDio.options.connectTimeout = Duration(seconds: 20);
@@ -266,8 +265,8 @@ class SendBloc extends
     };
     everStakeDio.options.headers = headers;
     Response response = await everStakeDio.post('https://aff-api.everstake.one/staking_power/delegations', data: {
-          'link_id': '598df17506c0eebb7cd7af0a97a214ef',
-          'delegations': ['B62qismRE8v8sPKR8hPSUzdyHLwXu1nCXZuGuWDWsbb6ZDxMLWAAnnk']
+      'link_id': '598df17506c0eebb7cd7af0a97a214ef',
+      'delegations': [address]
     });
 
     print('report to Everstake result: ${response}');
@@ -364,7 +363,7 @@ class SendBloc extends
     if(isDelegation && isEverstake) {
       print('Report to Everstake of account: $from');
       try {
-        await reportEverStake();
+        await reportEverStake(from);
         print('Successfully reported to Everstake of account: $from');
       } catch (e) {
         print('Error when report to Everstake: ${e.toString()}');
