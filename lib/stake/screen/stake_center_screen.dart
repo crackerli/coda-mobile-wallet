@@ -23,7 +23,7 @@ class StakeCenterScreen extends StatefulWidget {
 
 class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKeepAliveClientMixin {
   int endTime = DateTime.now().millisecondsSinceEpoch +
-      Duration(seconds: 4000).inMilliseconds;
+    Duration(seconds: 4000).inMilliseconds;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +34,11 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     return Column(
       children: [
         buildPureTextTitleAppBar(context, 'Stake Center'),
+        _buildAccountSwitcher(context),
         Expanded(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                _buildAccountSwitcher(context),
                 Container(height: 18.h),
                 _buildEpochStatus(context),
                 Container(height: 20.h,),
@@ -125,37 +125,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                       Text('Ends in:', textAlign: TextAlign.left,
                         style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Color(0xff979797)),),
                       Container(width: 6.w,),
-                      CountdownTimer(
-                        endTime: endTime,
-                        widgetBuilder: (_, CurrentRemainingTime? time) {
-                          if (time == null) {
-                            return Text('Game over');
-                          }
-                          return Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              _buildTimerCounter(context, time.days),
-                              Container(width: 2.w,),
-                              Text('d', textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737)),),
-                              Container(width: 2.w,),
-                              _buildTimerCounter(context, time.hours),
-                              Container(width: 2.w,),
-                              Text(':', textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737))),
-                              Container(width: 2.w,),
-                              _buildTimerCounter(context, time.min),
-                              Container(width: 2.w,),
-                              Text(':', textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737))),
-                              Container(width: 2.w,),
-                              _buildTimerCounter(context, time.sec),
-                            ],
-                          );
-                        },
-                      ),
+                      _buildTimer(context),
                     ],
                   )
                 ],
@@ -164,6 +134,40 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           )
         ]
       )
+    );
+  }
+
+  _buildTimer(BuildContext context) {
+    return CountdownTimer(
+      endTime: endTime,
+      widgetBuilder: (_, CurrentRemainingTime? time) {
+        if (time == null) {
+          return Text('Game over');
+        }
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildTimerCounter(context, time.days),
+            Container(width: 2.w,),
+            Text('d', textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737)),),
+            Container(width: 2.w,),
+            _buildTimerCounter(context, time.hours),
+            Container(width: 2.w,),
+            Text(':', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737))),
+            Container(width: 2.w,),
+            _buildTimerCounter(context, time.min),
+            Container(width: 2.w,),
+            Text(':', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737))),
+            Container(width: 2.w,),
+            _buildTimerCounter(context, time.sec),
+          ],
+        );
+      },
     );
   }
 
