@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:coda_wallet/constant/constants.dart';
+import 'package:coda_wallet/stake/blocs/stake_center_states.dart';
+import 'package:decimal/decimal.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:flutter_countdown_timer/index.dart';
@@ -8,6 +12,8 @@ import '../../global/global.dart';
 import '../../types/mina_hd_account_type.dart';
 import '../../util/format_utils.dart';
 import '../../widget/app_bar/app_bar.dart';
+import '../blocs/stake_center_bloc.dart';
+import '../blocs/stake_center_events.dart';
 
 const FLEX_LEFT_LABEL = 3;
 const FLEX_RIGHT_CONTENT = 10;
@@ -22,8 +28,20 @@ class StakeCenterScreen extends StatefulWidget {
 
 
 class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKeepAliveClientMixin {
-  int endTime = DateTime.now().millisecondsSinceEpoch +
-    Duration(seconds: 4000).inMilliseconds;
+  StakeCenterBloc? _stakeCenterBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _stakeCenterBloc = BlocProvider.of<StakeCenterBloc>(context);
+    _stakeCenterBloc!.add(GetStakeStatusEvent());
+  }
+
+  @override
+  void dispose() {
+    _stakeCenterBloc = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +58,11 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
             child: Column(
               children: [
                 Container(height: 18.h),
-                _buildEpochStatus(context),
+                BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+                  builder: (BuildContext context, StakeCenterStates state) {
+                    return _buildEpochStatus(context);
+                  }
+                ),
                 Container(height: 20.h,),
                 _buildStakingPager(context),
                 Container(height: 20.h,),
@@ -63,21 +85,9 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     );
   }
 
-  _buildTimerCounter(BuildContext context, int? time) {
-    return Container(
-      padding: EdgeInsets.only(top: 3.h, bottom: 3.h),
-      width: 24.w,
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xfff0f0f0), width: 0.5.w),
-        borderRadius: BorderRadius.all(Radius.circular(2.w)),
-        color: Color(0xffe0e0e0),
-      ),
-      child: Text('${_formatCountNumber(time)}', textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737)),),
-    );
-  }
-
   _buildEpochStatus(BuildContext context) {
+    double epochProgress = _stakeCenterBloc!.slot / SLOT_PER_EPOCH;
+
     return Container(
       margin: EdgeInsets.fromLTRB(18.w, 0, 18.w, 0),
       padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0.h),
@@ -91,10 +101,10 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
               CircularPercentIndicator(
                 radius: 46.w,
                 lineWidth: 5.0,
-                percent: 0.5,
+                percent: epochProgress,
                 animation: true,
                 backgroundColor: Color(0xffbac3df),
-                center: Text('10%',
+                center: Text('${(epochProgress * 100).toStringAsFixed(0)}%',
                   style: TextStyle(fontSize: 14.sp, color: Colors.black, fontWeight: FontWeight.w600)),
                 progressColor: Color(0xff098de6),
               ),
@@ -112,7 +122,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                       Text('Current epoch:', textAlign: TextAlign.left,
                         style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Color(0xff979797)),),
                       Container(width: 6.w,),
-                      Text('395', textAlign: TextAlign.left,
+                      Text('${_stakeCenterBloc!.epoch}', textAlign: TextAlign.left,
                         style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737)),),
                     ],
                   ),
@@ -137,34 +147,48 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     );
   }
 
+  _buildTimerCounter(BuildContext context, int? time) {
+    return Container(
+      padding: EdgeInsets.only(top: 3.h, bottom: 3.h),
+      width: 24.w,
+      decoration: BoxDecoration(
+        border: Border.all(color: Color(0xfff0f0f0), width: 0.5.w),
+        borderRadius: BorderRadius.all(Radius.circular(2.w)),
+        color: Color(0xffe0e0e0),
+      ),
+      child: Text('${_formatCountNumber(time)}', textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737)),),
+    );
+  }
+
   _buildTimer(BuildContext context) {
     return CountdownTimer(
-      endTime: endTime,
+      endTime: _stakeCenterBloc!.counterEndTime,
       widgetBuilder: (_, CurrentRemainingTime? time) {
-        if (time == null) {
-          return Text('Game over');
+        if(null == time) {
+          _stakeCenterBloc!.add(TimerEndEvent());
         }
         return Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildTimerCounter(context, time.days),
+            _buildTimerCounter(context, time?.days),
             Container(width: 2.w,),
             Text('d', textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737)),),
             Container(width: 2.w,),
-            _buildTimerCounter(context, time.hours),
+            _buildTimerCounter(context, time?.hours),
             Container(width: 2.w,),
             Text(':', textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737))),
             Container(width: 2.w,),
-            _buildTimerCounter(context, time.min),
+            _buildTimerCounter(context, time?.min),
             Container(width: 2.w,),
             Text(':', textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff373737))),
             Container(width: 2.w,),
-            _buildTimerCounter(context, time.sec),
+            _buildTimerCounter(context, time?.sec),
           ],
         );
       },
