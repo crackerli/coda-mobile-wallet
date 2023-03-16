@@ -14,6 +14,7 @@ import '../../util/format_utils.dart';
 import '../../widget/app_bar/app_bar.dart';
 import '../blocs/stake_center_bloc.dart';
 import '../blocs/stake_center_events.dart';
+import '../blocs/stake_state_entity.dart';
 
 const FLEX_LEFT_LABEL = 3;
 const FLEX_RIGHT_CONTENT = 10;
@@ -64,7 +65,11 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   }
                 ),
                 Container(height: 20.h,),
-                _buildStakingPager(context),
+                BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+                    builder: (BuildContext context, StakeCenterStates state) {
+                      return _buildStakingPager(context);
+                    }
+                ),
                 Container(height: 20.h,),
                 _buildRecentStakedPool(context),
                 Container(height: 20.h,),
@@ -210,7 +215,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     );
   }
 
-  _buildStakingDetails(BuildContext context) {
+  _buildStakingDetails(BuildContext context, StakeStateEntity stakeState) {
     return Container(
       margin: EdgeInsets.fromLTRB(2.w, 2.h, 2.w, 2.h),
       padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
@@ -246,12 +251,12 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                 children: [
                   Expanded(
                     flex: FLEX_LEFT_LABEL,
-                    child: Text('Staking to', textAlign: TextAlign.start,
+                    child: Text('Staking on', textAlign: TextAlign.start,
                       style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
                   ),
                   Expanded(
                     flex: FLEX_RIGHT_CONTENT,
-                    child: Text('Minaexplorer', textAlign: TextAlign.start,
+                    child: Text(stakeState.providerName, textAlign: TextAlign.start,
                         style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                   )
                 ],
@@ -267,7 +272,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   ),
                   Expanded(
                     flex: FLEX_RIGHT_CONTENT,
-                    child: Text('B62qs2Lw5WZNS...Ye62G71xCQJMYM', textAlign: TextAlign.start,
+                    child: Text('${formatHashEllipsis(stakeState.poolAddress, short: false)}', textAlign: TextAlign.start,
                         style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                   )
                 ],
@@ -287,10 +292,10 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('1245678.12', textAlign: TextAlign.center,
+                  Text(stakeState.stakeAmount, textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
                   Container(height: 6.h,),
-                  Text('Amount staked', textAlign: TextAlign.center,
+                  Text('Staked balance', textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff979797)),),
                 ],
               ),
@@ -299,7 +304,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('7%', textAlign: TextAlign.center,
+                  Text(stakeState.fee, textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
                   Container(height: 6.h,),
                   Text('Pool fee', textAlign: TextAlign.center,
@@ -311,7 +316,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('18.10%', textAlign: TextAlign.center,
+                  Text(stakeState.idealApy, textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff6bc7a1)),),
                   Container(height: 6.h,),
                   Text('Ideal APY', textAlign: TextAlign.center,
@@ -371,12 +376,16 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     );
   }
 
-  _buildStakingEpoches(BuildContext context) {
+  _buildStakingEpochs(BuildContext context) {
+    if(_stakeCenterBloc!.stakingStates.isEmpty) {
+      return Container();
+    }
+
     return Expanded(
       child: ExpandablePageView(
         children: <Widget>[
-          _buildStakingDetails(context),
-          _buildStakingDetails(context)
+          _buildStakingDetails(context, _stakeCenterBloc!.stakingStates[0]),
+     //     _buildStakingDetails(context, _stakeCenterBloc!.stakingStates[1])
         ],
       )
     );
@@ -386,7 +395,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     return Row(
       children: [
         Image.asset('images/left_arrow_triangle.png', width: 16.w, height: 40.h,),
-        _buildStakingEpoches(context),
+        _buildStakingEpochs(context),
         Image.asset('images/right_arrow_triangle.png', width: 16.w, height: 40.h,),
       ]
     );
