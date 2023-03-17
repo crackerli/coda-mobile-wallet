@@ -38,6 +38,8 @@ class SendActionsAgain extends SendEventBus {}
 
 class GetPooledFeeAgain extends SendEventBus {}
 
+class UserCancelSend extends SendEventBus {}
+
 class NewAccountPasswordInput {
   final String password;
 

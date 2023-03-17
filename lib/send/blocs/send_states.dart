@@ -88,3 +88,5 @@ class DecryptSeedSuccess extends SendStates {}
 class SeedPasswordCleared extends SendStates {
   SeedPasswordCleared() : super();
 }
+
+class UserCancelled extends SendStates {}
