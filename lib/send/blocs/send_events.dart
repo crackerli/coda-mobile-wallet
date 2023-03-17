@@ -43,3 +43,5 @@ class DecryptSeed extends SendEvents {
 class ClearWrongPassword extends SendEvents {
   ClearWrongPassword() : super();
 }
+
+class UserCancel extends SendEvents {}

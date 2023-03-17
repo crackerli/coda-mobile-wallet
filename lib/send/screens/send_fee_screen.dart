@@ -80,6 +80,10 @@ class _SendFeeScreenState extends State<SendFeeScreen> {
         _getPooledFee();
         return;
       }
+
+      if(event is UserCancelSend) {
+        _sendBloc.add(UserCancel());
+      }
     });
     _getPooledFee();
   }

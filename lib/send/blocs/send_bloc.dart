@@ -134,6 +134,11 @@ class SendBloc extends
       yield* _mapClearWrongPasswordToStates(event);
       return;
     }
+
+    if(event is UserCancel) {
+      yield UserCancelled();
+      return;
+    }
   }
 
   Stream<SendStates>

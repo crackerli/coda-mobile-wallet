@@ -44,7 +44,10 @@ class _SendErrorWidgetState extends State<SendErrorWidget> {
                 child: Container(),
               ),
               InkWell(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () {
+                  eventBus.fire(UserCancelSend());
+                  Navigator.of(context).pop();
+                },
                 child: Image.asset('images/close.png', width: 18.w, height: 18.w,),
               )
             ],
