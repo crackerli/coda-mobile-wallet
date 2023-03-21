@@ -11,7 +11,7 @@ import 'package:coda_wallet/stake/blocs/stake_state_entity.dart';
 import 'package:dio/dio.dart';
 import '../../constant/constants.dart';
 import '../../stake_provider/blocs/stake_providers_entity.dart';
-import '../query/get_consensus_state.dart';
+import '../query/get_consensus_stake_state.dart';
 import '../query/get_stake_state.dart';
 
 class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
@@ -36,8 +36,9 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
   int get accountIndex => _accountIndex;
   int get slot => _slot;
   get publicKey => globalHDAccounts.accounts![accountIndex]!.address;
-  get stakingStates => _stakingStates;
-  get stakingProvider => _stakingProvider;
+  List<StakeStateEntity> get stakingStates => _stakingStates;
+  Staking_providersBean? get stakingProvider => _stakingProvider;
+  String? get stakingPoolAddress => _stakingPoolAddress;
 
   int get counterEndTime {
     int remainSlots = SLOT_PER_EPOCH - _slot;
@@ -76,18 +77,20 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
     try {
       isStakeLoading = true;
       yield GetStakeStatusLoading();
+      Map<String, dynamic> variables0 = Map<String, dynamic>();
+      variables0['publicKey'] = publicKey;
 
-      final consensusState = await _codaService.performQuery(CONSENSUS_STATE_QUERY, variables: <String, dynamic>{});
+      final stakingState = await _codaService.performQuery(CONSENSUS_STAKE_STATE_QUERY, variables: variables0);
 
-      if(consensusState.hasException) {
-        String error = exceptionHandle(consensusState);
+      if(stakingState.hasException) {
+        String error = exceptionHandle(stakingState);
         yield GetStakeStatusFailed(error);
         return;
       }
 
       print('Get consensus state successfully!');
 
-      List<dynamic>? bestChain = consensusState.data!['bestChain'] ?? null;
+      List<dynamic>? bestChain = stakingState.data!['bestChain'] ?? null;
       if(null != bestChain && bestChain.length > 0) {
         _epoch = int.tryParse(bestChain[0]?['protocolState']?['consensusState']?['epoch']) ?? 0;
         _slot = int.tryParse(bestChain[0]?['protocolState']?['consensusState']?['slot']) ?? 0;
@@ -95,10 +98,12 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
         yield GetStakeStatusFailed('Can not get protocol state!');
       }
 
-      Map<String, dynamic> variables = Map<String, dynamic>();
-      variables['publicKey'] = publicKey;
-      variables['epoch'] = _epoch;
-      final stakeState = await _archiveService.performQuery(STAKE_STATE_QUERY, variables: variables);
+      _stakingPoolAddress = stakingState.data!['accounts'][0]?['delegateAccount']?['publicKey'] ?? null;
+
+      Map<String, dynamic> variables1 = Map<String, dynamic>();
+      variables1['publicKey'] = publicKey;
+      variables1['epoch'] = _epoch;
+      final stakeState = await _archiveService.performQuery(STAKE_STATE_QUERY, variables: variables1);
       if(stakeState.hasException) {
         String error = exceptionHandle(stakeState);
         yield GetStakeStatusFailed(error);
@@ -162,6 +167,9 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
               state.providerName = 'Unknown';
             }
           });
+
+          // Find last delegated pool provider
+          _stakingProvider = providerList?.singleWhere((provider) => provider?.providerAddress == _stakingPoolAddress);
         } catch (e) {
           print('Error happen when get providers: ${e.toString()}');
           yield GetStakeStatusFailed('Get pool providers failed!');
@@ -181,6 +189,9 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
             state.providerName = 'Unknown';
           }
         });
+
+        // Find last delegated pool provider
+        _stakingProvider = Staking_providersBean.fromMap(providerMap[_stakingPoolAddress]);
       }
 
       yield GetStakeStatusSuccess();
@@ -190,5 +201,9 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
       yield GetStakeStatusFailed(e.toString());
       isStakeLoading = false;
     }
+  }
+
+  bool isAccountStaking() {
+    return null != _stakingPoolAddress && _stakingPoolAddress!.isNotEmpty && _stakingPoolAddress != publicKey;
   }
 }
