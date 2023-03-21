@@ -4,6 +4,7 @@ import 'package:coda_wallet/stake/blocs/stake_center_states.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -462,6 +463,9 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     }
 
     Staking_providersBean stakingProvider = _stakeCenterBloc!.stakingProvider!;
+    bool hidePoolSite = (null == stakingProvider.website || stakingProvider.website!.isEmpty);
+    bool hidePayoutTerms = (null == stakingProvider.payoutTerms || stakingProvider.payoutTerms!.isEmpty);
+    bool hideContacts = _getContacts(stakingProvider).isEmpty;
 
     return Container(
       margin: EdgeInsets.fromLTRB(18.w, 0, 18.w, 0),
@@ -520,9 +524,10 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
               )
             ],
           ),
-          Container(height: CONTENT_DIVIDER_HEIGHT.h),
-          Container(height: 1.h, color: Color(0xffeeeef0),),
-          Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          hidePoolSite ? Container() : Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          hidePoolSite ? Container() : Container(height: 1.h, color: Color(0xffeeeef0),),
+          hidePoolSite ? Container() : Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          hidePoolSite ? Container() :
           Row(
             children: [
               Text('Pool site:', textAlign: TextAlign.start,
@@ -532,35 +537,14 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
             ],
           ),
-          Container(height: CONTENT_DIVIDER_HEIGHT.h),
-          Container(height: 1.h, color: Color(0xffeeeef0),),
-          Container(height: CONTENT_DIVIDER_HEIGHT.h),
-          Row(
-            children: [
-                Text('Payout terms:', textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff979797)),),
-                Container(width: 4.w,),
-                Text('B62qptmpH9...pmS11DfKFG', textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
-            ],
-          ),
-          Container(height: CONTENT_DIVIDER_HEIGHT.h),
-          Container(height: 1.h, color: Color(0xffeeeef0),),
-          Container(height: CONTENT_DIVIDER_HEIGHT.h),
-          Row(
-            children: [
-              Expanded(
-                flex: FLEX_LEFT_LABEL,
-                child: Text('Contacts', textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
-              ),
-              Expanded(
-                flex: FLEX_RIGHT_CONTENT,
-                child:
-                Text('B62qptmpH9...pmS11DfKFG', textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),),
-            ],
-          ),
+          hidePayoutTerms ? Container() : Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          hidePayoutTerms ? Container() : Container(height: 1.h, color: Color(0xffeeeef0),),
+          hidePayoutTerms ? Container() : Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          hidePayoutTerms ? Container() : _buildPayoutTerms(context, stakingProvider.payoutTerms),
+          hideContacts ? Container() : Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          hideContacts ? Container() : Container(height: 1.h, color: Color(0xffeeeef0),),
+          hideContacts ? Container() : Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          hideContacts ? Container() : _buildContacts(context, stakingProvider),
           Container(height: CONTENT_DIVIDER_HEIGHT.h,),
           Container(
             width: 260.w,
@@ -609,6 +593,119 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
         )
       )
     );
+  }
+
+  _buildPayoutTerms(BuildContext context, String? termSrc) {
+    if(null == termSrc || termSrc.isEmpty || termSrc.trim().isEmpty) {
+      return Container();
+    }
+
+    List<String> terms = termSrc.split(',');
+    List<Widget> termWidgets = [];
+    termWidgets.add(
+      Text('Payout terms:', textAlign: TextAlign.start,
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: Color(0xff979797))),
+    );
+    termWidgets.add(Container(width: 4.w,));
+
+    terms.forEach((element) {
+      termWidgets.add(Container(
+        padding: EdgeInsets.all(2.w),
+        decoration: BoxDecoration(
+          border: Border.all(color: Color(0xffd0d0d0), width: 0.5.w),
+          borderRadius: BorderRadius.all(Radius.circular(2.w)),
+          color: Colors.white24,
+        ),
+        child: Text(element.trim(), textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+      ));
+      termWidgets.add(Container(width: 3.w,));
+    });
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: termWidgets,
+    );
+  }
+
+  _buildContacts(BuildContext context, Staking_providersBean? stakingProvider) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text('Contacts:', textAlign: TextAlign.start,
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff979797)),),
+        Container(width: 4.w,),
+        (stakingProvider?.discordUsername ?? '').isNotEmpty ?
+        Builder(builder: (context) =>
+          InkWell(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: stakingProvider?.discordUsername ?? ''));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Discord user name copied into clipboard!!')));
+            },
+            child: Image.asset('images/discord.png', height: 26.h, width: 26.w,)
+          )
+        ) : Container(),
+        (stakingProvider?.telegram ?? '').isNotEmpty ?
+        Builder(builder: (context) =>
+          InkWell(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: stakingProvider?.telegram ?? ''));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Telegram handle copied into clipboard!!')));
+            },
+            child: Image.asset('images/telegram.png', height: 26.h, width: 26.w,)
+          )
+        ) : Container(),
+        (stakingProvider?.twitter ?? '').isNotEmpty ?
+        Builder(builder: (context) =>
+          InkWell(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: stakingProvider?.twitter ?? ''));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Twitter account copied into clipboard!!')));
+            },
+            child: Image.asset('images/twitter.png', height: 26.h, width: 26.w,)
+          )
+        ) : Container(),
+        (stakingProvider?.email ?? '').isNotEmpty ?
+        Builder(builder: (context) =>
+          InkWell(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: stakingProvider?.email ?? ''));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Email copied into clipboard!!')));
+            },
+            child: Image.asset('images/mail.png', height: 26.h, width: 26.w,)
+          )
+        ) : Container(),
+      ],
+    );
+  }
+
+  List<String> _getContacts(Staking_providersBean? stakingProvider) {
+    List<String> contacts = [];
+    if(null == stakingProvider) {
+      return contacts;
+    }
+
+    if(null != stakingProvider.discordUsername && stakingProvider.discordUsername!.isNotEmpty) {
+      contacts.add(stakingProvider.discordUsername!);
+    }
+
+    if(null != stakingProvider.telegram && stakingProvider.telegram!.isNotEmpty) {
+      contacts.add(stakingProvider.telegram!);
+    }
+
+    if(null != stakingProvider.twitter && stakingProvider.twitter!.isNotEmpty) {
+      contacts.add(stakingProvider.twitter!);
+    }
+
+    if(null != stakingProvider.email && stakingProvider.email!.isNotEmpty) {
+      contacts.add(stakingProvider.email!);
+    }
+
+    return contacts;
   }
 
   String _formatCountNumber(int? number) {
