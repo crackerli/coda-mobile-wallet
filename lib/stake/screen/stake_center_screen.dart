@@ -317,7 +317,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   Expanded(
                     flex: FLEX_RIGHT_CONTENT,
                     child: Text('${formatHashEllipsis(stakeState.poolAddress, short: false)}', textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
                   )
                 ],
               )
@@ -522,6 +522,54 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   )
                 ],
               )
+            ],
+          ),
+          Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          Container(height: 1.h, color: Color(0xffeeeef0),),
+          Container(height: CONTENT_DIVIDER_HEIGHT.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(formatKMBNumber(stakingProvider.stakedSum!), textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+                  Container(height: CONTENT_DIVIDER_HEIGHT.h,),
+                  Text('Pool size', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Color(0xff979797)),),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${stakingProvider.stakePercent}%', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+                  Container(height: CONTENT_DIVIDER_HEIGHT.h,),
+                  Text('Percent', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Color(0xff979797)),),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${stakingProvider.providerFee}%', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+                  Container(height: CONTENT_DIVIDER_HEIGHT.h,),
+                  Text('Fee', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Color(0xff979797)),),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(formatKMBNumber(stakingProvider.delegatorsNum!.toDouble()), textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+                  Container(height: CONTENT_DIVIDER_HEIGHT.h,),
+                  Text('Delegators', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Color(0xff979797)),),
+                ],
+              ),
             ],
           ),
           hidePoolSite ? Container() : Container(height: CONTENT_DIVIDER_HEIGHT.h),
