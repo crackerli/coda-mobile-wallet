@@ -223,11 +223,11 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     );
   }
 
-  _buildStakingDetails(BuildContext context, StakeStateEntity stakeState, bool currentEpoch, {bool withCommand = false}) {
+  _buildStakingDetails(BuildContext context, StakeStateEntity stakeState, {bool withCommand = false}) {
     String stakingTitle = '';
     String pagerCommandTitle = '';
 
-    if(currentEpoch) {
+    if(stakeState.isCurrent) {
       stakingTitle = 'Current epoch staking';
       pagerCommandTitle = 'NEXT';
     } else {
@@ -262,7 +262,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  currentEpoch ? Container() : Image.asset('images/left_arrow_triangle.png', width: 13.w, height: 13.h,),
+                  stakeState.isCurrent ? Container() : Image.asset('images/left_arrow_triangle.png', width: 13.w, height: 13.h,),
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -273,7 +273,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                       side: BorderSide(width: 1.w, color: Color(0xff098de6))
                     ),
                     onPressed: () {
-                      if(currentEpoch) {
+                      if(stakeState.isCurrent) {
                         _pageController.animateToPage(1, duration: Duration(microseconds: 500), curve: Curves.linear);
                       } else {
                         _pageController.animateToPage(0, duration: Duration(microseconds: 500), curve: Curves.linear);
@@ -281,7 +281,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                     },
                     child: Text(pagerCommandTitle, textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w300, color: Color(0xff098de6)))),
-                  currentEpoch ? Image.asset('images/right_arrow_triangle.png', width: 13.w, height: 13.h,) : Container(),
+                  stakeState.isCurrent ? Image.asset('images/right_arrow_triangle.png', width: 13.w, height: 13.h,) : Container(),
                 ],
               ) : Container()
             ],
@@ -437,7 +437,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
       return Expanded(
         child: ExpandablePageView(
           children: <Widget>[
-            _buildStakingDetails(context, _stakeCenterBloc!.stakingStates[0], true, withCommand: false),
+            _buildStakingDetails(context, _stakeCenterBloc!.stakingStates[0], withCommand: false),
           ],
         )
       );
@@ -446,8 +446,8 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
         child: ExpandablePageView(
           controller: _pageController,
           children: <Widget>[
-            _buildStakingDetails(context, _stakeCenterBloc!.stakingStates[0], true, withCommand: true),
-            _buildStakingDetails(context, _stakeCenterBloc!.stakingStates[1], false, withCommand: true)
+            _buildStakingDetails(context, _stakeCenterBloc!.stakingStates[0], withCommand: true),
+            _buildStakingDetails(context, _stakeCenterBloc!.stakingStates[1], withCommand: true)
           ],
         )
       );

@@ -5,4 +5,5 @@ class StakeStateEntity {
   late String fee;
   late String idealApy;
   late String providerName;
+  late bool isCurrent;
 }

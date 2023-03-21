@@ -116,6 +116,7 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
           double balance = stakeState.data?['stake']['balance'] as double;
           entity.stakeAmount = '${balance.toStringAsFixed(3)}';
           entity.poolAddress = stakeState.data?['stake']['delegate'];
+          entity.isCurrent = true;
           _stakingStates.add(entity);
         }
 
@@ -124,6 +125,7 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
           double balance = stakeState.data?['nextstake']['balance'] as double;
           entity.stakeAmount = '${balance.toStringAsFixed(3)}';
           entity.poolAddress = stakeState.data?['nextstake']['delegate'];
+          entity.isCurrent = false;
           _stakingStates.add(entity);
         }
       }
