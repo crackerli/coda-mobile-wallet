@@ -97,14 +97,16 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
               ),
             )
           ),
-          _buildStakingButton(context),
+          BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+            builder: (BuildContext context, StakeCenterStates state) {
+              return _buildStakingButton(context, state);
+          })
         ],
       )
     );
   }
 
   _buildStakingBody(BuildContext context) {
-
     return BlocBuilder<StakeCenterBloc, StakeCenterStates>(
       builder: (BuildContext context, StakeCenterStates state) {
         if(state is GetStakeStatusFailed) {
@@ -663,7 +665,27 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     );
   }
 
-  _buildStakingButton(BuildContext context) {
+  _buildStakingButton(BuildContext context, StakeCenterStates state) {
+    void Function()? onPressed;
+    String commandString = 'DELEGATE';
+    Color commandColor = Color(0xff098de6);
+
+    if((state is GetStakeStatusLoading) || !_stakeCenterBloc!.accountActive) {
+      onPressed = null;
+      commandColor = Color(0xff979797);
+    } else {
+      onPressed = () {
+        _stakeCenterBloc!.add(GetStakeStatusEvent());
+      };
+      commandColor = Color(0xff098de6);
+    }
+
+    if(_stakeCenterBloc!.isAccountStaking()) {
+      commandString = 'CHANGE POOL';
+    } else {
+      commandString = 'DELEGATE';
+    }
+
     return Container(
       padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
       width: MediaQuery.of(context).size.width,
@@ -677,13 +699,11 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
               foregroundColor: Color(0xff098de6),
               backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
-              side: BorderSide(width: 1.w, color: Color(0xff098de6))
+              side: BorderSide(width: 1.w, color: commandColor)
             ),
-            onPressed: () {
-
-            },
-            child: Text('DELEGATE', textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))
+            onPressed: onPressed,
+            child: Text(commandString, textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: commandColor))
           )
         )
       )

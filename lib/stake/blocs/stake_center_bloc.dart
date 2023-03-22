@@ -17,7 +17,7 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
 
   int _epoch = 0;
   int _slot = 0;
-  int _accountIndex = 4;
+  int _accountIndex = 0;
   bool _accountActive = false;
   List<StakeStateEntity> _stakingStates = [];
   Staking_providersBean? _stakingProvider;
