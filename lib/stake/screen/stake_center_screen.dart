@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:flutter_countdown_timer/index.dart';
 import '../../global/global.dart';
@@ -48,53 +49,79 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     super.dispose();
   }
 
+  Future<void> _onRefresh() async {
+    _stakeCenterBloc!.add(GetStakeStatusEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     ScreenUtil.init(context, designSize: const Size(375, 812),
       minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
 
-    return Column(
-      children: [
-        buildPureTextTitleAppBar(context, 'Staking Center'),
-        _buildAccountSwitcher(context),
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(height: 18.h),
-                BlocBuilder<StakeCenterBloc, StakeCenterStates>(
-                  builder: (BuildContext context, StakeCenterStates state) {
-                    return _buildEpochStatus(context);
-                  }
-                ),
-                Container(height: 20.h,),
-                BlocBuilder<StakeCenterBloc, StakeCenterStates>(
-                  builder: (BuildContext context, StakeCenterStates state) {
-                    return _buildStakingPager(context);
-                  }
-                ),
-                Container(height: 20.h,),
-                BlocBuilder<StakeCenterBloc, StakeCenterStates>(
-                  builder: (BuildContext context, StakeCenterStates state) {
-                    return _buildLastStakedPool(context);
-                  }
-                ),
-                Container(height: 20.h,),
-                Container(
-                  margin: EdgeInsets.only(left: 22.w, right: 22.w),
-                  child: Text('Tips: ' +
-                    'Better delegate one day before current epoch ends, otherwise you need wait three epochs.',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d), fontStyle: FontStyle.italic),
+    return RefreshIndicator(
+      color: Colors.grey,
+      onRefresh: _onRefresh,
+      child: Column(
+        children: [
+          buildPureTextTitleAppBar(context, 'Staking Center'),
+          _buildAccountSwitcher(context),
+          Container(height: 4.h),
+          BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+            builder: (BuildContext context, StakeCenterStates state) {
+              return _buildLoadingAnimation(context, state);
+            }
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  Container(height: 16.h),
+                  BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+                    builder: (BuildContext context, StakeCenterStates state) {
+                      return _buildEpochStatus(context);
+                    }
                   ),
-                ),
-              ],
-            ),
-          )
-        ),
-        _buildStakingButton(context),
-      ],
+                  Container(height: 20.h,),
+                  BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+                    builder: (BuildContext context, StakeCenterStates state) {
+                      return _buildStakingPager(context);
+                    }
+                  ),
+                  Container(height: 20.h,),
+                  BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+                    builder: (BuildContext context, StakeCenterStates state) {
+                      return _buildLastStakedPool(context);
+                    }
+                  ),
+                  Container(height: 20.h,),
+                  Container(
+                    margin: EdgeInsets.only(left: 22.w, right: 22.w),
+                    child: Text('Tips: ' +
+                      'Better delegate one day before current epoch ends, otherwise you need wait three epochs.',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d), fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ),
+          _buildStakingButton(context),
+        ],
+      )
+    );
+  }
+
+  _buildLoadingAnimation(BuildContext context, StakeCenterStates state) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 1000),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return ScaleTransition(child: child, scale: animation);
+      },
+      child: (state is GetStakeStatusLoading) ?
+        LoadingAnimationWidget.hexagonDots(color: Colors.grey, size: 26.h) : Container()
     );
   }
 
@@ -579,7 +606,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           Row(
             children: [
               Text('Pool site:', textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff979797)),),
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff979797)),),
               Container(width: 4.w,),
               Text(stakingProvider.website ?? '', textAlign: TextAlign.start,
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
@@ -652,7 +679,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     List<Widget> termWidgets = [];
     termWidgets.add(
       Text('Payout terms:', textAlign: TextAlign.start,
-          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: Color(0xff979797))),
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w300, color: Color(0xff979797))),
     );
     termWidgets.add(Container(width: 4.w,));
 
@@ -685,7 +712,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text('Contacts:', textAlign: TextAlign.start,
-          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff979797)),),
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff979797)),),
         Container(width: 4.w,),
         (stakingProvider?.discordUsername ?? '').isNotEmpty ?
         Builder(builder: (context) =>

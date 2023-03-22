@@ -110,6 +110,8 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
         return;
       }
 
+      // Clear all old data before re-fill
+      _stakingStates.clear();
       if(null != stakeState.data) {
         if(null != stakeState.data?['stake']) {
           StakeStateEntity entity = StakeStateEntity();
