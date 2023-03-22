@@ -4,7 +4,7 @@ import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/stake/blocs/stake_bloc.dart';
 import 'package:coda_wallet/stake/blocs/stake_events.dart';
 import 'package:coda_wallet/stake/blocs/stake_states.dart';
-import 'package:coda_wallet/stake/query/get_consensus_state.dart';
+import 'package:coda_wallet/stake/query/get_consensus_stake_state.dart';
 import 'package:coda_wallet/util/stake_utils.dart';
 import 'package:coda_wallet/widget/account/account_list.dart';
 import 'package:coda_wallet/widget/dialog/loading_dialog.dart';
@@ -28,7 +28,7 @@ class _StakeScreenState extends State<StakeScreen> with AutomaticKeepAliveClient
   void initState() {
     super.initState();
     _stakeBloc = BlocProvider.of<StakeBloc>(context);
-    _stakeBloc.add(GetConsensusState(CONSENSUS_STATE_QUERY));
+    _stakeBloc.add(GetConsensusState(CONSENSUS_STAKE_STATE_QUERY));
   }
 
   @override

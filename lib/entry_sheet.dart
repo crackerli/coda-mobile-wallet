@@ -1,9 +1,9 @@
 import 'package:coda_wallet/event_bus/event_bus.dart';
 import 'package:coda_wallet/screen_record_detector/screen_record_detector.dart';
 import 'package:coda_wallet/setting/setting_screen.dart';
-import 'package:coda_wallet/stake/blocs/stake_bloc.dart';
-import 'package:coda_wallet/stake/blocs/stake_states.dart';
-import 'package:coda_wallet/stake/screen/stake_screen.dart';
+import 'package:coda_wallet/stake/blocs/stake_center_bloc.dart';
+import 'package:coda_wallet/stake/blocs/stake_center_states.dart';
+import 'package:coda_wallet/stake/screen/stake_center_screen.dart';
 import 'package:coda_wallet/txns/blocs/txns_bloc.dart';
 import 'package:coda_wallet/txns/blocs/txns_states.dart';
 import 'package:coda_wallet/txns/screen/txns_screen.dart';
@@ -34,11 +34,11 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
       },
       child: WalletHomeScreen()
     ),
-    BlocProvider<StakeBloc>(
+    BlocProvider<StakeCenterBloc>(
       create: (BuildContext context) {
-        return StakeBloc(GetConsensusStateLoading(null));
+        return StakeCenterBloc(GetStakeStatusLoading());
       },
-      child: StakeScreen()
+      child: StakeCenterScreen()
     ),
     BlocProvider<TxnsBloc>(
       create: (BuildContext context) {
@@ -145,7 +145,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
     ScreenUtil.init(context, designSize: const Size(375, 812), minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
     _initBottomBarItems();
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xfffdfdfd),
       body: SafeArea(
         child: PageView(
           controller: _pageController,

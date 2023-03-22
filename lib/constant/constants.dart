@@ -40,6 +40,7 @@ const MAIN_NET_ID = 1;
 const TEST_NET_ID = 0;
 
 const SLOT_PER_EPOCH = 7140;
+const INFLATION_RATE = 24;
 
 // Key to retrieve current network used, mainnet or testnet
 const CURRENT_NETWORK_ID = 'current_network_id_key';
