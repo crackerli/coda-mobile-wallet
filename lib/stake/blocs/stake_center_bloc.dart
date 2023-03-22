@@ -42,6 +42,8 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
   String? get stakingPoolAddress => _stakingPoolAddress;
   bool get accountActive => _accountActive;
 
+  set accountIndex(int index) => _accountIndex = index;
+
   int get counterEndTime {
     int remainSlots = SLOT_PER_EPOCH - _slot;
     DateTime now = DateTime.now();
