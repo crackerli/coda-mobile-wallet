@@ -82,8 +82,8 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
       Map<String, dynamic> variables0 = Map<String, dynamic>();
       variables0['publicKey'] = publicKey;
 
-      final stakingState = await _codaService.performQuery(CONSENSUS_STAKE_STATE_QUERY, variables: variables0);
       clearAllStates();
+      final stakingState = await _codaService.performQuery(CONSENSUS_STAKE_STATE_QUERY, variables: variables0);
 
       if(stakingState.hasException) {
         String error = exceptionHandle(stakingState);
@@ -128,8 +128,6 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
         return;
       }
 
-      // Clear all old data before re-fill
-      _stakingStates.clear();
       if(null != stakeState.data) {
         if(null != stakeState.data?['stake']) {
           StakeStateEntity entity = StakeStateEntity();

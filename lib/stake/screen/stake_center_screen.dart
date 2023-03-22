@@ -107,6 +107,10 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
 
     return BlocBuilder<StakeCenterBloc, StakeCenterStates>(
       builder: (BuildContext context, StakeCenterStates state) {
+        if(state is GetStakeStatusFailed) {
+          return _buildErrorWidget(context, state);
+        }
+
         if(!_stakeCenterBloc!.accountActive) {
           return _buildNotActive(context);
         } else if(!_stakeCenterBloc!.isAccountStaking()) {
@@ -682,6 +686,39 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))
           )
         )
+      )
+    );
+  }
+
+  _buildErrorWidget(BuildContext context, GetStakeStatusFailed state) {
+    return Center(
+      child: Column(
+        children: [
+          Container(height: 60.h,),
+          Padding(
+            padding: EdgeInsets.only(left: 26.w, right: 26.w),
+            child: Text(state.error, textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),)
+          ),
+          Container(height: 8.h,),
+          Container(
+            width: 260.w,
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+                foregroundColor: Color(0xff098de6),
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+                side: BorderSide(width: 1.w, color: Color(0xff098de6))
+              ),
+              onPressed: () {
+                _stakeCenterBloc!.add(GetStakeStatusEvent());
+              },
+              child: Text('RETRY', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))
+            )
+          )
+        ],
       )
     );
   }
