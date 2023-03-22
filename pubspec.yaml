@@ -160,6 +160,7 @@ flutter:
     - images/txn_success.png
     - images/left_arrow_triangle.png
     - images/right_arrow_triangle.png
+    - images/not_staked.png
 
 
 

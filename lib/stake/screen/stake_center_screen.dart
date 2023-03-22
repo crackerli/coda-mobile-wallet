@@ -83,18 +83,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                       return _buildEpochStatus(context);
                     }
                   ),
-                  Container(height: 20.h,),
-                  BlocBuilder<StakeCenterBloc, StakeCenterStates>(
-                    builder: (BuildContext context, StakeCenterStates state) {
-                      return _buildStakingPager(context);
-                    }
-                  ),
-                  Container(height: 20.h,),
-                  BlocBuilder<StakeCenterBloc, StakeCenterStates>(
-                    builder: (BuildContext context, StakeCenterStates state) {
-                      return _buildLastStakedPool(context);
-                    }
-                  ),
+                  _buildStakingBody(context),
                   Container(height: 20.h,),
                   Container(
                     margin: EdgeInsets.only(left: 22.w, right: 22.w),
@@ -111,6 +100,28 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           _buildStakingButton(context),
         ],
       )
+    );
+  }
+
+  _buildStakingBody(BuildContext context) {
+
+    return BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+      builder: (BuildContext context, StakeCenterStates state) {
+        if(!_stakeCenterBloc!.accountActive) {
+          return _buildNotActive(context);
+        } else if(!_stakeCenterBloc!.isAccountStaking()) {
+          return _buildNotStaked(context);
+        } else {
+          return Column(
+            children: [
+              _stakeCenterBloc!.isAccountStaking() ? Container(height: 20.h,) : Container(),
+              _buildStakingPager(context),
+              _stakeCenterBloc!.isAccountStaking() ? Container(height: 20.h,) : Container(),
+              _buildLastStakedPool(context)
+            ],
+          );
+        }
+      }
     );
   }
 
@@ -448,17 +459,22 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
   }
 
   _buildStakingPager(BuildContext context) {
-    return Row(
-      children: [
-        _buildStakingEpochs(context),
-      ]
-    );
+    if(_stakeCenterBloc!.isAccountStaking()) {
+      if(_stakeCenterBloc!.stakingStates.isEmpty) {
+        return Text('Wait for staking become available');
+      } else {
+        return Row(
+          children: [
+            _buildStakingEpochs(context),
+          ]
+        );
+      }
+    } else {
+      return Container();
+    }
   }
 
   _buildStakingEpochs(BuildContext context) {
-    if(_stakeCenterBloc!.stakingStates.isEmpty) {
-      return Container();
-    }
 
     if(1 == _stakeCenterBloc!.stakingStates.length) {
       return Expanded(
@@ -667,6 +683,26 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           )
         )
       )
+    );
+  }
+
+  _buildNotActive(BuildContext context) {
+    return Column(
+      children: [
+        Image.asset('images/not_staked.png', width: 40.w, height: 40.w,),
+        Text('This account has not been activated'),
+        Text('Send more than one MINA to this address to activate this account'),
+      ],
+    );
+  }
+
+  _buildNotStaked(BuildContext context) {
+    return Column(
+      children: [
+        Image.asset('images/not_staked.png', width: 40.w, height: 40.w,),
+        Text('This account has not been staked'),
+        Text('You should staked your MINA'),
+      ],
     );
   }
 
