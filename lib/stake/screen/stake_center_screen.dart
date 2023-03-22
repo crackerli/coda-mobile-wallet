@@ -707,9 +707,18 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
   _buildNotStaked(BuildContext context) {
     return Column(
       children: [
-        Image.asset('images/not_staked.png', width: 40.w, height: 40.w,),
-        Text('This account has not been staked'),
-        Text('You should staked your MINA'),
+        Container(height: 40.h,),
+        Image.asset('images/not_staked.png', width: 80.w, height: 80.w,),
+        Container(height: 6.h,),
+        Text('Account not staked', textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Color(0xff979797)),),
+        Container(height: 6.h,),
+        Padding(
+          padding: EdgeInsets.only(left: 26.w, right: 26.w),
+          child: Text('Delegate your MINA tokens to a staking provider, and earn more MINA.\n\n'+
+            'Staked tokens stay under your control, and can be transferred at anytime.', textAlign: TextAlign.start,
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),)
+        ),
       ],
     );
   }

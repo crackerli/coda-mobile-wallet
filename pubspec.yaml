@@ -161,6 +161,7 @@ flutter:
     - images/left_arrow_triangle.png
     - images/right_arrow_triangle.png
     - images/not_staked.png
+    - images/account_not_active.png
 
 
 
