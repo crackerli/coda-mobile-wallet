@@ -689,9 +689,17 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
   _buildNotActive(BuildContext context) {
     return Column(
       children: [
-        Image.asset('images/not_staked.png', width: 40.w, height: 40.w,),
-        Text('This account has not been activated'),
-        Text('Send more than one MINA to this address to activate this account'),
+        Container(height: 40.h,),
+        Image.asset('images/account_not_active.png', width: 86.w, height: 80.w,),
+        Container(height: 2.h,),
+        Text('Inactive account', textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Color(0xfffe5962)),),
+        Container(height: 4.h,),
+        Padding(
+          padding: EdgeInsets.only(left: 26.w, right: 26.w),
+          child: Text('Send more than one MINA to this address to activate this account', textAlign: TextAlign.start,
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),)
+        ),
       ],
     );
   }
