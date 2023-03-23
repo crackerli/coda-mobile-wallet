@@ -113,6 +113,10 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
   _buildStakingBody(BuildContext context) {
     return BlocBuilder<StakeCenterBloc, StakeCenterStates>(
       builder: (BuildContext context, StakeCenterStates state) {
+        if(state is GetStakeStatusLoading) {
+          return Container();
+        }
+
         if(state is GetStakeStatusFailed) {
           return _buildErrorWidget(context, state);
         }
