@@ -93,11 +93,12 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   Container(
                     margin: EdgeInsets.only(left: 22.w, right: 22.w),
                     child: Text('Tips: ' +
-                      'Better delegate one day before current epoch ends, otherwise you need wait three epochs.',
+                      'Better send delegation one day before current epoch ends, otherwise the delegation would cost 2 epochs to become active.',
                       textAlign: TextAlign.start,
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d), fontStyle: FontStyle.italic),
                     ),
                   ),
+                  Container(height: 8.h,),
                 ],
               ),
             )
@@ -482,10 +483,15 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Waiting for staking become available', textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),
             Container(height: 6.h,),
-            LoadingAnimationWidget.threeRotatingDots(color: Color(0xff6bc7a1), size: 30.h)
+            Padding(
+              padding: EdgeInsets.only(left: 34.w, right: 34.w),
+              child:
+              Text('Waiting for staking become active(minimum of 1-2 epochs since delegation tx).', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),)),
+            Container(height: 6.h,),
+            LoadingAnimationWidget.threeRotatingDots(color: Color(0xff6bc7a1), size: 30.h),
+            Container(height: 6.h,),
           ],
         );
       } else {
@@ -771,14 +777,15 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     return Column(
       children: [
         Container(height: 40.h,),
-        Image.asset('images/account_not_active.png', width: 86.w, height: 80.w,),
+        Image.asset('images/account_not_active.png', width: 74.w, height: 70.w,),
         Container(height: 2.h,),
         Text('Inactive account', textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Color(0xfffe5962)),),
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Color(0xfffe5962)),),
         Container(height: 4.h,),
         Padding(
           padding: EdgeInsets.only(left: 26.w, right: 26.w),
-          child: Text('Send more than one MINA to this address to activate this account', textAlign: TextAlign.start,
+          child: Text('Send more than one MINA to this address to activate this account(one MINA will be burnt).',
+            textAlign: TextAlign.start,
             style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),)
         ),
       ],
@@ -789,10 +796,10 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     return Column(
       children: [
         Container(height: 40.h,),
-        Image.asset('images/not_staked.png', width: 80.w, height: 80.w,),
-        Container(height: 6.h,),
+        Image.asset('images/not_staked.png', width: 70.w, height: 70.w,),
+        Container(height: 8.h,),
         Text('Account not staked', textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Color(0xff098de6)),),
         Container(height: 6.h,),
         Padding(
           padding: EdgeInsets.only(left: 26.w, right: 26.w),
