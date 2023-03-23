@@ -11,6 +11,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:flutter_countdown_timer/index.dart';
 import '../../global/global.dart';
+import '../../route/routes.dart';
 import '../../types/mina_hd_account_type.dart';
 import '../../util/format_utils.dart';
 import '../../widget/app_bar/app_bar.dart';
@@ -353,7 +354,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   Expanded(
                     flex: FLEX_RIGHT_CONTENT,
                     child: Text(stakeState.providerName, textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                   )
                 ],
               ),
@@ -697,7 +698,8 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
       commandColor = Color(0xff979797);
     } else {
       onPressed = () {
-        _stakeCenterBloc!.add(GetStakeStatusEvent());
+        Navigator.of(context).pushNamed(
+          StakeProviderRoute, arguments: _stakeCenterBloc!.accountIndex);
       };
       commandColor = Color(0xff098de6);
     }
