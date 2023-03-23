@@ -476,7 +476,17 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
   _buildStakingPager(BuildContext context) {
     if(_stakeCenterBloc!.isAccountStaking()) {
       if(_stakeCenterBloc!.stakingStates.isEmpty) {
-        return Text('Wait for staking become available');
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Waiting for staking become available', textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),
+            Container(height: 6.h,),
+            LoadingAnimationWidget.threeRotatingDots(color: Color(0xff6bc7a1), size: 30.h)
+          ],
+        );
       } else {
         return Row(
           children: [
@@ -780,7 +790,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
         Image.asset('images/not_staked.png', width: 80.w, height: 80.w,),
         Container(height: 6.h,),
         Text('Account not staked', textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Color(0xff979797)),),
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
         Container(height: 6.h,),
         Padding(
           padding: EdgeInsets.only(left: 26.w, right: 26.w),
