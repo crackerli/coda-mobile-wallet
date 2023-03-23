@@ -64,8 +64,12 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
       onRefresh: _onRefresh,
       child: Column(
         children: [
-          buildPureTextTitleAppBar(context, 'Staking Center'),
-          _buildAccountSwitcher(context),
+          buildPureTextTitleAppBar(context, 'Stake Center'),
+          BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+            builder: (BuildContext context, StakeCenterStates state) {
+              return _buildAccountSwitcher(context);
+            }
+          ),
           Container(height: 4.h),
           BlocBuilder<StakeCenterBloc, StakeCenterStates>(
             builder: (BuildContext context, StakeCenterStates state) {
@@ -83,18 +87,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                       return _buildEpochStatus(context);
                     }
                   ),
-                  Container(height: 20.h,),
-                  BlocBuilder<StakeCenterBloc, StakeCenterStates>(
-                    builder: (BuildContext context, StakeCenterStates state) {
-                      return _buildStakingPager(context);
-                    }
-                  ),
-                  Container(height: 20.h,),
-                  BlocBuilder<StakeCenterBloc, StakeCenterStates>(
-                    builder: (BuildContext context, StakeCenterStates state) {
-                      return _buildLastStakedPool(context);
-                    }
-                  ),
+                  _buildStakingBody(context),
                   Container(height: 20.h,),
                   Container(
                     margin: EdgeInsets.only(left: 22.w, right: 22.w),
@@ -108,9 +101,41 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
               ),
             )
           ),
-          _buildStakingButton(context),
+          BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+            builder: (BuildContext context, StakeCenterStates state) {
+              return _buildStakingButton(context, state);
+          })
         ],
       )
+    );
+  }
+
+  _buildStakingBody(BuildContext context) {
+    return BlocBuilder<StakeCenterBloc, StakeCenterStates>(
+      builder: (BuildContext context, StakeCenterStates state) {
+        if(state is GetStakeStatusLoading) {
+          return Container();
+        }
+
+        if(state is GetStakeStatusFailed) {
+          return _buildErrorWidget(context, state);
+        }
+
+        if(!_stakeCenterBloc!.accountActive) {
+          return _buildNotActive(context);
+        } else if(!_stakeCenterBloc!.isAccountStaking()) {
+          return _buildNotStaked(context);
+        } else {
+          return Column(
+            children: [
+              _stakeCenterBloc!.isAccountStaking() ? Container(height: 20.h,) : Container(),
+              _buildStakingPager(context),
+              _stakeCenterBloc!.isAccountStaking() ? Container(height: 20.h,) : Container(),
+              _buildLastStakedPool(context)
+            ],
+          );
+        }
+      }
     );
   }
 
@@ -328,7 +353,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   Expanded(
                     flex: FLEX_RIGHT_CONTENT,
                     child: Text(stakeState.providerName, textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                   )
                 ],
               ),
@@ -344,7 +369,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   Expanded(
                     flex: FLEX_RIGHT_CONTENT,
                     child: Text('${formatHashEllipsis(stakeState.poolAddress, short: false)}', textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                   )
                 ],
               )
@@ -403,62 +428,68 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
 
   _buildAccountSwitcher(BuildContext context) {
     return Container(
-        margin: EdgeInsets.fromLTRB(24.w, 0, 24.w, 0),
-        padding: EdgeInsets.fromLTRB(10.w, 0, 10.w, 0),
-        decoration: BoxDecoration(
-          border: Border.all(color: Color(0xfff1f2f4), width: 0.5.w),
-          borderRadius: BorderRadius.all(Radius.circular(8.w)),
-          color: Color(0xfff1f2f4),
-        ),
-        child: DropdownButton<AccountBean>(
-          isExpanded: true,
-          dropdownColor: Color(0xfff1f2f4),
-          value: globalHDAccounts.accounts![0],
-          icon: Image.asset('images/down_expand.png', width: 14.w, height: 14.w),
-          elevation: 6,
-          style: const TextStyle(color: Color(0xff2d2d2d)),
-          onChanged: (AccountBean? accountBean) {
-
-          },
-          underline: Container(),
-          items: globalHDAccounts.accounts!.map<DropdownMenuItem<AccountBean>>((AccountBean? value) {
-            return DropdownMenuItem<AccountBean>(
-                value: value,
-                child:
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset('images/mina_logo_black_inner_small.png', width: 21.w, height: 21.w,),
-                    Container(width: 2.w,),
-                    Text(value?.accountName ?? 'null', textAlign: TextAlign.start, overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
-                    Expanded(
-                      flex: 1,
-                      child: Text('(${formatHashEllipsis(value!.address!)})', textAlign: TextAlign.start,
-                          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d))),
-                    )
-                  ],
+      margin: EdgeInsets.fromLTRB(24.w, 0, 24.w, 0),
+      padding: EdgeInsets.fromLTRB(10.w, 0, 10.w, 0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Color(0xfff1f2f4), width: 0.5.w),
+        borderRadius: BorderRadius.all(Radius.circular(8.w)),
+        color: Color(0xfff1f2f4),
+      ),
+      child: DropdownButton<AccountBean>(
+        isExpanded: true,
+        dropdownColor: Color(0xfff1f2f4),
+        value: globalHDAccounts.accounts![_stakeCenterBloc!.accountIndex],
+        icon: Image.asset('images/down_expand.png', width: 14.w, height: 14.w),
+        elevation: 6,
+        style: const TextStyle(color: Color(0xff2d2d2d)),
+        onChanged: (AccountBean? accountBean) {
+          if(accountBean!.account != _stakeCenterBloc!.accountIndex) {
+            _stakeCenterBloc!.accountIndex = accountBean.account!;
+            _stakeCenterBloc!.add(GetStakeStatusEvent());
+          }
+        },
+        underline: Container(),
+        items: globalHDAccounts.accounts!.map<DropdownMenuItem<AccountBean>>((AccountBean? value) {
+          return DropdownMenuItem<AccountBean>(
+            value: value,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Image.asset('images/mina_logo_black_inner_small.png', width: 21.w, height: 21.w,),
+                Container(width: 2.w,),
+                Text(value?.accountName ?? 'null', textAlign: TextAlign.start, overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+                Expanded(
+                  flex: 1,
+                  child: Text('(${formatHashEllipsis(value!.address!)})', textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d))),
                 )
-            );
+              ],
+            ));
           }).toList(),
         )
     );
   }
 
   _buildStakingPager(BuildContext context) {
-    return Row(
-      children: [
-        _buildStakingEpochs(context),
-      ]
-    );
+    if(_stakeCenterBloc!.isAccountStaking()) {
+      if(_stakeCenterBloc!.stakingStates.isEmpty) {
+        return Text('Wait for staking become available');
+      } else {
+        return Row(
+          children: [
+            _buildStakingEpochs(context),
+          ]
+        );
+      }
+    } else {
+      return Container();
+    }
   }
 
   _buildStakingEpochs(BuildContext context) {
-    if(_stakeCenterBloc!.stakingStates.isEmpty) {
-      return Container();
-    }
 
     if(1 == _stakeCenterBloc!.stakingStates.length) {
       return Expanded(
@@ -512,7 +543,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
             children: [
               Expanded(
                 child: Text('Stake pool delegated', textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff525252)),),)
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),)
             ],
           ),
           Container(height: CONTENT_DIVIDER_HEIGHT.h),
@@ -534,14 +565,14 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(stakingProvider.providerTitle ?? 'Unknown',
-                    textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)),),
+                    textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff098de6)),),
                   Container(height: 6.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text('${formatHashEllipsis(stakingProvider.providerAddress, short: false)}', textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 14.sp, color: Colors.black54),),
+                        style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d)),),
                       Container(width: 3.w,),
                       stakingProvider.addressVerification == 1 ?
                       Image.asset('images/verified.png', width: 12.w, height: 12.w,) : Container()
@@ -608,8 +639,11 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
               Text('Pool site:', textAlign: TextAlign.start,
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff979797)),),
               Container(width: 4.w,),
-              Text(stakingProvider.website ?? '', textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+              Expanded(
+                child: Text(stakingProvider.website ?? '', textAlign: TextAlign.start, maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Color(0xff098de6)),),
+              ),
             ],
           ),
           hidePayoutTerms ? Container() : Container(height: CONTENT_DIVIDER_HEIGHT.h),
@@ -643,7 +677,27 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     );
   }
 
-  _buildStakingButton(BuildContext context) {
+  _buildStakingButton(BuildContext context, StakeCenterStates state) {
+    void Function()? onPressed;
+    String commandString = 'DELEGATE';
+    Color commandColor = Color(0xff098de6);
+
+    if((state is GetStakeStatusLoading) || !_stakeCenterBloc!.accountActive) {
+      onPressed = null;
+      commandColor = Color(0xff979797);
+    } else {
+      onPressed = () {
+        _stakeCenterBloc!.add(GetStakeStatusEvent());
+      };
+      commandColor = Color(0xff098de6);
+    }
+
+    if(_stakeCenterBloc!.isAccountStaking()) {
+      commandString = 'CHANGE POOL';
+    } else {
+      commandString = 'DELEGATE';
+    }
+
     return Container(
       padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
       width: MediaQuery.of(context).size.width,
@@ -657,16 +711,84 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
               foregroundColor: Color(0xff098de6),
               backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
-              side: BorderSide(width: 1.w, color: Color(0xff098de6))
+              side: BorderSide(width: 1.w, color: commandColor)
             ),
-            onPressed: () {
-
-            },
-            child: Text('DELEGATE', textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))
+            onPressed: onPressed,
+            child: Text(commandString, textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: commandColor))
           )
         )
       )
+    );
+  }
+
+  _buildErrorWidget(BuildContext context, GetStakeStatusFailed state) {
+    return Center(
+      child: Column(
+        children: [
+          Container(height: 60.h,),
+          Padding(
+            padding: EdgeInsets.only(left: 26.w, right: 26.w),
+            child: Text(state.error, textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),)
+          ),
+          Container(height: 8.h,),
+          Container(
+            width: 260.w,
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+                foregroundColor: Color(0xff098de6),
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+                side: BorderSide(width: 1.w, color: Color(0xff098de6))
+              ),
+              onPressed: () {
+                _stakeCenterBloc!.add(GetStakeStatusEvent());
+              },
+              child: Text('RETRY', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))
+            )
+          )
+        ],
+      )
+    );
+  }
+
+  _buildNotActive(BuildContext context) {
+    return Column(
+      children: [
+        Container(height: 40.h,),
+        Image.asset('images/account_not_active.png', width: 86.w, height: 80.w,),
+        Container(height: 2.h,),
+        Text('Inactive account', textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Color(0xfffe5962)),),
+        Container(height: 4.h,),
+        Padding(
+          padding: EdgeInsets.only(left: 26.w, right: 26.w),
+          child: Text('Send more than one MINA to this address to activate this account', textAlign: TextAlign.start,
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),)
+        ),
+      ],
+    );
+  }
+
+  _buildNotStaked(BuildContext context) {
+    return Column(
+      children: [
+        Container(height: 40.h,),
+        Image.asset('images/not_staked.png', width: 80.w, height: 80.w,),
+        Container(height: 6.h,),
+        Text('Account not staked', textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Color(0xff979797)),),
+        Container(height: 6.h,),
+        Padding(
+          padding: EdgeInsets.only(left: 26.w, right: 26.w),
+          child: Text('Delegate your MINA tokens to a staking provider, and earn more MINA.\n\n'+
+            'Staked tokens stay under your control, and can be transferred at anytime.', textAlign: TextAlign.start,
+            style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),)
+        ),
+      ],
     );
   }
 

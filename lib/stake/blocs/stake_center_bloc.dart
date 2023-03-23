@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bloc/bloc.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/archive_service.dart';
@@ -15,9 +14,11 @@ import '../query/get_consensus_stake_state.dart';
 import '../query/get_stake_state.dart';
 
 class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
+
   int _epoch = 0;
   int _slot = 0;
   int _accountIndex = 0;
+  bool _accountActive = false;
   List<StakeStateEntity> _stakingStates = [];
   Staking_providersBean? _stakingProvider;
   String? _stakingPoolAddress;
@@ -39,6 +40,9 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
   List<StakeStateEntity> get stakingStates => _stakingStates;
   Staking_providersBean? get stakingProvider => _stakingProvider;
   String? get stakingPoolAddress => _stakingPoolAddress;
+  bool get accountActive => _accountActive;
+
+  set accountIndex(int index) => _accountIndex = index;
 
   int get counterEndTime {
     int remainSlots = SLOT_PER_EPOCH - _slot;
@@ -80,6 +84,7 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
       Map<String, dynamic> variables0 = Map<String, dynamic>();
       variables0['publicKey'] = publicKey;
 
+      clearAllStates();
       final stakingState = await _codaService.performQuery(CONSENSUS_STAKE_STATE_QUERY, variables: variables0);
 
       if(stakingState.hasException) {
@@ -96,9 +101,24 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
         _slot = int.tryParse(bestChain[0]?['protocolState']?['consensusState']?['slot']) ?? 0;
       } else {
         yield GetStakeStatusFailed('Can not get protocol state!');
+        return;
       }
 
-      _stakingPoolAddress = stakingState.data!['accounts'][0]?['delegateAccount']?['publicKey'] ?? null;
+      dynamic accounts = stakingState.data!['accounts'];
+      if(null == accounts || (accounts as List).isEmpty) {
+        _accountActive = false;
+        // This account is not active, no need to get other info
+        yield GetStakeStatusSuccess();
+        return;
+      } else {
+        _accountActive = true;
+        _stakingPoolAddress = accounts[0]?['delegateAccount']?['publicKey'] ?? null;
+        if(!isAccountStaking()) {
+          // This account has not been staked, no need to get more info
+          yield GetStakeStatusSuccess();
+          return;
+        }
+      }
 
       Map<String, dynamic> variables1 = Map<String, dynamic>();
       variables1['publicKey'] = publicKey;
@@ -110,8 +130,6 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
         return;
       }
 
-      // Clear all old data before re-fill
-      _stakingStates.clear();
       if(null != stakeState.data) {
         if(null != stakeState.data?['stake']) {
           StakeStateEntity entity = StakeStateEntity();
@@ -209,5 +227,12 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
 
   bool isAccountStaking() {
     return null != _stakingPoolAddress && _stakingPoolAddress!.isNotEmpty && _stakingPoolAddress != publicKey;
+  }
+
+  clearAllStates() {
+    _stakingStates.clear();
+    _stakingProvider = null;
+    _stakingPoolAddress = null;
+    _accountActive = false;
   }
 }
