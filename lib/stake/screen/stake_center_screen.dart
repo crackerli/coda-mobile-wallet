@@ -349,7 +349,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   Expanded(
                     flex: FLEX_RIGHT_CONTENT,
                     child: Text(stakeState.providerName, textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                   )
                 ],
               ),
@@ -365,7 +365,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                   Expanded(
                     flex: FLEX_RIGHT_CONTENT,
                     child: Text('${formatHashEllipsis(stakeState.poolAddress, short: false)}', textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
                   )
                 ],
               )
@@ -539,7 +539,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
             children: [
               Expanded(
                 child: Text('Stake pool delegated', textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff525252)),),)
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),)
             ],
           ),
           Container(height: CONTENT_DIVIDER_HEIGHT.h),
@@ -561,14 +561,14 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(stakingProvider.providerTitle ?? 'Unknown',
-                    textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)),),
+                    textAlign: TextAlign.start, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xff098de6)),),
                   Container(height: 6.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text('${formatHashEllipsis(stakingProvider.providerAddress, short: false)}', textAlign: TextAlign.start,
-                        style: TextStyle(fontSize: 14.sp, color: Colors.black54),),
+                        style: TextStyle(fontSize: 14.sp, color: Color(0xff2d2d2d)),),
                       Container(width: 3.w,),
                       stakingProvider.addressVerification == 1 ?
                       Image.asset('images/verified.png', width: 12.w, height: 12.w,) : Container()
@@ -635,8 +635,11 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
               Text('Pool site:', textAlign: TextAlign.start,
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff979797)),),
               Container(width: 4.w,),
-              Text(stakingProvider.website ?? '', textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+              Expanded(
+                child: Text(stakingProvider.website ?? '', textAlign: TextAlign.start, maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.normal, color: Color(0xff098de6)),),
+              ),
             ],
           ),
           hidePayoutTerms ? Container() : Container(height: CONTENT_DIVIDER_HEIGHT.h),
