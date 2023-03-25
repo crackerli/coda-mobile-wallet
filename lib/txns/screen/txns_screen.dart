@@ -20,6 +20,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../types/mina_hd_account_type.dart';
+import '../../widget/account/account_switcher.dart';
 import '../../widget/app_bar/app_bar.dart';
 import 'package:decimal/decimal.dart';
 
@@ -147,7 +148,13 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
           return Column(
             children: [
               _buildTxnHeader(context),
-              _buildAccountSwitcher(context),
+              buildAccountSwitcher(context, _txnsBloc.accountIndex, (AccountBean? accountBean) {
+                if(accountBean!.account != _txnsBloc.accountIndex) {
+                  _txnsBloc.accountIndex = accountBean.account;
+                  _txnsBloc.mergedUserCommands.clear();
+                  _refreshTxns();
+                }
+              }),
               Container(height: 6.h,),
               _buildLoadingAnimation(context, state),
               Container(height: 8.h,),
@@ -165,56 +172,6 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
       Text('Transaction History', textAlign: TextAlign.center,
         style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black87),),
         () => showTxnFilterSheet(context, _txnsBloc.txnFilters, _txnsBloc.currentFilter)
-    );
-  }
-
-  _buildAccountSwitcher(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(24.w, 0, 24.w, 0),
-      padding: EdgeInsets.fromLTRB(10.w, 0, 10.w, 0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xfff1f2f4), width: 0.5.w),
-        borderRadius: BorderRadius.all(Radius.circular(8.w)),
-        color: Color(0xfff1f2f4),
-      ),
-      child: DropdownButton<AccountBean>(
-        isExpanded: true,
-        dropdownColor: Color(0xfff1f2f4),
-        value: globalHDAccounts.accounts![_txnsBloc.accountIndex],
-        icon: Image.asset('images/down_expand.png', width: 14.w, height: 14.w),
-        elevation: 6,
-        style: const TextStyle(color: Color(0xff2d2d2d)),
-        onChanged: (AccountBean? accountBean) {
-          if(accountBean!.account != _txnsBloc.accountIndex) {
-            _txnsBloc.accountIndex = accountBean.account;
-            _txnsBloc.mergedUserCommands.clear();
-            _refreshTxns();
-          }
-        },
-        underline: Container(),
-        items: globalHDAccounts.accounts!.map<DropdownMenuItem<AccountBean>>((AccountBean? value) {
-          return DropdownMenuItem<AccountBean>(
-            value: value,
-            child:
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Image.asset('images/mina_logo_black_inner_small.png', width: 21.w, height: 21.w,),
-                  Container(width: 2.w,),
-                  Text(value?.accountName ?? 'null', textAlign: TextAlign.start, overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
-                  Expanded(
-                    flex: 1,
-                    child: Text('(${formatHashEllipsis(value!.address!)})', textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d))),
-                  )
-                ],
-              )
-          );
-        }).toList(),
-      )
     );
   }
 

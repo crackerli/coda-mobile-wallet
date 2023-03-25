@@ -14,6 +14,7 @@ import '../../global/global.dart';
 import '../../route/routes.dart';
 import '../../types/mina_hd_account_type.dart';
 import '../../util/format_utils.dart';
+import '../../widget/account/account_switcher.dart';
 import '../../widget/app_bar/app_bar.dart';
 import '../blocs/stake_center_bloc.dart';
 import '../blocs/stake_center_events.dart';
@@ -68,7 +69,12 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           buildPureTextTitleAppBar(context, 'Stake Center'),
           BlocBuilder<StakeCenterBloc, StakeCenterStates>(
             builder: (BuildContext context, StakeCenterStates state) {
-              return _buildAccountSwitcher(context);
+              return buildAccountSwitcher(context, _stakeCenterBloc!.accountIndex, (AccountBean? accountBean) {
+                if(accountBean!.account != _stakeCenterBloc!.accountIndex) {
+                  _stakeCenterBloc!.accountIndex = accountBean.account!;
+                  _stakeCenterBloc!.add(GetStakeStatusEvent());
+                }
+              });
             }
           ),
           Container(height: 4.h),
@@ -425,53 +431,6 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
           ),
         ],
       )
-    );
-  }
-
-  _buildAccountSwitcher(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(24.w, 0, 24.w, 0),
-      padding: EdgeInsets.fromLTRB(10.w, 0, 10.w, 0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xfff1f2f4), width: 0.5.w),
-        borderRadius: BorderRadius.all(Radius.circular(8.w)),
-        color: Color(0xfff1f2f4),
-      ),
-      child: DropdownButton<AccountBean>(
-        isExpanded: true,
-        dropdownColor: Color(0xfff1f2f4),
-        value: globalHDAccounts.accounts![_stakeCenterBloc!.accountIndex],
-        icon: Image.asset('images/down_expand.png', width: 14.w, height: 14.w),
-        elevation: 6,
-        style: const TextStyle(color: Color(0xff2d2d2d)),
-        onChanged: (AccountBean? accountBean) {
-          if(accountBean!.account != _stakeCenterBloc!.accountIndex) {
-            _stakeCenterBloc!.accountIndex = accountBean.account!;
-            _stakeCenterBloc!.add(GetStakeStatusEvent());
-          }
-        },
-        underline: Container(),
-        items: globalHDAccounts.accounts!.map<DropdownMenuItem<AccountBean>>((AccountBean? value) {
-          return DropdownMenuItem<AccountBean>(
-            value: value,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Image.asset('images/mina_logo_black_inner_small.png', width: 21.w, height: 21.w,),
-                Container(width: 2.w,),
-                Text(value?.accountName ?? 'null', textAlign: TextAlign.start, overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
-                Expanded(
-                  flex: 1,
-                  child: Text('(${formatHashEllipsis(value!.address!)})', textAlign: TextAlign.start,
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff2d2d2d))),
-                )
-              ],
-            ));
-          }).toList(),
-        )
     );
   }
 
