@@ -31,25 +31,22 @@ void showProviderBottomDialog(BuildContext context, Staking_providersBean? provi
 
 _buildProvider(BuildContext context, Staking_providersBean? provider) {
   return Padding(
-    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+    padding: EdgeInsets.fromLTRB(20.w, 0, 40.w, 0),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildMultiLineTexts('Title', provider?.providerTitle, 2, needSpacing: false),
+        _buildMultiLineTexts('Provider Name', provider?.providerTitle, 2, needSpacing: false),
         _buildVerification(provider?.addressVerification),
-        _buildMultiLineTexts('Delegators Num', '${provider?.delegatorsNum ?? ''}%', 2),
-        _buildHyperlink(context, 'WebSite', provider?.website, 3),
-        _buildMultiLineTexts('Address', provider?.providerAddress, 2),
-        _buildMultiLineTexts('Staked Amount', provider?.stakedSum?.floor().toString(), 2),
-        _buildMultiLineTexts('Percent', '${provider?.stakePercent?.toString() ?? ''}%', 2),
-        _buildMultiLineTexts('Fee', '${provider?.providerFee ?? ''}%', 2),
+        _buildHyperlink(context, 'Provider Site', provider?.website, 3),
+        _buildHyperlink(context, 'Provider Github', provider?.github, 3),
+        _buildMultiLineTexts('Provider Address', provider?.providerAddress, 2),
         _buildTermsWidget(provider?.payoutTerms),
-        _buildMultiLineTexts('Discord Group', provider?.discordGroup, 2),
-        _buildMultiLineTexts('Discord Username', provider?.discordUsername, 2, decodeHtml: true),
-        _buildMultiLineTexts('Email', provider?.email, 2),
-        _buildHyperlink(context, 'Github', provider?.github, 3),
-        _buildContacts(provider)
+        _buildMultiLineTexts('Delegators', '${provider?.delegatorsNum ?? ''}', 2),
+        _buildMultiLineTexts('Staked Amount', provider?.stakedSum?.toString(), 2),
+        _buildMultiLineTexts('Pool Percent', '${provider?.stakePercent?.toString() ?? ''}%', 2),
+        _buildMultiLineTexts('Pool Fee', '${provider?.providerFee ?? ''}%', 2),
+        _buildContacts(provider),
       ]
     )
   );
@@ -83,11 +80,10 @@ _buildVerification(int? verification, {bool needSpacing = true}){
             Expanded(
               flex: CONTENT_COLUMN_RATIO,
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  1 == verification ? Image.asset('images/verified.png', height: 12.w, width: 12.w) : SizedBox.shrink()
+                  1 == verification ? Image.asset('images/verified_long.png', height: 16.h) : SizedBox.shrink(),
                 ]
               )
             )
@@ -170,7 +166,7 @@ _buildHyperlink(BuildContext context, String title, String? url, int maxLines, {
                     WidgetSpan(child: Container(width: 5.w)),
                     WidgetSpan(
                       alignment: PlaceholderAlignment.middle,
-                      child: Image.asset('images/link.png', height: 8.w, width: 8.w)
+                      child: Image.asset('images/link.png', width: 8.w)
                     )
                   ]
                 ),
@@ -238,7 +234,7 @@ _buildContacts(Staking_providersBean? provider, {bool needSpacing = true}){
           Expanded(
             flex: TITLE_COLUMN_RATIO,
             child: Text(
-              'Contacts',
+              'Provider Contacts',
               textAlign: TextAlign.right,
               style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))
             )
