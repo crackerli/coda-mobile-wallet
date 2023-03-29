@@ -97,7 +97,7 @@ class CustomerViewDialogWidget extends StatelessWidget {
             )
             : SizedBox(height: 10),
           customViewPosition == CustomViewPosition.BEFORE_ACTION ? customView : const SizedBox(),
-          actions?.isNotEmpty == true ? buttons(context) : SizedBox( height: 10),
+          actions?.isNotEmpty == true ? buttons(context) : SizedBox(height: 10),
           customViewPosition == CustomViewPosition.AFTER_ACTION ? customView : const SizedBox(),
         ],
       ),
