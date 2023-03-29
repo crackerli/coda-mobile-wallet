@@ -10,7 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:flutter_countdown_timer/index.dart';
-import '../../global/global.dart';
 import '../../route/routes.dart';
 import '../../types/mina_hd_account_type.dart';
 import '../../util/format_utils.dart';

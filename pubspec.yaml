@@ -64,7 +64,7 @@ dependencies:
   decimal: ^2.3.2
   flutter_countdown_timer: ^4.1.0
   expandable_page_view: ^1.0.17
-
+  dropdown_button2: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -164,10 +164,7 @@ flutter:
     - images/account_not_active.png
     - images/arrow_down_filling.png
     - images/account_header1.png
-
-
-
-
-
-
-
+    - images/account_list.png
+    - images/selected.png
+    - images/account_need_sync.png
+    - images/account_synced.png
