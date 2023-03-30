@@ -23,7 +23,7 @@ void showProviderBottomDialog(BuildContext context, Staking_providersBean? provi
     builder: (context) => CustomerBottomDialogWidget(
       title: 'Know Your Provider',
       customView: _buildProvider(context, provider),
-      isShowCloseButton: true,
+      isShowCloseButton: false,
       isShowTopIcon: true,
     )
   );
@@ -31,22 +31,82 @@ void showProviderBottomDialog(BuildContext context, Staking_providersBean? provi
 
 _buildProvider(BuildContext context, Staking_providersBean? provider) {
   return Padding(
-    padding: EdgeInsets.fromLTRB(20.w, 0, 40.w, 0),
+    padding: EdgeInsets.fromLTRB(40.w, 0, 40.w, 0),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildMultiLineTexts('Provider Name', provider?.providerTitle, 2, needSpacing: false),
-        _buildVerification(provider?.addressVerification),
-        _buildHyperlink(context, 'Provider Site', provider?.website, 3),
-        _buildHyperlink(context, 'Provider Github', provider?.github, 3),
-        _buildMultiLineTexts('Provider Address', provider?.providerAddress, 2),
-        _buildTermsWidget(provider?.payoutTerms),
-        _buildMultiLineTexts('Delegators', '${provider?.delegatorsNum ?? ''}', 2),
-        _buildMultiLineTexts('Staked Amount', provider?.stakedSum?.toString(), 2),
-        _buildMultiLineTexts('Pool Percent', '${provider?.stakePercent?.toString() ?? ''}%', 2),
-        _buildMultiLineTexts('Pool Fee', '${provider?.providerFee ?? ''}%', 2),
-        _buildContacts(provider),
+        Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
+          child: Text("Provider Info", textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))),
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black12, width: 0.5.w),
+            borderRadius: BorderRadius.all(Radius.circular(5.w)),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(color: Colors.black12, offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
+            ]
+          ),
+          child: Column(
+            children: [
+              _buildMultiLineTexts('Provider Name', provider?.providerTitle, 2, needSpacing: false),
+              _buildVerification(provider?.addressVerification),
+              _buildHyperlink(context, 'Provider Site', provider?.website, 3),
+              _buildHyperlink(context, 'Provider Github', provider?.github, 3),
+              _buildMultiLineTexts('Provider Address', provider?.providerAddress, 2),
+              _buildTermsWidget(provider?.payoutTerms),
+            ]
+          )
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
+          child: Text("Pool Info", textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))),
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black12, width: 0.5.w),
+            borderRadius: BorderRadius.all(Radius.circular(5.w)),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(color: Colors.black12, offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
+            ]
+          ),
+          child: Column(
+            children: [
+              _buildMultiLineTexts('Delegators', '${provider?.delegatorsNum ?? ''}', 2, needSpacing: false),
+              _buildMultiLineTexts('Staked Amount', provider?.stakedSum?.toString(), 2),
+              _buildMultiLineTexts('Pool Percent', '${provider?.stakePercent?.toString() ?? ''}%', 2),
+              _buildMultiLineTexts('Pool Fee', '${provider?.providerFee ?? ''}%', 2)
+            ]
+          )
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
+          child: Text("Provider Contacts", textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))),
+        ),
+        Container(
+            margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.black12, width: 0.5.w),
+                borderRadius: BorderRadius.all(Radius.circular(5.w)),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(color: Colors.black12, offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
+                ]
+            ),
+            child: Column(
+                children: [
+                  _buildContacts(provider, needSpacing: false)
+                ]
+            )
+        )
       ]
     )
   );
@@ -73,7 +133,7 @@ _buildVerification(int? verification, {bool needSpacing = true}){
               child: Text(
                 'Verification',
                 textAlign: TextAlign.right,
-                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))
+                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
               ),
             ),
             Container(width: columnSpacing),
@@ -120,7 +180,7 @@ _buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml 
             child: Text(
               title,
               textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))
+              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
             )
           ),
           Container(width: columnSpacing),
@@ -151,7 +211,7 @@ _buildHyperlink(BuildContext context, String title, String? url, int maxLines, {
         children: [
           Expanded(
             flex: TITLE_COLUMN_RATIO,
-            child: Text(title, textAlign: TextAlign.right, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d)))
+            child: Text(title, textAlign: TextAlign.right, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2)))
           ),
           Container(width: columnSpacing),
           Expanded(
@@ -199,7 +259,7 @@ _buildTermsWidget(String? payoutTerms, {bool needSpacing = true}){
             child: Text(
               'Payout Terms',
               textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))
+              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
             )
           ),
           Container(width: columnSpacing),
@@ -234,9 +294,9 @@ _buildContacts(Staking_providersBean? provider, {bool needSpacing = true}){
           Expanded(
             flex: TITLE_COLUMN_RATIO,
             child: Text(
-              'Provider Contacts',
+              'Applications',
               textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff2d2d2d))
+              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
             )
           ),
           Container(width: columnSpacing),
