@@ -12,6 +12,7 @@ class CustomerBottomDialogWidget extends StatelessWidget {
     this.buttonTextAlign,
     this.isShowCloseButton,
     this.isShowTopIcon,
+    this.isShowCancelButton,
     this.actions,
     this.customView = const SizedBox(),
     this.color});
@@ -49,6 +50,9 @@ class CustomerBottomDialogWidget extends StatelessWidget {
   // show or hide the top icon
   final bool? isShowTopIcon;
 
+  // show or hide the cancel button
+  final bool? isShowCancelButton;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -84,7 +88,7 @@ class CustomerBottomDialogWidget extends StatelessWidget {
           child: customView ?? const SizedBox()
         ),
         Container(height: 10.h),
-        InkWell(
+        (isShowCancelButton?? true) ? InkWell(
           onTap: () => Navigator.pop(context),
           child: Container(
             width: double.infinity,
@@ -112,7 +116,7 @@ class CustomerBottomDialogWidget extends StatelessWidget {
               )
             )
           )
-        )
+        ) : SizedBox.shrink()
       ]
     );
   }
