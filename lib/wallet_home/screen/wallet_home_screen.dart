@@ -3,14 +3,12 @@ import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/route/routes.dart';
 import 'package:coda_wallet/types/mina_hd_account_type.dart';
 import 'package:coda_wallet/types/send_data.dart';
-import 'package:coda_wallet/util/stake_utils.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_bloc.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_events.dart';
 import 'package:coda_wallet/wallet_home/blocs/account_states.dart';
 import 'package:coda_wallet/widget/dialog/unsafe_device_alert_dialog.dart';
 import 'package:coda_wallet/widget/dialog/upgrade_cipher_dialog.dart';
-import 'package:coda_wallet/widget/ui/custom_box_shadow.dart';
-import 'package:coda_wallet/widget/ui/custom_gradient.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:ffi_mina_signer/util/mina_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,16 +17,7 @@ import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
-_gotoSendFromScreen(BuildContext context) {
-  SendData sendData = SendData();
-  sendData.isDelegation = false;
-  Navigator.of(context).pushNamed(SendFromRoute, arguments: sendData);
-}
-
-_gotoReceiveAccountsScreen(BuildContext context) {
-  Navigator.of(context).pushNamed(ReceiveAccountsRoute);
-}
+import '../../util/format_utils.dart';
 
 class WalletHomeScreen extends StatefulWidget {
   WalletHomeScreen({Key? key}) : super(key: key);
@@ -38,8 +27,7 @@ class WalletHomeScreen extends StatefulWidget {
 }
 
 class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, RouteAware {
-  bool _stakeEnabled = true;
-  late var _accountBloc;
+  AccountBloc? _accountBloc;
   var _eventBusOn;
   bool _hasUpgradePopped = false;
 
@@ -79,7 +67,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       }
 
       if(globalHDAccounts.accounts != null && globalHDAccounts.accounts!.isNotEmpty) {
-        _accountBloc!.add(GetAccounts());
+        _accountBloc!.add(GetAccounts(true));
       }
     }
   }
@@ -166,33 +154,29 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   Widget build(BuildContext context) {
     super.build(context);
     ScreenUtil.init(context, designSize: const Size(375, 812), minTextAdapt: true, splitScreenMode: false, scaleByHeight: false);
-    return _buildWalletHomeBody(context);
-  }
-
-  Widget _buildWalletHomeBody(BuildContext context) {
-    if(_stakeEnabled) {
-      return _buildStakedHome(context);
-    }
-
-    return _buildNoStakeHome(context);
+    return _buildStakedHome(context);
   }
 
   _buildStakedHome(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        gradient: backgroundGradient
-      ),
+      color: Color(0xfff1f1f1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(height: 8.h),
-          _buildQRTipIcon(context),
-          Container(height: 35.h),
+          Container(height: 20.h),
+          _buildHomeTitleBar(context),
+          Container(height: 48.h),
           _buildMinaLogo(),
-          Container(height: 36.h),
-          Text('MINA WALLET BALANCE', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575))),
-          Container(height: 1.h,),
+          Container(height: 20.h),
+          Text('MINA WALLET ACCOUNT', textAlign: TextAlign.center, style: TextStyle(fontSize: 14.sp, color: Color(0xff757575))),
+          Container(height: 10.h),
+          BlocBuilder<AccountBloc, AccountStates>(
+            builder: (BuildContext context, AccountStates state) {
+            return _buildAccountWidget(context);
+            }
+          ),
+          Container(height: 20.h,),
           BlocBuilder<AccountBloc, AccountStates>(
             builder: (BuildContext context, AccountStates state) {
               return Column(
@@ -207,7 +191,11 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
             }
           ),
           Container(height: 43.h),
-          _buildActionButton(context)
+          BlocBuilder<AccountBloc, AccountStates>(
+            builder: (BuildContext context, AccountStates state) {
+              return _buildActionButton(context, state);
+            }
+          )
         ]
       )
     );
@@ -226,20 +214,20 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Sync accounts failed!')));
       });
-      return ElevatedButton(
+      return OutlinedButton(
         onPressed: () {
-          _accountBloc.add(GetAccounts());
+          _accountBloc!.add(GetAccounts(true));
         },
-        child: Text('RESYNC',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Colors.redAccent)),
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
+        child: Text('RESYNC', textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xfffe5962))),
+        style: OutlinedButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          minimumSize: Size.zero,
           backgroundColor: Color(0xdddddd),
           foregroundColor: Colors.redAccent,
           side: BorderSide(width: 0.5.h, color: Colors.redAccent,),
           textStyle: const TextStyle(fontWeight: FontWeight.w600),
-          padding: EdgeInsets.fromLTRB(6.w, 0.h, 6.w, 0.h)
+          padding: EdgeInsets.fromLTRB(6.w, 6.h, 6.w, 6.h)
         ),
       );
     }
@@ -247,85 +235,95 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     return Container();
   }
 
-  _buildNoStakeHome(BuildContext context) {
-    return Column(children: [
-      Expanded(child: Column(
-        children: [
-          Container(height: 8.h),
-          _buildQRTipIcon(context),
-          Container(height: 2.h),
-          _buildMinaLogo(),
-          Container(height: 10.h),
-          _buildTotalBalance(),
-          _buildFiatBalance(),
-          Container(height: 12.h),
-          _buildActionButton(context)
-        ]),
-        flex: 5
-      ),
-      Expanded(child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            alignment: Alignment.bottomCenter,
-            image: AssetImage('images/no_staking_bg.png',),
-            fit: BoxFit.fitWidth
-          ),
-        ),
-        child: Center(
-          child: Column(children: [
-            Image.asset('images/to_stake_flower.png', width: 80.w, height: 80.w),
-            Container(height: 24.h),
-            Text('Earn returns on your hodlings', textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500, color: Colors.white)),
-            Container(height: 26.h),
-            InkWell(
-              child: Container(
-                padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 70.w, right: 70.w),
-                decoration: getMinaButtonDecoration(),
-                child: Text('START STAKING', style: TextStyle(color: Colors.black),),
-              ),
-              onTap: null,
-            )
-          ],
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          )),
-        ),
-        flex: 4
-      )
-      ],
-    );
-  }
-
-  _buildQRTipIcon(BuildContext context) {
+  _buildHomeTitleBar(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(width: 24.w,),
+        BlocBuilder<AccountBloc, AccountStates>(
+          builder: (BuildContext context, AccountStates state) {
+            return Expanded(
+              child:_buildAccountSwitcher(context, state)
+            );
+          }
+        ),
+        Container(width: 120.w,),
         BlocBuilder<AccountBloc, AccountStates>(
           builder: (BuildContext context, AccountStates state) {
             return _buildWalletSync(context, state);
           }
         ),
-        Expanded(child: Container(), flex: 1),
-        Container(
-          padding: EdgeInsets.all(10.w),
-          width: 44.w,
-          height: 44.w,
-          child: InkWell(
-            onTap: () {
-              if(globalHDAccounts?.accounts?.length == 1) {
-                Navigator.of(context).pushNamed(ReceiveAccountRoute, arguments: 0);
-              } else {
-                _gotoReceiveAccountsScreen(context);
-              }
-            },
-            child: Image.asset('images/qr_code_icon.png', width: 34.2, height: 34.w,)
-          )
-        ),
         Container(width: 28.w)
       ],
     );
+  }
+
+  _buildAccountSwitcher(BuildContext context, AccountStates state) {
+    void Function(Object?)? onChangedCallback;
+    if(state is GetAccountsLoading) {
+      onChangedCallback = null;
+    } else {
+      onChangedCallback = (value) {
+        AccountBean accountBean = value as AccountBean;
+        if(accountBean.account != _accountBloc!.accountIndex) {
+          _accountBloc!.accountIndex = accountBean.account!;
+          _accountBloc!.add(GetAccounts(false));
+        }
+      };
+    }
+
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        customButton: Container(
+          padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset('images/account_list.png', width: 20.w, height: 20.w,),
+              Container(width: 1.w),
+              Text('ACCOUNTS', textAlign: TextAlign.left,
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d)),),
+            ],
+          ),
+        ),
+        items: _buildAccountsDropItems(context),
+        onChanged: onChangedCallback,
+      ),
+    );
+  }
+
+  _buildAccountsDropItems(BuildContext context) {
+    return globalHDAccounts.accounts!.map<DropdownMenuItem<AccountBean>>((AccountBean? value) {
+      Widget accountItem;
+      Color itemColor;
+      if(_accountBloc!.accountIndex == value!.account) {
+        accountItem = Image.asset('images/selected.png', width: 14.w, height: 14.w,);
+        itemColor = Color(0xff098de6);
+      } else {
+        accountItem = Container(width: 12.w, height: 12.w,);
+        itemColor = Color(0xff2d2d2d);
+      }
+
+      return DropdownMenuItem<AccountBean>(
+        value: value,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            accountItem,
+            Container(width: 4.w,),
+            Text(_getShortAccountName(value.accountName, 16),
+              textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: itemColor)),
+          ],
+        )
+      );
+    }).toList();
   }
 
   _buildMinaLogo() {
@@ -338,33 +336,78 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   }
 
   _buildTotalBalance() {
-    return Padding(
-      padding: EdgeInsets.only(top: 9.h, bottom: 9.h),
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(children: <TextSpan>[
-          TextSpan(
-            text: '${getWalletBalance()} ',
-            style: TextStyle(fontSize: 30.sp, color: Colors.black, fontWeight: FontWeight.w500)),
-          TextSpan(
-            text: 'MINA',
-            style: TextStyle(color: Color(0xff979797), fontWeight: FontWeight.normal, fontSize: 14.sp)),
-          ]
+    bool isActive = globalHDAccounts.accounts?[_accountBloc!.accountIndex]!.isActive ?? false;
+
+    if(isActive) {
+      return Padding(
+        padding: EdgeInsets.only(top: 9.h, bottom: 1.h),
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                text: '${MinaHelper.getMinaStrByNanoStr(
+                  globalHDAccounts.accounts?[_accountBloc!.accountIndex]!.balance ?? '')} ',
+                style: TextStyle(fontSize: 30.sp, color: Colors.black, fontWeight: FontWeight.w500)),
+              TextSpan(
+                text: 'MINA',
+                style: TextStyle(color: Color(0xff979797), fontWeight: FontWeight.normal, fontSize: 14.sp)),
+            ]
+          )
         )
-      )
-    );
+      );
+    } else {
+      return Padding(
+        padding: EdgeInsets.only(top: 9.h, bottom: 1.h),
+        child: Text('Inactive account', textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500, color: Color(0xfffe5962)),)
+      );
+    }
   }
 
   _buildFiatBalance() {
     return Padding(
-      padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
-      child: Text('(\$${getWalletFiatPrice()})', textAlign: TextAlign.center, maxLines: 2,
+      padding: EdgeInsets.only(top: 2.h, bottom: 2.h),
+      child: Text('(\$${getAccountFiatPrice(_accountBloc!.accountIndex)})', textAlign: TextAlign.center, maxLines: 2,
         style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: Color(0xff757575)))
     );
   }
 
-  _buildActionButton(BuildContext context) {
+  _buildActionButton(BuildContext context, AccountStates state) {
+    Color sendColor;
+    Color receiveColor;
+    void Function()? sendCallback;
+    void Function()? receiveCallback;
+
+    if(state is GetAccountsSuccess) {
+      sendColor = Color(0xff098de6);
+      receiveColor = Color(0xff01c6d0);
+      sendCallback = () {
+        SendData sendData = SendData();
+        sendData.isDelegation = false;
+        sendData.from = _accountBloc!.accountIndex;
+        Navigator.of(context).pushNamed(SendToRoute, arguments: sendData);
+      };
+      receiveCallback = () =>
+        Navigator.of(context).pushNamed(ReceiveAccountRoute, arguments: _accountBloc!.accountIndex);;
+    } else {
+      sendColor = Color(0xff979797);
+      receiveColor = Color(0xff979797);
+      sendCallback = null;
+      receiveCallback = null;
+    }
+
     return Container(
+      width: 300.w,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black12, width: 1.w),
+        borderRadius: BorderRadius.all(Radius.circular(8.w)),
+        color: Color(0xffffffff),
+        boxShadow: [
+          BoxShadow(color: Colors.black12,
+            offset: Offset(0, 0), blurRadius: 1, spreadRadius: 0.5)
+        ]
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -372,19 +415,16 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
             flex: 1,
             child: InkWell(
               child: Container(
-                padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 6.h, bottom: 6.h),
-                child: Text('SEND', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 1.w),
+                  borderRadius: BorderRadius.all(Radius.circular(8.w)),
+                  color: Color(0xffffffff),
+                ),
+                padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 14.h, bottom: 14.h),
+                child: Text('SEND', textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: sendColor),),
               ),
-              onTap: () {
-                if(globalHDAccounts?.accounts?.length == 1) {
-                  SendData sendData = SendData();
-                  sendData.isDelegation = false;
-                  sendData.from = 0;
-                  Navigator.of(context).pushNamed(SendToRoute, arguments: sendData);
-                } else {
-                  _gotoSendFromScreen(context);
-                }
-              }
+              onTap: sendCallback
             )
           ),
           Container(height: 32.67.h, width: 1.w, color: Color(0xffd3d3d3)),
@@ -392,39 +432,66 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
             flex: 1,
             child: InkWell(
               child: Container(
-                padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 6.h, bottom: 6.h),
-                child: Text('RECEIVE', textAlign: TextAlign.center, style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d)),),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 1.w),
+                  borderRadius: BorderRadius.all(Radius.circular(8.w)),
+                  color: Color(0xffffffff),
+                ),
+                padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 14.h, bottom: 14.h),
+                child: Text('RECEIVE', textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: receiveColor),),
               ),
-              onTap: () {
-                if(globalHDAccounts?.accounts?.length == 1) {
-                  Navigator.of(context).pushNamed(ReceiveAccountRoute, arguments: 0);
-                } else {
-                  _gotoReceiveAccountsScreen(context);
-                }
-              }
+              onTap: receiveCallback
             )
           ),
         ],
       ),
-      width: 263.w,
-      height: 49.h,
-      decoration: getMinaButtonDecoration(),
-//      margin: EdgeInsets.all(10),
+    );
+  }
+
+  _buildAccountWidget(BuildContext context) {
+    String shortAccountName =
+      _getShortAccountName(globalHDAccounts.accounts?[_accountBloc!.accountIndex]?.accountName, 24);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 50.w, right: 50.w),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset('images/account_need_sync.png', width: 16.w, height: 16.w,),
+              Container(width: 2.w,),
+              Text(shortAccountName,
+                textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 1,
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500, color: Color(0xff2d2d2d))),
+            ],
+          )
+        ),
+        Container(height: 2.h,),
+        Text(
+          '${formatHashEllipsis(_accountBloc!.publicKey, short: false)}', textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w300, color: Color(0xff979797))
+        ),
+      ],
     );
   }
 
   _buildStakedPercent() {
-    double stakePercent = double.tryParse(getStakePercent()) ?? 0.0;
     return CircularPercentIndicator(
       radius: 82.w,
       lineWidth: 5.0,
-      percent: stakePercent,
+      percent: _accountBloc!.accountStaking ? 1.0 : 0.0,
       backgroundColor: Color(0xff9e9e9e),
       center: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(children: <TextSpan>[
           TextSpan(
-            text: '${(stakePercent * 100).toStringAsFixed(1)}%\n',
+            text: _accountBloc!.accountStaking ? '100%\n' : '0.00%\n',
             style: TextStyle(fontSize: 18.sp, color: Colors.black, fontWeight: FontWeight.w500)),
           TextSpan(
             text: 'STAKED',
@@ -432,8 +499,20 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           ]
         )
       ),
-      progressColor: Color(0xffbfb556),
+      progressColor: Color(0xff6bc7a1),
     );
+  }
+
+  String _getShortAccountName(String? accountName, int length) {
+    if(null == accountName || accountName.isEmpty) {
+      return 'null';
+    }
+
+    if(accountName.length >= length) {
+      return accountName.substring(0, length) + '...';
+    }
+
+    return accountName;
   }
 
   @override

@@ -6,16 +6,9 @@ abstract class AccountEvents {
 }
 
 class GetAccounts extends AccountEvents {
+  final bool getExchangeInfo;
 
-  GetAccounts() : super();
-
-  @override
-  List<Object>? get props => null;
-}
-
-class GetExchangeInfo extends AccountEvents {
-
-  GetExchangeInfo() : super();
+  GetAccounts(this.getExchangeInfo) : super();
 
   @override
   List<Object>? get props => null;

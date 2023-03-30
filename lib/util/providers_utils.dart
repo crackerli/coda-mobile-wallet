@@ -6,7 +6,7 @@ import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 
 // Convert the provider list get from staketab to map for quick access with public key.
 // And store it in local storage.
-storeProvidersMap(List<Staking_providersBean?>? providers) {
+storeProvidersMap(List<Staking_providersBean?>? providers) async {
   if(null == providers || providers.isEmpty) {
     return;
   }
@@ -20,5 +20,5 @@ storeProvidersMap(List<Staking_providersBean?>? providers) {
 
   // Saved the provider list to local storage
   String storeProviders = json.encode(mapProviders);
-  globalPreferences.setString(STAKETAB_PROVIDER_KEY, storeProviders);
+  await globalPreferences.setString(STAKETAB_PROVIDER_KEY, storeProviders);
 }

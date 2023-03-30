@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/global/global.dart';
 import 'package:coda_wallet/service/common_https_service.dart';
@@ -14,11 +13,25 @@ import 'account_events.dart';
 import 'account_states.dart';
 import 'package:coda_wallet/util/safe_map.dart';
 
-class AccountBloc extends
-  Bloc<AccountEvents, AccountStates> {
+class AccountBloc extends Bloc<AccountEvents, AccountStates> {
 
   late CodaService _service;
   late IndexerService _indexerService;
+  bool _hasProvidersLoaded = false;
+
+  int accountIndex = 0;
+  bool isAccountLoading = false;
+
+  String? get publicKey => globalHDAccounts.accounts![accountIndex]!.address;
+  bool get accountStaking {
+    AccountBean account = globalHDAccounts.accounts![accountIndex]!;
+    if(account.isActive ?? false) {
+      if(null != account.stakingAddress && account.stakingAddress!.isNotEmpty && account.stakingAddress != account.address) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   AccountBloc(AccountStates state) : super(state) {
     _service = CodaService();
@@ -47,36 +60,41 @@ class AccountBloc extends
 
     try {
       yield GetAccountsLoading();
-      for(AccountBean? account in globalHDAccounts.accounts!) {
-        Map<String, dynamic> variables = Map<String, dynamic>();
-        variables['publicKey'] = account!.address;
-        final result = await _service.performQuery(ACCOUNT_QUERY, variables: variables);
+      isAccountLoading = true;
+      AccountBean? account = globalHDAccounts.accounts?[accountIndex];
 
-        if(result.hasException || null == result.data) {
-          throw Exception('One of Mina accounts syncing failed');
-        }
+      if(null == account) {
+        throw Exception('Account syncing failed');
+      }
 
-        print('Get account ${account!.address} successfully');
-        dynamic accounts = result.data!['accounts'];
-        // If the account is null, then we can say this account is not active
-        if((accounts as List).isEmpty) {
-          account!.balance = '0';
-          account!.isActive = false;
-          account!.stakingAddress = '';
-        } else { // We use only the first account
-          Map<String, dynamic> tempAccount = accounts[0] as Map<String, dynamic>;
-          SafeMap safeAccount = SafeMap(tempAccount);
-          String balance = safeAccount['balance']['total'].value;
-          String publicKey = safeAccount['publicKey'].value;
-          String stakingAddress = safeAccount['delegateAccount']['publicKey'].value;
+      Map<String, dynamic> variables = Map<String, dynamic>();
+      variables['publicKey'] = account.address;
+      final result = await _service.performQuery(ACCOUNT_QUERY, variables: variables);
 
-          if(account!.address == publicKey) {
-            account.balance = balance;
-            account.isActive = true;
-            account.stakingAddress = stakingAddress;
-          } else {
-            print('Account got not match it saved on disk!!!');
-          }
+      if(result.hasException || null == result.data) {
+        throw Exception('Account syncing failed');
+      }
+
+      print('Get account ${account.address} successfully');
+      dynamic accounts = result.data!['accounts'];
+      // If the account is null, then we can say this account is not active
+      if((accounts as List).isEmpty) {
+        account.balance = '0';
+        account.isActive = false;
+        account.stakingAddress = '';
+      } else { // We use only the first account
+        Map<String, dynamic> tempAccount = accounts[0] as Map<String, dynamic>;
+        SafeMap safeAccount = SafeMap(tempAccount);
+        String balance = safeAccount['balance']['total'].value;
+        String publicKey = safeAccount['publicKey'].value;
+        String stakingAddress = safeAccount['delegateAccount']['publicKey'].value;
+
+        if(account.address == publicKey) {
+          account.balance = balance;
+          account.isActive = true;
+          account.stakingAddress = stakingAddress;
+        } else {
+          print('Account got not match it saved on disk!!!');
         }
       }
 
@@ -87,17 +105,31 @@ class AccountBloc extends
         key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
 
       print('All accounts written into disk!!!');
-      yield GetAccountsSuccess();
 
-      bool result = await _getExchangeInfo();
-      if(result) {
-        yield GetExchangeInfoSuccess(null);
+      // Get Providers api is very slow, get only once when app startup
+      print('Start to get providers');
+      if(!_hasProvidersLoaded) {
+        await _getProviders();
+        print('Get providers finished');
+        _hasProvidersLoaded = true;
       } else {
-        yield GetExchangeInfoFail(null);
+        print('No need to get providers');
       }
 
-      await _getProviders();
+      // This may always be fail because of binance blocked
+      if(event.getExchangeInfo) {
+        bool result = await _getExchangeInfo();
+        if (result) {
+          print('Get exchange info success');
+        } else {
+          print('Get exchange info fail');
+        }
+      }
+
+      isAccountLoading = false;
+      yield GetAccountsSuccess();
     } catch (e) {
+      isAccountLoading = false;
       yield GetAccountsFail();
       print('Wallet home exception: ${e.toString()}');
     } finally {
@@ -120,7 +152,7 @@ class AccountBloc extends
         return;
       }
 
-      storeProvidersMap(providersEntity.stakingProviders);
+      await storeProvidersMap(providersEntity.stakingProviders);
       print('Get providers done!!');
     } catch (e) {
       print('Error happen when get providers: ${e.toString()}');
@@ -137,7 +169,7 @@ class AccountBloc extends
 
       Map<String, dynamic> data = response.data as Map<String, dynamic>;
       if(null != data['price'] && data['price']!.isNotEmpty) {
-        globalPreferences.setString(NOMICS_PRICE_KEY, data['price']!);
+        await globalPreferences.setString(NOMICS_PRICE_KEY, data['price']!);
         print('Get exchange info done!!');
       } else {
         print('Get exchange info error!!');
