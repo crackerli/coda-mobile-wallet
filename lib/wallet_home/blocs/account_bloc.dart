@@ -13,12 +13,14 @@ import 'account_events.dart';
 import 'account_states.dart';
 import 'package:coda_wallet/util/safe_map.dart';
 
-class AccountBloc extends
-Bloc<AccountEvents, AccountStates> {
+class AccountBloc extends Bloc<AccountEvents, AccountStates> {
 
   late CodaService _service;
   late IndexerService _indexerService;
+  bool _hasProvidersLoaded = false;
+
   int accountIndex = 0;
+  bool isAccountLoading = false;
 
   String? get publicKey => globalHDAccounts.accounts![accountIndex]!.address;
   bool get accountStaking {
@@ -58,6 +60,7 @@ Bloc<AccountEvents, AccountStates> {
 
     try {
       yield GetAccountsLoading();
+      isAccountLoading = true;
       AccountBean? account = globalHDAccounts.accounts?[accountIndex];
 
       if(null == account) {
@@ -102,17 +105,31 @@ Bloc<AccountEvents, AccountStates> {
         key: GLOBAL_ACCOUNTS_KEY, value: json.encode(accountsJson));
 
       print('All accounts written into disk!!!');
-      yield GetAccountsSuccess();
 
-      // bool exchangeResult = await _getExchangeInfo();
-      // if(exchangeResult) {
-      //   yield GetExchangeInfoSuccess(null);
-      // } else {
-      //   yield GetExchangeInfoFail(null);
-      // }
-      //
-      // await _getProviders();
+      // Get Providers api is very slow, get only once when app startup
+      print('Start to get providers');
+      if(!_hasProvidersLoaded) {
+        await _getProviders();
+        print('Get providers finished');
+        _hasProvidersLoaded = true;
+      } else {
+        print('No need to get providers');
+      }
+
+      // This may always be fail because of binance blocked
+      if(event.getExchangeInfo) {
+        bool result = await _getExchangeInfo();
+        if (result) {
+          print('Get exchange info success');
+        } else {
+          print('Get exchange info fail');
+        }
+      }
+
+      isAccountLoading = false;
+      yield GetAccountsSuccess();
     } catch (e) {
+      isAccountLoading = false;
       yield GetAccountsFail();
       print('Wallet home exception: ${e.toString()}');
     } finally {
@@ -135,7 +152,7 @@ Bloc<AccountEvents, AccountStates> {
         return;
       }
 
-      storeProvidersMap(providersEntity.stakingProviders);
+      await storeProvidersMap(providersEntity.stakingProviders);
       print('Get providers done!!');
     } catch (e) {
       print('Error happen when get providers: ${e.toString()}');
@@ -152,7 +169,7 @@ Bloc<AccountEvents, AccountStates> {
 
       Map<String, dynamic> data = response.data as Map<String, dynamic>;
       if(null != data['price'] && data['price']!.isNotEmpty) {
-        globalPreferences.setString(NOMICS_PRICE_KEY, data['price']!);
+        await globalPreferences.setString(NOMICS_PRICE_KEY, data['price']!);
         print('Get exchange info done!!');
       } else {
         print('Get exchange info error!!');

@@ -67,7 +67,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       }
 
       if(globalHDAccounts.accounts != null && globalHDAccounts.accounts!.isNotEmpty) {
-        _accountBloc!.add(GetAccounts());
+        _accountBloc!.add(GetAccounts(true));
       }
     }
   }
@@ -216,7 +216,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       });
       return OutlinedButton(
         onPressed: () {
-          _accountBloc!.add(GetAccounts());
+          _accountBloc!.add(GetAccounts(true));
         },
         child: Text('RESYNC', textAlign: TextAlign.center,
           style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xfffe5962))),
@@ -244,11 +244,12 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         Container(width: 24.w,),
         BlocBuilder<AccountBloc, AccountStates>(
           builder: (BuildContext context, AccountStates state) {
-            return Expanded(child:
-              _buildAccountSwitcher(context));
+            return Expanded(
+              child:_buildAccountSwitcher(context, state)
+            );
           }
         ),
-        Container(width: 60.w,),
+        Container(width: 120.w,),
         BlocBuilder<AccountBloc, AccountStates>(
           builder: (BuildContext context, AccountStates state) {
             return _buildWalletSync(context, state);
@@ -259,7 +260,20 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     );
   }
 
-  _buildAccountSwitcher(BuildContext context) {
+  _buildAccountSwitcher(BuildContext context, AccountStates state) {
+    void Function(Object?)? onChangedCallback;
+    if(state is GetAccountsLoading) {
+      onChangedCallback = null;
+    } else {
+      onChangedCallback = (value) {
+        AccountBean accountBean = value as AccountBean;
+        if(accountBean.account != _accountBloc!.accountIndex) {
+          _accountBloc!.accountIndex = accountBean.account!;
+          _accountBloc!.add(GetAccounts(false));
+        }
+      };
+    }
+
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
         customButton: Container(
@@ -277,13 +291,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           ),
         ),
         items: _buildAccountsDropItems(context),
-        onChanged: (value) {
-          AccountBean accountBean = value as AccountBean;
-          if(accountBean.account != _accountBloc!.accountIndex) {
-            _accountBloc!.accountIndex = accountBean.account!;
-            _accountBloc!.add(GetAccounts());
-          }
-        },
+        onChanged: onChangedCallback,
       ),
     );
   }
@@ -291,10 +299,13 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   _buildAccountsDropItems(BuildContext context) {
     return globalHDAccounts.accounts!.map<DropdownMenuItem<AccountBean>>((AccountBean? value) {
       Widget accountItem;
+      Color itemColor;
       if(_accountBloc!.accountIndex == value!.account) {
         accountItem = Image.asset('images/selected.png', width: 14.w, height: 14.w,);
+        itemColor = Color(0xff098de6);
       } else {
         accountItem = Container(width: 12.w, height: 12.w,);
+        itemColor = Color(0xff2d2d2d);
       }
 
       return DropdownMenuItem<AccountBean>(
@@ -306,8 +317,9 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           children: [
             accountItem,
             Container(width: 4.w,),
-            Text(_getShortAccountName(value.accountName, 16), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+            Text(_getShortAccountName(value.accountName, 16),
+              textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: itemColor)),
           ],
         )
       );
