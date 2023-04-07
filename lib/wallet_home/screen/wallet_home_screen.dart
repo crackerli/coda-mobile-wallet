@@ -397,14 +397,19 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     void Function()? receiveCallback;
 
     if(state is GetAccountsSuccess) {
-      sendColor = Color(0xff098de6);
+      if(globalHDAccounts.accounts?[_accountBloc!.accountIndex]?.isActive ?? false) {
+        sendColor = Color(0xff098de6);
+        sendCallback = () {
+          SendData sendData = SendData();
+          sendData.isDelegation = false;
+          sendData.from = _accountBloc!.accountIndex;
+          Navigator.of(context).pushNamed(SendToRoute, arguments: sendData);
+        };
+      } else {
+        sendColor = Color(0xff979797);
+        sendCallback = null;
+      }
       receiveColor = Color(0xff01c6d0);
-      sendCallback = () {
-        SendData sendData = SendData();
-        sendData.isDelegation = false;
-        sendData.from = _accountBloc!.accountIndex;
-        Navigator.of(context).pushNamed(SendToRoute, arguments: sendData);
-      };
       receiveCallback = () =>
         Navigator.of(context).pushNamed(ReceiveAccountRoute, arguments: _accountBloc!.accountIndex);
     } else {
