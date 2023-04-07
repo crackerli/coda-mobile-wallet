@@ -173,7 +173,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           Container(height: 10.h),
           BlocBuilder<AccountBloc, AccountStates>(
             builder: (BuildContext context, AccountStates state) {
-            return _buildAccountWidget(context);
+            return _buildAccountWidget(context, state);
             }
           ),
           Container(height: 20.h,),
@@ -214,21 +214,26 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Sync accounts failed!')));
       });
-      return OutlinedButton(
-        onPressed: () {
-          _accountBloc!.add(GetAccounts(true));
-        },
-        child: Text('RESYNC', textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xfffe5962))),
-        style: OutlinedButton.styleFrom(
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          minimumSize: Size.zero,
-          backgroundColor: Color(0xdddddd),
-          foregroundColor: Colors.redAccent,
-          side: BorderSide(width: 0.5.h, color: Colors.redAccent,),
-          textStyle: const TextStyle(fontWeight: FontWeight.w600),
-          padding: EdgeInsets.fromLTRB(6.w, 6.h, 6.w, 6.h)
-        ),
+      return Row(
+        children: [
+          Expanded(child: Container()),
+          OutlinedButton(
+            onPressed: () {
+              _accountBloc!.add(GetAccounts(true));
+            },
+            child: Text('RESYNC', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xfffe5962))),
+            style: OutlinedButton.styleFrom(
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minimumSize: Size.zero,
+                backgroundColor: Color(0xdddddd),
+                foregroundColor: Colors.redAccent,
+                side: BorderSide(width: 0.5.h, color: Colors.redAccent,),
+                textStyle: const TextStyle(fontWeight: FontWeight.w600),
+                padding: EdgeInsets.fromLTRB(6.w, 6.h, 6.w, 6.h)
+            ),
+          )
+        ],
       );
     }
 
@@ -245,14 +250,17 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         BlocBuilder<AccountBloc, AccountStates>(
           builder: (BuildContext context, AccountStates state) {
             return Expanded(
-              child:_buildAccountSwitcher(context, state)
+              flex: 1,
+              child: _buildAccountSwitcher(context, state)
             );
           }
         ),
-        Container(width: 120.w,),
         BlocBuilder<AccountBloc, AccountStates>(
           builder: (BuildContext context, AccountStates state) {
-            return _buildWalletSync(context, state);
+            return Expanded(
+              flex: 1,
+              child: _buildWalletSync(context, state)
+            );
           }
         ),
         Container(width: 28.w)
@@ -276,6 +284,13 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
 
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
+        isExpanded: true,
+        dropdownStyleData: DropdownStyleData(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4.w),
+            color: Colors.white,
+          ),
+        ),
         customButton: Container(
           padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
           child: Row(
@@ -304,7 +319,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
         accountItem = Image.asset('images/selected.png', width: 14.w, height: 14.w,);
         itemColor = Color(0xff098de6);
       } else {
-        accountItem = Container(width: 12.w, height: 12.w,);
+        accountItem = Container(width: 14.w, height: 14.w,);
         itemColor = Color(0xff2d2d2d);
       }
 
@@ -316,10 +331,12 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
           mainAxisSize: MainAxisSize.min,
           children: [
             accountItem,
-            Container(width: 4.w,),
-            Text(_getShortAccountName(value.accountName, 16),
-              textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: itemColor)),
+            Container(width: 2.w,),
+            Expanded(
+              child: Text(value.accountName ?? 'Unknown',
+                textAlign: TextAlign.start, maxLines: 1, overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w600, color: itemColor))
+            ),
           ],
         )
       );
@@ -380,16 +397,21 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     void Function()? receiveCallback;
 
     if(state is GetAccountsSuccess) {
-      sendColor = Color(0xff098de6);
+      if(globalHDAccounts.accounts?[_accountBloc!.accountIndex]?.isActive ?? false) {
+        sendColor = Color(0xff098de6);
+        sendCallback = () {
+          SendData sendData = SendData();
+          sendData.isDelegation = false;
+          sendData.from = _accountBloc!.accountIndex;
+          Navigator.of(context).pushNamed(SendToRoute, arguments: sendData);
+        };
+      } else {
+        sendColor = Color(0xff979797);
+        sendCallback = null;
+      }
       receiveColor = Color(0xff01c6d0);
-      sendCallback = () {
-        SendData sendData = SendData();
-        sendData.isDelegation = false;
-        sendData.from = _accountBloc!.accountIndex;
-        Navigator.of(context).pushNamed(SendToRoute, arguments: sendData);
-      };
       receiveCallback = () =>
-        Navigator.of(context).pushNamed(ReceiveAccountRoute, arguments: _accountBloc!.accountIndex);;
+        Navigator.of(context).pushNamed(ReceiveAccountRoute, arguments: _accountBloc!.accountIndex);
     } else {
       sendColor = Color(0xff979797);
       receiveColor = Color(0xff979797);
@@ -449,7 +471,14 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
     );
   }
 
-  _buildAccountWidget(BuildContext context) {
+  _buildAccountWidget(BuildContext context, AccountStates state) {
+    Widget syncState;
+    if(state is GetAccountsSuccess) {
+      syncState = Image.asset('images/account_synced.png', width: 16.w, height: 16.w,);
+    } else {
+      syncState = Image.asset('images/account_need_sync.png', width: 16.w, height: 16.w,);
+    }
+
     String shortAccountName =
       _getShortAccountName(globalHDAccounts.accounts?[_accountBloc!.accountIndex]?.accountName, 24);
     return Column(
@@ -464,7 +493,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset('images/account_need_sync.png', width: 16.w, height: 16.w,),
+              syncState,
               Container(width: 2.w,),
               Text(shortAccountName,
                 textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, maxLines: 1,
