@@ -65,6 +65,7 @@ dependencies:
   flutter_countdown_timer: ^4.1.0
   expandable_page_view: ^1.0.17
   dropdown_button2: ^2.0.0
+  html_unescape: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -168,3 +169,6 @@ flutter:
     - images/selected.png
     - images/account_need_sync.png
     - images/account_synced.png
+    - images/link.png
+    - images/verified_long.png
+
