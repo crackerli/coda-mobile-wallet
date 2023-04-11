@@ -106,7 +106,8 @@ _buildProvider(BuildContext context, Staking_providersBean? provider) {
                   _buildContacts(provider, needSpacing: false)
                 ]
             )
-        )
+        ),
+        Container(height: 10.h),
       ]
     )
   );

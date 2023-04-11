@@ -87,16 +87,17 @@ class CustomerBottomDialogWidget extends StatelessWidget {
         SingleChildScrollView(
           child: customView ?? const SizedBox()
         ),
-        Container(height: 10.h),
+        Divider(height: 10.h),
         (isShowCancelButton?? true) ? InkWell(
           onTap: () => Navigator.pop(context),
           child: Container(
+            padding: EdgeInsets.only(right: 60.w, left: 60.w),
             width: double.infinity,
             height: 50.h,
             child: Align(
               alignment: Alignment.center,
               child: SizedBox(
-                width: 266.w,
+                width: double.infinity,
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
