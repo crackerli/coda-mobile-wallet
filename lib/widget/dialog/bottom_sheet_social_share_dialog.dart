@@ -98,7 +98,7 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
       isDismissible: true,
       enableDrag: false,
       builder: (context) => CustomerBottomDialogWidget(
-        title: 'Know Your Provider',
+        title: 'Select an application to share',
         customView: _buildShareView(address, snapshotPath, installedApp),
         isShowCloseButton: false,
         isShowTopIcon: true,

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coda_wallet/constant/constants.dart';
 import 'package:coda_wallet/stake/blocs/stake_center_states.dart';
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
+import 'package:coda_wallet/widget/dialog/bottom_sheet_provider_dialog.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -641,7 +642,7 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
                 side: BorderSide(width: 1.w, color: Color(0xff098de6))
               ),
               onPressed: () {
-
+                showProviderBottomDialog(context, stakingProvider);
               },
               child: Text('DETAILS', textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))

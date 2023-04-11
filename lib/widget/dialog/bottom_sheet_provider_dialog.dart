@@ -7,8 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 
-const TITLE_COLUMN_RATIO = 1;
-const CONTENT_COLUMN_RATIO = 2;
+const TITLE_COLUMN_RATIO = 2;
+const CONTENT_COLUMN_RATIO = 3;
 double columnSpacing = 12.w;
 double rowSpacing = 16.h;
 
@@ -118,7 +118,7 @@ _buildRowSpacing(){
 }
 
 _buildBottomLine(){
-  return Divider(height: 16.h, color: Color(0xffeeeef0));
+  return Divider(height: 16.h, color: Colors.black12);
 }
 
 _buildVerification(int? verification, {bool needTopSpacing = false, bool needBottomLine = true}){
