@@ -91,7 +91,7 @@ class CustomerBottomDialogWidget extends StatelessWidget {
         (isShowCancelButton?? true) ? InkWell(
           onTap: () => Navigator.pop(context),
           child: Container(
-            padding: EdgeInsets.only(right: 60.w, left: 60.w),
+            padding: EdgeInsets.only(right: 60.w, left: 60.w, bottom: 8.h),
             width: double.infinity,
             height: 50.h,
             child: Align(

@@ -53,12 +53,12 @@ _buildProvider(BuildContext context, Staking_providersBean? provider) {
           ),
           child: Column(
             children: [
-              _buildMultiLineTexts('Provider Name', provider?.providerTitle, 2, needSpacing: false),
+              _buildMultiLineTexts('Provider Name', provider?.providerTitle, 2),
               _buildVerification(provider?.addressVerification),
               _buildHyperlink(context, 'Provider Site', provider?.website, 3),
               _buildHyperlink(context, 'Provider Github', provider?.github, 3),
               _buildMultiLineTexts('Provider Address', provider?.providerAddress, 2),
-              _buildTermsWidget(provider?.payoutTerms),
+              _buildTermsWidget(provider?.payoutTerms, needBottomLine: false),
             ]
           )
         ),
@@ -79,10 +79,10 @@ _buildProvider(BuildContext context, Staking_providersBean? provider) {
           ),
           child: Column(
             children: [
-              _buildMultiLineTexts('Delegators', '${provider?.delegatorsNum ?? ''}', 2, needSpacing: false),
+              _buildMultiLineTexts('Delegators', '${provider?.delegatorsNum ?? ''}', 2),
               _buildMultiLineTexts('Staked Amount', provider?.stakedSum?.toString(), 2),
               _buildMultiLineTexts('Pool Percent', '${provider?.stakePercent?.toString() ?? ''}%', 2),
-              _buildMultiLineTexts('Pool Fee', '${provider?.providerFee ?? ''}%', 2)
+              _buildMultiLineTexts('Pool Fee', '${provider?.providerFee ?? ''}%', 2, needBottomLine: false)
             ]
           )
         ),
@@ -91,21 +91,21 @@ _buildProvider(BuildContext context, Staking_providersBean? provider) {
           child: Text("Provider Contacts", textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))),
         ),
         Container(
-            margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
-            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black12, width: 0.5.w),
-                borderRadius: BorderRadius.all(Radius.circular(5.w)),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(color: Colors.black12, offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
-                ]
-            ),
-            child: Column(
-                children: [
-                  _buildContacts(provider, needSpacing: false)
-                ]
-            )
+          margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black12, width: 0.5.w),
+            borderRadius: BorderRadius.all(Radius.circular(5.w)),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(color: Colors.black12, offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
+            ]
+          ),
+          child: Column(
+            children: [
+              _buildContacts(provider, needBottomLine: false)
+            ]
+          )
         ),
         Container(height: 10.h),
       ]
@@ -117,13 +117,17 @@ _buildRowSpacing(){
   return Container(height: rowSpacing);
 }
 
-_buildVerification(int? verification, {bool needSpacing = true}){
+_buildBottomLine(){
+  return Divider(height: 16.h, color: Color(0xffeeeef0));
+}
+
+_buildVerification(int? verification, {bool needTopSpacing = false, bool needBottomLine = true}){
   if (1 == verification) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        needSpacing ? _buildRowSpacing() : SizedBox.shrink(),
+        needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
         Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -149,7 +153,8 @@ _buildVerification(int? verification, {bool needSpacing = true}){
               )
             )
           ]
-        )
+        ),
+        needBottomLine ? _buildBottomLine() : SizedBox.shrink()
       ]
     );
   }else{
@@ -157,7 +162,7 @@ _buildVerification(int? verification, {bool needSpacing = true}){
   }
 }
 
-_buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml = false, bool needSpacing = true}){
+_buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml = false, bool needTopSpacing = false, bool needBottomLine = true}){
   if(null == text || text.isEmpty || text.trim().isEmpty || "%" == text.trim()) {
     return SizedBox.shrink();
   }
@@ -170,7 +175,7 @@ _buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml 
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      needSpacing ? _buildRowSpacing() : SizedBox.shrink(),
+      needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
       Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -190,12 +195,13 @@ _buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml 
             child: Text(text, textAlign: TextAlign.left, maxLines: maxLines, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)))
           )
         ]
-      )
+      ),
+      needBottomLine ? _buildBottomLine() : SizedBox.shrink()
     ]
   );
 }
 
-_buildHyperlink(BuildContext context, String title, String? url, int maxLines, {bool needSpacing = true}){
+_buildHyperlink(BuildContext context, String title, String? url, int maxLines, {bool needTopSpacing = false, bool needBottomLine = true}){
   if(null == url || url.isEmpty || url.trim().isEmpty) {
     return SizedBox.shrink();
   }
@@ -204,7 +210,7 @@ _buildHyperlink(BuildContext context, String title, String? url, int maxLines, {
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      needSpacing ? _buildRowSpacing() : SizedBox.shrink(),
+      needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
       Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -236,12 +242,13 @@ _buildHyperlink(BuildContext context, String title, String? url, int maxLines, {
             )
           )
         ]
-      )
+      ),
+      needBottomLine ? _buildBottomLine() : SizedBox.shrink()
     ]
   );
 }
 
-_buildTermsWidget(String? payoutTerms, {bool needSpacing = true}){
+_buildTermsWidget(String? payoutTerms, {bool needTopSpacing = false, bool needBottomLine = true}){
   if(null == payoutTerms || payoutTerms.isEmpty || payoutTerms.trim().isEmpty) {
     return SizedBox.shrink();
   }
@@ -250,7 +257,7 @@ _buildTermsWidget(String? payoutTerms, {bool needSpacing = true}){
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      needSpacing ? _buildRowSpacing() : SizedBox.shrink(),
+      needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
       Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,12 +280,13 @@ _buildTermsWidget(String? payoutTerms, {bool needSpacing = true}){
             )
           )
         ]
-      )
+      ),
+      needBottomLine ? _buildBottomLine() : SizedBox.shrink()
     ]
   );
 }
 
-_buildContacts(Staking_providersBean? provider, {bool needSpacing = true}){
+_buildContacts(Staking_providersBean? provider, {bool needTopSpacing = false, bool needBottomLine = true}){
   if(null == provider || (null == provider.discordUsername && null == provider.telegram && null == provider.twitter && null == provider.email)) {
     return SizedBox.shrink();
   }
@@ -287,7 +295,7 @@ _buildContacts(Staking_providersBean? provider, {bool needSpacing = true}){
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      needSpacing ? _buildRowSpacing() : SizedBox.shrink(),
+      needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
       Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -372,7 +380,8 @@ _buildContacts(Staking_providersBean? provider, {bool needSpacing = true}){
             )
           )
         ]
-      )
+      ),
+      needBottomLine ? _buildBottomLine() : SizedBox.shrink()
     ]
   );
 }
