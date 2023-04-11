@@ -22,9 +22,13 @@ class AccountBloc extends Bloc<AccountEvents, AccountStates> {
   int accountIndex = 0;
   bool isAccountLoading = false;
 
-  String? get publicKey => globalHDAccounts.accounts![accountIndex]!.address;
+  String? get publicKey => globalHDAccounts.accounts?[accountIndex]?.address ?? 'Initial accounts';
   bool get accountStaking {
-    AccountBean account = globalHDAccounts.accounts![accountIndex]!;
+    AccountBean? account = globalHDAccounts.accounts?[accountIndex];
+    if(null == account) {
+      return false;
+    }
+
     if(account.isActive ?? false) {
       if(null != account.stakingAddress && account.stakingAddress!.isNotEmpty && account.stakingAddress != account.address) {
         return true;
@@ -167,10 +171,18 @@ class AccountBloc extends Bloc<AccountEvents, AccountStates> {
         return false;
       }
 
-      Map<String, dynamic> data = response.data as Map<String, dynamic>;
-      if(null != data['price'] && data['price']!.isNotEmpty) {
-        await globalPreferences.setString(NOMICS_PRICE_KEY, data['price']!);
-        print('Get exchange info done!!');
+      //Map<String, dynamic> data = response.data as Map<String, dynamic>;
+      List<dynamic>? data = response.data as List<dynamic>?;
+      if(null == data || data.isEmpty) {
+        print('Can not find mina-usdt pair');
+        return false;
+      }
+
+      Map<String, dynamic> minaPair = data[0];
+
+      if(null != minaPair['price_usd'] && minaPair['price_usd'].isNotEmpty) {
+        await globalPreferences.setString(NOMICS_PRICE_KEY, minaPair['price_usd']);
+        print('Get exchange info done, price=${minaPair['price_usd']}');
       } else {
         print('Get exchange info error!!');
         return false;

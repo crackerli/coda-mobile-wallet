@@ -312,7 +312,7 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
   }
 
   _buildAccountsDropItems(BuildContext context) {
-    return globalHDAccounts.accounts!.map<DropdownMenuItem<AccountBean>>((AccountBean? value) {
+    return globalHDAccounts.accounts?.map<DropdownMenuItem<AccountBean>>((AccountBean? value) {
       Widget accountItem;
       Color itemColor;
       if(_accountBloc!.accountIndex == value!.account) {
