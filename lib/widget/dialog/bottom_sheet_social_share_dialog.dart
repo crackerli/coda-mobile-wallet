@@ -91,19 +91,19 @@ List<Function> _shareMethods = [
 
 showSocialShareSheet(BuildContext context, String? address, String? snapshotPath, Map? installedApp) {
   showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(16.w), topRight: Radius.circular(16.w))),
-      isScrollControlled: true,
-      useRootNavigator: false,
-      isDismissible: true,
-      enableDrag: false,
-      builder: (context) => CustomerBottomDialogWidget(
-        title: 'Select an application to share',
-        customView: _buildShareView(address, snapshotPath, installedApp),
-        isShowCloseButton: false,
-        isShowTopIcon: true,
-        isShowCancelButton: false,
-      )
+    context: context,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(16.w), topRight: Radius.circular(16.w))),
+    isScrollControlled: true,
+    useRootNavigator: false,
+    isDismissible: true,
+    enableDrag: false,
+    builder: (context) => CustomerBottomDialogWidget(
+      title: 'Select an application to share',
+      customView: _buildShareView(address, snapshotPath, installedApp),
+      isShowCloseButton: false,
+      isShowTopIcon: true,
+      isShowCancelButton: false,
+    )
   );
 
 }
