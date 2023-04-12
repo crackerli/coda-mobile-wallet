@@ -94,6 +94,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
       if(result.hasException) {
         String error = exceptionHandle(result);
+        isTxnsLoading = false;
         yield RefreshTxnsFail(error);
         return;
       }
@@ -119,6 +120,7 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
 
         if(result.hasException) {
           String error = exceptionHandle(result);
+          isTxnsLoading = false;
           yield RefreshTxnsFail(error);
           return;
         }
