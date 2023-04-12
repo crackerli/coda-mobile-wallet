@@ -37,6 +37,7 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
   int get accountIndex => _accountIndex;
   int get slot => _slot;
   get publicKey => globalHDAccounts.accounts![accountIndex]!.address;
+
   List<StakeStateEntity> get stakingStates => _stakingStates;
   Staking_providersBean? get stakingProvider => _stakingProvider;
   String? get stakingPoolAddress => _stakingPoolAddress;
@@ -138,20 +139,28 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
       if(null != stakeState.data) {
         if(null != stakeState.data?['stake']) {
           StakeStateEntity entity = StakeStateEntity();
-          double balance = stakeState.data?['stake']['balance'] as double;
+          double balance = stakeState.data?['stake']['balance'].toDouble();
           entity.stakeAmount = '${balance.toStringAsFixed(3)}';
           entity.poolAddress = stakeState.data?['stake']['delegate'];
           entity.isCurrent = true;
-          _stakingStates.add(entity);
+          if(publicKey == entity.poolAddress) {
+            print('Ignore self staking on current epoch');
+          } else {
+            _stakingStates.add(entity);
+          }
         }
 
         if(null != stakeState.data?['nextstake']) {
           StakeStateEntity entity = StakeStateEntity();
-          double balance = stakeState.data?['nextstake']['balance'] as double;
+          double balance = stakeState.data?['nextstake']['balance'].toDouble();
           entity.stakeAmount = '${balance.toStringAsFixed(3)}';
           entity.poolAddress = stakeState.data?['nextstake']['delegate'];
           entity.isCurrent = false;
-          _stakingStates.add(entity);
+          if(publicKey == entity.poolAddress) {
+            print('Ignore self staking on next epoch');
+          } else {
+            _stakingStates.add(entity);
+          }
         }
       }
 
