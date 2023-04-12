@@ -31,7 +31,7 @@ void showProviderBottomDialog(BuildContext context, Staking_providersBean? provi
 
 _buildProvider(BuildContext context, Staking_providersBean? provider) {
   return Padding(
-    padding: EdgeInsets.fromLTRB(40.w, 0, 40.w, 0),
+    padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +57,7 @@ _buildProvider(BuildContext context, Staking_providersBean? provider) {
               _buildVerification(provider?.addressVerification),
               _buildHyperlink(context, 'Provider Site', provider?.website, 3),
               _buildHyperlink(context, 'Provider Github', provider?.github, 3),
-              _buildMultiLineTexts('Provider Address', provider?.providerAddress, 2),
+              _buildMultiLineTexts('Provider Address', provider?.providerAddress, 3),
               _buildTermsWidget(provider?.payoutTerms, needBottomLine: false),
             ]
           )
