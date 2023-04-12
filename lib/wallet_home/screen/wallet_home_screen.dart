@@ -67,7 +67,11 @@ class _WalletHomeScreenState extends State<WalletHomeScreen> with AutomaticKeepA
       }
 
       if(globalHDAccounts.accounts != null && globalHDAccounts.accounts!.isNotEmpty) {
-        _accountBloc!.add(GetAccounts(true));
+        if(!_accountBloc!.isAccountLoading) {
+          _accountBloc!.add(GetAccounts(true));
+        } else {
+          print('Account is loading!');
+        }
       }
     }
   }
