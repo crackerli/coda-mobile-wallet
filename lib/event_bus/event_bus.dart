@@ -26,6 +26,8 @@ class FilterTxnsStaked extends TxnsEventBus {}
 
 class UpdateMyAccounts {}
 
+class UpdateStake {}
+
 abstract class SendEventBus {}
 
 class SendPasswordInput extends SendEventBus {

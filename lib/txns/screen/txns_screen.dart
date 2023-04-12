@@ -36,6 +36,11 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   var _eventBusOn;
 
   _refreshTxns() {
+    if(_txnsBloc.isTxnsLoading) {
+      print('Transaction is loading!');
+      return;
+    }
+
     // Restore current filter to ALL if refresh the list
     _txnsBloc.currentFilter = TxnFilter.ALL;
     Map<String, dynamic> variables = Map<String, dynamic>();
@@ -44,9 +49,7 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
   }
 
   Future<void> _onRefresh() async {
-    if(!_txnsBloc.isTxnsLoading) {
-      _refreshTxns();
-    }
+    _refreshTxns();
   }
 
   @override

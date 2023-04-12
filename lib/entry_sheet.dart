@@ -51,18 +51,23 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
 
   final _pageController = PageController();
 
-  void onTap(int index) {
+  void _onTap(int index) {
+    _pageController.jumpToPage(index);
+  }
+
+  void _onPageChanged(int index) {
     if(0 == index) {
       eventBus.fire(UpdateAccounts());
+    }
+
+    if(1 == index) {
+      eventBus.fire(UpdateStake());
     }
 
     if(2 == index) {
       eventBus.fire(UpdateTxns());
     }
-    _pageController.jumpToPage(index);
-  }
 
-  void onPageChanged(int index) {
     setState(() {
       _currentIndex = index;
     });
@@ -149,7 +154,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
       body: SafeArea(
         child: PageView(
           controller: _pageController,
-          onPageChanged: onPageChanged,
+          onPageChanged: _onPageChanged,
           children: _entryTabs,
           physics: NeverScrollableScrollPhysics()
         )
@@ -161,7 +166,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         selectedFontSize: 12.sp,
         unselectedFontSize: 12.sp,
         iconSize: 24.h,
-        onTap: onTap,
+        onTap: _onTap,
         fixedColor: Colors.red,
         unselectedItemColor: Colors.black,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.normal, fontSize: 14.sp),

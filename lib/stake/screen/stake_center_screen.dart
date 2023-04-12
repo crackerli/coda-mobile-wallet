@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:flutter_countdown_timer/index.dart';
+import '../../event_bus/event_bus.dart';
 import '../../route/routes.dart';
 import '../../types/mina_hd_account_type.dart';
 import '../../util/format_utils.dart';
@@ -33,6 +34,7 @@ class StakeCenterScreen extends StatefulWidget {
 
 class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKeepAliveClientMixin {
   StakeCenterBloc? _stakeCenterBloc;
+  var _eventBusOn;
 
   PageController _pageController = PageController();
 
@@ -41,17 +43,30 @@ class _StakeCenterScreenState extends State<StakeCenterScreen> with AutomaticKee
     super.initState();
     _stakeCenterBloc = BlocProvider.of<StakeCenterBloc>(context);
     _stakeCenterBloc!.add(GetStakeStatusEvent());
+    _eventBusOn = eventBus.on<UpdateStake>().listen((event) {
+      if(!_stakeCenterBloc!.isStakeLoading) {
+        _stakeCenterBloc!.add(GetStakeStatusEvent());
+      } else {
+        print('Stake is loading!');
+      }
+    });
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     _stakeCenterBloc = null;
+    _eventBusOn.cancel();
+    _eventBusOn = null;
     super.dispose();
   }
 
   Future<void> _onRefresh() async {
-    _stakeCenterBloc!.add(GetStakeStatusEvent());
+    if(!_stakeCenterBloc!.isStakeLoading) {
+      _stakeCenterBloc!.add(GetStakeStatusEvent());
+    } else {
+      print('Stake is loading!');
+    }
   }
 
   @override
