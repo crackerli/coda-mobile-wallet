@@ -459,39 +459,48 @@ class _TxnsScreenState extends State<TxnsScreen> with AutomaticKeepAliveClientMi
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.only(),
+            padding: EdgeInsets.only(left: 12.w, right: 12.w),
             child: Text(error, textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontSize: 18.sp),),
           ),
           Container(height: 16.h,),
-          InkWell(
-            onTap: _refreshTxns,
-            child: Container(
-              padding: EdgeInsets.only(top: 14.h, bottom: 14.h, left: 100.w, right: 100.w),
-              decoration: getMinaButtonDecoration(topColor: Color(0xffeeeeee)),
-              child: Text('TRY AGAIN',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
+          Container(
+            width: 260.w,
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+                foregroundColor: Color(0xff098de6),
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+                side: BorderSide(width: 1.w, color: Color(0xff098de6))
+              ),
+              onPressed: _refreshTxns,
+              child: Text('RETRY', textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff098de6)))
             )
-          ),
+          )
         ]
       ),
     );
   }
 
   _buildNoDataScreen(BuildContext context, String content) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset('images/txn_list_empty.png', width: 60.w, height: 60.w,),
-          Container(height: 16.h,),
-          Text('No Transactions', textAlign: TextAlign.center, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),),
-          Container(height: 14.h,),
-          Text(content, maxLines: 2,
-            textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp),),
-        ],
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(height: 180.h,),
+            Image.asset('images/txn_list_empty.png', width: 60.w, height: 60.w,),
+            Container(height: 16.h,),
+            Text('No Transactions', textAlign: TextAlign.center, style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),),
+            Container(height: 14.h,),
+            Text(content, maxLines: 2,
+              textAlign: TextAlign.center, style: TextStyle(fontSize: 16.sp),),
+          ],
+        )
       )
     );
   }

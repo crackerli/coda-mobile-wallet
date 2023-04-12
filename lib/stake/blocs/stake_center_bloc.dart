@@ -89,6 +89,7 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
 
       if(stakingState.hasException) {
         String error = exceptionHandle(stakingState);
+        isStakeLoading = false;
         yield GetStakeStatusFailed(error);
         return;
       }
@@ -101,6 +102,7 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
         _slot = int.tryParse(bestChain[0]?['protocolState']?['consensusState']?['slot']) ?? 0;
       } else {
         yield GetStakeStatusFailed('Can not get protocol state!');
+        isStakeLoading = false;
         return;
       }
 
@@ -109,12 +111,14 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
         _accountActive = false;
         // This account is not active, no need to get other info
         yield GetStakeStatusSuccess();
+        isStakeLoading = false;
         return;
       } else {
         _accountActive = true;
         _stakingPoolAddress = accounts[0]?['delegateAccount']?['publicKey'] ?? null;
         if(!isAccountStaking()) {
           // This account has not been staked, no need to get more info
+          isStakeLoading = false;
           yield GetStakeStatusSuccess();
           return;
         }
@@ -126,6 +130,7 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
       final stakeState = await _archiveService.performQuery(STAKE_STATE_QUERY, variables: variables1);
       if(stakeState.hasException) {
         String error = exceptionHandle(stakeState);
+        isStakeLoading = false;
         yield GetStakeStatusFailed(error);
         return;
       }
@@ -165,12 +170,14 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
 
           if (response.statusCode != 200) {
             yield GetStakeStatusFailed('Get pool providers failed!');
+            isStakeLoading = false;
             return;
           }
 
           ProvidersEntity? providersEntity = ProvidersEntity.fromMap(response.data);
           if (null == providersEntity || null == providersEntity.stakingProviders) {
             yield GetStakeStatusFailed('Get pool providers failed!');
+            isStakeLoading = false;
             return;
           }
 
@@ -195,6 +202,7 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
         } catch (e) {
           print('Error happen when get providers: ${e.toString()}');
           yield GetStakeStatusFailed('Get pool providers failed!');
+          isStakeLoading = false;
           return;
         } finally {}
       } else {
