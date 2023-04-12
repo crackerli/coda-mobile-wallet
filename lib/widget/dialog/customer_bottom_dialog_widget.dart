@@ -88,36 +88,23 @@ class CustomerBottomDialogWidget extends StatelessWidget {
           child: customView ?? const SizedBox()
         ),
         Divider(height: 10.h),
-        (isShowCancelButton?? true) ? InkWell(
-          onTap: () => Navigator.pop(context),
-          child: Container(
-            padding: EdgeInsets.only(right: 50.w, left: 50.w, bottom: 8.h),
-            width: double.infinity,
-            height: 50.h,
-            child: Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
-                    foregroundColor: Color(0xfffe5962),
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
-                    side: BorderSide(width: 1.w, color: Color(0xfffe5962))
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('CANCEL',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xfffe5962))
-                  )
-                )
-              )
-            )
+        SizedBox(
+          width: 266.w,
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
+              foregroundColor: Color(0xfffe5962),
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.w)),
+              side: BorderSide(width: 1.w, color: Color(0xfffe5962))
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('CANCEL', textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xfffe5962)))
           )
-        ) : SizedBox.shrink()
+        )
       ]
     );
   }

@@ -48,7 +48,7 @@ List<Function> _shareMethods = [
     } else {
       XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
-        _appinioSocialShare.shareToFacebook('$address', '${file?.path ?? ''}');
+        _appinioSocialShare.shareToFacebook('$address', '${file.path}');
       }
       else{
         Fluttertoast.showToast(msg: "Unable to get QR code image, please try again!");
@@ -70,7 +70,7 @@ List<Function> _shareMethods = [
       XFile? file = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(null != file) {
         _appinioSocialShare.shareToInstagramStory(
-          stickerImage: '${file?.path ?? ''}',
+          stickerImage: '${file.path}',
           backgroundTopColor: '#ffffff',
           backgroundBottomColor: '#000000',
           attributionURL: 'https://www.staking-power.com');
@@ -108,7 +108,7 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
 
 }
 
-Widget _buildShareView(String? address, String? snapshotPath, Map? installedApp){
+Widget _buildShareView(String? address, String? snapshotPath, Map? installedApp) {
   return Container(
     child: Column(
       children: [
