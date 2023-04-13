@@ -19,7 +19,16 @@ class AccountBloc extends Bloc<AccountEvents, AccountStates> {
   late IndexerService _indexerService;
   bool _hasProvidersLoaded = false;
 
-  int accountIndex = 0;
+  int _accountIndex = 0;
+  int get accountIndex {
+    if(_accountIndex >= (globalHDAccounts.accounts?.length ?? 0)) {
+      _accountIndex = 0;
+    }
+    return _accountIndex;
+  }
+
+  set accountIndex(int index) => _accountIndex = index;
+
   bool isAccountLoading = false;
 
   String? get publicKey => globalHDAccounts.accounts?[accountIndex]?.address ?? 'Initial accounts';

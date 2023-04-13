@@ -23,7 +23,16 @@ class TxnsBloc extends Bloc<TxnsEvents, TxnsStates> {
   bool isTxnsLoading = false;
   // User commands merged from both pool and archive
   List<MergedUserCommand> mergedUserCommands = [];
-  int accountIndex = 0;
+  int _accountIndex = 0;
+
+  int get accountIndex {
+    if(_accountIndex >= (globalHDAccounts.accounts?.length ?? 0)) {
+      _accountIndex = 0;
+    }
+    return _accountIndex;
+  }
+  set accountIndex(int index) => _accountIndex = index;
+
   TxnFilter currentFilter = TxnFilter.ALL;
   List<String> txnFilters = ['NO FILTERS', 'SENT FILTER', 'RECEIVED FILTER', 'STAKED FILTER', 'CANCEL'];
 
