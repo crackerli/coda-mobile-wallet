@@ -100,7 +100,6 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
     builder: (context) => CustomBottomDialogWidget(
       title: 'Select an application to share',
       customView: _buildShareView(address, snapshotPath, installedApp),
-      isShowCloseButton: false,
       isShowTopIcon: true,
       isShowCancelButton: false,
     )
