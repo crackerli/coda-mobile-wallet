@@ -190,7 +190,7 @@ _buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml 
 }
 
 _buildHyperlink(BuildContext context, String title, String? url, int maxLines) {
-  if(null == url || url.isEmpty || url.trim().isEmpty) {
+  if(null == url || url.trim().isEmpty) {
     return SizedBox.shrink();
   }
 
