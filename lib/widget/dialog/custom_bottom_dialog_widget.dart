@@ -10,7 +10,6 @@ class CustomBottomDialogWidget extends StatelessWidget {
     this.buttonText,
     this.buttonTextStyle,
     this.buttonTextAlign,
-    this.isShowCloseButton,
     this.isShowTopIcon,
     this.isShowCancelButton,
     this.actions,
@@ -44,9 +43,6 @@ class CustomBottomDialogWidget extends StatelessWidget {
   // dialog's background color
   final Color? color;
 
-  // show or hide the close button
-  final bool? isShowCloseButton;
-
   // show or hide the top icon
   final bool? isShowTopIcon;
 
@@ -66,22 +62,10 @@ class CustomBottomDialogWidget extends StatelessWidget {
           decoration: BoxDecoration(border: Border.all(width: 1.w, color: Color(0xffbdbdbd)), color: Color(0xfff6f3f6), borderRadius: BorderRadius.circular(6.w))
         ),
         Container(height: 15.h),
-        Stack(
-          alignment: Alignment.centerRight,
-          children: [
-            Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              child: Text(
-                this.title ?? "",
-                style: TextStyle(color: Color(0xff2d2d2d), fontSize: 20.sp, fontWeight: FontWeight.w500)
-              )
-            ),
-            Container(
-              padding: EdgeInsets.only(right: 20.w),
-              child: (isShowCloseButton?? false) ? GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close, size: 16.w)) : SizedBox.shrink()
-            )
-          ]
+        Text(
+            this.title ?? "",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Color(0xff2d2d2d), fontSize: 20.sp, fontWeight: FontWeight.w500)
         ),
         Divider(height: 28.h),
         customView ?? const SizedBox(),
