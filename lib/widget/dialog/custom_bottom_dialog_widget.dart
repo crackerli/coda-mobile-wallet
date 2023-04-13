@@ -84,9 +84,7 @@ class CustomBottomDialogWidget extends StatelessWidget {
           ]
         ),
         Divider(height: 28.h),
-        SingleChildScrollView(
-          child: customView ?? const SizedBox()
-        ),
+        customView ?? const SizedBox(),
         Divider(height: 10.h),
         SizedBox(
           width: 266.w,
