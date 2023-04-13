@@ -17,7 +17,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../blocs/stake_provider_type.dart';
 
 _gotoDelegationFee(BuildContext context, SendData delegationData) {
-  Navigator.pushReplacementNamed(context, SendFeeRoute, arguments: delegationData);
+  Navigator.pushNamed(context, SendFeeRoute, arguments: delegationData);
 }
 
 // Some providers name has non-ascii code, need to remove them
