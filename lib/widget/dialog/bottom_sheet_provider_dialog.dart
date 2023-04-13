@@ -159,7 +159,7 @@ _buildVerification(int? verification) {
 }
 
 _buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml = false}) {
-  if(null == text || text.isEmpty || text.trim().isEmpty || "%" == text.trim()) {
+  if(null == text || text.trim().isEmpty || "%" == text.trim()) {
     return SizedBox.shrink();
   }
 
@@ -229,7 +229,7 @@ _buildHyperlink(BuildContext context, String title, String? url, int maxLines) {
 }
 
 _buildTermsWidget(String? payoutTerms) {
-  if(null == payoutTerms || payoutTerms.isEmpty || payoutTerms.trim().isEmpty) {
+  if(null == payoutTerms || payoutTerms.trim().isEmpty) {
     return SizedBox.shrink();
   }
 
