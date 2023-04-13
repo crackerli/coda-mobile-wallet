@@ -54,7 +54,7 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
             child: Column(
               children: [
                 _buildMultiLineTexts('Provider Name', provider.providerTitle, 2),
-                _buildBottomLine(provider.addressVerification),
+                _buildBottomLine(provider.addressVerification, needShowIntZero: false),
                 _buildVerification(provider.addressVerification),
                 _buildBottomLine(provider.website),
                 _buildHyperlink(context, 'Provider Site', provider.website, 3),
@@ -128,14 +128,16 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
   );
 }
 
-_buildBottomLine(dynamic obj) {
+_buildBottomLine(dynamic obj, {needShowIntZero = true}) {
   if(null == obj) {
     return SizedBox.shrink();
   }
 
   if (obj.runtimeType == int) {
     if (obj == 0) {
-      return SizedBox.shrink();
+      if(!needShowIntZero) {
+        return SizedBox.shrink();
+      }
     }
   } else {
     if (obj.runtimeType == String) {
