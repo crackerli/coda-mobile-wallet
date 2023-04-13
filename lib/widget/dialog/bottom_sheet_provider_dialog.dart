@@ -22,7 +22,6 @@ void showProviderBottomDialog(BuildContext context, Staking_providersBean? provi
     builder: (context) => CustomBottomDialogWidget(
       title: 'Know Your Provider',
       customView: null == provider ? Container() : _buildProvider(context, provider),
-      isShowCloseButton: false,
       isShowTopIcon: true,
     )
   );
@@ -199,6 +198,7 @@ _buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml 
         child: Text(
           title,
           textAlign: TextAlign.right,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
         )
       ),
@@ -243,6 +243,7 @@ _buildHyperlink(BuildContext context, String title, String? url, int maxLines) {
               ]
             ),
             maxLines: maxLines,
+            overflow: TextOverflow.ellipsis,
           )
         )
       )
