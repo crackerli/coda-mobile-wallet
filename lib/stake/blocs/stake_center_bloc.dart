@@ -34,7 +34,13 @@ class StakeCenterBloc extends Bloc<StakeCenterEvents, StakeCenterStates> {
   }
 
   int get epoch => _epoch;
-  int get accountIndex => _accountIndex;
+  int get accountIndex {
+    if(_accountIndex >= (globalHDAccounts.accounts?.length ?? 0)) {
+      _accountIndex = 0;
+    }
+    return _accountIndex;
+  }
+
   int get slot => _slot;
   get publicKey => globalHDAccounts.accounts![accountIndex]!.address;
 
