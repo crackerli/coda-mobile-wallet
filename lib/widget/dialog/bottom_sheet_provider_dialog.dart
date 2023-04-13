@@ -7,8 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 
-const TITLE_COLUMN_RATIO = 2;
-const CONTENT_COLUMN_RATIO = 3;
+const TITLE_COLUMN_RATIO = 1;
+const CONTENT_COLUMN_RATIO = 2;
 const COLUMN_SPACING = 12;
 
 void showProviderBottomDialog(BuildContext context, Staking_providersBean? provider) {
@@ -30,7 +30,7 @@ void showProviderBottomDialog(BuildContext context, Staking_providersBean? provi
 _buildProvider(BuildContext context, Staking_providersBean provider) {
   return SingleChildScrollView(
     child: Padding(
-      padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,13 +59,14 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
                 _buildHyperlink(context, 'Provider Site', provider.website, 3),
                 _buildBottomLine(provider.github),
                 _buildHyperlink(context, 'Provider Github', provider.github, 3),
-                _buildBottomLine(provider.providerAddress),
-                _buildMultiLineTexts('Provider Address', provider.providerAddress, 3),
                 _buildBottomLine(provider.payoutTerms),
                 _buildTermsWidget(provider.payoutTerms),
+                _buildBottomLine(_hasContacts(provider)? 1 : null),
+                _buildContacts(provider)
               ]
             )
           ),
+          Container(height: 16.h),
           Padding(
             padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
             child: Text("Pool Info", textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))),
@@ -89,37 +90,12 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
                 _buildBottomLine(provider.stakePercent),
                 _buildMultiLineTexts('Pool Percent', '${provider.stakePercent?.toString() ?? ''}%', 2),
                 _buildBottomLine(provider.providerFee),
-                _buildMultiLineTexts('Pool Fee', '${provider.providerFee ?? ''}%', 2)
+                _buildMultiLineTexts('Pool Fee', '${provider.providerFee ?? ''}%', 2),
+                _buildBottomLine(provider.providerAddress),
+                _buildMultiLineTexts('Pool Address', '${provider.providerAddress}', 3),
               ]
             )
           ),
-          _hasContacts(provider) ? Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
-                child: Text("Provider Contacts", textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
-                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black12, width: 0.5.w),
-                  borderRadius: BorderRadius.all(Radius.circular(5.w)),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(color: Colors.black12, offset: Offset(0, 0), blurRadius: 5, spreadRadius: 2.0)
-                  ]
-                ),
-                child: Column(
-                  children: [
-                    _buildContacts(provider)
-                  ]
-                )
-              )
-            ]
-          ) : SizedBox.shrink(),
           Container(height: 10.h),
         ]
       )
@@ -198,14 +174,13 @@ _buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml 
         child: Text(
           title,
           textAlign: TextAlign.right,
-          overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
         )
       ),
       Container(width: COLUMN_SPACING.w),
       Expanded(
         flex: CONTENT_COLUMN_RATIO,
-        child: Text(text, textAlign: TextAlign.left, maxLines: maxLines, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)))
+        child: Text(text, overflow: TextOverflow.ellipsis, textAlign: TextAlign.left, maxLines: maxLines, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)))
       )
     ]
   );
@@ -300,7 +275,7 @@ _buildContacts(Staking_providersBean provider) {
       Expanded(
         flex: TITLE_COLUMN_RATIO,
         child: Text(
-          'Applications',
+          'Contacts',
           textAlign: TextAlign.right,
           style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
         )
