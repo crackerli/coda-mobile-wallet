@@ -53,15 +53,15 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
           child: Column(
             children: [
               _buildMultiLineTexts('Provider Name', provider.providerTitle, 2),
-              _buildBottomLine(provider.providerTitle),
-              _buildVerification(provider.addressVerification),
               _buildBottomLine(provider.addressVerification),
-              _buildHyperlink(context, 'Provider Site', provider.website, 3),
+              _buildVerification(provider.addressVerification),
               _buildBottomLine(provider.website),
-              _buildHyperlink(context, 'Provider Github', provider.github, 3),
+              _buildHyperlink(context, 'Provider Site', provider.website, 3),
               _buildBottomLine(provider.github),
-              _buildMultiLineTexts('Provider Address', provider.providerAddress, 3),
+              _buildHyperlink(context, 'Provider Github', provider.github, 3),
               _buildBottomLine(provider.providerAddress),
+              _buildMultiLineTexts('Provider Address', provider.providerAddress, 3),
+              _buildBottomLine(provider.payoutTerms),
               _buildTermsWidget(provider.payoutTerms),
             ]
           )
@@ -84,11 +84,11 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
           child: Column(
             children: [
               _buildMultiLineTexts('Delegators', '${provider.delegatorsNum ?? ''}', 2),
-              _buildBottomLine(provider.delegatorsNum),
-              _buildMultiLineTexts('Staked Amount', provider.stakedSum?.toString(), 2),
               _buildBottomLine(provider.stakedSum),
-              _buildMultiLineTexts('Pool Percent', '${provider.stakePercent?.toString() ?? ''}%', 2),
+              _buildMultiLineTexts('Staked Amount', provider.stakedSum?.toString(), 2),
               _buildBottomLine(provider.stakePercent),
+              _buildMultiLineTexts('Pool Percent', '${provider.stakePercent?.toString() ?? ''}%', 2),
+              _buildBottomLine(provider.providerFee),
               _buildMultiLineTexts('Pool Fee', '${provider.providerFee ?? ''}%', 2)
             ]
           )
@@ -120,12 +120,24 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
   );
 }
 
-_buildBottomLine(Object? obj) {
+_buildBottomLine(dynamic obj) {
   if(null == obj) {
     return SizedBox.shrink();
-  } else {
-    return Divider(height: 16.h, color: Colors.black12);
   }
+
+  if (obj.runtimeType == int) {
+    if (obj == 0) {
+      return SizedBox.shrink();
+    }
+  } else {
+    if (obj.runtimeType == String) {
+      if (obj.toString().trim().isEmpty) {
+        return SizedBox.shrink();
+      }
+    }
+  }
+
+  return Divider(height: 16.h, color: Colors.black12);
 }
 
 _buildVerification(int? verification) {
