@@ -94,7 +94,7 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
               ]
             )
           ),
-          _hasConacts(provider) ? Column(
+          _hasContacts(provider) ? Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -278,7 +278,7 @@ _buildTermsWidget(String? payoutTerms) {
   );
 }
 
-_hasConacts(Staking_providersBean provider) {
+_hasContacts(Staking_providersBean provider) {
   if((null == provider.discordUsername || provider.discordUsername!.trim().isEmpty)
     && (null == provider.telegram || provider.telegram!.trim().isEmpty)
     && (null == provider.twitter || provider.twitter!.trim().isEmpty)
