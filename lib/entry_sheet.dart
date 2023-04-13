@@ -111,7 +111,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
           child: Image.asset("images/txns_tab_selected.png",
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h),
         ),
-        label:'Transactions'
+        label:'Transaction'
       ),
       BottomNavigationBarItem(
         icon: Padding(
@@ -124,7 +124,7 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
           child: Image.asset("images/settings_tab_selected.png",
             fit: BoxFit.contain, width: BOTTOM_BAR_ITEM_SIZE.w, height: BOTTOM_BAR_ITEM_SIZE.h),
         ),
-        label:'Settings'
+        label:'Setting'
       ),
     ];
   }
@@ -167,9 +167,9 @@ class _EntrySheetState extends State<EntrySheet> with SingleTickerProviderStateM
         unselectedFontSize: 12.sp,
         iconSize: 24.h,
         onTap: _onTap,
-        fixedColor: Colors.red,
+        fixedColor: Color(0xff6bc7a1),
         unselectedItemColor: Colors.black,
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.normal, fontSize: 14.sp),
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal, fontSize: 14.sp),
       )
     );
