@@ -1,6 +1,6 @@
 import 'package:coda_wallet/stake_provider/blocs/stake_providers_entity.dart';
 import 'package:coda_wallet/widget/dialog/url_open_warning_dialog.dart';
-import 'package:coda_wallet/widget/dialog/customer_bottom_dialog_widget.dart';
+import 'package:coda_wallet/widget/dialog/custom_bottom_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +19,7 @@ void showProviderBottomDialog(BuildContext context, Staking_providersBean? provi
     useRootNavigator: false,
     isDismissible: true,
     enableDrag: false,
-    builder: (context) => CustomerBottomDialogWidget(
+    builder: (context) => CustomBottomDialogWidget(
       title: 'Know Your Provider',
       customView: null == provider ? Container() : _buildProvider(context, provider),
       isShowCloseButton: false,

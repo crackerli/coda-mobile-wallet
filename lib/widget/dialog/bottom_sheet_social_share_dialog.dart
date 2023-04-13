@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:appinio_social_share/appinio_social_share.dart';
-import 'package:coda_wallet/widget/dialog/customer_bottom_dialog_widget.dart';
+import 'package:coda_wallet/widget/dialog/custom_bottom_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -97,7 +97,7 @@ showSocialShareSheet(BuildContext context, String? address, String? snapshotPath
     useRootNavigator: false,
     isDismissible: true,
     enableDrag: false,
-    builder: (context) => CustomerBottomDialogWidget(
+    builder: (context) => CustomBottomDialogWidget(
       title: 'Select an application to share',
       customView: _buildShareView(address, snapshotPath, installedApp),
       isShowCloseButton: false,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomerBottomDialogWidget extends StatelessWidget {
-  CustomerBottomDialogWidget(
+class CustomBottomDialogWidget extends StatelessWidget {
+  CustomBottomDialogWidget(
     {Key? key,
     this.title,
     this.titleStyle,
