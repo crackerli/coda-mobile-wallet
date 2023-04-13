@@ -121,7 +121,7 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
 }
 
 _buildBottomLine(Object? obj) {
-  if(null == obj){
+  if(null == obj) {
     return SizedBox.shrink();
   } else {
     return Divider(height: 16.h, color: Colors.black12);
