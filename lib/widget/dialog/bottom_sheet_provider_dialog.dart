@@ -10,7 +10,6 @@ import 'package:html_unescape/html_unescape_small.dart';
 const TITLE_COLUMN_RATIO = 2;
 const CONTENT_COLUMN_RATIO = 3;
 const COLUMN_SPACING = 12;
-const ROW_SPACING = 16;
 
 void showProviderBottomDialog(BuildContext context, Staking_providersBean? provider) {
   showModalBottomSheet(
@@ -22,14 +21,14 @@ void showProviderBottomDialog(BuildContext context, Staking_providersBean? provi
     enableDrag: false,
     builder: (context) => CustomerBottomDialogWidget(
       title: 'Know Your Provider',
-      customView: _buildProvider(context, provider),
+      customView: null == provider ? Container() : _buildProvider(context, provider),
       isShowCloseButton: false,
       isShowTopIcon: true,
     )
   );
 }
 
-_buildProvider(BuildContext context, Staking_providersBean? provider) {
+_buildProvider(BuildContext context, Staking_providersBean provider) {
   return Padding(
     padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
     child: Column(
@@ -53,12 +52,17 @@ _buildProvider(BuildContext context, Staking_providersBean? provider) {
           ),
           child: Column(
             children: [
-              _buildMultiLineTexts('Provider Name', provider?.providerTitle, 2),
-              _buildVerification(provider?.addressVerification),
-              _buildHyperlink(context, 'Provider Site', provider?.website, 3),
-              _buildHyperlink(context, 'Provider Github', provider?.github, 3),
-              _buildMultiLineTexts('Provider Address', provider?.providerAddress, 3),
-              _buildTermsWidget(provider?.payoutTerms, needBottomLine: false),
+              _buildMultiLineTexts('Provider Name', provider.providerTitle, 2),
+              _buildBottomLine(provider.providerTitle),
+              _buildVerification(provider.addressVerification),
+              _buildBottomLine(provider.addressVerification),
+              _buildHyperlink(context, 'Provider Site', provider.website, 3),
+              _buildBottomLine(provider.website),
+              _buildHyperlink(context, 'Provider Github', provider.github, 3),
+              _buildBottomLine(provider.github),
+              _buildMultiLineTexts('Provider Address', provider.providerAddress, 3),
+              _buildBottomLine(provider.providerAddress),
+              _buildTermsWidget(provider.payoutTerms),
             ]
           )
         ),
@@ -79,10 +83,13 @@ _buildProvider(BuildContext context, Staking_providersBean? provider) {
           ),
           child: Column(
             children: [
-              _buildMultiLineTexts('Delegators', '${provider?.delegatorsNum ?? ''}', 2),
-              _buildMultiLineTexts('Staked Amount', provider?.stakedSum?.toString(), 2),
-              _buildMultiLineTexts('Pool Percent', '${provider?.stakePercent?.toString() ?? ''}%', 2),
-              _buildMultiLineTexts('Pool Fee', '${provider?.providerFee ?? ''}%', 2, needBottomLine: false)
+              _buildMultiLineTexts('Delegators', '${provider.delegatorsNum ?? ''}', 2),
+              _buildBottomLine(provider.delegatorsNum),
+              _buildMultiLineTexts('Staked Amount', provider.stakedSum?.toString(), 2),
+              _buildBottomLine(provider.stakedSum),
+              _buildMultiLineTexts('Pool Percent', '${provider.stakePercent?.toString() ?? ''}%', 2),
+              _buildBottomLine(provider.stakePercent),
+              _buildMultiLineTexts('Pool Fee', '${provider.providerFee ?? ''}%', 2)
             ]
           )
         ),
@@ -103,7 +110,7 @@ _buildProvider(BuildContext context, Staking_providersBean? provider) {
           ),
           child: Column(
             children: [
-              _buildContacts(provider, needBottomLine: false)
+              _buildContacts(provider)
             ]
           )
         ),
@@ -113,45 +120,37 @@ _buildProvider(BuildContext context, Staking_providersBean? provider) {
   );
 }
 
-_buildRowSpacing() {
-  return Container(height: ROW_SPACING.h);
+_buildBottomLine(Object? obj) {
+  if(null == obj){
+    return SizedBox.shrink();
+  } else {
+    return Divider(height: 16.h, color: Colors.black12);
+  }
 }
 
-_buildBottomLine() {
-  return Divider(height: 16.h, color: Colors.black12);
-}
-
-_buildVerification(int? verification, {bool needTopSpacing = false, bool needBottomLine = true}) {
+_buildVerification(int? verification) {
   if (1 == verification) {
-    return Column(
+    return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: TITLE_COLUMN_RATIO,
-              child: Text(
-                'Verification',
-                textAlign: TextAlign.right,
-                style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
-              ),
-            ),
-            Container(width: COLUMN_SPACING.w),
-            Expanded(
-              flex: CONTENT_COLUMN_RATIO,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Image.asset('images/verified_long.png', height: 16.h)
-              )
-            )
-          ]
+        Expanded(
+          flex: TITLE_COLUMN_RATIO,
+          child: Text(
+            'Verification',
+            textAlign: TextAlign.right,
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
+          ),
         ),
-        needBottomLine ? _buildBottomLine() : SizedBox.shrink()
+        Container(width: COLUMN_SPACING.w),
+        Expanded(
+          flex: CONTENT_COLUMN_RATIO,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Image.asset('images/verified_long.png', height: 16.h)
+          )
+        )
       ]
     );
   } else {
@@ -159,7 +158,7 @@ _buildVerification(int? verification, {bool needTopSpacing = false, bool needBot
   }
 }
 
-_buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml = false, bool needTopSpacing = false, bool needBottomLine = true}) {
+_buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml = false}) {
   if(null == text || text.isEmpty || text.trim().isEmpty || "%" == text.trim()) {
     return SizedBox.shrink();
   }
@@ -168,217 +167,185 @@ _buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml 
     text = HtmlUnescape().convert(text);
   }
 
-  return Column(
+  return Row(
+    mainAxisSize: MainAxisSize.min,
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: TITLE_COLUMN_RATIO,
-            child: Text(
-              title,
-              textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
-            )
-          ),
-          Container(width: COLUMN_SPACING.w),
-          Expanded(
-            flex: CONTENT_COLUMN_RATIO,
-            child: Text(text, textAlign: TextAlign.left, maxLines: maxLines, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)))
-          )
-        ]
+      Expanded(
+        flex: TITLE_COLUMN_RATIO,
+        child: Text(
+          title,
+          textAlign: TextAlign.right,
+          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
+        )
       ),
-      needBottomLine ? _buildBottomLine() : SizedBox.shrink()
+      Container(width: COLUMN_SPACING.w),
+      Expanded(
+        flex: CONTENT_COLUMN_RATIO,
+        child: Text(text, textAlign: TextAlign.left, maxLines: maxLines, style: TextStyle(fontSize: 13.sp, color: Color(0xff616161)))
+      )
     ]
   );
 }
 
-_buildHyperlink(BuildContext context, String title, String? url, int maxLines, {bool needTopSpacing = false, bool needBottomLine = true}) {
+_buildHyperlink(BuildContext context, String title, String? url, int maxLines) {
   if(null == url || url.isEmpty || url.trim().isEmpty) {
     return SizedBox.shrink();
   }
 
-  return Column(
+  return Row(
+    mainAxisSize: MainAxisSize.max,
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: TITLE_COLUMN_RATIO,
-            child: Text(title, textAlign: TextAlign.right, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2)))
-          ),
-          Container(width: COLUMN_SPACING.w),
-          Expanded(
-            flex: CONTENT_COLUMN_RATIO,
-            child: InkWell(
-              onTap: () => showUrlWarningDialog(context, url),
-              child: Text.rich(
-                TextSpan(
-                  style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161)),
-                  children: [
-                    TextSpan(text: url),
-                    WidgetSpan(child: Container(width: 5.w)),
-                    WidgetSpan(
-                      alignment: PlaceholderAlignment.middle,
-                      child: Image.asset('images/link.png', width: 8.w)
-                    )
-                  ]
-                ),
-                maxLines: maxLines,
-              )
-            )
-          )
-        ]
+      Expanded(
+        flex: TITLE_COLUMN_RATIO,
+        child: Text(title, textAlign: TextAlign.right, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2)))
       ),
-      needBottomLine ? _buildBottomLine() : SizedBox.shrink()
+      Container(width: COLUMN_SPACING.w),
+      Expanded(
+        flex: CONTENT_COLUMN_RATIO,
+        child: InkWell(
+          onTap: () => showUrlWarningDialog(context, url),
+          child: Text.rich(
+            TextSpan(
+              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.normal, color: Color(0xff616161)),
+              children: [
+                TextSpan(text: url),
+                WidgetSpan(child: Container(width: 5.w)),
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: Image.asset('images/link.png', width: 8.w)
+                )
+              ]
+            ),
+            maxLines: maxLines,
+          )
+        )
+      )
     ]
   );
 }
 
-_buildTermsWidget(String? payoutTerms, {bool needTopSpacing = false, bool needBottomLine = true}) {
+_buildTermsWidget(String? payoutTerms) {
   if(null == payoutTerms || payoutTerms.isEmpty || payoutTerms.trim().isEmpty) {
     return SizedBox.shrink();
   }
 
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.start,
+  return Row(
+    mainAxisSize: MainAxisSize.max,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: TITLE_COLUMN_RATIO,
-            child: Text(
-              'Payout Terms',
-              textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
-            )
-          ),
-          Container(width: COLUMN_SPACING.w),
-          Expanded(
-            flex: CONTENT_COLUMN_RATIO,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: _buildTerms(payoutTerms)
-            )
-          )
-        ]
+      Expanded(
+        flex: TITLE_COLUMN_RATIO,
+        child: Text(
+          'Payout Terms',
+          textAlign: TextAlign.right,
+          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
+        )
       ),
-      needBottomLine ? _buildBottomLine() : SizedBox.shrink()
+      Container(width: COLUMN_SPACING.w),
+      Expanded(
+        flex: CONTENT_COLUMN_RATIO,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: _buildTerms(payoutTerms)
+        )
+      )
     ]
   );
 }
 
-_buildContacts(Staking_providersBean? provider, {bool needTopSpacing = false, bool needBottomLine = true}) {
-  if(null == provider || (null == provider.discordUsername && null == provider.telegram && null == provider.twitter && null == provider.email)) {
+_buildContacts(Staking_providersBean provider) {
+  if(null == provider.discordUsername && null == provider.telegram && null == provider.twitter && null == provider.email) {
     return SizedBox.shrink();
   }
 
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.start,
-    crossAxisAlignment: CrossAxisAlignment.start,
+  return Row(
+    mainAxisSize: MainAxisSize.max,
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      needTopSpacing ? _buildRowSpacing() : SizedBox.shrink(),
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: TITLE_COLUMN_RATIO,
-            child: Text(
-              'Applications',
-              textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
-            )
-          ),
-          Container(width: COLUMN_SPACING.w),
-          Expanded(
-            flex: CONTENT_COLUMN_RATIO,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                (provider.discordUsername ?? '').isNotEmpty
-                  ? Builder(
-                  builder: (context) => InkWell(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: provider.discordUsername ?? ''));
-                      Fluttertoast.showToast(
-                        msg: 'Discord user name copied into clipboard!!',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1
-                      );
-                    },
-                    child: Image.asset('images/discord.png', height: 26.h, width: 26.w,)
-                  )
-                ) : Container(),
-                (provider.telegram ?? '').isNotEmpty
-                  ? Builder(
-                  builder: (context) => InkWell(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: provider.telegram ?? ''));
-                      Fluttertoast.showToast(
-                        msg: 'Telegram handle copied into clipboard!!',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1
-                      );
-                    },
-                    child: Image.asset('images/telegram.png', height: 26.h, width: 26.w)
-                  )
-                ) : Container(),
-                (provider.twitter ?? '').isNotEmpty
-                  ? Builder(
-                  builder: (context) => InkWell(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: provider.twitter ?? ''));
-                      Fluttertoast.showToast(
-                        msg: 'Twitter account copied into clipboard!!',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1
-                      );
-                    },
-                    child: Image.asset('images/twitter.png', height: 26.h, width: 26.w)
-                  )
-                ) : Container(),
-                (provider.email ?? '').isNotEmpty
-                  ? Builder(
-                  builder: (context) => InkWell(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: provider.email ?? ''));
-                      Fluttertoast.showToast(
-                        msg: 'Email copied into clipboard!!',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                      );
-                    },
-                    child: Image.asset('images/mail.png', height: 26.h, width: 26.w)
-                  )
-                ) : Container()
-              ]
-            )
-          )
-        ]
+      Expanded(
+        flex: TITLE_COLUMN_RATIO,
+        child: Text(
+          'Applications',
+          textAlign: TextAlign.right,
+          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
+        )
       ),
-      needBottomLine ? _buildBottomLine() : SizedBox.shrink()
+      Container(width: COLUMN_SPACING.w),
+      Expanded(
+        flex: CONTENT_COLUMN_RATIO,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            (provider.discordUsername ?? '').isNotEmpty
+              ? Builder(
+              builder: (context) => InkWell(
+                onTap: () {
+                  Clipboard.setData(ClipboardData(text: provider.discordUsername ?? ''));
+                  Fluttertoast.showToast(
+                    msg: 'Discord user name copied into clipboard!!',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1
+                  );
+                },
+                child: Image.asset('images/discord.png', height: 26.h, width: 26.w,)
+              )
+            ) : Container(),
+            (provider.telegram ?? '').isNotEmpty
+              ? Builder(
+              builder: (context) => InkWell(
+                onTap: () {
+                  Clipboard.setData(ClipboardData(text: provider.telegram ?? ''));
+                  Fluttertoast.showToast(
+                    msg: 'Telegram handle copied into clipboard!!',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1
+                  );
+                },
+                child: Image.asset('images/telegram.png', height: 26.h, width: 26.w)
+              )
+            ) : Container(),
+            (provider.twitter ?? '').isNotEmpty
+              ? Builder(
+              builder: (context) => InkWell(
+                onTap: () {
+                  Clipboard.setData(ClipboardData(text: provider.twitter ?? ''));
+                  Fluttertoast.showToast(
+                    msg: 'Twitter account copied into clipboard!!',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1
+                  );
+                },
+                child: Image.asset('images/twitter.png', height: 26.h, width: 26.w)
+              )
+            ) : Container(),
+            (provider.email ?? '').isNotEmpty
+              ? Builder(
+              builder: (context) => InkWell(
+                onTap: () {
+                  Clipboard.setData(ClipboardData(text: provider.email ?? ''));
+                  Fluttertoast.showToast(
+                    msg: 'Email copied into clipboard!!',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                  );
+                },
+                child: Image.asset('images/mail.png', height: 26.h, width: 26.w)
+              )
+            ) : Container()
+          ]
+        )
+      )
     ]
   );
 }
