@@ -86,7 +86,8 @@ class CustomBottomDialogWidget extends StatelessWidget {
             child: Text('CANCEL', textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Color(0xfffe5962)))
           )
-        )
+        ),
+        Divider(height: 12.h)
       ]
     );
   }

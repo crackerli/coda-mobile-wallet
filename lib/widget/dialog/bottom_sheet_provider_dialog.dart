@@ -37,11 +37,11 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
         children: [
           Padding(
             padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
-            child: Text("Provider Info", textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))),
+            child: Text("Provider Info", textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
-            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+            padding: EdgeInsets.fromLTRB(6.w, 16.h, 6.w, 16.h),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black12, width: 0.5.w),
               borderRadius: BorderRadius.all(Radius.circular(5.w)),
@@ -52,13 +52,13 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
             ),
             child: Column(
               children: [
-                _buildMultiLineTexts('Provider Name', provider.providerTitle, 2),
+                _buildMultiLineTexts('Name', provider.providerTitle, 2),
                 _buildBottomLine(provider.addressVerification, needShowIntZero: false),
                 _buildVerification(provider.addressVerification),
                 _buildBottomLine(provider.website),
-                _buildHyperlink(context, 'Provider Site', provider.website, 3),
+                _buildHyperlink(context, 'Website', provider.website, 3),
                 _buildBottomLine(provider.github),
-                _buildHyperlink(context, 'Provider Github', provider.github, 3),
+                _buildHyperlink(context, 'Github', provider.github, 3),
                 _buildBottomLine(provider.payoutTerms),
                 _buildTermsWidget(provider.payoutTerms),
                 _buildBottomLine(_hasContacts(provider)? 1 : null),
@@ -69,11 +69,11 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
           Container(height: 16.h),
           Padding(
             padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 10.h),
-            child: Text("Pool Info", textAlign: TextAlign.left, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))),
+            child: Text("Pool Info", textAlign: TextAlign.left, style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Color(0xff2d2d2d))),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
-            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+            padding: EdgeInsets.fromLTRB(6.w, 16.h, 6.w, 16.h),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black12, width: 0.5.w),
               borderRadius: BorderRadius.all(Radius.circular(5.w)),
@@ -86,9 +86,9 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
               children: [
                 _buildMultiLineTexts('Delegators', '${provider.delegatorsNum ?? ''}', 2),
                 _buildBottomLine(provider.stakedSum),
-                _buildMultiLineTexts('Staked Amount', provider.stakedSum?.toString(), 2),
+                _buildMultiLineTexts('Pool Amount', provider.stakedSum?.toString(), 2),
                 _buildBottomLine(provider.stakePercent),
-                _buildMultiLineTexts('Pool Percent', '${provider.stakePercent?.toString() ?? ''}%', 2),
+                _buildMultiLineTexts('Pool Size', '${provider.stakePercent?.toString() ?? ''}%', 2),
                 _buildBottomLine(provider.providerFee),
                 _buildMultiLineTexts('Pool Fee', '${provider.providerFee ?? ''}%', 2),
                 _buildBottomLine(provider.providerAddress),
@@ -137,7 +137,7 @@ _buildVerification(int? verification) {
           child: Text(
             'Verification',
             textAlign: TextAlign.right,
-            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
+            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2))
           ),
         ),
         Container(width: COLUMN_SPACING.w),
@@ -174,7 +174,7 @@ _buildMultiLineTexts(String title, String? text, int maxLines, {bool decodeHtml 
         child: Text(
           title,
           textAlign: TextAlign.right,
-          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
+          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2))
         )
       ),
       Container(width: COLUMN_SPACING.w),
@@ -198,7 +198,7 @@ _buildHyperlink(BuildContext context, String title, String? url, int maxLines) {
     children: [
       Expanded(
         flex: TITLE_COLUMN_RATIO,
-        child: Text(title, textAlign: TextAlign.right, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2)))
+        child: Text(title, textAlign: TextAlign.right, style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2)))
       ),
       Container(width: COLUMN_SPACING.w),
       Expanded(
@@ -238,9 +238,9 @@ _buildTermsWidget(String? payoutTerms) {
       Expanded(
         flex: TITLE_COLUMN_RATIO,
         child: Text(
-          'Payout Terms',
+          'Payout Term',
           textAlign: TextAlign.right,
-          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
+          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2))
         )
       ),
       Container(width: COLUMN_SPACING.w),
@@ -277,7 +277,7 @@ _buildContacts(Staking_providersBean provider) {
         child: Text(
           'Contacts',
           textAlign: TextAlign.right,
-          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold, color: Color(0xff9397a2))
+          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Color(0xff9397a2))
         )
       ),
       Container(width: COLUMN_SPACING.w),
