@@ -163,8 +163,9 @@ class _ReceiveAccountScreenState extends State<ReceiveAccountScreen> {
           Map? installedApp = await _appinioSocialShare.getInstalledApps();
           ProgressDialog.dismiss(context);
           showSocialShareSheet(context, address, path, installedApp);
-        }).catchError((onError) {
-          print(onError);
+        }).catchError((error) {
+          ProgressDialog.dismiss(context);
+          print(error);
         });
       } catch(e) {
         ProgressDialog.dismiss(context);
