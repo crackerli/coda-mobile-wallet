@@ -28,6 +28,7 @@ void showProviderBottomDialog(BuildContext context, Staking_providersBean? provi
 }
 
 _buildProvider(BuildContext context, Staking_providersBean provider) {
+  bool hasContacts = _hasContacts(provider);
   return SingleChildScrollView(
     child: Padding(
       padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 0),
@@ -61,8 +62,8 @@ _buildProvider(BuildContext context, Staking_providersBean provider) {
                 _buildHyperlink(context, 'Github', provider.github, 3),
                 _buildBottomLine(provider.payoutTerms),
                 _buildTermsWidget(provider.payoutTerms),
-                _buildBottomLine(_hasContacts(provider)? 1 : null),
-                _buildContacts(provider)
+                hasContacts ? _buildBottomLine(1) : SizedBox.shrink(),
+                hasContacts ? _buildContacts(provider) : SizedBox.shrink()
               ]
             )
           ),
